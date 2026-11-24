@@ -1,0 +1,5 @@
+*.brep -text
+*.step -text
+*.stp -text
+*.stl -text
+*.FCStd binary
