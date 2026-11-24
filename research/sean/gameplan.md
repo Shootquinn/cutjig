@@ -32,6 +32,14 @@ Sean leads the cut jig; Quinn reviews. This week's job is to find out what the j
   - No extrusion is cut.
 - **Ask Quinn early:** Q1 (travel), Q2 (drill length and top-end hardware) and Q3 (what spins the drill).
 
+**Update, later on 2026-11-24 (Quinn's decisions):**
+- Travel is 650 mm.
+- The drill spins on a big bevel ring gear driven by three NEMA 23 pinions at 120 deg. The pinions also carry the drill's weight, with a bushing support ring if needed.
+- Everything rides on one ring structure that moves up and down on three jack screws, probably driven by NEMA 17s.
+- Lead screws are T8, 800 to 900 mm, under $100 each.
+
+Sketch that configuration; arbor press and hoist are off the table. Details are in section 15 of the critical-path file and Design Note 23 of `research/quinn/gameplan.md`.
+
 Step 0 for the first session: draft the Objectives, Steps, Context Recipes and Design Notes below from `templates/gameplan.md` with the team. Keep this section, and make the sketch set the first step after Step 0.
 
 ---

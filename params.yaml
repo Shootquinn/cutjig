@@ -29,7 +29,7 @@ core:
   mass_kg_d105: {value: [10.4, 15.6, 20.8], unit: "kg", source: "d = 105, 2400 kg/m3, lengths 0.5 / 0.75 / 1 m (research/quinn/cr_scratch/step2_system_concept.md decision 3b)", status: DERIVED}
 
 upper:
-  travel_max: {value: 500, unit: "mm", source: "gate B6 (upper assembly working stroke at most 0.5 m); the loading park is separate (upper.park_z), research/quinn/cr_scratch/step2_system_concept.md U13", status: DECLARED}
+  travel_max: {value: 650, unit: "mm", source: "human decision 2026-11-24 (context/2026-11-24_cutjig_critical_path.md Q1; supersedes gate B6 0.5 m); the loading park is separate (upper.park_z), research/quinn/cr_scratch/step2_system_concept.md U13", status: DECLARED}
   metal_stop: {value: "metal descent stop, owned by the upper assembly, rated 1000 N axial; the nut is never a stop", unit: "", source: "gate B5 (stop owner); research/quinn/cr_scratch/step2_system_concept.md decision 8 (i) and ICD rows Stop rating, Stop gap", status: DECLARED}
   captured_length: {value: 465.07, unit: "mm", source: "500 mm core minus dome_pole_offset 34.93; one stroke of 500 retains this (research/quinn/cr_scratch/step2_system_concept.md Items from my draft)", status: DERIVED}
   drill_advance_500core: {value: 534.93, unit: "mm", source: "500 + 34.93 dome offset; exceeds travel_max, ceiling holds (research/quinn/cr_scratch/step2_system_concept.md)", status: DERIVED}
@@ -176,7 +176,7 @@ stop:
   height_range: {value: [184.84, 315], unit: "mm", source: "[0.5 m case, 0.75 m case]: first = stop.height_z 184.84 (collar top 159.84 + 25); second = the old 300 seed + 15 (g_stop 25 - 10), not re-derived, A2b recomputes at Step 5 (research/quinn/cr_scratch/step2_system_concept.md)", status: ASSUMED}
   margin: {value: 5, unit: mm, source: "F4 margin seed", status: ASSUMED}
   height_z: {value: 184.84, unit: "mm", source: "A2b: stop.collar_top_z 159.84 + stop.g_stop 25 = 184.84 for the 0.5 m case (was 160 = 150 + 10; 169.84 at g_stop 10)", status: DERIVED}
-  start_z: {value: [684.84, 815], unit: "mm", source: "height_range + upper.travel_max 500 = [184.84 + 500, 315 + 500] (research/quinn/cr_scratch/step2_system_concept.md)", status: DERIVED}
+  start_z: {value: [834.84, 965], unit: "mm", source: "height_range + upper.travel_max 650 = [184.84 + 650, 315 + 650] (research/quinn/cr_scratch/step2_system_concept.md)", status: DERIVED}
   rated_load: {value: 1000, unit: N, source: "equals loads.axial_design", status: ASSUMED}
   pad_width: {value: 60, unit: "mm", source: "hard-stop face pad on the column face (research/quinn/cr_scratch/step3_designer_params.md)", status: ASSUMED}
   pad_length: {value: 60, unit: "mm", source: "60 x 60 = 3600 mm2 against 1000 N (research/quinn/cr_scratch/step3_designer_params.md)", status: ASSUMED}

@@ -128,13 +128,13 @@ Rough stack for capture mode with 650 mm travel: stop at about 185, so the drill
 
 | # | Question | Why it matters | Who answers |
 |---|---|---|---|
-| Q1 | Travel: 500 (params) or about 650 (meeting)? | Sets column height and lift length | Quinn |
+| Q1 | ANSWERED 2026-11-24: 650 mm. Travel: 500 (params) or about 650 (meeting)? | Sets column height and lift length | Quinn |
 | Q2 | Drill length, mass and top-end hardware for the 6 in drill | Sets total height and lift load; `drill.*` has no length key | Quinn (drill is in build) |
-| Q3 | What spins the drill: its own motor on the drill, or a spindle drive the jig carries? | Sets the carriage design and the torque path | Quinn |
+| Q3 | ANSWERED 2026-11-24: ring gear and three NEMA 23 pinions (section 15). What spins the drill: its own motor on the drill, or a spindle drive the jig carries? | Sets the carriage design and the torque path | Quinn |
 | Q4 | Push-pop advance: what pushes the core up through the collet? | The current receiver has a floor and the core stands on the collet core stop, so nothing can move the core upward | Sean, sketch S4 |
 | Q5 | Collet length: how tall? | Quinn pictures taller collets than the current "short stubby" ones (14:50, 18:20) | Quinn and Sean |
 | Q6 | Sacrificial collet: a separate collet variant, or a liner? | Slice mode may cut collet with the core | Sean |
-| Q7 | Lift: arbor press, jack screws, other? | Decides sections 6 and 8 | Sean proposes, Quinn picks |
+| Q7 | ANSWERED 2026-11-24: three jack screws (section 15). Lift: arbor press, jack screws, other? | Decides sections 6 and 8 | Sean proposes, Quinn picks |
 | Q8 | Manual or powered travel; feed control for the cut? | Jack screws with steppers give controlled feed; an arbor press gives feel | Sean proposes |
 | Q9 | Core lengths to support: 500 capture, 750 install, 1000 optional (params) | Drives loading height | Quinn |
 | Q10 | Short 100 x 100 mm cores: does the collet family cover a 100 mm tall core? | First real cores may be short | Sean, sketch S4 |
@@ -197,7 +197,7 @@ Drafted from the meeting and current params for the sketch phase. Status follows
 | R3 | Drill moves along Z; core stays fixed during the cut | yes | DECLARED | 17:40, 21:34 |
 | R4 | Drill rotates about Z while it moves | yes | DECLARED | 34:11 |
 | R5 | No hand holds the drill during a cut | yes | DECLARED | 21:34 |
-| R6 | Vertical travel | about 650 mm (params: 500) | ASSUMED | 18:20; Q1 |
+| R6 | Vertical travel | 650 mm | DECLARED | 18:20; Q1 answered |
 | R7 | Capture length, final test | 500 mm core | DECLARED | 18:20 |
 | R8 | Drill length | about 800 mm | ASSUMED | 18:20; Q2 |
 | R9 | Core diameter range | 90 to 105 mm, one collet per 2.5 mm step | DECLARED | `core.diameters` |
@@ -212,3 +212,14 @@ Drafted from the meeting and current params for the sketch phase. Status follows
 | R18 | First version may be crude | yes | DECLARED | 21:34 |
 
 Any R-row a sketch cannot meet goes to the human with the sketch, together with the change that would meet it.
+
+## 15. Decisions after the meeting (2026-11-24)
+
+The human set these the same day. The full text is in Design Note 23 of `research/quinn/gameplan.md`.
+
+- **Travel:** 650 mm. Params and the cutter keep-out are updated. The loading park (959.84) now sits below the 0.75 m start height (965), so test P10 is red until the park rule is re-derived in S1.
+- **Drill spin:** a large bevel ring gear on the drill, with three pinions at 120 deg. Each pinion is driven by a NEMA 23 stepper (on hand), with or without a gearbox. The pinions carry the drill weight, and a support ring with shaft bushings is added if they need help.
+- **Lift:** the drill, ring gear and motors ride on one ring structure, and the ring is what moves. Three jack screws at 120 deg, probably NEMA 17 steppers. This replaces the hoist and two-column idea.
+- **Lead screws:** T8 with brass nut, about $35 to $90 for 1000 mm, custom cuts to 2000 mm. Needed length is 800 to 900 mm. Anchor the screws at the bottom so the cutting load puts them in tension. The three lift motors must move as one axis.
+
+Sketch consequences: S1 and S3 draw the ring and three screws. S2 shows the 120 deg layout of screws and pinions around the drill. S6 becomes the ring-gear and pinion close-up.
