@@ -1,4 +1,4 @@
-"""T9 register and tilt (Loftsman ruling, cr_scratch/step4_loftsman_t9_ruling.md). Receiver frame (floor z 0, rim z = receiver.rim_above_floor).
+"""T9 register and tilt (Loftsman ruling, research/quinn/cr_scratch/step4_loftsman_t9_ruling.md). Receiver frame (floor z 0, rim z = receiver.rim_above_floor).
 
 Measured: the register stop angle of the holder in the receiver bore. The holder hangs at first thread contact (insertion
 receiver.register_depth + nut.lift_play below the rim), is shifted -register.g_reg onto the -X wall and tilted about Y through that

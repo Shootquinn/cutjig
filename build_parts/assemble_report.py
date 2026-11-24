@@ -1,6 +1,6 @@
 """Interference report generator (Step 7). Plain python, no FreeCAD: python build_parts/assemble_report.py
 Reads results/probes/pose_<P>_<tag>.json (written by tests/probes/probe_poses.py) and ws<n>.json (probe_ws.py), and writes
-cr_scratch/step7_interference_report.md. Every cell is a probe value; verdicts come from gates.pair_violations (ASSEMBLY.md classes and gaps).
+research/quinn/cr_scratch/step7_interference_report.md. Every cell is a probe value; verdicts come from gates.pair_violations (ASSEMBLY.md classes and gaps).
 Sections: one '## Size <tag>' per collet size (45 part pairs + 6 feature pairs for R, Kd1, Kmax), then the clamp range (T4, T5 at the two extreme
 sizes) and the wrong-state table. The file is tool output; edit this script, not the report."""
 import json
@@ -15,7 +15,7 @@ import common  # noqa: E402
 import gates  # noqa: E402
 
 PROBES = os.path.join(ROOT, "results", "probes")
-REPORT = os.path.join(ROOT, "cr_scratch", "step7_interference_report.md")
+REPORT = os.path.join(ROOT, "research", "quinn", "cr_scratch", "step7_interference_report.md")
 POSES = ("R", "Kd1", "Kmax")
 
 

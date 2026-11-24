@@ -1,7 +1,7 @@
 """Step 6 tests (exploratory build of every part and accessory). Red-first: every discriminator fails with MISSING: or ABSENT FEATURE:
 at baseline B6. Reads results/probes/step6_parts.json (probe_step6_parts.py), results/probes/step6_marks.json (probe_step6_marks.py) and
 parts_cache/<part>_result.json. Numbers come from params keys named at the assertion; Rule M readings come from probes, not params.
-Checklist IDs: see cr_scratch/step6_manager_open.md section 3. Controls (invariant, green_at_4) call the same predicates as the real tests."""
+Checklist IDs: see research/quinn/cr_scratch/step6_manager_open.md section 3. Controls (invariant, green_at_4) call the same predicates as the real tests."""
 import math
 import pathlib
 import sys

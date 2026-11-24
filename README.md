@@ -1,3 +1,34 @@
+# cutjig: Core Cutter Test Jig
+
+Vertical test jig (30-6060 extrusion and printed parts) that holds a 90 to 105 mm rock core upright under the SBIR drill/iris core cutter. Work order: `workorder.md`. Built with the CR Agents method below; the method files are tracked from https://github.com/shootquinn/CR-Agents. Copyright Quinn Morley, all rights reserved (`LICENSE`).
+
+## Contributors and layout
+
+- `research/<name>/` (quinn, sean): that contributor's gameplan, accumulator and `cr_scratch/`. Leave the other contributor's folder alone.
+- Shared design: `workorder.md`, `params.yaml`, `ASSEMBLY.md`, `bom_*.md`, `report_assumptions.md`, `build_parts/`, `tests/`, `output/`, `parts_cache/`, `docs/`, `context/`, `reference/`. Either contributor may change any of it through the LLM-PLM process.
+- `.contributor` (gitignored): your name, one line. Sessions read it to find your folder.
+
+## Getting started
+
+1. Clone to a local folder outside OneDrive: `git clone https://github.com/Shootquinn/cutjig.git`
+2. Write your name to `.contributor`.
+3. Start Claude Code in the clone and paste `START_PROMPT.md`.
+
+## Pull, save, push
+
+Every step begins with `git pull --ff-only`. Every wave close and step close ends with:
+
+```
+git add -A
+git commit -m "<name>: Step N <what finished>"
+git pull --rebase
+git push
+```
+
+A failed fast-forward or a rebase conflict in a design file stops the session and reports to the human. Never force-push. Full rules: "Repository Sync" at the end of each contributor's gameplan.
+
+---
+
 # Collaborative Reasoning + Test-Driven Documentation
 By: Quinn Morley, Unleashed Robotics
 

@@ -1,0 +1,217 @@
+{
+ "source": "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\research\\quinn\\cr_scratch\\step7_before\\frame.FCStd",
+ "counts": {
+  "member": 6,
+  "bracket": 16,
+  "tnut": 128
+ },
+ "summary": {
+  "bracket|bracket": {
+   "pairs_near": 4,
+   "pairs_over_tol": 4,
+   "max_common_mm3": 18248.601,
+   "total_common_mm3": 72994.404,
+   "touching": 0
+  },
+  "bracket|member": {
+   "pairs_near": 36,
+   "pairs_over_tol": 4,
+   "max_common_mm3": 1061.369,
+   "total_common_mm3": 4245.476,
+   "touching": 32
+  },
+  "bracket|tnut": {
+   "pairs_near": 176,
+   "pairs_over_tol": 8,
+   "max_common_mm3": 89.503,
+   "total_common_mm3": 716.024,
+   "touching": 160
+  },
+  "member|member": {
+   "pairs_near": 4,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 4
+  },
+  "member|tnut": {
+   "pairs_near": 128,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 128
+  },
+  "tnut|tnut": {
+   "pairs_near": 16,
+   "pairs_over_tol": 16,
+   "max_common_mm3": 1032.741,
+   "total_common_mm3": 16523.856,
+   "touching": 0
+  }
+ },
+ "tnuts_with_host_contact": 128,
+ "brackets_with_member_contact": 16,
+ "pairs_over_tol": {
+  "bracket_printed_1|bracket_purchased_1": {
+   "kind": "bracket|bracket",
+   "common_mm3": 18248.601,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|member_end_1": {
+   "kind": "bracket|member",
+   "common_mm3": 1061.369,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_2": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_4": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|bracket_purchased_2": {
+   "kind": "bracket|bracket",
+   "common_mm3": 18248.601,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|member_end_1": {
+   "kind": "bracket|member",
+   "common_mm3": 1061.369,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_10": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_12": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|bracket_purchased_3": {
+   "kind": "bracket|bracket",
+   "common_mm3": 18248.601,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|member_end_2": {
+   "kind": "bracket|member",
+   "common_mm3": 1061.369,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_18": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_20": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|bracket_purchased_4": {
+   "kind": "bracket|bracket",
+   "common_mm3": 18248.601,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|member_end_2": {
+   "kind": "bracket|member",
+   "common_mm3": 1061.369,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_26": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_28": {
+   "kind": "bracket|tnut",
+   "common_mm3": 89.503,
+   "min_dist": 0.0
+  },
+  "tnut_1|tnut_69": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_11|tnut_79": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_13|tnut_73": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_15|tnut_75": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_17|tnut_85": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_19|tnut_87": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_21|tnut_81": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_23|tnut_83": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_25|tnut_93": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_27|tnut_95": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_29|tnut_89": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_3|tnut_71": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_31|tnut_91": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_5|tnut_65": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_67|tnut_7": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  },
+  "tnut_77|tnut_9": {
+   "kind": "tnut|tnut",
+   "common_mm3": 1032.741,
+   "min_dist": 0.0
+  }
+ },
+ "seconds": 173.9
+}

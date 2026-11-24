@@ -16,10 +16,10 @@ A build takes about 30 to 60 s. Start long jobs detached so the shell stays free
 ```powershell
 $env:CJ_D = "97.0"
 $p = Start-Process -FilePath "$env:LOCALAPPDATA\Programs\FreeCAD 1.1\bin\freecadcmd.exe" -ArgumentList "build_parts\collet_family.py" `
-     -RedirectStandardOutput "cr_scratch\collet_097p0.log" -RedirectStandardError "cr_scratch\collet_097p0.err" -PassThru -WindowStyle Hidden
+     -RedirectStandardOutput "research\quinn\cr_scratch\collet_097p0.log" -RedirectStandardError "research\quinn\cr_scratch\collet_097p0.err" -PassThru -WindowStyle Hidden
 ```
 
-If FreeCAD is installed elsewhere, substitute the path to its `freecadcmd.exe`. `CJ_D` stays set for the rest of the PowerShell session; clear it with `Remove-Item Env:CJ_D` to build the family. Check a detached job with `Get-Content cr_scratch\collet_097p0.log -Tail 3` (the `cr_scratch` folder must exist).
+If FreeCAD is installed elsewhere, substitute the path to its `freecadcmd.exe`. `CJ_D` stays set for the rest of the PowerShell session; clear it with `Remove-Item Env:CJ_D` to build the family. Check a detached job with `Get-Content research\quinn\cr_scratch\collet_097p0.log -Tail 3` (the `cr_scratch` folder must exist).
 
 Success is the line `RESULT collet_<tag> ... checks_all_pass=True` followed by the last line `BUILD_DONE collet_family`, plus a fresh `parts_cache\collet_<tag>.FCStd`. FreeCAD exits 0 even after an error, so read the log, not the exit code. A failed size prints a traceback and `BUILD_FAILED collet_<tag>`.
 

@@ -87,7 +87,7 @@ def test_T2_thread_dimensions_against_the_step3_chain():
     assert r["tooth_w_pitch"] == pytest.approx(G("thread.pitch") / 2.0, abs=0.05)
 
 
-# SRC: Printer: not a design input | DECLARED | gameplan.md 411
+# SRC: Printer: not a design input | DECLARED | research/quinn/gameplan.md 411
 @H.label("invariant", 4)
 def test_T3_crest_clearance_and_flank_gap():
     c = _thread()["clearance"]
@@ -123,10 +123,10 @@ def test_T8_control_tr15_profile_fires():
 
 
 # ---------------------------------------------------------------- T9
-# Loftsman ruling (cr_scratch/step4_loftsman_t9_ruling.md). Cross-threading is a half-pitch axial misregistration across the thread
+# Loftsman ruling (research/quinn/cr_scratch/step4_loftsman_t9_ruling.md). Cross-threading is a half-pitch axial misregistration across the thread
 # diameter at thread start: D tan(alpha) >= P / 2. alpha = measured register stop (holder in the bore at first thread contact,
 # probe_tilt.py) + plate rock atan(p / arm). Pass line: margin 1.5 on P / 2, the same line as register.tilt_limit_deg = alpha_crit / 1.5.
-# Margin 1.5: DECLARED design margin, cr_scratch/step2_loftsman_crossreview_reply.md section 3 (not a Register row).
+# Margin 1.5: DECLARED design margin, research/quinn/cr_scratch/step2_loftsman_crossreview_reply.md section 3 (not a Register row).
 T9_MARGIN = 1.5
 
 
@@ -220,7 +220,7 @@ def test_F4_exposed_core_arithmetic_and_assumed_standoff(params, mutated):
 
 
 # ---------------------------------------------------------------- T7
-# SRC: Holding torque 10 N m (jig) | DECLARED | gameplan.md 401 | key=loads.torque_design
+# SRC: Holding torque 10 N m (jig) | DECLARED | research/quinn/gameplan.md 401 | key=loads.torque_design
 @H.label("discriminator", 8)
 def test_T7_holding_torque_prediction_record_with_labelled_inputs(params):
     fn = getattr(common, "holding_torque", None)
@@ -263,7 +263,7 @@ def test_T4_control_nut_at_the_top_reads_zero():
     assert H.interval_overlap((90.0, 138.0), rec_zone) == 0  # nut at the top, no overlap, reads 0
 
 
-# SRC: Core diameter tolerance | ASSUMED | gameplan.md 400 | key=core.tol
+# SRC: Core diameter tolerance | ASSUMED | research/quinn/gameplan.md 400 | key=core.tol
 @H.label("discriminator", 7)
 @pytest.mark.parametrize("pose", ["R", "Kmax"])
 @pytest.mark.parametrize("d", [D_MIN, D_MAX], ids=lambda v: H.tag(v))

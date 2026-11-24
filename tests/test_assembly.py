@@ -216,7 +216,7 @@ def test_A2a_frame_rest_and_cable_solids_clear_the_keepout_cylinder():
     assert _run([("keepout_radius_used", "eq", G("icd.keepout_radius"), 1e-6), ("keepout_common_mm3", "zero", 0, H.OVERLAP_TOL)], _pd("R", NOMINAL)) == []
 
 
-# SRC: 152.4 mm as the cutter OD | ASSUMED | gameplan.md 390 | key=drill.tube_od
+# SRC: 152.4 mm as the cutter OD | ASSUMED | research/quinn/gameplan.md 390 | key=drill.tube_od
 @H.label("discriminator", 12)
 @pytest.mark.parametrize("d", FAM, ids=IDS)
 def test_A2b_stop_gap_above_the_collar_top(d):  # g_stop is a mechanical clearance: cutter lowest point at the stop to the collar top, wings included
@@ -254,7 +254,7 @@ def test_A2h_manual_raise_path_holds_no_printed_member():
 
 
 # ---------------------------------------------------------------- A3a to A3i
-# SRC: Friction mu_k about 0.35 | ASSUMED | gameplan.md 412 | key=friction.mu_k
+# SRC: Friction mu_k about 0.35 | ASSUMED | research/quinn/gameplan.md 412 | key=friction.mu_k
 @H.label("discriminator", 5)
 @pytest.mark.parametrize("d", FAM, ids=IDS)
 def test_A3a_cone_half_angle_against_atan_mu_max_or_the_capture_pair_exists(d):
@@ -401,7 +401,7 @@ def test_F6_holder_stroke_gap_and_ring_top_gap(pose):
     assert pd["pairs"]["base|holder"]["contact_area_mm2"] == 0  # the stroke gap is never loaded (S6)
 
 
-# SRC: 30-6060: 60 x 60 mm | DECLARED | gameplan.md 409
+# SRC: 30-6060: 60 x 60 mm | DECLARED | research/quinn/gameplan.md 409
 @H.label("discriminator", 7)
 def test_P6b_frame_solids_644_by_608():
     pd = _pd("R", NOMINAL)

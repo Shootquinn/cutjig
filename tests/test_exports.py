@@ -60,7 +60,7 @@ def _stl(name):
     return H.read_stl(H.require(OUT / "stl" / f"{name}.stl"))
 
 
-# SRC: Printer: not a design input | DECLARED | gameplan.md 411
+# SRC: Printer: not a design input | DECLARED | research/quinn/gameplan.md 411
 @H.label("discriminator", 10)
 @pytest.mark.parametrize("name", PRINTABLE)
 def test_E2_stl_export(name):

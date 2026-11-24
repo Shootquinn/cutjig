@@ -1,6 +1,6 @@
 # ASSEMBLY.md (Step 2 integration of the system concept)
 
-Source: cr_scratch/step2_system_concept.md (signed Loftsman; Topologist signed with the orchestrator's ruling on decision 5 wording) and cr_scratch/step2_loftsman_crossreview_reply.md (governing geometry numbers). Relations are data: tests iterate over the pair table, so a change of contact class or pose is a data change. Values marked (seed) are ASSUMED until Step 3 freezes them.
+Source: research/quinn/cr_scratch/step2_system_concept.md (signed Loftsman; Topologist signed with the orchestrator's ruling on decision 5 wording) and research/quinn/cr_scratch/step2_loftsman_crossreview_reply.md (governing geometry numbers). Relations are data: tests iterate over the pair table, so a change of contact class or pose is a data change. Values marked (seed) are ASSUMED until Step 3 freezes them.
 
 ## Coordinate frame
 
@@ -113,4 +113,4 @@ Further statements from the concept (decision numbers):
 
 ## Interface control table
 
-Fields live in params.yaml under `icd.*`, `stop.*`, `upper.*`, `core.min_exposed`, `column.*`, `strap.*`, `rest.*`, `hoist.*` (single source); the table with its checks is frozen in cr_scratch/step2_system_concept.md and tests/test_params_bom.py (P10) asserts that every key it names exists. Rows: datums A, B, C; mounting; coaxiality 1.0 (chain 0.953); keep-out 86.2; stop rating 1000 N; stop gap g_stop 25 from the collar top (Step 3); collar top z 159.84; stop height 184.84 / 315; travel 500 with start_z 684.84 / 815; exposed core 143.12; U12 core lead-in; U13 park 959.84 (loading position, not working travel); U14 carry strap; U15 manual raise; U16 steady rest (detents 310 and 560); column feet; torque reaction; cable and debris; footprint 644 x 608; mass target 40 kg; height. The 2 m jig height is the soft target `jig.height_target`, recorded and reported, never a limit.
+Fields live in params.yaml under `icd.*`, `stop.*`, `upper.*`, `core.min_exposed`, `column.*`, `strap.*`, `rest.*`, `hoist.*` (single source); the table with its checks is frozen in research/quinn/cr_scratch/step2_system_concept.md and tests/test_params_bom.py (P10) asserts that every key it names exists. Rows: datums A, B, C; mounting; coaxiality 1.0 (chain 0.953); keep-out 86.2; stop rating 1000 N; stop gap g_stop 25 from the collar top (Step 3); collar top z 159.84; stop height 184.84 / 315; travel 500 with start_z 684.84 / 815; exposed core 143.12; U12 core lead-in; U13 park 959.84 (loading position, not working travel); U14 carry strap; U15 manual raise; U16 steady rest (detents 310 and 560); column feet; torque reaction; cable and debris; footprint 644 x 608; mass target 40 kg; height. The 2 m jig height is the soft target `jig.height_target`, recorded and reported, never a limit.

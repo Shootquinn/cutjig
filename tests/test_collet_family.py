@@ -73,7 +73,7 @@ def test_C2_volume_whole_part_and_per_cut(d):
                 assert abs(x["expected_mm3"] - v) <= 0.05 * v, (x["name"], x["expected_mm3"], v)
 
 
-# SRC: Core diameter tolerance | ASSUMED | gameplan.md 400 | key=core.tol
+# SRC: Core diameter tolerance | ASSUMED | research/quinn/gameplan.md 400 | key=core.tol
 @H.label("discriminator", 5)
 @pytest.mark.parametrize("d", FAM, ids=IDS)
 def test_C3_bore_diameter(d):
@@ -128,7 +128,7 @@ def test_C5_slits(d):
     assert G("collet.slit_width_seed") >= law  # C5 conflict 3: the law is a lower bound (1.416); params 1.5 governs the built width and clears it by 0.084
 
 
-# SRC: Printer: not a design input | DECLARED | gameplan.md 411
+# SRC: Printer: not a design input | DECLARED | research/quinn/gameplan.md 411
 @H.label("discriminator", 5)
 @pytest.mark.parametrize("d", FAM, ids=IDS)
 def test_C6_minimum_wall_at_the_cone_top(d):
@@ -146,7 +146,7 @@ def test_C7_topology(d):
 
 
 # ---------------------------------------------------------------- C8 coverage (invariant: params arithmetic)
-# SRC: Core diameter tolerance | ASSUMED | gameplan.md 400 | key=core.tol
+# SRC: Core diameter tolerance | ASSUMED | research/quinn/gameplan.md 400 | key=core.tol
 # SRC: Core range 90 to 105 mm | CONTRACT | workorder.md
 # SRC: Core nominal 100 mm | VERIFIED | INSITU2_text.md phrase "pre-cast to 100 mm" (conflict: "is above 100 mm")
 def _uncovered(fam, params=None):
@@ -184,7 +184,7 @@ def test_C8_control_removing_a_mid_collet_fires():
 
 
 # ---------------------------------------------------------------- C9a closure arithmetic (invariant) and C9b measured
-# SRC: Friction mu_k about 0.35 | ASSUMED | gameplan.md 412 | key=collet.web_strain_allow
+# SRC: Friction mu_k about 0.35 | ASSUMED | research/quinn/gameplan.md 412 | key=collet.web_strain_allow
 @H.label("invariant", 4)
 def test_C9a_closure_arithmetic_and_web_strain():
     n, delta = int(G("collet.slit_count")), H.collet_delta()
@@ -255,7 +255,7 @@ def test_C_predicate_controls_zero_and_known_bad():
 
 
 # ---------------------------------------------------------------- C10
-# SRC: Iris throat opening | DECLARED | gameplan.md 394 | key=iris.throat_open_radius
+# SRC: Iris throat opening | DECLARED | research/quinn/gameplan.md 394 | key=iris.throat_open_radius
 @H.label("invariant", 4)
 def test_C10a_request_above_the_envelope_is_refused_with_a_reason(params):
     cap = common.get(params, "collets.envelope_max")

@@ -2,7 +2,7 @@
 
 Run under FreeCAD:  freecadcmd build_parts\\collet_family.py   with CJ_D unset (the params family) or CJ_D="97.0,93.7".
 Pure Python up to the first FreeCAD call: a request above collets.envelope_max is refused before FreeCAD is imported.
-Every dimension is read from params.yaml through common; the definition is cr_scratch/step5_loftsman_collet_definition.md.
+Every dimension is read from params.yaml through common; the definition is research/quinn/cr_scratch/step5_loftsman_collet_definition.md.
 Writes parts_cache/collet_<tag>.FCStd, collet_<tag>_clamped_Kd1.FCStd, collet_<tag>_clamped_Kmax.FCStd and collet_<tag>_result.json."""
 import json
 import math

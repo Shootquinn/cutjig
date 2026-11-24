@@ -182,14 +182,14 @@ def save_single(part, shape, res):
 
 
 # ----------------------------------------------------------------- rebuild support
-BEFORE_DIR = C.ROOT / "cr_scratch" / "step6_before"
+BEFORE_DIR = C.ROOT / "research" / "quinn" / "cr_scratch" / "step6_before"
 
 
-BEFORE_DIR_7 = C.ROOT / "cr_scratch" / "step7_before"
+BEFORE_DIR_7 = C.ROOT / "research" / "quinn" / "cr_scratch" / "step7_before"
 
 
 def before_state(part, src=None):
-    """Volume, face count and euler of the solid saved in cr_scratch/step6_before (copy made before the Step 6 rebuild); src names another
+    """Volume, face count and euler of the solid saved in research/quinn/cr_scratch/step6_before (copy made before the Step 6 rebuild); src names another
     snapshot directory (Step 7: BEFORE_DIR_7, copy made before the holder and nut rebuild)."""
     import FreeCAD as App
     src = src or BEFORE_DIR

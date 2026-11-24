@@ -255,7 +255,7 @@ def test_P8_covers_whole_family(params):
 
 # ---------------------------------------------------------------- P9 (Step 2): profile measured from the human's STEP
 # Source: 8020-30-6060 X 1540.step, measured by build_parts/measure_step.py (results/step_measure.json)
-# and tabulated in cr_scratch/step2_engineer_profile_measure.md. Values below are the measurement.
+# and tabulated in research/quinn/cr_scratch/step2_engineer_profile_measure.md. Values below are the measurement.
 STEP_PROFILE = {
     "profile.width": 60.0,
     "profile.height": 60.0,
@@ -349,7 +349,7 @@ def test_P9_control_wrong_profile_fires(params, root, mutated):
 
 
 # ---------------------------------------------------------------- P10 (Step 2): ICD freeze, stop ownership, soft height, P8 on the final throat
-CONCEPT = "cr_scratch/step2_system_concept.md"
+CONCEPT = "research/quinn/cr_scratch/step2_system_concept.md"
 ICD_FROZEN = {  # key -> expected value (None: must exist with source and status, no value check)
     "icd.datum_a": None, "icd.datum_b": None, "icd.datum_c": None, "icd.mounting_pattern": None,
     "icd.floor_above_datum_a": 40, "icd.coaxiality_budget": 1.0,
@@ -498,7 +498,7 @@ def test_P10_bracket_rule_superseded(params):
 
 # ---------------------------------------------------------------- P11 to P17 (Step 3): keys required by the Designer's table
 # One presence test per key group; each parametrized ID is one assertion on value, source and status.
-# Expected values restate the Designer table (cr_scratch/step3_designer_params.md) and the Engineer's hardware measurements.
+# Expected values restate the Designer table (research/quinn/cr_scratch/step3_designer_params.md) and the Engineer's hardware measurements.
 def _problem(params, key, want, status):
     try:
         lf = common.leaf(params, key)
@@ -800,7 +800,7 @@ def test_P21_printed_bracket_measured(params):
 
 @pytest.mark.parametrize("fname,needle", [
     ("bom_purchased.md", "PZRT 3030"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
-    ("ASSEMBLY.md", "29.2"), ("gameplan.md", "PZRT 3030"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    ("ASSEMBLY.md", "29.2"), ("research/quinn/gameplan.md", "PZRT 3030"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
 def test_P21_handwritten_file_carries_measurement(root, fname, needle):
     assert needle in (root / fname).read_text(encoding="utf-8")
 
@@ -847,7 +847,7 @@ def _read_live(root):
     return {str(f.relative_to(root)).replace("\\", "/"): f.read_text(encoding="utf-8", errors="replace") for f in _live_files(root)}
 
 
-# SRC: Printer: not a design input | DECLARED | gameplan.md 411
+# SRC: Printer: not a design input | DECLARED | research/quinn/gameplan.md 411
 def test_P22_live_files_have_no_banned_language(root):
     hits, allowed = _language_hits(_read_live(root))
     assert hits == [], hits
@@ -877,7 +877,7 @@ def test_P22_control_clean_text_passes():
     assert _language_hits({"x.md": "g_stop is a mechanical clearance between the cutter lowest point and the collar top"})[0] == []
 
 
-# SRC: Core length: capture goal 0.5 m | DECLARED | gameplan.md 398
+# SRC: Core length: capture goal 0.5 m | DECLARED | research/quinn/gameplan.md 398
 def test_P23_soft_values_accepted_when_mutated(params, mutated):
     zero = [common.validate_params(params), common.check_icd(params), common.check_throat_rule(params),
             common.check_envelope_request(params, 106.585)]
@@ -924,7 +924,7 @@ def test_P23_control_planted_bound_fires():
 
 # ---------------------------------------------------------------- P24 SRC-tag audit
 def _register(root):
-    return H.register_rows((root / "gameplan.md").read_text(encoding="utf-8"))
+    return H.register_rows((root / "research" / "quinn" / "gameplan.md").read_text(encoding="utf-8"))
 
 
 def _audit_tags(text, params, register, assumptions_text):
@@ -967,7 +967,7 @@ def test_P24_src_tags_valid(params, root):
 def test_P24_control_bad_status_and_row_fire(params, root):
     reg = _register(root)
     assum = (root / "report_assumptions.md").read_text(encoding="utf-8")
-    good = "# SRC: Core diameter tolerance | ASSUMED | gameplan.md 400 | key=core.tol\n"
+    good = "# SRC: Core diameter tolerance | ASSUMED | research/quinn/gameplan.md 400 | key=core.tol\n"
     assert _audit_tags(good, params, reg, assum) == []  # zero control
     assert _audit_tags(good.replace("ASSUMED |", "MAYBE |"), params, reg, assum) != []
     assert _audit_tags(good.replace("Core diameter tolerance", "Core diameter tolerence"), params, reg, assum) != []
@@ -978,14 +978,14 @@ def test_P24_control_bad_status_and_row_fire(params, root):
 def test_P24_control_missing_p7_row_fires(params, root):
     reg = _register(root)
     assum = (root / "report_assumptions.md").read_text(encoding="utf-8")
-    good = "# SRC: Core diameter tolerance | ASSUMED | gameplan.md 400 | key=core.tol\n"
+    good = "# SRC: Core diameter tolerance | ASSUMED | research/quinn/gameplan.md 400 | key=core.tol\n"
     lines = [ln for ln in assum.splitlines() if "`core.tol`" not in ln]
     assert _audit_tags(good, params, reg, assum) == []
     assert _audit_tags(good, params, reg, "\n".join(lines)) != []
 
 
 # ---------------------------------------------------------------- audits of P4, P6, P7 added at Step 4
-# SRC: 30-6060: 60 x 60 mm | DECLARED | gameplan.md 409
+# SRC: 30-6060: 60 x 60 mm | DECLARED | research/quinn/gameplan.md 409
 def test_P4_tnut_is_pzrt3030_with_declared_fit(params, root):
     typ = common.get(params, "hardware.tnut_type")
     assert "PZRT 3030" in typ and "roll-in spring" in typ.lower()

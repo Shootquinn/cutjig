@@ -520,7 +520,7 @@ def stl_bbox_size(tris):
     return (max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs))
 
 
-# ------------------------------------------------------------------ collet definition (Step 5: cr_scratch/step5_loftsman_collet_definition.md)
+# ------------------------------------------------------------------ collet definition (Step 5: research/quinn/cr_scratch/step5_loftsman_collet_definition.md)
 COLLET_RING_TOP = 1.995        # foot ring and key thickness, z 0 to 1.995
 COLLET_KEY_TIP_R = 70.04       # foot key tip radius (holder key tip); key width is holder.key_width
 COLLET_NOTCH_FLOOR_Z = 29.0    # rim notch floor, tool z 29 to 33
@@ -698,4 +698,4 @@ def ruled_instance_pairs(text=None):
 
 
 LEDGER = ROOT / "results" / "assembly_poses.json"
-REPORT = ROOT / "cr_scratch" / "step7_interference_report.md"
+REPORT = ROOT / "research" / "quinn" / "cr_scratch" / "step7_interference_report.md"
