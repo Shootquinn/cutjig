@@ -1,0 +1,93 @@
+{
+ "receiver": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 955593.2289197666,
+  "euler_VEF": 20,
+  "flip_mismatch_fraction": 0.5830835954816505,
+  "cell_chi": 0,
+  "cell_genus": 1.0,
+  "seam_edges": 3,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 15
+ },
+ "holder": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 459449.0027771342,
+  "euler_VEF": 14,
+  "flip_mismatch_fraction": 0.16651004830476834,
+  "cell_chi": 0,
+  "cell_genus": 1.0,
+  "seam_edges": 14,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 15
+ },
+ "nut": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 352473.7663985856,
+  "euler_VEF": 11,
+  "flip_mismatch_fraction": 0.3213918455868202,
+  "cell_chi": -6,
+  "cell_genus": 4.0,
+  "seam_edges": 14,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 17
+ },
+ "washer": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 1814.2270123298385,
+  "euler_VEF": 2,
+  "flip_mismatch_fraction": 0.008508609460629923,
+  "cell_chi": 0,
+  "cell_genus": 1.0,
+  "seam_edges": 1,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 13
+ },
+ "footring": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 17034.85014233211,
+  "euler_VEF": 3,
+  "flip_mismatch_fraction": 0.2251948207950123,
+  "cell_chi": 0,
+  "cell_genus": 1.0,
+  "seam_edges": 2,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 13
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "step3_parts",
+ "run_started_epoch": 1794344331.219859,
+ "run_seconds": 6.7,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\holder.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\washer.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\footring.FCStd"
+ ]
+}

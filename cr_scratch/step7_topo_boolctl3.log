@@ -1,0 +1,12 @@
+receiver_plain_wall {'slice_integral': 146014.14, 'common': 146014.14, 'rel_err': 0.0}
+receiver_thread {'slice_integral': 51543.07, 'common': 51544.44, 'rel_err': 2.7e-05}
+tt 0.3 {'common_3d_full': 0.0, 'common_3d_slab': 0.0, 'slice_integral_slab': 0.0, 'secs': 30.1}
+tt 1.0 {'common_3d_full': 0.0, 'common_3d_slab': 0.0, 'slice_integral_slab': 0.0, 'secs': 27.1}
+BUILD_DONE
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(21 %)							(26 %)							(31 %)							(36 %)							(42 %)							(47 %)							(52 %)							(57 %)							(63 %)							(68 %)							(73 %)							(78 %)							(84 %)							(89 %)							(94 %)							(100 %)									Postprocessing......
+						(100 %)									

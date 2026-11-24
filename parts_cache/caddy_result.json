@@ -1,0 +1,200 @@
+{
+ "part": "caddy",
+ "volume_mm3": 3961670.816,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 16,
+ "faces": 55,
+ "edges": 117,
+ "vertices": 78,
+ "bbox_plain": {
+  "xmin": -314.16,
+  "xmax": 314.16,
+  "ymin": -149.74,
+  "ymax": 149.74,
+  "zmin": 0.0,
+  "zmax": 46.0
+ },
+ "bbox_optimal": {
+  "xmin": -314.16,
+  "xmax": 314.16,
+  "ymin": -149.74,
+  "ymax": 149.74,
+  "zmin": 0.0,
+  "zmax": 46.0
+ },
+ "bbox": {
+  "xmin": -314.16,
+  "xmax": 314.16,
+  "ymin": -149.74,
+  "ymax": 149.74,
+  "zmin": 0.0,
+  "zmax": 46.0
+ },
+ "centre_of_mass": [
+  0.0,
+  11.317,
+  19.439
+ ],
+ "features": [
+  {
+   "id": "AC1",
+   "feature": "caddy length (L) = (n-1) pitch + socket + 2 border",
+   "volume_mm3": 8655786.586,
+   "built": 628.32,
+   "params": 628.32,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "caddy width (W) = row spacing + socket + 2 border",
+   "volume_mm3": 8655786.586,
+   "built": 299.48,
+   "params": 299.48,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "caddy height (A) = floor + caddy.socket_depth",
+   "volume_mm3": 8655786.586,
+   "built": 46.0,
+   "params": 46,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "socket count = collets.count",
+   "volume_mm3": 4692771.77,
+   "built": 7,
+   "params": 7,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "socket diameter (D) = key tip OD + 2 caddy.socket_clear",
+   "volume_mm3": 4692771.77,
+   "built": 146.08,
+   "params": 146.08,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "socket floor thickness (A)",
+   "volume_mm3": 4692771.77,
+   "built": 6.0,
+   "params": 6,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "web between nearest sockets (L) = caddy.web",
+   "volume_mm3": 4692771.77,
+   "built": 7.9678,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC1",
+   "feature": "size label recesses, one per socket",
+   "volume_mm3": 1344.0,
+   "built": 7,
+   "params": 7,
+   "tol": 0.015,
+   "pass": true,
+   "note": "recess edge caddy.label_gap off the socket wall; label-socket overlap 0.0000 mm3"
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "sockets_labels_tool_fuse",
+   "kind": "fuse",
+   "faces_before": 63,
+   "faces_after": 63,
+   "faces_after_clean": 63,
+   "valid": true
+  },
+  {
+   "name": "sockets_labels_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 55,
+   "faces_after_clean": 55,
+   "valid": true,
+   "tool_faces": 63
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.2,
+ "build_seconds": 0.2,
+ "labels": [
+  {
+   "socket": 1,
+   "x": -231.12,
+   "y": -66.7,
+   "collet_d": 90.0,
+   "text": "90.0 | 88.5-91.0"
+  },
+  {
+   "socket": 2,
+   "x": -77.04,
+   "y": -66.7,
+   "collet_d": 92.5,
+   "text": "92.5 | 91.0-93.5"
+  },
+  {
+   "socket": 3,
+   "x": 77.04,
+   "y": -66.7,
+   "collet_d": 95.0,
+   "text": "95.0 | 93.5-96.0"
+  },
+  {
+   "socket": 4,
+   "x": 231.12,
+   "y": -66.7,
+   "collet_d": 97.5,
+   "text": "97.5 | 96.0-98.5"
+  },
+  {
+   "socket": 5,
+   "x": -154.08,
+   "y": 66.7,
+   "collet_d": 100.0,
+   "text": "100.0 | 98.5-101.0"
+  },
+  {
+   "socket": 6,
+   "x": 0.0,
+   "y": 66.7,
+   "collet_d": 102.5,
+   "text": "102.5 | 101.0-103.5"
+  },
+  {
+   "socket": 7,
+   "x": 154.08,
+   "y": 66.7,
+   "collet_d": 105.0,
+   "text": "105.0 | 103.5-106.0"
+  }
+ ],
+ "socket_dia": 146.08,
+ "pitch": 154.08,
+ "label_socket_overlap_mm3": 0.0
+}

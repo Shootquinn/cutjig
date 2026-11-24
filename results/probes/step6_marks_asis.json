@@ -1,0 +1,85 @@
+{
+ "glyphs": [
+  {
+   "wing": 0,
+   "face": "+y",
+   "count": 4,
+   "span": 6.933432010878346,
+   "direction_sign": -1
+  },
+  {
+   "wing": 0,
+   "face": "-y",
+   "count": 4,
+   "span": 6.93343201087834,
+   "direction_sign": 1
+  },
+  {
+   "wing": 0,
+   "face": "+z",
+   "count": 283,
+   "span": 45.475882124423556,
+   "direction_sign": 1
+  },
+  {
+   "wing": 0,
+   "face": "-z",
+   "count": 43,
+   "span": 5.0132406291230245,
+   "direction_sign": 1
+  },
+  {
+   "wing": 1,
+   "face": "+y",
+   "count": 4,
+   "span": 6.933432010878352,
+   "direction_sign": 1
+  },
+  {
+   "wing": 1,
+   "face": "-y",
+   "count": 4,
+   "span": 6.933432010878347,
+   "direction_sign": -1
+  },
+  {
+   "wing": 1,
+   "face": "+z",
+   "count": 240,
+   "span": 34.0,
+   "direction_sign": -1
+  }
+ ],
+ "witness": {
+  "az": 127,
+  "rim_top_z": 88.25000000000001,
+  "marks_z": [
+   48.475000000000016,
+   49.475000000000016,
+   50.475000000000016,
+   51.475000000000016,
+   52.475000000000016,
+   53.475000000000016,
+   54.475000000000016,
+   55.475000000000016,
+   56.475000000000016,
+   57.475000000000016,
+   58.475000000000016,
+   59.475000000000016,
+   60.475000000000016,
+   61.475000000000016
+  ],
+  "holder_under_local_z": 88.00000000000003,
+  "tick_local_z": 87.99999999999997,
+  "tick_count": 1
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "step6_marks_asis",
+ "run_started_epoch": 1794308488.294603,
+ "run_seconds": 184.1,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\holder.FCStd"
+ ]
+}

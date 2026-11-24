@@ -1,0 +1,138 @@
+{
+ "part": "stop",
+ "volume_mm3": 42378.913,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 2,
+ "faces": 8,
+ "edges": 18,
+ "vertices": 12,
+ "bbox_plain": {
+  "xmin": -30.0,
+  "xmax": 30.0,
+  "ymin": 184.0,
+  "ymax": 244.0,
+  "zmin": 172.84,
+  "zmax": 184.84
+ },
+ "bbox_optimal": {
+  "xmin": -30.0,
+  "xmax": 30.0,
+  "ymin": 184.0,
+  "ymax": 244.0,
+  "zmin": 172.84,
+  "zmax": 184.84
+ },
+ "bbox": {
+  "xmin": -30.0,
+  "xmax": 30.0,
+  "ymin": 184.0,
+  "ymax": 244.0,
+  "zmin": 172.84,
+  "zmax": 184.84
+ },
+ "centre_of_mass": [
+  -0.0,
+  214.0,
+  178.84
+ ],
+ "features": [
+  {
+   "id": "ST1",
+   "feature": "stop pad top face z = stop.height_z (A)",
+   "volume_mm3": 43200.0,
+   "built": 184.84,
+   "params": 184.84,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "ST1",
+   "feature": "stop pad underside z = stop.height_z - stop.pad_thickness (A)",
+   "volume_mm3": 43200.0,
+   "built": 172.84,
+   "params": 172.84,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "ST1",
+   "feature": "stop pad width x (T)",
+   "volume_mm3": 43200.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "ST1",
+   "feature": "stop pad length y (L)",
+   "volume_mm3": 43200.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "ST1",
+   "feature": "stop pad meets the column face plane y (L)",
+   "volume_mm3": 43200.0,
+   "built": 244.0,
+   "params": 244.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "holes_tool_fuse",
+   "kind": "fuse",
+   "faces_before": 6,
+   "faces_after": 6,
+   "faces_after_clean": 6,
+   "valid": true
+  },
+  {
+   "name": "holes_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 8,
+   "faces_after_clean": 8,
+   "valid": true,
+   "tool_faces": 6
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.3,
+ "build_seconds": 0.3,
+ "owner": "upper assembly",
+ "nut_volume_mm3": 0.0,
+ "interface": {
+  "height_z_datum_A": 184.84,
+  "face": "top",
+  "normal": "+z",
+  "pad_mm": [
+   60,
+   60,
+   12
+  ],
+  "centre_xy": [
+   0,
+   214
+  ],
+  "rated_load_N": 1000,
+  "collar_top_z": 159.84,
+  "g_stop": 25,
+  "gap_to_collar_top": 13.0,
+  "owner": "upper assembly",
+  "column_face_y": 244.0
+ }
+}

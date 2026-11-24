@@ -1,0 +1,44 @@
+{'feature': 'register fit g_reg: receiver bore r - holder OD r (R)', 'built': 0.25, 'params': 0.25, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'ring seat clearance: receiver bore r - ring OD r (R)', 'built': 0.3, 'params': 0.3, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'stacked pair: holder bottom - ring top (A) = fit.model_contact_gap', 'built': 0.005, 'params': 0.005, 'tol': 0.0005, 'pass': True, 'note': ''}
+{'feature': 'holder bottom above receiver floor, K-max (A)', 'built': 2.0, 'params': 2.0, 'tol': 0.001, 'pass': True, 'note': ''}
+{'feature': 'holder flange underside - receiver rim, K-max (A) = holder.stroke_gap_min_K', 'built': 1.5, 'params': 1.5, 'tol': 0.001, 'pass': True, 'note': ''}
+{'feature': 'holder OD r and ring OD r differ by (R): ring is the smaller', 'built': 0.05, 'params': 0.05, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'overlap volumes receiver/holder, receiver/ring, holder/ring (mm3, sum) at K-max', 'built': 0.0, 'params': 0.0, 'tol': 0.01, 'pass': True, 'note': ''}
+{'feature': 'min distance holder to receiver at K-max (mm)', 'built': 0.125, 'params': 0.125, 'tol': 0.005, 'pass': True, 'note': 'governed by key tangential clearance (0.125 per side), not by the register'}
+{'feature': 'ring bottom on receiver floor: distance ring to receiver (mm), class C', 'built': 0.0, 'params': 0.0, 'tol': 0.001, 'pass': True, 'note': 'ring z 0 bears on the floor; 0.30 radial is the seat clearance measured above'}
+{'feature': 'holder key tip to slot floor (R)', 'built': 0.55, 'params': 0.55, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'foot key tip to slot floor (R)', 'built': 0.55, 'params': 0.55, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'T9 tilt (deg): cylinder tilt from built diameters at 47.75 + plate rock atan(lift_play / plate hole dia)', 'built': 0.9248, 'params': 0.924, 'tol': 0.005, 'pass': True, 'note': 'cylinder part 0.6091, rock 0.3158; params rock uses 136.44 as the lever'}
+{'feature': 'nut crest bore r - holder flange r (R)', 'built': 0.6, 'params': 0.6, 'tol': 0.005, 'pass': True, 'note': 'Loftsman 0.60'}
+{'feature': 'nut plate hole r - holder OD r (R)', 'built': 1.0, 'params': 1.0, 'tol': 0.005, 'pass': True, 'note': ''}
+{'feature': 'plate top - flange underside (A)', 'built': 16.0, 'params': 16.0, 'tol': 0.001, 'pass': True, 'note': 'Loftsman: 16 = flange 8 + plate 8'}
+{'feature': 'holder top (collar underside) - nut plate top (A) = nut.lift_play', 'built': 0.75, 'params': 0.75, 'tol': 0.001, 'pass': True, 'note': ''}
+{'feature': 'overlap nut/holder (mm3)', 'built': 0.0, 'params': 0.0, 'tol': 0.01, 'pass': True, 'note': ''}
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+{'feature': 'washer/nut common volume = press pads (mm3)', 'built': 2.4017, 'params': 2.402, 'tol': 0.05, 'pass': True, 'note': 'class P, Loftsman 2.402'}
+{'feature': 'washer top - nut pocket floor (A)', 'built': 0.0, 'params': 0.0, 'tol': 0.001, 'pass': True, 'note': ''}
+{'feature': 'flange top - washer bottom (A)', 'built': -0.0, 'params': 0.0, 'tol': 0.001, 'pass': True, 'note': ''}
+{'feature': 'tab tangential gap per side (T)', 'built': 0.5, 'params': 0.5, 'tol': 0.01, 'pass': True, 'note': ''}
+{'feature': 'tab radial gap to notch floor (R)', 'built': 1.0, 'params': 1.0, 'tol': 0.01, 'pass': True, 'note': ''}
+{'feature': 'thread mesh: overlap volume nut/receiver (mm3)', 'built': 0.0, 'params': 0.0, 'tol': 0.05, 'pass': True, 'note': ''}
+{'feature': 'thread mesh: minimum nut-receiver distance (mm) = axial flank gap g_a/2 x sin(flank)', 'built': 0.1061, 'params': 0.1061, 'tol': 0.01, 'pass': True, 'note': ''}
+VERIFY_DONE 24 checks, 0 fail, 13.0s
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(4 %)							(9 %)							(14 %)							(19 %)							(23 %)							(28 %)							(33 %)							(38 %)							(42 %)							(47 %)							(52 %)							(57 %)							(61 %)							(66 %)							(71 %)							(76 %)							(80 %)							(85 %)							(90 %)							(95 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(5 %)							(10 %)							(15 %)							(20 %)							(25 %)							(30 %)							(35 %)							(40 %)							(45 %)							(50 %)							(55 %)							(60 %)							(65 %)							(70 %)							(75 %)							(80 %)							(85 %)							(90 %)							(95 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(4 %)							(8 %)							(12 %)							(16 %)							(20 %)							(24 %)							(28 %)							(32 %)							(36 %)							(40 %)							(44 %)							(48 %)							(52 %)							(56 %)							(60 %)							(64 %)							(68 %)							(72 %)							(76 %)							(80 %)							(84 %)							(88 %)							(92 %)							(96 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(6 %)							(13 %)							(20 %)							(26 %)							(33 %)							(40 %)							(46 %)							(53 %)							(60 %)							(66 %)							(73 %)							(80 %)							(86 %)							(93 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(6 %)							(13 %)							(20 %)							(26 %)							(33 %)							(40 %)							(46 %)							(53 %)							(60 %)							(66 %)							(73 %)							(80 %)							(86 %)							(93 %)							(100 %)									Postprocessing......
+						(100 %)									
+real	0m13.270s
+user	0m0.000s
+sys	0m0.000s

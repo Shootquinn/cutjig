@@ -1,0 +1,542 @@
+# params.yaml - seed (Step 1). Every leaf: value, unit, source, status.
+# status in {DECLARED, ASSUMED, VERIFIED, DERIVED}. Units mm unless stated.
+# FCStd is the authority once it exists; this file is the seed (llm_plm_cad 2.8).
+# No printer keys (gate B2): no bed, material or nozzle values, no part splitting.
+
+meta:
+  units: {value: mm, unit: "", source: "gameplan Design Notes 4", status: DECLARED}
+  seed_date: {value: "2026-11-08", unit: "", source: "Step 1 run", status: DECLARED}
+
+iris:
+  throat_open_radius: {value: 54.2925, unit: mm, source: "gate B1 (cr_scratch/step0_human_gate_decisions.md) rules 54.2925 a radius; number at double_dong_params.py line 92 (re-read Step 1). A parameter: the new drill is being fabricated and it may change. Change the radius only; the diameter follows.", status: DECLARED}
+  throat_open_diameter: {value: 108.585, unit: mm, source: "2 x iris.throat_open_radius (gate B1 states 108.585 mm); validate_params rejects any mismatch", status: DERIVED}
+  leaf_count: {value: 4, unit: "", source: "double_dong_params.py 93-98 (7 in model; re-read Step 1)", status: VERIFIED}
+  leaf_thickness: {value: 3.175, unit: mm, source: "double_dong_params.py 402-404 (plate thickness 0.125 in; 7 in model; re-read Step 1)", status: VERIFIED}
+  face_radius_core: {value: 71.4375, unit: mm, source: "double_dong_params.py 360, 366-368 (7 in model; re-read Step 1)", status: VERIFIED}
+  face_radius_rock: {value: 74.6125, unit: mm, source: "double_dong_params.py 366-368 (7 in model; re-read Step 1)", status: VERIFIED}
+  closure_deg: {value: -62, unit: deg, source: "double_dong_params.py line 92 (7 in model; re-read Step 1)", status: VERIFIED}
+
+core:
+  diameter_nominal: {value: 100, unit: mm, source: "INSITU2_text.md 406-407 (Phase I EDU cores); conflict: Figure 2 caption 186-188 says full-scale core diameter is above 100 mm", status: VERIFIED}
+  diameters: {value: [90.0, 92.5, 95.0, 97.5, 100.0, 102.5, 105.0], unit: mm, source: "workorder.md range 90 to 105; gate B3 seven collets at 2.5 mm (single source for core diameters and the collet family)", status: DECLARED}
+  tol: {value: 1.0, unit: mm, source: "Design Notes 12 assumption: covers Mines manufacturing variation; Phase I data replaces it", status: ASSUMED}
+  length_capture: {value: 500, unit: mm, source: "gate B6 (capture goal 0.5 m)", status: DECLARED}
+  length_install: {value: 750, unit: mm, source: "gate B6 (install 0.75 m)", status: DECLARED}
+  length_optional: {value: 1000, unit: mm, source: "gate B6 (optional 1 m)", status: DECLARED}
+  density: {value: 2400, unit: "kg/m3", source: "Design Notes 12 assumption; Mines density not stated", status: ASSUMED}
+  min_exposed: {value: 143.12, unit: "mm", source: "F4: drill.kerf_standoff 106.369 + stop.g_stop 25 + stop.margin 5 = 136.369, plus collar.top_above_plate 6.75 = 143.119 (was 128.12 at g_stop 10) (cr_scratch/step2_loftsman_crossreview_reply.md section 4; cr_scratch/step2_system_concept.md ICD row Exposed core)", status: DERIVED}
+  mass_kg_d105: {value: [10.4, 15.6, 20.8], unit: "kg", source: "d = 105, 2400 kg/m3, lengths 0.5 / 0.75 / 1 m (cr_scratch/step2_system_concept.md decision 3b)", status: DERIVED}
+
+upper:
+  travel_max: {value: 500, unit: "mm", source: "gate B6 (upper assembly working stroke at most 0.5 m); the loading park is separate (upper.park_z), cr_scratch/step2_system_concept.md U13", status: DECLARED}
+  metal_stop: {value: "metal descent stop, owned by the upper assembly, rated 1000 N axial; the nut is never a stop", unit: "", source: "gate B5 (stop owner); cr_scratch/step2_system_concept.md decision 8 (i) and ICD rows Stop rating, Stop gap", status: DECLARED}
+  captured_length: {value: 465.07, unit: "mm", source: "500 mm core minus dome_pole_offset 34.93; one stroke of 500 retains this (cr_scratch/step2_system_concept.md Items from my draft)", status: DERIVED}
+  drill_advance_500core: {value: 534.93, unit: "mm", source: "500 + 34.93 dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)", status: DERIVED}
+  park_z: {value: 959.84, unit: "mm", source: "U13: stop.collar_top_z 159.84 + core.length_install 750 + upper.load_clearance 50 = 959.84 (was 950); a loading position, not working travel; the rule follows core length (1209.84 for the 1 m core) (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  park_stroke: {value: 775.0, unit: "mm", source: "U13: carriage range from the stop to the park = upper.park_z 959.84 - stop.height_z 184.84 = 775 (was 780); NOT working travel (cr_scratch/step2_system_concept.md)", status: DERIVED}
+  park_lock: {value: "metal pin latch above the working range (above start_z 800), visible locked flag; positive mechanical, flagged", unit: "", source: "U13 (cr_scratch/step2_system_concept.md); flagged for the human", status: ASSUMED}
+  manual_raise: {value: "ratchet hoist, hand force at most 80 N, raise at least 100 mm, drill unpowered; load path carriage, hoist, cross member, columns, frame, no printed part", unit: "", source: "U15 (cr_scratch/step2_system_concept.md); 80 N is an assumption", status: ASSUMED}
+  raise_fuse: {value: 300, unit: "N", source: "U15: shear link in the hoist line = 147 N carriage weight + 150 N jam force; jam force on the core at most 150 N below the 204 N of H2 (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  load_clearance: {value: 50, unit: "mm", source: "clearance of the cutter lowest point above the core bottom at the loading park (U13 rule)", status: ASSUMED}
+
+jig:
+  height_target: {value: 2000, unit: mm, source: "gate B6 (2 m soft target; recorded and reported, never tested as a limit)", status: DECLARED}
+  height_is_soft: {value: true, unit: "", source: "gate B6 (yields to design freedom)", status: DECLARED}
+
+loads:
+  torque_design: {value: 10, unit: "N m", source: "gate B4 (design assumption; 20 and 50 N m placeholders retired; no positive core lock)", status: DECLARED}
+  axial_design: {value: 1000, unit: N, source: "design choice bounded by the Phase I WOB test range, INSITU3_text.md 424-430", status: ASSUMED}
+  wob_min: {value: 100, unit: N, source: "INSITU3_text.md 424-430 (Phase I test range)", status: VERIFIED}
+  wob_max: {value: 1000, unit: N, source: "INSITU3_text.md 424-430 (Phase I test range)", status: VERIFIED}
+  nut_torque: {value: 12, unit: "N m", source: "nut torque used for the holding prediction, hand limit (cr_scratch/step2_loftsman_crossreview_reply.md section 5)", status: ASSUMED}
+  lateral: {value: 100, unit: "N", source: "lateral load on the core at 106.4 mm or more above the holder (cr_scratch/step2_system_concept.md decision 3a)", status: ASSUMED}
+  lateral_moment: {value: 10.6, unit: "N m", source: "100 N x 0.1064 m (cr_scratch/step2_system_concept.md decision 3a)", status: DERIVED}
+  h3_side_load: {value: 21.2, unit: "N", source: "10.6 N m / 0.5 m: H3 load at the top of a 0.5 m core (cr_scratch/step2_system_concept.md decision 3)", status: DERIVED}
+  nut_torque_abuse: {value: 25, unit: "N m", source: "abuse torque (cr_scratch/step3_designer_params.md S2-7c); axial about 0.8 kN by linear scaling of 1.6 kN at 50 N m; ten-member check runs in Step 5", status: ASSUMED}
+  hand_force_bar: {value: 100, unit: "N", source: "hand force on a tommy bar (cr_scratch/step3_designer_params.md S2-7c)", status: ASSUMED}
+
+drill:
+  tube_od: {value: 152.4, unit: mm, source: "workorder.md 6.00 in tubing OD; used as keep-out, NOT a cutter OD (Fact-Checker F-3)", status: ASSUMED}
+  tube_id: {value: 146.05, unit: mm, source: "workorder.md 5.75 in tubing ID; keep-out", status: ASSUMED}
+  tube_wall: {value: 3.175, unit: mm, source: "(152.4 - 146.05) / 2", status: DERIVED}
+  r_face_margin: {value: 10, unit: mm, source: "Design Notes 12: R_face = 76.2 + 10 mm", status: ASSUMED}
+  r_face: {value: 86.2, unit: mm, source: "tube_od / 2 + r_face_margin", status: DERIVED}
+  kerf_standoff: {value: 106.369, unit: mm, source: "double_dong_params.py 372-378: head tip to kerf SPHERE CENTRE, 7 in model, not the pinch plane; carried to the 6 in drill by assumption", status: ASSUMED}
+  dome_pole_offset: {value: 34.9315, unit: mm, source: "double_dong_params.py 379-380: 106.369 - 71.4375", status: DERIVED}
+  cutter_od_7in: {value: 177.8, unit: mm, source: "borebot_operating_envelope.md line 29 via Fact-Checker F-3; 7 in generation, reference only", status: VERIFIED}
+
+collets:
+  # The family list lives only in core.diameters. A custom collet is a generator argument, not a params edit.
+  count: {value: 7, unit: "", source: "gate B3", status: DECLARED}
+  spacing: {value: 2.5, unit: mm, source: "gate B3", status: DECLARED}
+  envelope_min: {value: 85.0, unit: mm, source: "generator envelope default, Detail 1", status: ASSUMED}
+  min_throat_slack: {value: 1.0, unit: mm, source: "Designer defect B1: slack kept between the largest core plus tolerance and the open throat", status: ASSUMED}
+  envelope_max: {value: 106.585, unit: mm, source: "iris.throat_open_diameter - core.tol - collets.min_throat_slack = 108.585 - 1.0 - 1.0; the generator default of 110 exceeded the throat. A collet above this needs a larger throat (change iris.throat_open_radius).", status: DERIVED}
+  grip_window: {value: "accepts d - 1.5 to d + 1.0 (window 2.5, centre d - 0.25); coverage 88.5 to 106.0 against the core range 89 to 106", unit: "", source: "Loftsman W-1 (cr_scratch/step2_system_concept.md decision 7)", status: DERIVED}
+
+collet:
+  c_i: {value: 1.0, unit: mm, source: "bore_free(d) = d + tau + c_i; seed d + 2 mm (Echo registry), tau = core.tol", status: ASSUMED}
+  slit_count: {value: 12, unit: "", source: "Design Notes 11 seed N = 12; confirmed in cr_scratch/step2_system_concept.md decision 7", status: ASSUMED}
+  slit_width_seed: {value: 1.5, unit: "mm", source: "Echo registry seed w_s about 1.5 mm; confirmed in cr_scratch/step2_system_concept.md decision 7", status: ASSUMED}
+  clamped_slit: {value: 0.584, unit: "mm", source: "1.5 - pi x 3.5 / 12 (cr_scratch/step2_loftsman_crossreview_reply.md section 2, alternating slits)", status: DERIVED}
+  grip_window_lo: {value: -1.5, unit: "mm", source: "window floor relative to d: K-max core is d - 1.5 (cr_scratch/step2_system_concept.md decision 7)", status: DERIVED}
+  grip_window_hi: {value: 1.0, unit: "mm", source: "window top relative to d: K core is d + 1.0 (cr_scratch/step2_system_concept.md decision 7)", status: DERIVED}
+  delta: {value: 3.5, unit: mm, source: "Delta = s + c_i = (collet.grip_window_hi - collet.grip_window_lo) + collet.c_i = 2.5 + 1.0; the thread.major chain, C5 and C9 use it", status: DERIVED}
+  min_slit_clamped: {value: 0.5, unit: mm, source: "Echo registry seed", status: ASSUMED}
+  min_wall: {value: 1.2, unit: mm, source: "design rule: minimum collet wall at the cone top, checked by C6 and C9 (formerly print.min_wall); not a printer value", status: ASSUMED}
+  web_strain_allow: {value: 0.01, unit: "", source: "Register row (design assumption, not a material property)", status: ASSUMED}
+  relief_hole_dia: {value: 8.0, unit: "mm", source: "strain 4 x delta / (2 x collet.slit_length x hole) <= collet.web_strain_allow needs slit_length x hole >= 183.26; 25.0 x 8.0 = 200, ratio 0.916 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  foot_ring_width: {value: 3.2, unit: "mm", source: "radial lip beyond the free cone base: ring outer r 66.99 (register r 67.29 - fit.seat_clearance 0.30) - 63.79; was 10, which put the ring 6.5 outside the register bore (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  core_seat_height: {value: 2.5, unit: "mm", source: "Topologist W-2: relief hole bottom z 3.0 clears the ledge top by 0.5 (no OCC tangency); ledge shear 0.30 MPa at 204 N (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  core_seat_width: {value: 3, unit: "mm", source: "core weight seat width, leaves the bore open (Designer name core_stop_width, renamed)", status: ASSUMED}
+  rim_notch_count: {value: "clamp(floor((d - core.diameters[0]) / collets.spacing + 0.5) + 1, 1, collets.count)", unit: "", source: "family index 1 to 7 from core.diameters (single source); notch count and colour index mark the size; the generator applies the clamped half-up form clamp(floor((d - core.diameters[0]) / collets.spacing + 0.5) + 1, 1, collets.count); the clamp keeps d 85 (unclamped -1) and d 106.585 (unclamped 8) inside 1 to 7; 97.0 gives 4, 93.7 gives 2 (cr_scratch/step5_loftsman_collet_definition.md correction 3)", status: DERIVED}
+  notch_azimuth_offsets_deg: {value: [60, 90, 120, 180, 210, 240, 300], unit: deg, source: "rim notch azimuths relative to receiver.key_offset_deg; the first rim_notch_count entries are cut; each lies 15 deg from the nearest slit and relief hole (cr_scratch/step5_loftsman_collet_definition.md)", status: ASSUMED}
+  label_azimuth_offset_deg: {value: -30, unit: deg, source: "label window centre relative to receiver.key_offset_deg; off the probe azimuths 67, 187, 307 and clear of every slit (cr_scratch/step5_loftsman_collet_definition.md)", status: ASSUMED}
+  label_window_width: {value: 24, unit: mm, source: "label window chord, tangential; 3 mm margin to the nearest slit edge (cr_scratch/step5_loftsman_collet_definition.md)", status: ASSUMED}
+  tool_overshoot: {value: 1.0, unit: mm, source: "boolean tool extent beyond a part face so no tool face is coincident with a part face; not a part dimension (cr_scratch/step5_loftsman_collet_definition.md)", status: ASSUMED}
+  rim_notch_width: {value: 6, unit: "mm", source: "rim notch (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  rim_notch_depth: {value: 3, unit: "mm", source: "rim notch (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  label_text_format: {value: "d | lo-hi", unit: "", source: "grip-window label, lo and hi from collet.grip_window_lo/hi", status: ASSUMED}
+  label_height: {value: 8, unit: "mm", source: "at least 6 per S2-4", status: ASSUMED}
+  label_depth: {value: 0.8, unit: "mm", source: "label relief depth", status: ASSUMED}
+  file_name_pattern: {value: "collet_{int}p{frac}", unit: "", source: "file name, e.g. collet_092p5 for 92.5 mm", status: ASSUMED}
+  chamfer_lead_in: {value: "min(wall - collet.min_wall, 10.5); 2.5 where wall - collet.min_wall lies in (2.5, 3.5)", unit: "", source: "Topologist line 65 fix, orchestrator ruling: chamfer edge z = 32 - c clears relief hole top 29.0 and bottom 21.0 (and 3.0, 11.0) by at least 0.5 for d 85 to 106.585 (10.5 at d 90.6, edge z 21.5; 2.5 at d 106.585, edge z 29.5); floor collet.chamfer_floor (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  chamfer_cap: {value: 10.5, unit: mm, source: "upper bound of the chamfer rule min(wall - collet.min_wall, 10.5) (collet.chamfer_lead_in text); the relief-hole edge clearance 0.5 holds for d 85 to 106.585", status: DERIVED}
+  chamfer_band_lo: {value: 2.5, unit: mm, source: "lower edge of the (2.5, 3.5) band where the chamfer is fixed at collet.chamfer_band_lo (collet.chamfer_lead_in text; keeps the chamfer edge 0.5 clear of the relief-hole top at d above 105.6)", status: DERIVED}
+  chamfer_band_hi: {value: 3.5, unit: mm, source: "upper edge of the (2.5, 3.5) band in the chamfer rule (collet.chamfer_lead_in text)", status: DERIVED}
+  chamfer_angle_deg: {value: 45, unit: deg, source: "bore lead-in chamfer angle from the axis; the lip fillet turns through the same angle (cr_scratch/step5_loftsman_collet_definition.md)", status: ASSUMED}
+  chamfer_floor: {value: 1.5, unit: "mm", source: "chamfer floor at 45 deg (cr_scratch/step3_designer_params.md R3)", status: ASSUMED}
+  bore_lip_radius: {value: 1.0, unit: "mm", source: "bore lip radius (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  colour: {value: ["red", "orange", "yellow", "green", "blue", "violet", "white"], unit: "", source: "colour per size, smallest to largest; a finish, not a printer input; redundant with notch count", status: ASSUMED}
+  slit_ligament: {value: 3.0, unit: "mm", source: "axial, relief hole edge to far end face; hole bottom z 3.0 clears ring top z 2.0 (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  slit_length: {value: 25.0, unit: "mm", source: "axial, open face to relief hole centre: 32 - (collet.slit_ligament 3.0 + collet.relief_hole_dia 8.0 / 2) (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+
+thread:
+  pitch: {value: 8, unit: "mm", source: "Design Notes 3 seed, carried by cr_scratch/step2_loftsman_crossreview_reply.md (hand, pitch 8)", status: ASSUMED}
+  flank_deg: {value: 45, unit: "deg", source: "Design Notes 3 symmetric 45/45 seed, carried by cr_scratch/step2_loftsman_crossreview_reply.md", status: ASSUMED}
+  starts: {value: 1, unit: "", source: "Design Notes 3 single start, carried by cr_scratch/step2_loftsman_crossreview_reply.md", status: ASSUMED}
+  min_engage_pitches: {value: 3, unit: "", source: "Echo registry seed", status: ASSUMED}
+  major: {value: 149.58, unit: "mm", source: "closed form D_T = B_f + 2 t_c + 2 H tan(alpha) - Delta + 2 (t_h + g_reg + t_b + h) (cr_scratch/step2_loftsman_crossreview_reply.md D-1); replaces the 165 seed", status: DERIVED}
+  minor: {value: 144.58, unit: "mm", source: "cr_scratch/step2_loftsman_crossreview_reply.md section 4", status: DERIVED}
+  hand: {value: "right", unit: "", source: "cr_scratch/step2_loftsman_crossreview_reply.md section 6 (hand, pitch 8, 45/45, single start)", status: ASSUMED}
+  lead_in_length: {value: 1.25, unit: "mm", source: "receiver rim 45 deg chamfer from crest r 74.79 to pitch r 73.54; was 8 (one pitch at each end leaves 10.87 full-form at pose R, below 24) (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  land_width: {value: 1.5, unit: "mm", source: "crest flat = thread.pitch / 2 - chain.h x tan(thread.flank_deg) = 4 - 2.5; was 1.0, which breaks the P/2 tooth at the pitch line (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  nut_lead_in_length: {value: 0.9, unit: "mm", source: "nut skirt-bottom 45 deg chamfer from crest r 72.64 to pitch r 73.54 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  run_turns: {value: 6, unit: "", source: "thread run is 6 turns from the receiver rim: 48.0 = 6 x thread.pitch (Loftsman step3 section 1, closed at Step 2) (cr_scratch/step3_engineer_first_solids.md)", status: DERIVED}
+  runout_land: {value: 4.0, unit: "mm", source: "receiver runout land below the thread run, root radius, z 36.5 to 40.5 (Loftsman step3 section 1) (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  tool_groove_fraction: {value: 0.9, unit: "", source: "helical sweep tool groove height must stay below 0.9 x pitch (freecad_api_reference helix rule); sets tool overshoot, not a part dimension (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+
+cone:
+  alpha: {value: 10, unit: "deg", source: "taper half-angle; self-lock tan 10 = 0.176 < mu_k,min 0.25 (cr_scratch/step2_loftsman_crossreview_reply.md section 6; cr_scratch/step2_system_concept.md decision 2)", status: ASSUMED}
+  alpha_release: {value: 20, unit: "deg", source: "RETIRED releasing-cone fallback, reference only: misses 10 N m at d = 90 within 12 N m and costs +11.26 mm of thread major (cr_scratch/step2_system_concept.md decision 2)", status: ASSUMED}
+
+chain:
+  t_c: {value: 5, unit: mm, source: "Design Notes 3 seed", status: ASSUMED}
+  H: {value: 30, unit: mm, source: "Design Notes 3 seed", status: ASSUMED}
+  t_h: {value: 5, unit: mm, source: "Design Notes 3 seed", status: ASSUMED}
+  t_b: {value: 5, unit: mm, source: "Design Notes 3 seed", status: ASSUMED}
+  h: {value: 2.5, unit: mm, source: "Design Notes 3 seed", status: ASSUMED}
+
+fit:
+  c_r: {value: 0.35, unit: mm, source: "generic seed; E2 deflection c_r/10 = 0.035 mm; coupon at Step 8 settles", status: ASSUMED}
+  g_a: {value: 0.30, unit: mm, source: "generic seed; coupon at Step 8 settles", status: ASSUMED}
+  seat_clearance: {value: 0.30, unit: mm, source: "gameplan test F1 seed (formerly print.seat_clearance)", status: ASSUMED}
+  model_contact_gap: {value: 0.005, unit: "mm", source: "normal gap modelled on every class C pair, lower part face moved -n (cr_scratch/step3_topologist_crossreview.md section 2)", status: ASSUMED}
+  min_contact_patch: {value: 1.0, unit: mm2, source: "A1a floor on the class C patch area per pair (a zero-area line contact fails); positive floor chosen as 1 mm2, below every modelled face contact; seat.min_contact_area governs the holder/collet pair", status: ASSUMED}
+  c_r_min: {value: 0.10, unit: mm, source: "T3 floor on measured radial crest clearance: 0.10 = 2 x the E2 tessellation deflection c_r / 10 (0.035) rounded up; built c_r 0.35 passes", status: ASSUMED}
+  g_a_min: {value: 0.10, unit: mm, source: "T3 floor on the total axial flank gap at the pitch line: 0.10 = 1/3 of fit.g_a 0.30; built g_a 0.30 passes", status: ASSUMED}
+
+seat:
+  contact_height_Kmax: {value: 30.0, unit: "mm", source: "interval overlap at K-max; 22.91 at core d + 1.0; L-4 (18.37) withdrawn (cr_scratch/step2_loftsman_crossreview_reply.md D-2)", status: DERIVED}
+  holder_bottom_R: {value: 13.626, unit: "mm", source: "2 + z0 + s_z (cr_scratch/step2_loftsman_crossreview_reply.md D-1)", status: DERIVED}
+  min_contact_area: {value: 200, unit: mm2, source: "gameplan test F1 seed", status: ASSUMED}
+
+wingnut:
+  body_od: {value: 166.28, unit: "mm", source: "nut OD from the radial chain (cr_scratch/step2_loftsman_crossreview_reply.md section 4); replaces the 181 seed", status: DERIVED}
+  span: {value: 230, unit: mm, source: "design value: hand-torque arm from the Loftsman model (T7), not a printer limit; Step 3 confirms", status: ASSUMED}
+  wing_count: {value: 2, unit: "", source: "wing planform (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  wing_height: {value: 40, unit: "mm", source: "wing seed; at least 30 (S2-5); NOT the 40 mm floor offset used in stop.collar_top_z", status: ASSUMED}
+  wing_root_width: {value: 40, unit: "mm", source: "wing planform (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  wing_tip_width: {value: 28, unit: "mm", source: "wing planform (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  wing_thickness: {value: 14, unit: "mm", source: "wing planform (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  edge_radius: {value: 6, unit: "mm", source: "wing edge radius (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  hand_clearance: {value: 50, unit: "mm", source: "hand access below the wings for turning them (cr_scratch/step3_designer_params.md S2-5)", status: ASSUMED}
+  sweep_clear_radius: {value: 115, unit: "mm", source: "wingnut.span 230 / 2 = 115", status: DERIVED}
+  turns_to_clamp: {value: 4.45, unit: "", source: "(24 + 11.6) / 8 as Designer S2-5; 11.6 = engaged length 38.50 - 26.87 (K-max minus R); about 9 regrips at half a turn", status: DERIVED}
+
+stop:
+  pad_thickness: {value: 12, unit: "mm", source: "stop pad thickness below stop.height_z (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  pad_xy: {value: [0, 214], unit: "mm", source: "stop pad centre; y = column face 244 - stop.pad_length/2 (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  pad_hole_dia: {value: 6.6, unit: "mm", source: "stop pad M6 clearance holes, two at x = +-stop.pad_hole_x, so the pad carries a boolean record (data71) (Step 6 Pass 1 assumption)", status: ASSUMED}
+  pad_hole_x: {value: 15, unit: "mm", source: "stop pad hole offset from the pad centre, equal to profile.slot_offset (Step 6 Pass 1 assumption)", status: ASSUMED}
+  owner: {value: "upper assembly", unit: "", source: "gate B5: metal hard stop belongs to the upper assembly; wing nut only tightens the collet", status: DECLARED}
+  g_stop: {value: 25, unit: "mm", source: "plain mechanical clearance between the cutter lowest point at the hard stop and the collar top (wings included), at the highest clamped nut position (cr_scratch/step2_system_concept.md ICD row Stop gap); design choice, no standard cited", status: DECLARED}
+  collar_top_z: {value: 159.84, unit: "mm", source: "highest clamped collar top, pose K at core d + 1.0, in datum A: 119.84 (floor frame: seat.holder_bottom_R 13.626 - (holder.stroke_gap_R 13.126 - witness.zone_high 8.59) + holder.length 88 + holder.flange_thickness 8 + nut plate 8 + collar.top_above_plate 6.75 = 119.84; recomputed from params, matches the Designer) + icd.floor_above_datum_a 40 = 159.84. The 40 is the floor offset, not the wing height. Pose R (164.38) is unclamped. Seed was 150", status: DERIVED}
+  height_range: {value: [184.84, 315], unit: "mm", source: "[0.5 m case, 0.75 m case]: first = stop.height_z 184.84 (collar top 159.84 + 25); second = the old 300 seed + 15 (g_stop 25 - 10), not re-derived, A2b recomputes at Step 5 (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  margin: {value: 5, unit: mm, source: "F4 margin seed", status: ASSUMED}
+  height_z: {value: 184.84, unit: "mm", source: "A2b: stop.collar_top_z 159.84 + stop.g_stop 25 = 184.84 for the 0.5 m case (was 160 = 150 + 10; 169.84 at g_stop 10)", status: DERIVED}
+  start_z: {value: [684.84, 815], unit: "mm", source: "height_range + upper.travel_max 500 = [184.84 + 500, 315 + 500] (cr_scratch/step2_system_concept.md)", status: DERIVED}
+  rated_load: {value: 1000, unit: N, source: "equals loads.axial_design", status: ASSUMED}
+  pad_width: {value: 60, unit: "mm", source: "hard-stop face pad on the column face (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  pad_length: {value: 60, unit: "mm", source: "60 x 60 = 3600 mm2 against 1000 N (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  collar_top_z_min: {value: 152.75, unit: "mm", source: "lowest clamped collar top, K-max: 112.75 (cr_scratch/step2_loftsman_crossreview_reply.md section 4) + icd.floor_above_datum_a 40 = 152.75 = 159.84 - witness.step_per_family 7.09. Designer value 148.21 (159.84 - 11.626) subtracts the R-to-K-max drop, but R is unclamped", status: DERIVED}
+
+holder:
+  flange_od: {value: 144.08, unit: "mm", source: "cr_scratch/step2_loftsman_crossreview_reply.md D-4: nut crest bore 145.28 - 2 x (0.55 + 0.05)", status: DERIVED}
+  length: {value: 88.0, unit: "mm", source: "L_h cr_scratch/step2_loftsman_crossreview_reply.md D-3 (register closed at 88.0)", status: DERIVED}
+  stroke_gap_R: {value: 13.126, unit: "mm", source: "flange underside to receiver rim in pose R; the holder stroke gap, never loaded (cr_scratch/step2_loftsman_crossreview_reply.md section 4; cr_scratch/step2_system_concept.md decision 8)", status: DERIVED}
+  stroke_gap_min_K: {value: 1.5, unit: "mm", source: "minimum in K-max (core d - 1.5); 8.59 at d + 1.0 (cr_scratch/step2_system_concept.md decision 1)", status: DERIVED}
+  bottom_above_floor_Kmax: {value: 2.0, unit: "mm", source: "holder bottom to receiver floor at K-max; the collet foot ring top is the declared holder stop (cr_scratch/step2_system_concept.md decision 1)", status: DERIVED}
+  flange_thickness: {value: 8, unit: "mm", source: "t_f 8 in the Loftsman stack: plate top minus flange underside = 16 = flange 8 + nut plate 8 (cr_scratch/step2_loftsman_crossreview_reply.md section 4)", status: ASSUMED}
+  key_width: {value: 11.75, unit: "mm", source: "receiver.key_slot_width 12 - 0.25 total tangential clearance; also the collet foot key width (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  key_height: {value: 3.0, unit: "mm", source: "radial, holder OD r 67.04 to key tip r 70.04, 0.55 to slot floor; was 5 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  key_length: {value: 40.0, unit: "mm", source: "axial, from holder bottom (cr_scratch/step2_loftsman_crossreview_reply.md section 3)", status: ASSUMED}
+  insert_count: {value: 4, unit: "", source: "M6 inserts for the collar screws (Loftsman step3 section 9) (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  insert_circle_radius: {value: 62.0, unit: "mm", source: "M6 insert circle radius (Loftsman step3 sections 7 and 9) (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  insert_dia: {value: 5.0, unit: "mm", source: "M6 tap drill diameter for the insert bore (ISO 261 coarse thread, 5.0) (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  insert_depth: {value: 12.0, unit: "mm", source: "insert bore depth into the holder top, 2 x M6 diameter (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  index_notch_width: {value: 6.0, unit: "mm", source: "Rule P index notch on the flange rim, tangential (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  index_notch_depth: {value: 3.0, unit: "mm", source: "Rule P index notch, radial from the flange rim; angle is -receiver.key_offset_deg (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+
+receiver:
+  rim_above_floor: {value: 88.5, unit: "mm", source: "2 + 88 - 1.5 (cr_scratch/step2_loftsman_crossreview_reply.md section 3)", status: DERIVED}
+  register_bore_radius: {value: 67.29, unit: "mm", source: "receiver bore 134.58 / 2 = 67.29 (cr_scratch/step2_loftsman_crossreview_reply.md section 4; datum B text in icd.datum_b)", status: DERIVED}
+  register_depth: {value: 48.0, unit: "mm", source: "pilot insertion at first thread contact, seated = holder.length 88 - nut.skirt_below_flange 40; the bore runs rim to floor; was 24 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  key_slot_width: {value: 12, unit: "mm", source: "asymmetric key slot in the register wall (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  key_slot_depth: {value: 3.3, unit: "mm", source: "radial; slot floor r 70.59, wall to thread root r 72.29 is 1.70; was 6, whose floor r 73.29 cut 1.0 through the thread root (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  key_offset_deg: {value: 37, unit: "deg", source: "slot off-diametral so only one holder orientation fits (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  spigot_od: {value: 160, unit: "mm", source: "Engineer seed: receiver locating spigot into the base plate hole, wall at least 5 outside thread.major 149.58 (needed by base.spigot_hole_dia; the Designer named it without a value)", status: ASSUMED}
+  register_chamfer: {value: 1.0, unit: "mm", source: "rim inner chamfer at 45 deg, pilot lead; counted in the T9 insertion 47.75 (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  floor_hole_dia: {value: 80.0, unit: "mm", source: "debris hole below the smallest core ledge ID 81.0 at d 85, 0.5 radial margin (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+
+nut:
+  glyph_length: {value: 6.0, unit: "mm", source: "tighten and loosen glyph length along its direction: shaft 2.5 + head 3.5 (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  shaft_width: {value: 1.6, unit: "mm", source: "glyph shaft width (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  head_width: {value: 5.0, unit: "mm", source: "glyph arrowhead width (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  head_length: {value: 3.5, unit: "mm", source: "glyph arrowhead length (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  skirt_r_out: {value: 95.14, unit: "mm", source: "dust skirt outer radius = wingnut.body_od/2 83.14 + 12 (cr_scratch/step6_loftsman_definition.md section 2)", status: DERIVED}
+  skirt_z_lo: {value: 5.0, unit: "mm", source: "dust skirt bottom, nut frame (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  skirt_z_hi: {value: 14.0, unit: "mm", source: "dust skirt top, 2 below the wing underside z 16 (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  skirt_rim: {value: 2.0, unit: "mm", source: "dust skirt vertical rim height at the outer radius (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  skirt_embed: {value: 1.0, unit: "mm", source: "dust skirt embed into the nut body so the fuse shares volume (cr_scratch/step6_loftsman_definition.md section 2)", status: ASSUMED}
+  lift_play: {value: 0.75, unit: "mm", source: "p, plate top to collar underside; replaces 1.5 (cr_scratch/step2_loftsman_crossreview_reply.md D-3)", status: ASSUMED}
+  length: {value: 48, unit: "mm", source: "L_n under corrected S15 (cr_scratch/step2_loftsman_crossreview_reply.md D-7)", status: DERIVED}
+  skirt_below_flange: {value: 40.0, unit: "mm", source: "S = L_n - t_f (cr_scratch/step2_loftsman_crossreview_reply.md section 3)", status: DERIVED}
+  washer_pocket_od: {value: 143.8, unit: "mm", source: "washer.od 143.2 + 2 x fit.seat_clearance 0.30 = 143.8; bearing face ID is washer.id 136.8 (Designer nut.bearing_face_id merged into washer.id)", status: DERIVED}
+  washer_pocket_depth: {value: 0.8, unit: "mm", source: "washer.thickness 1.3 stands 0.5 proud, so pocket 1.3 - 0.5 = 0.8", status: ASSUMED}
+  arrow_length: {value: 21.86, unit: "mm", source: "wing mark length = wing arm 31.86 (wingnut.span 230 / 2 - body_od 166.28 / 2) - 2 x nut.tab_width 5.0 = 21.86, as built; the 40 mm seed (cr_scratch/step3_designer_params.md) cannot fit a 31.86 mm wing (cr_scratch/step3_designer_completeness.md)", status: DERIVED}
+  arrow_depth: {value: 0.8, unit: "mm", source: "arrow relief depth (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  tommy_hole_dia: {value: 13, unit: "mm", source: "tommy-bar socket holes (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  tommy_hole_count: {value: 4, unit: "", source: "tommy-bar socket holes (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  tommy_hole_depth: {value: 20, unit: "mm", source: "tommy-bar socket holes (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  tommy_bar_length: {value: 122, unit: "mm", source: "single-ended bar (the bore blocks a through bar): bar end r 200 minus hole bottom r 78.14; was 300 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  release_marker: {value: "aligned mark plus a keep-turning arrow", unit: "", source: "release marker (cr_scratch/step3_designer_params.md S2-7b)", status: ASSUMED}
+  release_dead_turn_deg: {value: 33.75, unit: "deg", source: "nut.lift_play 0.75 / thread.pitch 8 x 360 = 33.75", status: DERIVED}
+  washer_window_count: {value: 3, unit: "", source: "three radial notches show the washer colour; absence shows a bare flange (cr_scratch/step3_designer_params.md S2-7d)", status: ASSUMED}
+  washer_window_width: {value: 10, unit: "mm", source: "radial notch width (cr_scratch/step3_designer_params.md S2-7d)", status: ASSUMED}
+  plate_thickness: {value: 7.5, unit: "mm", source: "16 - holder.flange_thickness 8 - washer proud 0.5 (washer.thickness 1.3 - nut.washer_pocket_depth 0.8); keeps plate top = flange underside + 16 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  overall_height: {value: 56.0, unit: "mm", source: "skirt 40 + flange 8 + washer proud 0.5 + plate 7.5 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  tommy_boss_od: {value: 23, unit: "mm", source: "four bosses at 45 + 90k deg; hole bottom r 78.14, 3.0 over the thread root (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  tommy_grip_radius: {value: 150, unit: "mm", source: "hand grip centroid radius on the bar: loads.hand_force_bar 100 N x 0.150 m = 15 N m (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  pad_count: {value: 3, unit: "", source: "press pads at 0/120/240 deg (cr_scratch/step3_topologist_crossreview.md W-5)", status: ASSUMED}
+  pad_arc: {value: 10.0, unit: "mm", source: "pad arc length at r 71.5 (cr_scratch/step3_topologist_crossreview.md W-5)", status: ASSUMED}
+  pad_height: {value: 0.8, unit: "mm", source: "equals nut.washer_pocket_depth (cr_scratch/step3_topologist_crossreview.md W-5)", status: ASSUMED}
+  pad_id: {value: 143.0, unit: "mm", source: "0.10 radial interference on washer.od 143.2; common volume 2.40 mm3 in 3 pieces (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  tab_width: {value: 5.0, unit: "mm", source: "anti-rotation tab, inner r 70.6; gaps 0.5 tangential per side, 1.0 radial (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  tommy_hole_bottom_r: {value: 78.14, unit: "mm", source: "tommy hole bottom radius, 3.0 over the thread root r 75.14 (Loftsman step3 section 6); boss end radius = this + nut.tommy_hole_depth (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+  plate_hole_dia: {value: 136.08, unit: "mm", source: "nut plate hole through which the holder tube passes: holder OD 134.08 + 2.0 (Loftsman step3 section 6); pocket floor then spans r 68.04 to 71.9 (cr_scratch/step3_engineer_first_solids.md)", status: DERIVED}
+  tab_inner_radius: {value: 70.6, unit: "mm", source: "anti-rotation tab inner radius: washer notch floor r 69.6 + 1.0 radial gap (Loftsman step3 section 6) (cr_scratch/step3_engineer_first_solids.md)", status: ASSUMED}
+
+register:
+  g_reg: {value: 0.25, unit: "mm", source: "radial register fit, holder in receiver bore; the Step 8 coupon settles it (cr_scratch/step2_system_concept.md tolerance budget)", status: ASSUMED}
+  tilt_limit_deg: {value: 1.021, unit: "deg", source: "alpha_crit 1.532 / 1.5 (cr_scratch/step2_loftsman_crossreview_reply.md section 3)", status: DERIVED}
+  t9_tilt_deg: {value: 0.924, unit: "deg", source: "exact cylinder tilt at insertion 47.75 (48.75 - receiver.register_chamfer) 0.609 + plate rock 0.315, against register.tilt_limit_deg 1.021 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  clamped_tilt_max_deg: {value: 0.573, unit: deg, source: "A3f: atan(0.30 / 30) = 0.573 deg, clamp play 0.30 over seat contact height 30 (cr_scratch/step2_loftsman_signature.md)", status: DERIVED}
+
+collar:
+  od: {value: 152.4, unit: "mm", source: "cr_scratch/step2_loftsman_crossreview_reply.md section 4", status: ASSUMED}
+  id: {value: 110.0, unit: "mm", source: "countersunk M6 heads (12.0) on r 62.0 reach r 56.0; core clearance 2.0 at d + 1 = 106; was 114 (cr_scratch/step3_geometry_crossreview.md)", status: DERIVED}
+  top_above_plate: {value: 6.75, unit: "mm", source: "cr_scratch/step2_loftsman_crossreview_reply.md section 4", status: DERIVED}
+
+washer:
+  type: {value: "PTFE", unit: "", source: "key renamed from washer.material (gate B2 printer-key filter bans the name material); always fitted, adopted design response (cr_scratch/step2_system_concept.md decision 4)", status: ASSUMED}
+  id: {value: 136.8, unit: "mm", source: "cr_scratch/step2_system_concept.md decision 4", status: ASSUMED}
+  od: {value: 143.2, unit: "mm", source: "cr_scratch/step2_system_concept.md decision 4", status: ASSUMED}
+  thickness: {value: 1.3, unit: "mm", source: "cr_scratch/step2_system_concept.md decision 4", status: ASSUMED}
+  retention: {value: "three press pads in the nut pocket wall, contact class P", unit: "", source: "a lip on a washer standing 0.5 proud overlaps it when seated; pads nut.pad_* (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  notch_width: {value: 6.0, unit: "mm", source: "radial tab notch, Rule P feature (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+  notch_depth: {value: 2.0, unit: "mm", source: "radial, notch floor r 69.6, 1.2 of ring left (cr_scratch/step3_geometry_crossreview.md)", status: ASSUMED}
+
+column:
+  spacing: {value: 548, unit: "mm", source: "column centres on the rail centrelines (rails at y = +-274); 488 mm clear for the drill body (cr_scratch/step2_system_concept.md decision 9)", status: ASSUMED}
+
+hoist:
+  anchor_member: {value: "728 mm 30-6060 cross member across the two column tops, metal brackets at both joints", unit: "", source: "U15 (cr_scratch/step2_system_concept.md); two 728 mm lengths are on hand", status: ASSUMED}
+
+strap:
+  rating: {value: 80, unit: "kg", source: "4 x the 20.8 kg core; proven by H10 (cr_scratch/step2_system_concept.md U14)", status: ASSUMED}
+  handle_radial: {value: 250, unit: "mm", source: "rigid side handle at 0.55 L; no overhead anchor (cr_scratch/step2_system_concept.md U14)", status: ASSUMED}
+
+rest:
+  ring: {value: [62, 100, 8], unit: "mm", source: "C-ring inner radius, outer radius, thickness (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  roller_r: {value: 70, unit: "mm", source: "roller centre radius from the core axis (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  pin: {value: 10, unit: "mm", source: "roller pin diameter; the pin bridges the 0.5 gap to the ring (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  mouth_deg: {value: 90, unit: "deg", source: "C-ring mouth, centred on -X (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  block: {value: [60, 30, 60], unit: "mm", source: "column block x, y, z; interface plane at the column face (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  hinge_boss_dia: {value: 40, unit: "mm", source: "hinge boss at y = rest.arm_length (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  arm: {value: [20, 24], unit: "mm", source: "arm width and height to the ring (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  roller_height: {value: 30, unit: "mm", source: "roller height, centred on the roller plane z = 0 (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  ring_z_lo: {value: 15.5, unit: "mm", source: "C-ring bottom: roller top 15 + rest.roller_pin_gap 0.5 (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  roller_pin_gap: {value: 0.5, unit: "mm", source: "axial gap between roller top and ring (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  handle_dia: {value: 20, unit: "mm", source: "close handle diameter; length rest.close_handle_length (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  detent_depth: {value: 4, unit: "mm", source: "detent notch depth in the boss at 90 deg swing (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  detent_width: {value: 8, unit: "mm", source: "detent notch width, tangential on the boss (Step 6 Pass 1 assumption, Step 9 refines)", status: ASSUMED}
+  tower: {value: [14, 16], unit: "mm", source: "release tower tangential width and radial depth (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  tower_inboard_r: {value: 84, unit: "mm", source: "release tower inboard face radius (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  height_positions: {value: [310, 560], unit: "mm", source: "detents above the seat for the 0.5 m and 0.75 m cores (cr_scratch/step2_system_concept.md U16)", status: ASSUMED}
+  roller_count: {value: 3, unit: "", source: "three linked rollers (cr_scratch/step2_system_concept.md U16)", status: ASSUMED}
+  centre_repeatability: {value: 0.25, unit: "mm", source: "to datum B (cr_scratch/step2_system_concept.md U16)", status: ASSUMED}
+  release_tower: {value: 250, unit: "mm", source: "trip tower on the arm, cam released by the upper assembly lug (cr_scratch/step2_system_concept.md U16)", status: ASSUMED}
+  cam_lug_radius: {value: 95, unit: "mm", source: "flush with the cutter lowest point (cr_scratch/step2_system_concept.md U16)", status: ASSUMED}
+  roller_dia: {value: 40, unit: "mm", source: "steady rest roller (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  arm_length: {value: 200, unit: "mm", source: "steady rest arm (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  swing_clear_radius: {value: 125, unit: "mm", source: "arm swing clear radius (concept U16)", status: ASSUMED}
+  close_handle_length: {value: 120, unit: "mm", source: "close handle (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  hold_open_detent: {value: true, unit: "", source: "rest holds open on a detent (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  height_rule: {value: "L - 190", unit: "", source: "detent z above the seat = core length L - 190: 310 at 500, 560 at 750, 810 at 1000", status: DERIVED}
+
+friction:
+  mu_k: {value: 0.35, unit: "", source: "Register row (design assumption, not a material property)", status: ASSUMED}
+  mu_c: {value: 0.40, unit: "", source: "Register row", status: ASSUMED}
+  mu_t: {value: 0.25, unit: "", source: "Register row", status: ASSUMED}
+  bearing: {value: 0.25, unit: "", source: "Register row", status: ASSUMED}
+
+profile:
+  series: {value: "30-6060", unit: "", source: "cr_scratch/step0_human_stock_80-20.md", status: DECLARED}
+  width: {value: 60, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  height: {value: 60, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_pitch: {value: 30, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; slot centres 30 mm apart across each 60 mm face (human also DECLARED 30 mm)", status: VERIFIED}
+  slots_per_face: {value: 2, unit: "", source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_offset: {value: 15, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_opening: {value: 8.0, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_neck_depth: {value: 2.2575, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_cavity_width: {value: 16.5, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_cavity_depth: {value: 6.908, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; depth below the neck, floor is 9.165 mm below the face", status: VERIFIED}
+  slot_cavity_vertical_depth: {value: 2.689, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; straight side wall below the neck before the 45 degree flank", status: VERIFIED}
+  slot_flank_angle: {value: 45, unit: deg, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  slot_lining: {value: 2.2, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; wall between the cavity side and the void", status: VERIFIED}
+  web_thickness: {value: 2.55, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; perpendicular thickness of the 45 degree web beside the cavity flank", status: VERIFIED}
+  wall_thickness: {value: 2.2, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; outer wall, face to void", status: VERIFIED}
+  outer_corner_radius: {value: 2.0, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: VERIFIED}
+  centre_bore: {value: 7.06, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; NOTE: four bores, one per 30 x 30 cell at (+-15, +-15); the 60 x 60 centre is open void", status: VERIFIED}
+  bore_lobe_radius: {value: 1.072, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; four diagonal tap-relief lobes per bore", status: VERIFIED}
+  bore_lobe_centre_radius: {value: 4.4435, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; lobe centre distance from the bore axis", status: VERIFIED}
+  bore_lobe_channel_width: {value: 2.283, unit: mm, source: "fitted so one bore void matches the STEP bore area 55.28 mm2; see cr_scratch/step2_engineer_profile_measure.md", status: DERIVED}
+  corner_hole_size: {value: 4.2, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; square pocket at each outer corner", status: VERIFIED}
+  corner_hole_inset: {value: 1.3, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; pocket edge to outer face", status: VERIFIED}
+  tube_corner_radius: {value: 2.0, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; rounded corner of each cell tube that faces the module centre", status: VERIFIED}
+  notch_half_width: {value: 0.95, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; V-notch in each cell tube face (16 notches)", status: VERIFIED}
+  notch_depth: {value: 0.51, unit: mm, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; V-notch depth", status: VERIFIED}
+  area_catalog: {value: 929.9, unit: mm2, source: "8020.net/30-6060.html, Surface Area 9.299 sq cm, page read 2026-11-08", status: VERIFIED}
+  area_step: {value: 916.56, unit: mm2, source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md; section slab volume / 1 mm and volume / 1540 mm agree", status: VERIFIED}
+  mass_per_m_catalog: {value: 2.573, unit: "kg/m", source: "8020.net/30-6060.html weight 0.1441 lb/in x 17.858 kg/m per lb/in", status: DERIVED}
+  slot_detail_note: {value: "hollow-section model measured from the STEP: outer wall, eight T-slot cavities with side lining and 45 degree webs, four cell bores with tap lobes, four corner pockets. Tap-relief lobes and tube corner radii are approximated; area agrees with the STEP within 1 percent. Mass work uses mass_per_m_catalog (2.573 kg/m; STEP area at 2700 kg/m3 gives 2.475)", unit: "", source: "8020-30-6060 X 1540.step, measured in cr_scratch/step2_engineer_profile_measure.md", status: DERIVED}
+
+stock:
+  on_hand:
+    value:
+      - {length: 1540, qty: 4}
+      - {length: 980, qty: 4}
+      - {length: 952, qty: 1}
+      - {length: 728, qty: 2}
+      - {length: 644, qty: 2}
+      - {length: 488, qty: 2}
+      - {length: 468, qty: 2}
+    unit: mm
+    source: "step0_human_stock_80-20.md (human states exactly this; shared with other projects)"
+    status: DECLARED
+  total_length: {value: 15688, unit: mm, source: "sum of on_hand", status: DERIVED}
+  cut_cost: {value: 2.20, unit: USD, source: "QMRD3 order document via step0_human_stock_80-20.md", status: DECLARED}
+
+frame:
+  end_x: {value: 232, unit: "mm", source: "end member centre x (+-) (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  support_x: {value: 112, unit: "mm", source: "plate support centre x (+-) (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  notch: {value: [20, 30, 2], unit: "mm", source: "datum C slot-line notch on one rail: across, along, depth (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  members:
+    value:
+      - {id: rail, source_mm: 644, cut_mm: 644, qty: 2, role: "base frame side rail along X"}
+      - {id: end, source_mm: 488, cut_mm: 488, qty: 2, role: "base frame end member between rails"}
+      - {id: plate_support, source_mm: 468, cut_mm: 468, qty: 2, role: "base plate support cross member, inboard of the end members"}
+    unit: mm
+    source: "Design Notes 7 starting allocation (644 x 2, 468 x 2, 488 x 2); roles are the Engineer's assumption, Step 12 finalises"
+    status: ASSUMED
+  joints: {value: 8, unit: "", source: "4 outer corners + 4 plate-support ends", status: ASSUMED}
+
+hardware:
+  tnut_thread: {value: "M6", unit: "", source: "step0_human_stock_80-20.md", status: DECLARED}
+  tnut_type: {value: "PZRT 3030 Series Roll-in Spring M6 T Nut, roll-ball elastic, 8 mm T-slot European standard", unit: "", source: "human use on 30-series stock (cr_scratch/step3_human_gate_decisions.md)", status: DECLARED}
+  tnut_sku: {value: "PZRT 3030 Series Roll-in Spring M6 T Nut, roll-ball elastic, 8 mm T-slot European standard, 12-pack (Amazon)", unit: "", source: "human use on 30-series stock (cr_scratch/step3_human_gate_decisions.md)", status: DECLARED}
+  bracket_class: {value: "full-size 30-series", unit: "", source: "step0_human_stock_80-20.md; Design Notes 7", status: DECLARED}
+  bracket_leg_min: {value: 57, unit: "mm", source: "full-size rule, gate: minimum leg 57 mm and width 57 mm (cr_scratch/step2_system_concept.md bracket choice rule); no bracket below it", status: DECLARED}
+  bracket_sku_superseded: {value: "30-4332 (legs A = B = 30 mm, below bracket_leg_min); 30-4302 retired with it", unit: "", source: "cr_scratch/step2_system_concept.md Defects found (2)", status: DERIVED}
+  printed_bracket: {value: "68 mm legs, 57 mm wide, 7 mm plate, slotted 7.0 mm holes (10.0 and 11.0 long) at 29.2 mm pitch along the leg, 30 mm across, clearing M6; file 8020 30 Series Corner Bracket 3dp.stl", unit: "", source: "measured from the human's STL: 68 x 68 x 57 mm, plate 7 mm, slot walls at +-11.5 and +-18.5, centres 29.2 apart (cr_scratch/step3_engineer_hardware_confirm.md sections 1 and 3); replaces the concept's 30 mm pitch", status: VERIFIED}
+  purchased_bracket_joints: {value: 4, unit: "", source: "four outer corners take the purchased 57 mm class, two per joint (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  printed_bracket_joints: {value: 4, unit: "", source: "four plate-support ends take the printed 68 mm bracket, two per joint (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  bracket_sku: {value: "8020-14089", unit: "", source: "geometry matches the human's STEP (57.35 x 57.35 x 57.0 mm, plate 6.0 mm, VERIFIED); the part number is unconfirmed: 8020.net returned 403, Zoro lists '8 hole 57mm 14089' (cr_scratch/step3_engineer_hardware_confirm.md section 2); verify SKU and leg length at purchase", status: ASSUMED}
+  brackets_per_joint: {value: 2, unit: "", source: "Engineer assumption", status: ASSUMED}
+  tnuts_per_bracket: {value: 8, unit: "", source: "the 14089 listing is 8 holes (4 per leg, Zoro); the 2 holes assumed before conflicted with it. Assumption: every hole takes a T-nut, so 8 per bracket, applied to purchased and printed brackets alike (the printed bracket slots are assumed to form the same 2 x 2 pattern per leg, 7.0 mm wide). Set to 2 only if the human wants one T-nut per leg", status: ASSUMED}
+  baseplate_fasteners: {value: 8, unit: "", source: "Engineer assumption: slotted base-plate holes to frame", status: ASSUMED}
+  spare_fraction: {value: 0.10, unit: "", source: "Engineer assumption", status: ASSUMED}
+  screw_length_bracket: {value: 16, unit: mm, source: "QMRD3 inventory lengths 10/16/20/25/30 (stock file); on-hand treated as nil, Design Notes 12", status: ASSUMED}
+  screw_length_baseplate: {value: 20, unit: mm, source: "same", status: ASSUMED}
+  adjust_interface: {value: "T-handle", unit: "", source: "adjust interface (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+  tnut_fit_30series: {value: "declared by use", unit: "", source: "fit in the 30-6060 slot is declared by human use on 30-series stock (cr_scratch/step3_human_gate_decisions.md)", status: DECLARED}
+  printed_bracket_file: {value: "8020 30 Series Corner Bracket 3dp.stl", unit: "", source: "the 68 mm class file, measured 68 x 68 x 57 mm (cr_scratch/step3_engineer_hardware_confirm.md section 3); the XL .3mf is 58 mm, the 57 class", status: VERIFIED}
+  printed_bracket_slot_width: {value: 7.0, unit: "mm", source: "slot walls at +-11.5 and +-18.5 in the STL (cr_scratch/step3_engineer_hardware_confirm.md section 1)", status: VERIFIED}
+  printed_bracket_slot_pitch: {value: 29.2, unit: "mm", source: "slot centres 29.2 apart along the leg, measured from the STL; params earlier said 30", status: VERIFIED}
+
+icd:
+  datum_a: {value: "frame top plane (base plate underside, z = 0); receiver floor is 40 mm above it", unit: "", source: "cr_scratch/step2_system_concept.md ICD Datum A", status: ASSUMED}
+  datum_b: {value: "axis of the receiver register bore (r 67.29), +Z; located to A and C through the plate", unit: "", source: "cr_scratch/step2_system_concept.md ICD Datum B, decision 5", status: ASSUMED}
+  datum_c: {value: "rail slot line with two plate keys (rotation, across-slot) and an end-member stop pin (along-slot)", unit: "", source: "cr_scratch/step2_system_concept.md ICD Datum C, decision 5", status: ASSUMED}
+  mounting_pattern: {value: "T-slot lines, 30 mm pitch, M6 roll-in T-nuts; slot centres 15 mm off centreline", unit: "", source: "cr_scratch/step2_system_concept.md ICD Mounting; profile measured in step2_engineer_profile_measure.md", status: ASSUMED}
+  coaxiality_budget: {value: 1.0, unit: "mm", source: "budget; chain 0.953, margin 0.047 (cr_scratch/step2_system_concept.md decision 5)", status: ASSUMED}
+  coaxiality_chain: {value: [0.32, 0.20, 0.283, 0.15], unit: "mm", source: "entries in order: 0.32 plate key and stop pin (radial), 0.20 receiver spigot in plate hole, 0.283 column foot (radial), 0.15 carriage guide; linear sum 0.953 (cr_scratch/step2_system_concept.md tolerance budget; A3b measures built fits)", status: ASSUMED}
+  floor_above_datum_a: {value: 40, unit: "mm", source: "one parameter: Detail 2 floor plane and ICD datum A are offset by it (cr_scratch/step2_system_concept.md decision 5)", status: ASSUMED}
+  keepout_radius: {value: 86.2, unit: mm, source: "equals drill.r_face = tube_od / 2 + r_face_margin = 76.2 + 10; the face annulus is the outermost keep-out, so the cylinder about the axis uses the same radius", status: DERIVED}
+  stop_height: {value: 184.84, unit: "mm", source: "equals stop.height_z (collar top 159.84 + g_stop 25 = 184.84, 0.5 m case; A2b recomputes)", status: DERIVED}
+  stop_rating: {value: 1000, unit: N, source: "equals stop.rated_load", status: ASSUMED}
+  footprint_x: {value: 644, unit: mm, source: "rail length", status: DERIVED}
+  footprint_y: {value: 608, unit: mm, source: "end member 488 + 2 x 60 mm rails", status: DERIVED}
+  tipover_statement: {value: "unbolted tip force 158 N at COM (0.69 m), 68 N at column top; bolt-down required with cutter above z = 400 mm", unit: "", source: "cr_scratch/step2_system_concept.md decision 9; Step 12 replaces", status: ASSUMED}
+  cable_exit: {value: "from the drill back cap, through the upper assembly; debris path to a tray in the base, dust skirt on the nut", unit: "", source: "Design Notes 5, 12", status: ASSUMED}
+  core_lead_in_capture: {value: 10, unit: "mm", source: "U12 funnel capture radius, upper assembly only (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  core_lead_in_centring: {value: 0.25, unit: "mm", source: "U12 centring to the drill axis (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  core_axis_offset_max: {value: 0.805, unit: mm, source: "A3c: core axis offset at the collet, linear sum = 0.805 (cr_scratch/step2_loftsman_signature.md, step2_system_concept.md Test ID A3c); RSS 0.412", status: DERIVED}
+  core_lead_in_clearance_min: {value: 2.055, unit: mm, source: "A3d: lead-in working bore radius minus core radius, at least 2.055 for all seven d (1.0 + 0.805 + 0.25; cr_scratch/step2_system_concept.md A3d)", status: DERIVED}
+  core_lead_in_capture_min: {value: 9.31, unit: mm, source: "A3g: worst-case funnel capture radius needed = 7.5 + 0.805 + 1.0 (cr_scratch/step2_loftsman_signature.md); icd.core_lead_in_capture 10 leaves margin 0.69", status: DERIVED}
+  core_lead_in_bore: {value: 56.0, unit: "mm", source: "U12 working bore radius, at least 55.06 for all seven d (cr_scratch/step2_system_concept.md)", status: ASSUMED}
+  column_foot_moment: {value: 100, unit: "N m", source: "column foot on the frame slot lines (cr_scratch/step2_system_concept.md); Step 12 checks", status: ASSUMED}
+  torque_reaction: {value: "not carried by the base", unit: "", source: "cr_scratch/step2_system_concept.md ICD Torque reaction (A2c)", status: ASSUMED}
+  mass_target: {value: 40, unit: "kg", source: "with upper assembly; 25 kg structure (cr_scratch/step2_system_concept.md decision 9)", status: ASSUMED}
+
+
+witness:
+  azimuth_deg: {value: 127, unit: "deg", source: "receiver.key_offset_deg 37 + 90: reader faces the ruler 90 deg from the key slot (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  channel_width: {value: 12.0, unit: "mm", source: "ruler channel width, tangential (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  channel_floor_depth: {value: 0.3, unit: "mm", source: "channel floor plane lies thread.minor/2 - 0.30 = 71.99 from the axis: 0.05 to 0.30 under the root cylinder across the width, no tangency (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  line_height: {value: 0.4, unit: "mm", source: "graduation line height, axial (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  line_depth: {value: 0.5, unit: "mm", source: "graduation line depth below the channel floor (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  band_depth: {value: 0.3, unit: "mm", source: "wrong-collet band depth below the channel floor (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  tick_width: {value: 1.0, unit: "mm", source: "holder flange tick groove width, tangential (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  tick_depth: {value: 2.0, unit: "mm", source: "holder flange tick groove depth, radial from the flange OD (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  tick_height: {value: 3.0, unit: "mm", source: "holder flange tick groove height above the flange underside (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  channel_z: {value: [47.0, 63.0], unit: "mm", source: "ruler channel z range in the receiver frame: graduation 0 at 48.5 minus 1.5, top 1.374 above the wrong-collet band top 61.626 (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  line_length: {value: 4.0, unit: "mm", source: "graduation line length, tangential, centred on witness.azimuth_deg (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  line_length_major: {value: 5.2, unit: "mm", source: "graduation line length at every witness.major_every (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  major_every: {value: 5, unit: "", source: "major graduation and digit every 5th line (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  band_t: {value: [-5.6, -3.8], unit: "mm", source: "wrong-collet band strips, tangential range left of the line (t = z x r) (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  digit_t: {value: [2.6, 5.6], unit: "mm", source: "digit pockets, tangential range right of the line (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  digit_height: {value: 3.0, unit: "mm", source: "digit pocket height, axial (cr_scratch/step6_loftsman_definition.md section 1)", status: ASSUMED}
+  digit_z_shift: {value: 0.2, unit: "mm", source: "digit pocket centre above its line z so no pocket face meets the channel floor edge z 47.0 (cr_scratch/step6_topologist_crossreview.md section 5)", status: ASSUMED}
+  zone_high: {value: 8.59, unit: "mm", source: "flange-to-rim gap at core d + 1.0 = 13.126 - 4.537 (cr_scratch/step2_loftsman_crossreview_reply.md); zone_low is holder.stroke_gap_min_K 1.5 (Designer witness.zone_low merged)", status: DERIVED}
+  scale_pitch: {value: 1.0, unit: "mm", source: "graduation pitch on the witness scale", status: ASSUMED}
+  wrong_collet_band_low: {value: [0.0, 1.5], unit: "mm", source: "gap band below the zone (flange on the rim): wrong collet", status: ASSUMED}
+  wrong_collet_band_high: {value: [8.59, 13.126], unit: "mm", source: "gap band above the zone up to the release gap holder.stroke_gap_R: wrong collet", status: ASSUMED}
+  step_per_family: {value: 7.09, unit: "mm", source: "1.25 / tan(cone.alpha 10 deg) = 7.0897; equals 8.59 - 1.5 = 7.09 and 119.84 - 112.75", status: DERIVED}
+
+access:
+  key_sector_deg: {value: 60, unit: "deg", source: "hand access sector (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+  key_arm_length: {value: 150, unit: "mm", source: "arm reach (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+  head_clear_radius: {value: 25, unit: "mm", source: "bolt head clearance radius (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+
+bracket:
+  holes_purchased: {value: [13.9, 43.1], unit: "mm", source: "purchased bracket hole positions along the leg (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  slots_printed: {value: [19.4, 48.6], unit: "mm", source: "printed bracket slot centres along the leg (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  slot_lengths_printed: {value: [11.0, 10.0], unit: "mm", source: "printed bracket slot overall lengths at slots_printed; hardware.printed_bracket_slot_width is the width (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  purchased_leg: {value: 57, unit: "mm", source: "purchased bracket leg (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  purchased_plate: {value: 6, unit: "mm", source: "purchased bracket plate (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  printed_leg: {value: 68, unit: "mm", source: "printed bracket leg (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  printed_plate: {value: 7, unit: "mm", source: "printed bracket plate (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  width: {value: 57, unit: "mm", source: "bracket width across the profile face (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  hole_dia: {value: 6.6, unit: "mm", source: "purchased bracket clearance hole for M6 (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  across: {value: 15, unit: "mm", source: "hole and slot offset across the leg from the bracket centre line (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  face: {value: "vertical inside faces", unit: "", source: "bracket face orientation (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+
+bolt_down:
+  method: {value: "foot plate 100 x 60 x 8 on two M6 T-nuts at 30 pitch", unit: "", source: "bolt-down method (cr_scratch/step3_designer_params.md S2-6); relies on a T-nut that fits the 30 slot: fit declared by use (hardware.tnut_fit_30series, DECLARED)", status: ASSUMED}
+  count: {value: 4, unit: "", source: "bolt-down feet (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+  floor_fastener: {value: "M8", unit: "", source: "floor fastener (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+  head_access: {value: "same sector as access.key_sector_deg", unit: "", source: "head access (cr_scratch/step3_designer_params.md S2-6)", status: ASSUMED}
+
+base:
+  slot_centres: {value: [[-255, 289], [-90, 289], [75, 289], [240, 289], [-240, -289], [-75, -289], [90, -289], [255, -289]], unit: "mm", source: "slot centres (x, y), long axis X; pattern is not symmetric under a flip about X or Y (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  key_pocket_xy: {value: [160, 259], unit: "mm", source: "plate key pockets at (+-x, y), underside; y is the datum C slot line (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  pin_pocket_xy: {value: [249, 0], unit: "mm", source: "stop pin pocket centre; wall x 244.0 touches the pin (contact intended) (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  drain_xy: {value: [-172, 0], unit: "mm", source: "drain hole and tray drain centre (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  column_notch: {value: [70, 65], unit: "mm", source: "plate edge notch at each column: width, depth from the long edge (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  column_notch_x: {value: 35, unit: "mm", source: "column notch half-width in x: the notch spans x -35 to +35 about the column at x 0 (cr_scratch/step6_loftsman_definition.md section 3; the 70 x 65 notch is one per long edge)", status: ASSUMED}
+  key_pocket_size: {value: 12, unit: "mm", source: "key pocket square, key 11.5 with 0.25 per side (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  pocket_depth: {value: 4, unit: "mm", source: "underside pocket depth (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  pin_pocket_size: {value: [10, 14], unit: "mm", source: "stop pin pocket x, y (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  drain_hole_dia: {value: 26, unit: "mm", source: "plate drain hole, 0.5 radial over tray.drain_dia 25 (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  plate_thickness: {value: 12, unit: "mm", source: "base plate thickness; length and width are icd.footprint_x and icd.footprint_y (Designer base.plate_length/width merged)", status: ASSUMED}
+  spigot_hole_dia: {value: 160.4, unit: "mm", source: "receiver.spigot_od 160 + 2 x icd.coaxiality_chain[1] 0.20 radial = 160.4 (Designer wrote + 0.20; the chain entry is radial, so diametral +0.40)", status: DERIVED}
+  slot_width: {value: 7, unit: "mm", source: "M6 clearance slot, 7 mm as the measured printed bracket", status: ASSUMED}
+  slot_length: {value: 20, unit: "mm", source: "slotted hole length", status: ASSUMED}
+
+tray:
+  wall: {value: 3, unit: "mm", source: "tray wall (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  floor_min: {value: 3, unit: "mm", source: "tray floor thickness at the drain end (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  ramp_x: {value: [-172, 81], unit: "mm", source: "floor ramp x range: 253 x tan(tray.floor_slope_deg) = 13.26 rise; 3 deg over the full 560 would rise 29.3, over the 25 depth (cr_scratch/step6_loftsman_definition.md section Corrections C3)", status: ASSUMED}
+  hole_r: {value: 81.2, unit: "mm", source: "tray hole for the receiver spigot, 1.0 over receiver.spigot_od/2 (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  relief: {value: [72, 19], unit: "mm", source: "column relief at each long edge: width, depth inward from the edge, y 241 to 260 (cr_scratch/step6_loftsman_definition.md section 3; cr_scratch/step6_topologist_crossreview.md section 5)", status: ASSUMED}
+  length: {value: 560, unit: "mm", source: "debris tray (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  width: {value: 520, unit: "mm", source: "debris tray (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  depth: {value: 25, unit: "mm", source: "debris tray (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  lip_z: {value: "wing underside - 50", unit: "", source: "tray lip below the wings (cr_scratch/step3_designer_params.md); wing underside z fixed at Step 5", status: ASSUMED}
+  drain_dia: {value: 25, unit: "mm", source: "drain (cr_scratch/step3_designer_params.md)", status: ASSUMED}
+  floor_slope_deg: {value: 3, unit: "deg", source: "floor slope to the drain", status: ASSUMED}
+  drain_plug: {value: "threaded, large knob", unit: "", source: "drain plug", status: ASSUMED}
+
+caddy:
+  web: {value: 8, unit: "mm", source: "wall between sockets (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  border: {value: 10, unit: "mm", source: "border outside the outer sockets (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  floor: {value: 6, unit: "mm", source: "floor under the sockets (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  row_spacing: {value: 133.4, unit: "mm", source: "row spacing, staggered rows of 4 and 3 at pitch 154.08 (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  rows: {value: [4, 3], unit: "", source: "sockets per row; sum equals collets.count (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  label_width: {value: 30, unit: "mm", source: "size label recess width; height collet.label_height, depth collet.label_depth (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  label_gap: {value: 1.0, unit: "mm", source: "size label recess edge off the socket wall (cr_scratch/step6_topologist_crossreview.md section 5)", status: ASSUMED}
+  socket_clear: {value: 3, unit: "mm", source: "per side on collet OD; socket count is collets.count (Designer caddy.socket_count merged)", status: ASSUMED}
+  socket_depth: {value: 40, unit: "mm", source: "collet caddy socket depth", status: ASSUMED}
+
+gauge:
+  cavity: {value: [110, 130], unit: "mm", source: "cavity diameter and depth from below (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  handle: {value: [160, 25, 25], unit: "mm", source: "handle bar on top: length, width, height (cr_scratch/step6_loftsman_definition.md section 5)", status: ASSUMED}
+  register_plug_dia: {value: 134.08, unit: "mm", source: "2 x receiver.register_bore_radius 67.29 - 2 x register.g_reg 0.25 = 134.08", status: DERIVED}
+  length: {value: 150, unit: "mm", source: "alignment gauge length", status: ASSUMED}
+
+
+strength:
+  tensile_design: {value: 45, unit: "MPa", source: "design assumption, not a material property (Step 2 key renamed per cr_scratch/step3_designer_params.md section 4)", status: ASSUMED}
+
+plug:
+  head_dia: {value: 40, unit: "mm", source: "drain plug head (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  head_h: {value: 14, unit: "mm", source: "drain plug head height (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  flange_dia: {value: 35, unit: "mm", source: "drain plug flange (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  flange_t: {value: 2, unit: "mm", source: "drain plug flange thickness (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  shank_dia: {value: 24, unit: "mm", source: "drain plug shank, 0.5 radial clearance in tray.drain_dia 25 (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  shank_h: {value: 3, unit: "mm", source: "drain plug shank length = tray.floor_min (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+
+foot:
+  size: {value: [100, 60, 8], unit: "mm", source: "bolt-down foot plate x, y, z (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  m6_xy: {value: [30, 15], unit: "mm", source: "M6 holes at (x, +-y), slot pitch 30 (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  m6_hole: {value: 6.6, unit: "mm", source: "M6 clearance hole (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  m8_x: {value: 88, unit: "mm", source: "M8 floor fastener hole x, 28 from the rail end (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+  m8_hole: {value: 9, unit: "mm", source: "M8 clearance hole (cr_scratch/step6_loftsman_definition.md section 3)", status: ASSUMED}
+
+tnut:
+  body: {value: [16, 16, 6.0], unit: "mm", source: "T-nut proxy body: across, along, height; PZRT 3030 has no CAD on disk (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  neck: {value: [7.6, 12, 2.2575], unit: "mm", source: "T-nut proxy neck: across, along, height = profile.slot_neck_depth (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  hole: {value: 5.0, unit: "mm", source: "T-nut proxy tapped hole, M6 tap drill region (cr_scratch/step6_loftsman_definition.md section 4)", status: ASSUMED}
+  chamfer: {value: 3.5, unit: "mm", source: "T-nut proxy long bottom edges chamfered 3.5 x 45 deg (cr_scratch/step6_topologist_crossreview.md section 5)", status: ASSUMED}

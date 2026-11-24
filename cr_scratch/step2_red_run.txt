@@ -1,0 +1,30 @@
+mutated = <function mutated.<locals>._mut at 0x0000029DF65603B0>
+
+    def test_P9_control_solid_section_fires(params, mutated):
+        # zero control: measured section passes; a solid section (no hollow) is rejected by the hollow test
+>       assert common.profile_area_model(params) < 1200.0
+E       AssertionError: assert 2893.2677297191563 < 1200.0
+E        +  where 2893.2677297191563 = <function profile_area_model at 0x0000029DF636A610>({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'...': {'value': 500, 'unit': 'mm', 'source': 'gate B6 (upper assembly travel at most 0.5 m)', 'status': 'DECLARED'}}, ...})
+E        +    where <function profile_area_model at 0x0000029DF636A610> = common.profile_area_model
+
+tests\test_params_bom.py:330: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_params_bom.py::test_P9_step_measure_is_fresh_and_is_30_6060
+FAILED tests/test_params_bom.py::test_P9_area_within_1pct_of_step - Assertion...
+FAILED tests/test_params_bom.py::test_P9_profile_is_hollow_not_solid - Assert...
+FAILED tests/test_params_bom.py::test_P9_built_solid_area_matches_step - Asse...
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.centre_bore]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.height]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.outer_corner_radius]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slot_cavity_depth]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slot_cavity_width]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slot_neck_depth]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slot_offset]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slot_opening]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.slots_per_face]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.wall_thickness]
+FAILED tests/test_params_bom.py::test_P9_profile_value_matches_step[profile.width]
+FAILED tests/test_params_bom.py::test_P9_mass_per_metre_vs_catalog - Assertio...
+FAILED tests/test_params_bom.py::test_P9_fidelity_vs_step - AssertionError: r...
+FAILED tests/test_params_bom.py::test_P9_control_solid_section_fires - Assert...
+18 failed, 28 passed in 1.13s

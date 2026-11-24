@@ -1,0 +1,199 @@
+{
+ "part": "tray",
+ "volume_mm3": 2924392.895,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 0,
+ "faces": 26,
+ "edges": 78,
+ "vertices": 52,
+ "bbox_plain": {
+  "xmin": -280.0,
+  "xmax": 280.0,
+  "ymin": -260.0,
+  "ymax": 260.0,
+  "zmin": 12.0,
+  "zmax": 37.0
+ },
+ "bbox_optimal": {
+  "xmin": -280.0,
+  "xmax": 280.0,
+  "ymin": -260.0,
+  "ymax": 260.0,
+  "zmin": 12.0,
+  "zmax": 37.0
+ },
+ "bbox": {
+  "xmin": -280.0,
+  "xmax": 280.0,
+  "ymin": -260.0,
+  "ymax": 260.0,
+  "zmin": 12.0,
+  "zmax": 37.0
+ },
+ "centre_of_mass": [
+  80.24,
+  0.0,
+  19.081
+ ],
+ "features": [
+  {
+   "id": "BS5",
+   "feature": "tray length (A) = tray.length",
+   "volume_mm3": 7280000.0,
+   "built": 560.0,
+   "params": 560,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray width (T) = tray.width",
+   "volume_mm3": 7280000.0,
+   "built": 520.0,
+   "params": 520,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray depth (Z) = tray.depth",
+   "volume_mm3": 7280000.0,
+   "built": 25.0,
+   "params": 25,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray end wall (T) = tray.wall",
+   "volume_mm3": 4066725.99,
+   "built": 3.0,
+   "params": 3,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray side wall (T) = tray.wall",
+   "volume_mm3": 4066725.99,
+   "built": 3.0,
+   "params": 3,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray floor thickness at the drain end (Z) = tray.floor_min",
+   "volume_mm3": 4066725.99,
+   "built": 3.0,
+   "params": 3,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray floor slope over tray.ramp_x (deg) = tray.floor_slope_deg",
+   "volume_mm3": 4066725.99,
+   "built": 3.0,
+   "params": 3,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray floor top at the ramp end (z) = floor_min + 253 tan(slope)",
+   "volume_mm3": 4066725.99,
+   "built": 28.2592,
+   "params": 28.2592,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "tray cavity depth at the ramp end (Z) > 0",
+   "volume_mm3": 4066725.99,
+   "built": 8.7408,
+   "params": 8.7408,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "column relief width (T) = tray.relief[0]",
+   "volume_mm3": 68400.0,
+   "built": 72.0,
+   "params": 72,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "column reliefs open at both long edges",
+   "volume_mm3": 68400.0,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS5",
+   "feature": "spigot hole radius (R) = tray.hole_r",
+   "volume_mm3": 517847.567,
+   "built": 81.2,
+   "params": 81.2,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "tray drain bore diameter (D) = tray.drain_dia, plain bore; thread named in this row: drain plug thread ASSUMED, modelled at Step 8",
+   "volume_mm3": 12271.846,
+   "built": 25.0,
+   "params": 25,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "tools_fuse",
+   "kind": "fuse",
+   "faces_before": 26,
+   "faces_after": 30,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "tools_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 26,
+   "faces_after_clean": 26,
+   "valid": true,
+   "tool_faces": 24
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.2,
+ "build_seconds": 0.2,
+ "drain_thread": "plain bore \u00d825.0; plug thread ASSUMED (tray.drain_plug), stud-subtract if modelled",
+ "floor_top_at_drain_z": 15.0,
+ "floor_top_ramp_end_z": 28.259168158609427
+}

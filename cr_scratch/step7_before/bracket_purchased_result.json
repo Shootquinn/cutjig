@@ -1,0 +1,175 @@
+{
+ "part": "bracket_purchased",
+ "volume_mm3": 35293.827,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 2,
+ "faces": 16,
+ "edges": 42,
+ "vertices": 28,
+ "bbox_plain": {
+  "xmin": 0.0,
+  "xmax": 57.0,
+  "ymin": 0.0,
+  "ymax": 57.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "bbox_optimal": {
+  "xmin": 0.0,
+  "xmax": 57.0,
+  "ymin": 0.0,
+  "ymax": 57.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "bbox": {
+  "xmin": 0.0,
+  "xmax": 57.0,
+  "ymin": 0.0,
+  "ymax": 57.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "centre_of_mass": [
+  16.491,
+  16.491,
+  28.5
+ ],
+ "features": [
+  {
+   "id": "FR2",
+   "feature": "purchased bracket leg B length (L)",
+   "volume_mm3": 36936.0,
+   "built": 57.0,
+   "params": 57,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased bracket leg A length (L)",
+   "volume_mm3": 36936.0,
+   "built": 57.0,
+   "params": 57,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased bracket plate thickness (T)",
+   "volume_mm3": 36936.0,
+   "built": 6.0,
+   "params": 6,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased bracket width (Z)",
+   "volume_mm3": 36936.0,
+   "built": 57.0,
+   "params": 57,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased bracket holes or slots per bracket (8: two per row, two rows, two legs)",
+   "volume_mm3": 1642.173,
+   "built": 8,
+   "params": 8,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased first hole or slot position along the leg (A)",
+   "volume_mm3": 1642.173,
+   "built": 13.9,
+   "params": 13.9,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased second hole or slot position along the leg (A)",
+   "volume_mm3": 1642.173,
+   "built": 43.1,
+   "params": 43.1,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased first hole or slot length along the leg (A)",
+   "volume_mm3": 1642.173,
+   "built": 6.6,
+   "params": 6.6,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased second hole or slot length along the leg (A)",
+   "volume_mm3": 1642.173,
+   "built": 6.6,
+   "params": 6.6,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased hole rows across the leg: lower row positions equal upper (A)",
+   "volume_mm3": 1642.173,
+   "built": 10.6,
+   "params": 10.6,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  }
+ ],
+ "boolean_count": 3,
+ "run_seconds": 0.1,
+ "build_seconds": 0.1,
+ "kind": "purchased"
+}

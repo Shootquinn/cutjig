@@ -1,0 +1,813 @@
+{
+ "part": "frame",
+ "volume_mm3": 2930129.191,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 6,
+ "shell_count": 6,
+ "euler_VEF": 11,
+ "faces": 2478,
+ "edges": 7425,
+ "vertices": 4958,
+ "bbox_plain": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": -60.0,
+  "zmax": 0.0
+ },
+ "bbox_optimal": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": -60.0,
+  "zmax": 0.0
+ },
+ "bbox": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": -60.0,
+  "zmax": 0.0
+ },
+ "centre_of_mass": [
+  0.074,
+  -0.063,
+  -30.007
+ ],
+ "features": [
+  {
+   "id": "FR1",
+   "feature": "member count = sum frame.members qty",
+   "volume_mm3": 2930129.191,
+   "built": 6,
+   "params": 6,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR1",
+   "feature": "member lengths = frame.members cut_mm (all ids)",
+   "volume_mm3": 2930129.191,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR1",
+   "feature": "footprint x = icd.footprint_x",
+   "volume_mm3": 2930129.191,
+   "built": 644.0,
+   "params": 644,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR1",
+   "feature": "footprint y = icd.footprint_y",
+   "volume_mm3": 2930129.191,
+   "built": 608.0,
+   "params": 608,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR1",
+   "feature": "member z range: top at datum A (0), height profile.width",
+   "volume_mm3": 2930129.191,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR1",
+   "feature": "stock allocation: whole pieces, none above quantity on hand",
+   "volume_mm3": 2930129.191,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "bracket count = purchased joints x brackets_per_joint + printed joints x printed_brackets_per_joint",
+   "volume_mm3": 474126.083,
+   "built": 12,
+   "params": 12,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "purchased bracket count",
+   "volume_mm3": 282350.614,
+   "built": 8,
+   "params": 8,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed bracket count",
+   "volume_mm3": 191775.47,
+   "built": 4,
+   "params": 4,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut instances = hardware.tnuts_per_bracket x bracket count",
+   "volume_mm3": 132839.843,
+   "built": 96,
+   "params": 96,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR4",
+   "feature": "datum C notch volume removed from rail_1 = (notch across - slot opening) x along x depth",
+   "volume_mm3": 709.5,
+   "built": 709.5,
+   "params": 720.0,
+   "tol": 14.4,
+   "pass": true,
+   "note": "removed volume is 0.35 mm2 x along short of the nominal: the notch edge at y 249 breaks 3.7 mm into the profile corner pocket (y 245.3 to 249.5, z -1.3 to -5.5)"
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "rail_1_notch",
+   "kind": "cut",
+   "faces_before": 414,
+   "faces_after": 420,
+   "faces_after_clean": 408,
+   "valid": true,
+   "tool_faces": 6
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "purchased_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "purchased_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 24,
+   "faces_after": 24,
+   "faces_after_clean": 24,
+   "valid": true
+  },
+  {
+   "name": "purchased_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 16,
+   "faces_after_clean": 16,
+   "valid": true,
+   "tool_faces": 24
+  },
+  {
+   "name": "printed_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "printed_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 48,
+   "faces_after_clean": 48,
+   "valid": true
+  },
+  {
+   "name": "printed_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 40,
+   "faces_after_clean": 40,
+   "valid": true,
+   "tool_faces": 48
+  },
+  {
+   "name": "printed_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "printed_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 48,
+   "faces_after_clean": 48,
+   "valid": true
+  },
+  {
+   "name": "printed_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 40,
+   "faces_after_clean": 40,
+   "valid": true,
+   "tool_faces": 48
+  },
+  {
+   "name": "printed_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "printed_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 48,
+   "faces_after_clean": 48,
+   "valid": true
+  },
+  {
+   "name": "printed_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 40,
+   "faces_after_clean": 40,
+   "valid": true,
+   "tool_faces": 48
+  },
+  {
+   "name": "printed_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "printed_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 48,
+   "faces_after_clean": 48,
+   "valid": true
+  },
+  {
+   "name": "printed_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 40,
+   "faces_after_clean": 40,
+   "valid": true,
+   "tool_faces": 48
+  }
+ ],
+ "boolean_count": 37,
+ "run_seconds": 9.9,
+ "build_seconds": 9.9,
+ "solid_count_objects": 114,
+ "all_objects_valid_closed_one_solid": true,
+ "allocation": [
+  {
+   "id": "rail",
+   "qty": 2,
+   "cut_mm": 644,
+   "stock_piece_mm": 644,
+   "role": "base frame side rail along X"
+  },
+  {
+   "id": "end",
+   "qty": 2,
+   "cut_mm": 488,
+   "stock_piece_mm": 488,
+   "role": "base frame end member between rails"
+  },
+  {
+   "id": "plate_support",
+   "qty": 2,
+   "cut_mm": 468,
+   "stock_piece_mm": 468,
+   "role": "base plate support cross member, inboard of the end members"
+  }
+ ],
+ "stock_consumption": [
+  {
+   "stock_mm": 1540,
+   "on_hand": 4,
+   "used": 0,
+   "left": 4
+  },
+  {
+   "stock_mm": 980,
+   "on_hand": 4,
+   "used": 0,
+   "left": 4
+  },
+  {
+   "stock_mm": 952,
+   "on_hand": 1,
+   "used": 0,
+   "left": 1
+  },
+  {
+   "stock_mm": 728,
+   "on_hand": 2,
+   "used": 0,
+   "left": 2
+  },
+  {
+   "stock_mm": 644,
+   "on_hand": 2,
+   "used": 2,
+   "left": 0
+  },
+  {
+   "stock_mm": 488,
+   "on_hand": 2,
+   "used": 2,
+   "left": 0
+  },
+  {
+   "stock_mm": 468,
+   "on_hand": 2,
+   "used": 2,
+   "left": 0
+  }
+ ],
+ "bracket_count": 12,
+ "tnut_instances": 96,
+ "members": [
+  {
+   "name": "member_rail_1",
+   "volume_mm3": 589121.8,
+   "bbox": [
+    -322.0,
+    322.0,
+    244.0,
+    304.0,
+    -60.0,
+    0.0
+   ]
+  },
+  {
+   "name": "member_rail_2",
+   "volume_mm3": 589831.3,
+   "bbox": [
+    -322.0,
+    322.0,
+    -304.0,
+    -244.0,
+    -60.0,
+    0.0
+   ]
+  },
+  {
+   "name": "member_end_1",
+   "volume_mm3": 446952.9,
+   "bbox": [
+    202.0,
+    262.0,
+    -244.0,
+    244.0,
+    -60.0,
+    0.0
+   ]
+  },
+  {
+   "name": "member_end_2",
+   "volume_mm3": 446952.9,
+   "bbox": [
+    -262.0,
+    -202.0,
+    -244.0,
+    244.0,
+    -60.0,
+    0.0
+   ]
+  },
+  {
+   "name": "member_plate_support_1",
+   "volume_mm3": 428635.2,
+   "bbox": [
+    82.0,
+    142.0,
+    -234.0,
+    234.0,
+    -60.0,
+    0.0
+   ]
+  },
+  {
+   "name": "member_plate_support_2",
+   "volume_mm3": 428635.2,
+   "bbox": [
+    -142.0,
+    -82.0,
+    -234.0,
+    234.0,
+    -60.0,
+    0.0
+   ]
+  }
+ ],
+ "mass_kg_stock": 8.234,
+ "profile_seconds": {
+  "rail": 1.1,
+  "end": 1.2,
+  "plate_support": 1.3
+ },
+ "datum_c_notch": {
+  "member": "member_rail_1",
+  "x": [
+   -322.0,
+   -292.0
+  ],
+  "y": [
+   249.0,
+   269.0
+  ],
+  "z": [
+   -2,
+   0.0
+  ],
+  "removed_mm3": 709.5,
+  "expected_mm3": 720.0
+ },
+ "overlaps": [],
+ "overlap_summary": {
+  "purchased_inboard_vs_printed_outer": {
+   "sites": 0,
+   "mm3_each_max": 0.0,
+   "mm3_total": 0
+  },
+  "printed_vs_end_member": {
+   "sites": 0,
+   "mm3_each_max": 0.0,
+   "mm3_total": 0
+  }
+ },
+ "tnut_pair_overlaps": {
+  "pairs": 0,
+  "mm3_total": 0
+ },
+ "tnut_host_overlap_sample": {
+  "tnut_1": [
+   {
+    "member": "member_rail_1",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_2": [
+   {
+    "member": "member_end_1",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_25": [
+   {
+    "member": "member_rail_2",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_26": [
+   {
+    "member": "member_end_2",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_49": [
+   {
+    "member": "member_rail_1",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_50": [
+   {
+    "member": "member_end_2",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_73": [
+   {
+    "member": "member_rail_2",
+    "overlap_mm3": 0.0
+   }
+  ],
+  "tnut_74": [
+   {
+    "member": "member_plate_support_1",
+    "overlap_mm3": 0.0
+   }
+  ]
+ },
+ "bracket_positions": [
+  {
+   "name": "bracket_purchased_1",
+   "corner": [
+    202.0,
+    244.0
+   ],
+   "sx": -1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_purchased_2",
+   "corner": [
+    202.0,
+    -244.0
+   ],
+   "sx": -1,
+   "sy": 1
+  },
+  {
+   "name": "bracket_purchased_3",
+   "corner": [
+    -202.0,
+    244.0
+   ],
+   "sx": 1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_purchased_4",
+   "corner": [
+    -202.0,
+    -244.0
+   ],
+   "sx": 1,
+   "sy": 1
+  },
+  {
+   "name": "bracket_purchased_5",
+   "corner": [
+    262.0,
+    244.0
+   ],
+   "sx": 1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_purchased_6",
+   "corner": [
+    262.0,
+    -244.0
+   ],
+   "sx": 1,
+   "sy": 1
+  },
+  {
+   "name": "bracket_purchased_7",
+   "corner": [
+    -262.0,
+    244.0
+   ],
+   "sx": -1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_purchased_8",
+   "corner": [
+    -262.0,
+    -244.0
+   ],
+   "sx": -1,
+   "sy": 1
+  },
+  {
+   "name": "bracket_printed_1",
+   "corner": [
+    82.0,
+    244.0
+   ],
+   "sx": -1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_printed_2",
+   "corner": [
+    82.0,
+    -244.0
+   ],
+   "sx": -1,
+   "sy": 1
+  },
+  {
+   "name": "bracket_printed_3",
+   "corner": [
+    -82.0,
+    244.0
+   ],
+   "sx": 1,
+   "sy": -1
+  },
+  {
+   "name": "bracket_printed_4",
+   "corner": [
+    -82.0,
+    -244.0
+   ],
+   "sx": 1,
+   "sy": 1
+  }
+ ]
+}

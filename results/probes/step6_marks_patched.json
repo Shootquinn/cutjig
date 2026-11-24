@@ -1,0 +1,50 @@
+{
+ "glyphs": [
+  {
+   "wing": 0,
+   "face": "+z",
+   "count": 43,
+   "span": 5.013240629123025,
+   "direction_sign": -1
+  },
+  {
+   "wing": 0,
+   "face": "-z",
+   "count": 43,
+   "span": 5.0132406291230245,
+   "direction_sign": 1
+  }
+ ],
+ "witness": {
+  "az": 127,
+  "rim_top_z": 88.50000000000003,
+  "marks_z": [
+   48.47500000000003,
+   49.47500000000003,
+   50.47500000000003,
+   51.47500000000003,
+   52.47500000000003,
+   53.47500000000003,
+   54.47500000000003,
+   55.47500000000003,
+   56.47500000000003,
+   57.47500000000003,
+   58.47500000000003,
+   59.47500000000003,
+   60.47500000000003,
+   61.47500000000003
+  ],
+  "holder_under_local_z": 88.00000000000003,
+  "tick_local_z": 87.99999999999997,
+  "tick_count": 1
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "step6_marks_patched",
+ "run_started_epoch": 1794307706.52066,
+ "run_seconds": 104.8,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\holder.FCStd"
+ ]
+}

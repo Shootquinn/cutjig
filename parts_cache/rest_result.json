@@ -1,0 +1,431 @@
+{
+ "part": "rest",
+ "volume_mm3": 544616.993,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 16,
+ "faces": 66,
+ "edges": 150,
+ "vertices": 100,
+ "bbox_plain": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "bbox_optimal": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "bbox": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "centre_of_mass": [
+  10.358,
+  99.571,
+  20.102
+ ],
+ "features": [
+  {
+   "id": "AC3",
+   "feature": "interface plane y = column face (block back face)",
+   "volume_mm3": 108000.0,
+   "built": 244.0,
+   "params": 244.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block width x (T)",
+   "volume_mm3": 108000.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block thickness y (L)",
+   "volume_mm3": 108000.0,
+   "built": 30.0,
+   "params": 30,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block height z (Z)",
+   "volume_mm3": 108000.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "hinge boss diameter (D) at y = rest.arm_length",
+   "volume_mm3": 75398.224,
+   "built": 34.641,
+   "params": 34.641,
+   "tol": 0.02,
+   "pass": true,
+   "note": "chord at y = boss centre - boss_r / 2 on the boss"
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring outer radius (R)",
+   "volume_mm3": 123228.413,
+   "built": 100.0,
+   "params": 100,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring inner radius (R)",
+   "volume_mm3": 123228.413,
+   "built": 58.0,
+   "params": 58,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring thickness (Z)",
+   "volume_mm3": 123228.413,
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring mouth arc (deg) = rest.mouth_deg",
+   "volume_mm3": 123228.413,
+   "built": 89.9,
+   "params": 90,
+   "tol": 0.30000000000000004,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller count at azimuth 360/n x k",
+   "volume_mm3": 37699.112,
+   "built": 3,
+   "params": 3,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller diameter (D) = rest.roller_dia",
+   "volume_mm3": 37699.112,
+   "built": 34.641,
+   "params": 34.641,
+   "tol": 0.02,
+   "pass": true,
+   "note": "chord at y = roller_dia / 4"
+  },
+  {
+   "id": "AC3",
+   "feature": "roller pin bridges the roller to ring gap (rest.roller_pin_gap) and the gap stays open beside the pin",
+   "volume_mm3": 4201.88,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "close handle length (L) = rest.close_handle_length",
+   "volume_mm3": 37699.112,
+   "built": 120.0,
+   "params": 120,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "hold-open detent notch depth (R) = rest.detent_depth",
+   "volume_mm3": 1855.61,
+   "built": 4.0,
+   "params": 4,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower inboard face radius (R)",
+   "volume_mm3": 56000.0,
+   "built": 84.0,
+   "params": 84,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower tangential width (T)",
+   "volume_mm3": 56000.0,
+   "built": 14.0,
+   "params": 14,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller centre radius at rest.pose_core_d (R) = d/2 + roller_dia/2 + fit.model_contact_gap = rest.roller_r",
+   "volume_mm3": 37699.112,
+   "built": 70.005,
+   "params": 70.005,
+   "tol": 1e-06,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller travel rest.roller_r_range spans core_d_range (R)",
+   "volume_mm3": 37699.112,
+   "built": 8.75,
+   "params": 8.75,
+   "tol": 1e-06,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "pin slot radial length (R) = travel + pin dia + 2 x fit.model_contact_gap",
+   "volume_mm3": 619.08,
+   "built": 18.76,
+   "params": 18.76,
+   "tol": 0.02,
+   "pass": true,
+   "note": "slot bounded by ring walls; pin occupies the middle of the span at the pose"
+  },
+  {
+   "id": "AC3",
+   "feature": "pin slot width (T) = rest.pin + 2 x rest.slot_clear",
+   "volume_mm3": 619.08,
+   "built": 11.0,
+   "params": 11.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "pin slot inner wall left in the ring (R) > 0",
+   "volume_mm3": 619.08,
+   "built": 1.25,
+   "params": 1.25,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower top z = height_positions[1] - [0] (A)",
+   "volume_mm3": 56000.0,
+   "built": 250.0,
+   "params": 250,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "ring_pin_slots_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 21,
+   "faces_after_clean": 21,
+   "valid": true,
+   "tool_faces": 18
+  },
+  {
+   "name": "rest_fuse",
+   "kind": "fuse",
+   "faces_before": 63,
+   "faces_after": 67,
+   "faces_after_clean": 62,
+   "valid": true
+  },
+  {
+   "name": "detent_cut",
+   "kind": "cut",
+   "faces_before": 62,
+   "faces_after": 66,
+   "faces_after_clean": 66,
+   "valid": true,
+   "tool_faces": 6
+  }
+ ],
+ "boolean_count": 3,
+ "run_seconds": 4.2,
+ "build_seconds": 4.2,
+ "pose": "closed",
+ "pose_core_d": 100,
+ "sizes": [
+  {
+   "core_d": 88.5,
+   "roller_r": 64.255,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 12.172,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 90.0,
+   "roller_r": 65.005,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 11.966,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 92.5,
+   "roller_r": 66.255,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 11.66,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 95.0,
+   "roller_r": 67.505,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 11.401,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 97.5,
+   "roller_r": 68.755,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 11.19,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 100.0,
+   "roller_r": 70.005,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 11.028,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 102.5,
+   "roller_r": 71.255,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 10.915,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 105.0,
+   "roller_r": 72.505,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 10.853,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  },
+  {
+   "core_d": 106.0,
+   "roller_r": 73.005,
+   "solids": 1,
+   "isValid": true,
+   "common_with_core_mm3": 0.0,
+   "roller_to_core_gap": 0.005,
+   "roller_to_arm": 10.842,
+   "interface_plane_ymax": 244.0,
+   "bbox_plain_equals_optimal": true,
+   "faces": 66,
+   "euler_VEF": 16,
+   "volume_mm3": 544616.993
+  }
+ ],
+ "roller_plane_above_seat": 310,
+ "interface": {
+  "plane": "y = 244.0",
+  "normal": "-y",
+  "owner": "upper assembly column"
+ }
+}

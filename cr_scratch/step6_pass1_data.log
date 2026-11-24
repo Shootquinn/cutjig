@@ -1,0 +1,24 @@
+P1 nut skirt bottom z (datum A) 95.00, dust skirt bottom 100.00, tray rim z 37.00
+P1 nut-to-tray min distance 66.741, common 0.0000
+P1 nut-to-plug min distance 89.410
+P1 receiver-to-base common 0.0000, receiver-to-tray common 0.0000, dist base 0.200 tray 1.200
+P1 collet parts_cache\collet_090p0.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_092p5.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_093p7.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_095p0.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+						(2 %)							(5 %)							(8 %)							(11 %)							(14 %)							(17 %)							(20 %)							(23 %)							(26 %)							(29 %)							(32 %)							(35 %)							(38 %)							(41 %)							(44 %)							(47 %)							(50 %)							(52 %)							(55 %)							(58 %)							(61 %)							(64 %)							(67 %)							(70 %)							(73 %P1 collet parts_cache\collet_097p0.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_097p5.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_100p0.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_102p5.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 collet parts_cache\collet_105p0.FCStd bbox x 133.98 y 133.98 z 32.00 half-diagonal-free max r 66.99
+P1 socket radius 73.04, socket depth 40.00, widest collet half-extent 66.99
+P1 rest-vs-core d 90.0: interference 0.00 mm3, min distance 5.000
+P1 rest-vs-core d 92.5: interference 0.00 mm3, min distance 3.750
+P1 rest-vs-core d 95.0: interference 0.00 mm3, min distance 2.500
+P1 rest-vs-core d 97.5: interference 0.00 mm3, min distance 1.250
+P1 rest-vs-core d 100.0: interference 0.00 mm3, min distance 0.000
+P1 rest-vs-core d 102.5: interference 894.90 mm3, min distance 0.000
+P1 rest-vs-core d 105.0: interference 2525.89 mm3, min distance 0.000
+P1 rest-vs-keepout r 86.2: common 182980.5 mm3
+P1 rest-vs-tube r 76.2: min distance 0.000
+P1_DONE

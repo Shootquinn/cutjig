@@ -1,0 +1,136 @@
+{
+ "part": "foot",
+ "volume_mm3": 46943.671,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 2,
+ "faces": 9,
+ "edges": 21,
+ "vertices": 14,
+ "bbox_plain": {
+  "xmin": 0.0,
+  "xmax": 100.0,
+  "ymin": -30.0,
+  "ymax": 30.0,
+  "zmin": 0.0,
+  "zmax": 8.0
+ },
+ "bbox_optimal": {
+  "xmin": 0.0,
+  "xmax": 100.0,
+  "ymin": -30.0,
+  "ymax": 30.0,
+  "zmin": 0.0,
+  "zmax": 8.0
+ },
+ "bbox": {
+  "xmin": 0.0,
+  "xmax": 100.0,
+  "ymin": -30.0,
+  "ymax": 30.0,
+  "zmin": 0.0,
+  "zmax": 8.0
+ },
+ "centre_of_mass": [
+  49.821,
+  -0.0,
+  4.0
+ ],
+ "features": [
+  {
+   "id": "BS7",
+   "feature": "foot plate length (A)",
+   "volume_mm3": 48000.0,
+   "built": 100.0,
+   "params": 100,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "foot plate width (T)",
+   "volume_mm3": 48000.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "foot plate thickness (Z)",
+   "volume_mm3": 48000.0,
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "M6 hole diameter (D)",
+   "volume_mm3": 547.391,
+   "built": 6.6,
+   "params": 6.6,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "M6 hole pitch across the rail slot lines (T)",
+   "volume_mm3": 547.391,
+   "built": 30.0,
+   "params": 30,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "M8 hole diameter (D)",
+   "volume_mm3": 508.938,
+   "built": 9.0,
+   "params": 9,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS7",
+   "feature": "M8 hole distance from the rail end, rail covers x 0 to profile.width (A)",
+   "volume_mm3": 508.938,
+   "built": 28.0,
+   "params": 28,
+   "tol": 0.015,
+   "pass": true,
+   "note": "28 from the rail end"
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "holes_tool_fuse",
+   "kind": "fuse",
+   "faces_before": 9,
+   "faces_after": 9,
+   "faces_after_clean": 9,
+   "valid": true
+  },
+  {
+   "name": "holes_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 9,
+   "faces_after_clean": 9,
+   "valid": true,
+   "tool_faces": 9
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.1,
+ "build_seconds": 0.1
+}

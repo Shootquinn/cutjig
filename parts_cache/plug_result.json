@@ -1,0 +1,147 @@
+{
+ "part": "plug",
+ "volume_mm3": 23594.312,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 5,
+ "faces": 12,
+ "edges": 21,
+ "vertices": 14,
+ "bbox_plain": {
+  "xmin": -192.0,
+  "xmax": -152.0,
+  "ymin": -20.0,
+  "ymax": 20.0,
+  "zmin": 12.0,
+  "zmax": 41.0
+ },
+ "bbox_optimal": {
+  "xmin": -192.0,
+  "xmax": -152.0,
+  "ymin": -20.0,
+  "ymax": 20.0,
+  "zmin": 12.0,
+  "zmax": 41.0
+ },
+ "bbox": {
+  "xmin": -192.0,
+  "xmax": -152.0,
+  "ymin": -20.0,
+  "ymax": 20.0,
+  "zmin": 12.0,
+  "zmax": 41.0
+ },
+ "centre_of_mass": [
+  -172.0,
+  -0.0,
+  24.127
+ ],
+ "features": [
+  {
+   "id": "BS6",
+   "feature": "plug head diameter (D)",
+   "volume_mm3": 17592.919,
+   "built": 40.0,
+   "params": 40,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug flange diameter (D)",
+   "volume_mm3": 1924.226,
+   "built": 35.0,
+   "params": 35,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug shank diameter (D)",
+   "volume_mm3": 1357.168,
+   "built": 24.0,
+   "params": 24,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug overall height (A) = shank + flange + head + lug",
+   "volume_mm3": 23594.312,
+   "built": 29.0,
+   "params": 29,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug grip lug length along X (L) = plug.lug_length",
+   "volume_mm3": 2992.0,
+   "built": 34.0,
+   "params": 34,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug grip lug width along Y (T) = plug.lug_width",
+   "volume_mm3": 2992.0,
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug grip lug height above the head top (A) = plug.lug_height",
+   "volume_mm3": 2992.0,
+   "built": 10.0,
+   "params": 10,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "plug grip lug corner stands on the head (corner point of the lug and the head under it are solid)",
+   "volume_mm3": 2992.0,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS6",
+   "feature": "shank in the plain drain bore: radial gap R (minimum distance to the bore wall, bore thread named in the tray row)",
+   "volume_mm3": 1130.973,
+   "built": 0.5,
+   "params": 0.5,
+   "tol": 1e-06,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "plug_fuse",
+   "kind": "fuse",
+   "faces_before": 15,
+   "faces_after": 12,
+   "faces_after_clean": 12,
+   "valid": true
+  }
+ ],
+ "boolean_count": 1,
+ "run_seconds": 0.1,
+ "build_seconds": 0.1
+}

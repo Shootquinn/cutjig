@@ -1,0 +1,26 @@
+{
+ "thread_x_thread_-0.3": {
+  "common_3d_full": 0.132,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 23.4
+ },
+ "thread_x_thread_-1.0": {
+  "common_3d_full": 40.716,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 23.7
+ },
+ "thread_x_thread_0.3": {
+  "common_3d_full": 0.0,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 26.9
+ },
+ "thread_x_thread_1.0": {
+  "common_3d_full": 0.0,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 24.6
+ }
+}

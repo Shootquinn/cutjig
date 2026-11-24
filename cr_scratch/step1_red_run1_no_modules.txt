@@ -1,0 +1,8 @@
+tests\test_params_bom.py:9: in <module>
+    from build_parts import common
+E   ImportError: cannot import name 'common' from 'build_parts' (unknown location)
+=========================== short test summary info ===========================
+ERROR tests/test_params_bom.py
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.32s

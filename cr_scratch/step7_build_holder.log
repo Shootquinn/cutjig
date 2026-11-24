@@ -1,0 +1,13 @@
+START holder pid=34788 t=12:33:37
+RESULT holder volume=459449.003 valid=True solids=1 pass=True sec=0.8
+BUILD_DONE holder
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(20 %)							(25 %)							(30 %)							(35 %)							(40 %)							(45 %)							(50 %)							(55 %)							(60 %)							(65 %)							(70 %)							(75 %)							(80 %)							(85 %)							(90 %)							(95 %)							(100 %)									Postprocessing......
+						(100 %)									Recompute......
+						(9 %)							(18 %)							(27 %)							(36 %)							(45 %)							(54 %)							(63 %)							(72 %)							(81 %)							(90 %)							(100 %)									Recompute......
+						(7 %)							(15 %)							(23 %)							(30 %)							(38 %)							(46 %)							(53 %)							(61 %)							(69 %)							(76 %)							(84 %)							(92 %)							(100 %)									Recompute......
+						(6 %)							(13 %)							(20 %)							(26 %)							(33 %)							(40 %)							(46 %)							(53 %)							(60 %)							(66 %)							(73 %)							(80 %)							(86 %)							(93 %)							(100 %)									

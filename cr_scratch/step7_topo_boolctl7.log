@@ -1,0 +1,16 @@
+hc receiver 0 0.0 {'V': 955593.23, 'cut': 955593.23, 'common': 0.0, 'sum_err': 0.003, 'cut_valid': False, 'cut_zero_change': False, 'cut_past_plane': 80.0}
+hc receiver 1 0.3 {'V': 955593.23, 'cut': 955593.23, 'common': 0.0, 'sum_err': 0.004, 'cut_valid': False, 'cut_zero_change': False, 'cut_past_plane': 79.7}
+hc receiver 2 100.0 {'V': 955593.23, 'cut': 878236.6, 'common': 77356.62, 'sum_err': -0.004, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': 4.1}
+hc receiver 2 60.0 {'V': 955593.23, 'cut': 719997.11, 'common': 235596.12, 'sum_err': -0.001, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': 0.0}
+hc nut 0 0.0 {'V': 352473.77, 'cut': 176121.32, 'common': 176358.02, 'sum_err': 5.575, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': 70.393}
+hc nut 1 0.3 {'V': 352473.77, 'cut': 176310.54, 'common': 176168.64, 'sum_err': 5.42, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': 70.093}
+hc nut 2 120.0 {'V': 352473.77, 'cut': 145530.32, 'common': 206948.31, 'sum_err': 4.863, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': 4.7}
+hc nut 2 60.0 {'V': 352473.77, 'cut': 0.0, 'common': 352473.77, 'sum_err': 0.0, 'cut_valid': True, 'cut_zero_change': False, 'cut_past_plane': -1.7976931348623157e+308}
+BUILD_DONE
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(21 %)							(26 %)							(31 %)							(36 %)							(42 %)							(47 %)							(52 %)							(57 %)							(63 %)							(68 %)							(73 %)							(78 %)							(84 %)							(89 %)							(94 %)							(100 %)									Postprocessing......
+						(100 %)									

@@ -1,0 +1,260 @@
+{
+ "part": "collet_105p0",
+ "volume_mm3": 84802.168,
+ "bbox": {
+  "xmin": -66.99,
+  "xmax": 66.99,
+  "ymin": -66.99,
+  "ymax": 66.99,
+  "zmin": -0.0,
+  "zmax": 32.0
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 0,
+ "centre_of_mass": [
+  0.001,
+  0.048,
+  12.632
+ ],
+ "features": [
+  {
+   "feature": "slit (alternating, 12)",
+   "pass": true,
+   "volume_mm3": 3576.3438,
+   "measured_count": 12
+  },
+  {
+   "feature": "relief hole (12)",
+   "pass": true,
+   "volume_mm3": 4154.3524,
+   "measured_count": 12
+  },
+  {
+   "feature": "foot key",
+   "pass": true,
+   "volume_mm3": 73.5111,
+   "width": 11.75
+  },
+  {
+   "feature": "foot ring",
+   "pass": true,
+   "volume_mm3": 2622.2092,
+   "outer_radius": 66.99
+  },
+  {
+   "feature": "core seat (ledge)",
+   "pass": true,
+   "volume_mm3": 2450.4423,
+   "ledge_top": 2.5
+  },
+  {
+   "feature": "rim notch (count = family index)",
+   "pass": true,
+   "volume_mm3": 373.6686,
+   "count": 7,
+   "floor_z": 29.0
+  },
+  {
+   "feature": "label window",
+   "pass": true,
+   "volume_mm3": 157.0148,
+   "radial_depth": 0.8123
+  },
+  {
+   "feature": "bore chamfer (lead-in)",
+   "pass": true,
+   "volume_mm3": 2484.7199,
+   "c_mm": 3.8002,
+   "edge_z": 28.1998,
+   "c_measured": 3.8002
+  },
+  {
+   "feature": "bore lip",
+   "pass": true,
+   "volume_mm3": 7.2389,
+   "radius": 1.0,
+   "r_at_corner": 53.5898
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 14.4,
+ "notes": [],
+ "d": 105.0,
+ "tag": "105p0",
+ "cuts": [
+  {
+   "name": "slits alternating",
+   "before_mm3": 93063.5478,
+   "after_mm3": 89487.204,
+   "tool_mm3": 8653.32,
+   "expected_mm3": 3576.5803,
+   "faces_before": 13,
+   "faces_after": 92
+  },
+  {
+   "name": "relief holes",
+   "before_mm3": 89487.204,
+   "after_mm3": 85332.8516,
+   "tool_mm3": 11152.9052,
+   "expected_mm3": 4186.5776,
+   "faces_before": 92,
+   "faces_after": 103
+  },
+  {
+   "name": "rim notches",
+   "before_mm3": 85332.8516,
+   "after_mm3": 84959.183,
+   "tool_mm3": 3106.32,
+   "expected_mm3": 373.5258,
+   "faces_before": 103,
+   "faces_after": 131
+  },
+  {
+   "name": "label window",
+   "before_mm3": 84959.183,
+   "after_mm3": 84802.1681,
+   "tool_mm3": 350.2234,
+   "expected_mm3": 156.9827,
+   "faces_before": 131,
+   "faces_after": 137
+  }
+ ],
+ "faces_final": 137,
+ "bbox_plain": {
+  "xmin": -66.99,
+  "xmax": 66.99,
+  "ymin": -66.99,
+  "ymax": 66.99,
+  "zmin": -0.0,
+  "zmax": 32.0
+ },
+ "bbox_optimal": {
+  "xmin": -66.99,
+  "xmax": 66.99,
+  "ymin": -66.99,
+  "ymax": 66.99,
+  "zmin": -0.0,
+  "zmax": 32.0
+ },
+ "notch_count": 7,
+ "colour": "white",
+ "label_text": "105.0 | 103.5-106.0",
+ "chamfer": {
+  "c_mm": 3.8002,
+  "edge_z": 28.1998
+ },
+ "caddy": {
+  "socket_d": 139.98,
+  "socket_depth": 40,
+  "height": 32.0,
+  "margin": 8.0
+ },
+ "measured": {
+  "wall_min_cone_top": 1.2588162314024274,
+  "bore": {
+   "dia": [
+    107.00000000000006,
+    107.00000000000001,
+    107.00000000000003
+   ],
+   "slit_hits": [
+    false,
+    false,
+    false
+   ]
+  },
+  "relief_holes": 12,
+  "bad_edges": 0,
+  "slit_plane_faces": 0
+ },
+ "slit_widths": [
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5,
+  1.5
+ ],
+ "expected_terms": {
+  "slit": 3576.58,
+  "relief": 4186.578,
+  "notch": 373.526,
+  "label": 156.983,
+  "slit_top": 259.329,
+  "slit_bot": 336.767
+ },
+ "witness_scale": "not a collet feature: routed to Step 6 (receiver rim and holder flange)",
+ "clamped": {
+  "Kd1": {
+   "slit_width": 1.2382,
+   "valid": true,
+   "closed": true,
+   "solids": 1,
+   "volume_mm3": 84833.315,
+   "bore_radius": 53.005,
+   "cone_shift": 0.50508,
+   "delta": 1.0,
+   "s": 0.5,
+   "expected_slit_width": 1.2382
+  },
+  "Kmax": {
+   "slit_width": 0.5837,
+   "valid": true,
+   "closed": true,
+   "solids": 1,
+   "volume_mm3": 85161.892,
+   "bore_radius": 51.755,
+   "cone_shift": 1.75508,
+   "delta": 3.5,
+   "s": 1.75,
+   "expected_slit_width": 0.5837
+  }
+ },
+ "run_seconds": 42.5,
+ "checks": {
+  "C1": {
+   "pass": true,
+   "errors": []
+  },
+  "C2": {
+   "pass": true,
+   "errors": []
+  },
+  "C3": {
+   "pass": true,
+   "errors": []
+  },
+  "C5": {
+   "pass": true,
+   "errors": []
+  },
+  "C6": {
+   "pass": true,
+   "errors": []
+  },
+  "C7": {
+   "pass": true,
+   "errors": []
+  },
+  "C9b": {
+   "pass": true,
+   "errors": []
+  },
+  "C1_clamped": {
+   "pass": true,
+   "errors": []
+  }
+ },
+ "checks_all_pass": true
+}

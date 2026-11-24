@@ -1,0 +1,18 @@
+START nut pid=32636 t=04:15:48
+stud valid=True volume=38917.3 solids=1
+nut shape done 5.3s volume=358837.8 valid=True
+RESULT nut volume=358837.755 valid=True solids=1 pass=False sec=99.6
+FEATURE_FAIL {'feature': 'NT4 tighten glyph principal span, inside nut.arrow_length (mm)', 'built': 7.1359, 'params': 10.0, 'tol': 1.5, 'pass': False, 'note': '', 'id': 'NT4', 'volume_mm3': 28.328}
+FEATURE_FAIL {'feature': 'NT5 loosen glyph principal span, inside nut.arrow_length (mm)', 'built': 7.1359, 'params': 10.0, 'tol': 1.5, 'pass': False, 'note': '', 'id': 'NT5', 'volume_mm3': 28.328}
+BUILD_DONE nut
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(3 %)							(7 %)							(11 %)							(15 %)							(19 %)							(23 %)							(26 %)							(30 %)							(34 %)							(38 %)							(42 %)							(46 %)							(50 %)							(53 %)							(57 %)							(61 %)							(65 %)							(69 %)							(73 %)							(76 %)							(80 %)							(84 %)							(88 %)							(92 %)							(96 %)							(100 %)									Postprocessing......
+						(100 %)									Recompute......
+						(9 %)							(18 %)							(27 %)							(36 %)							(45 %)							(54 %)							(63 %)							(72 %)							(81 %)							(90 %)							(100 %)									Recompute......
+						(7 %)							(15 %)							(23 %)							(30 %)							(38 %)							(46 %)							(53 %)							(61 %)							(69 %)							(76 %)							(84 %)							(92 %)							(100 %)									Recompute......
+						(6 %)							(13 %)							(20 %)							(26 %)							(33 %)							(40 %)							(46 %)							(53 %)							(60 %)							(66 %)							(73 %)							(80 %)							(86 %)							(93 %)							(100 %)									Recompute......
+						(5 %)							(11 %)							(17 %)							(23 %)							(29 %)							(35 %)							(41 %)							(47 %)							(52 %)							(58 %)							(64 %)							(70 %)							(76 %)							(82 %)							(88 %)							(94 %)							(100 %)									

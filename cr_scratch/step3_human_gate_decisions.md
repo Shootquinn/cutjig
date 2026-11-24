@@ -1,0 +1,5 @@
+## Human decisions at the Step 3 gate (DECLARED by the human, 2026-11-08)
+
+**g_stop.** Not a safety item. After a test the drill must be raised before anything else can happen, so there is no pinch point at the wing nut. The finger-crush framing was an invented problem. Keep every dimension as is (stop.g_stop 25 mm and its consequences unchanged). Remove all safety, finger, crush, pinch, hand-entry and ISO 13854 language from live project files; g_stop is a plain mechanical clearance between the cutter's lowest point at the hard stop and the collar top. Status: DECLARED (design choice), no standard cited.
+
+**T-nuts.** The human uses PZRT 3030 Series Roll-in Spring M6 T Nut, roll-ball elastic, for 8 mm T-slot European standard aluminum profile (12-pack, Amazon; ordered repeatedly 2019). These are the deluxe spring-ball roll-ins in use on the 30-series stock. Fit in the 30-6060 slot is DECLARED by use (hardware.tnut_fit_30series: DECLARED, human use). The 80/20 candidates 40-3914, 13031 and 13098 are retired from the BOM. The Boeray half-round nuts in the same order history are for 2020 profile and are not used here.

@@ -1,0 +1,9 @@
+START tnut pid=4904 t=02:50:36
+RESULT tnut volume=1383.748 valid=True solids=1 pass=True sec=0.6
+BUILD_DONE tnut
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Recompute......
+						(100 %)									

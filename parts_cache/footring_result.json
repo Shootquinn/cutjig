@@ -1,0 +1,120 @@
+{
+ "part": "footring",
+ "volume_mm3": 17034.85,
+ "bbox": {
+  "xmin": -66.99,
+  "xmax": 66.99,
+  "ymin": -66.99,
+  "ymax": 66.99,
+  "zmin": -0.0,
+  "zmax": 2.5
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 3,
+ "centre_of_mass": [
+  0.236,
+  0.178,
+  1.029
+ ],
+ "features": [
+  {
+   "feature": "ring height `holder.bottom_above_floor_Kmax` (top z = 2.0 - fit.model_contact_gap)",
+   "built": 1.995,
+   "params": 1.995,
+   "tol": 0.001,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "ring OD radius (register bore - seat_clearance)",
+   "built": 66.99,
+   "params": 66.99,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`collet.foot_ring_width` lip beyond cone base (R)",
+   "built": 3.2,
+   "params": 3.2,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`collet.core_seat_height` (A)",
+   "built": 2.5,
+   "params": 2.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`collet.core_seat_width` (R)",
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": "interval at ledge level spans ledge only plus ring wall; see ledge ID"
+  },
+  {
+   "feature": "ledge ID = B_f - 2 x seat width (D)",
+   "built": 86.0,
+   "params": 86.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "foot key radial tip",
+   "built": 70.04,
+   "params": 70.04,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "foot key width `holder.key_width` (T)",
+   "built": 11.75,
+   "params": 11.75,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "foot key top = ring top (same plane)",
+   "built": 1.995,
+   "params": 1.995,
+   "tol": 0.001,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P foot key off-axis (key azimuth not 0/90/180/270)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 0.3,
+ "notes": [
+  "slits and relief holes not in this part: slit-cut ring is six solids; they belong to the collet generator"
+ ],
+ "d_core": 90.0,
+ "derived": {
+  "r_fo": 66.99,
+  "ring_top": 1.995,
+  "r_bore": 46.0,
+  "r_cone_base": 63.79,
+  "r_key_tip": 70.04,
+  "r_hold": 67.04
+ }
+}

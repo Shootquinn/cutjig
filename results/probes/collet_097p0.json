@@ -1,0 +1,156 @@
+{
+ "d": 97.0,
+ "height": 32.00000010000023,
+ "valid": true,
+ "closed": true,
+ "solids": 1,
+ "volume_mm3": 115386.05848237219,
+ "bad_edges": 0,
+ "slit_plane_faces": 0,
+ "euler_VEF": 0,
+ "min_face_area": 4.8501428873294214,
+ "min_edge_len": 0.7177180006149068,
+ "genus": null,
+ "wall_min_cone_top": 1.2588162314024416,
+ "outer": {
+  "half_angle_deg": 9.999999999999913,
+  "large_od": 126.5220381157492,
+  "small_od": 121.23222865922982,
+  "seat_height": 1.5453125046875107
+ },
+ "cone_half_angle_deg": 9.999999999999913,
+ "bore": {
+  "az": [
+   67.0,
+   187.0,
+   307.0
+  ],
+  "dia": [
+   99.00000000000003,
+   99.0,
+   98.99999999999999
+  ],
+  "slit_hits": [
+   false,
+   false,
+   false
+  ]
+ },
+ "slits": {
+  "count": 12,
+  "phase_deg": 52.0,
+  "width": [
+   1.5000000000000036,
+   1.5000000000000018,
+   1.5,
+   1.5,
+   1.4999999999999982,
+   1.5000000000000053,
+   1.5,
+   1.4999999999999982,
+   1.5000000000000053,
+   1.5000000000000036,
+   1.4999999999999982,
+   1.5000000000000053
+  ],
+  "plane_offset": [
+   1.5987211554602254e-14,
+   2.220446049250313e-14,
+   3.552713678800501e-15,
+   2.842170943040401e-14,
+   1.687538997430238e-14,
+   4.440892098500626e-15,
+   7.105427357601002e-15,
+   -9.769962616701378e-15,
+   7.993605777301127e-15,
+   1.5987211554602254e-14,
+   -6.217248937900877e-15,
+   1.1546319456101628e-14
+  ],
+  "void_depth": [
+   29.000000100000257,
+   28.999999999999986,
+   29.000000100000214,
+   29.0,
+   29.00000010000023,
+   28.999999999999986,
+   29.00000010000023,
+   29.0,
+   29.000000100000214,
+   29.0,
+   29.00000010000023,
+   29.000000000000014
+  ],
+  "solid_below": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ]
+ },
+ "relief_holes": 12,
+ "core_in_bore": {
+  "interference_mm3": 0.0,
+  "base_gap": -1.9539925233402755e-14,
+  "ledge_top": 2.4999999999999805
+ },
+ "sweep": {
+  "90.0": {
+   "interference_mm3": 0.0,
+   "bore_minus_core": 9.0
+  },
+  "92.5": {
+   "interference_mm3": 0.0,
+   "bore_minus_core": 6.5
+  },
+  "95.0": {
+   "interference_mm3": 0.0,
+   "bore_minus_core": 4.0
+  },
+  "97.5": {
+   "interference_mm3": 0.0,
+   "bore_minus_core": 1.5
+  },
+  "100.0": {
+   "interference_mm3": 4889.798397827331,
+   "bore_minus_core": -1.0
+  },
+  "102.5": {
+   "interference_mm3": 11533.355043399373,
+   "bore_minus_core": -3.5
+  },
+  "105.0": {
+   "interference_mm3": 18787.758587972738,
+   "bore_minus_core": -6.0
+  }
+ },
+ "seat": {
+  "R_gap_min": 0.299977477716574,
+  "R_gap_max": 0.2999774777166522,
+  "Kd1": {
+   "common_mm3": 0.0,
+   "contact_mm2": 11855.25269295099
+  },
+  "Kmax": {
+   "common_mm3": 0.0,
+   "contact_mm2": 11855.25269295099
+  }
+ },
+ "flip_mismatch_fraction": 1.0,
+ "x_solid_volume": 379267.088570588,
+ "sentinel": "PROBE_OK",
+ "probe": "collet_097p0",
+ "run_started_epoch": 1794220630.040189,
+ "run_seconds": 125.0,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\collet_097p0.FCStd"
+ ]
+}

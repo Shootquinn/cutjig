@@ -1,0 +1,7 @@
+validity {'receiver_check': 'BOP check found the following errors:\nError in Edge: BOPAlgo_InvalidCurveOnSurface\nError in Face: BOPAlgo_InvalidCurveOnSurface\nError in Edge: BOPAlgo_InvalidCurveOnSurface\nError in Face: BOPAlgo_Inva', 'plate_check': 'OK', 'nut_check': 'OK', 'receiver_isValid': True, 'nut_isValid': True}
+receiver {'site': [66.667, -26.667, 0.0], 'nz': -1.0, 'analytic': 125.0, 'common_solid': 125.0, 'common_via_compound': 125.0, 'cut_removed': 124.9976, 'dist_box_to_solid': 0.0}
+plate {'site': [-268.333, -253.333, 12.0], 'nz': 1.0, 'analytic': 125.0, 'common_solid': 125.0, 'common_via_compound': 125.0, 'cut_removed': 125.0, 'dist_box_to_solid': 0.0}
+nut {'site': [-50.198, 55.212, 153.1], 'nz': 1.0, 'analytic': 125.0, 'common_solid': 125.0, 'common_via_compound': 125.0, 'cut_removed': 125.0651, 'dist_box_to_solid': 0.0}
+dist {'receiver': {'analytic': 4.0, 'measured': 4.0}, 'nut': {'analytic': 4.0, 'measured': 4.0}}
+thread 0.3 {'common': 0.0, 'common_compound': 0.0, 'mc': 653.65, 'mc_se': 462.05, 'bboxvol': 980480.0} 478
+thread 1.0 {'common': 0.0, 'common_compound': 0.0, 'mc': 4171.09, 'mc_se': 1154.34, 'bboxvol': 962560.0} 1080

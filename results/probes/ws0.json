@@ -1,0 +1,23 @@
+{
+ "fired": [],
+ "fired_by_pose": {
+  "R": [],
+  "Kd1": [],
+  "Kmax": []
+ },
+ "reasons": {
+  "R": {},
+  "Kd1": {},
+  "Kmax": {}
+ },
+ "poses": [
+  "Kd1",
+  "Kmax",
+  "R"
+ ],
+ "sentinel": "PROBE_OK",
+ "probe": "ws0",
+ "run_started_epoch": 1794434029.4365516,
+ "run_seconds": 5156.5,
+ "inputs": []
+}

@@ -1,0 +1,26 @@
+VIDEO_START 10:40:30
+LEDGER phi {'R': 0.0, 'Kd1': -237.19500000000005, 'Kmax': -556.2450000000002} dz {'R': 0.0, 'Kd1': -5.271000000000001, 'Kmax': -12.361000000000004} lead 8
+WITNESS holder flange underside z 129.99999999999997 receiver rim face z 128.49999999999997 gap 1.5
+FRAME 0 cov=27.3 corner=(60, 60, 65)
+FRAME 40 cov=27.2 corner=(60, 60, 65)
+FRAME 80 cov=28.4 corner=(60, 60, 65)
+FRAME 120 cov=27.1 corner=(60, 60, 65)
+FRAME 160 cov=27.4 corner=(60, 60, 65)
+FRAME 200 cov=27.9 corner=(60, 60, 65)
+SEG1 done frames 210
+FRAME 240 cov=59.1 corner=(60, 60, 65)
+FRAME 280 cov=59.1 corner=(60, 60, 65)
+FRAME 320 cov=59.1 corner=(60, 60, 65)
+FRAME 360 cov=59.1 corner=(60, 60, 65)
+FRAME 400 cov=59.1 corner=(60, 60, 65)
+SEG2 done frames 435
+FRAME 440 cov=39.3 corner=(60, 60, 65)
+FRAME 480 cov=41.4 corner=(60, 60, 65)
+FRAME 520 cov=40.0 corner=(60, 60, 65)
+FRAME 560 cov=39.7 corner=(60, 60, 65)
+FRAME 600 cov=38.7 corner=(60, 60, 65)
+FRAME 640 cov=51.5 corner=(60, 60, 65)
+FRAME 680 cov=85.9 corner=(113, 122, 135)
+SEG3 done frames 690
+FRAMES 690
+BUILD_DONE 10:43:38

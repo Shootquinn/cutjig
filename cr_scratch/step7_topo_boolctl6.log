@@ -1,0 +1,10 @@
+fz -1.0 {'common': 40.716, 'valid': True, 'union': 1308025.083, 'implied': 41.912, 'cut_ab': 955552.805, 'implied2': 40.424, 'zr': [92.65, 99.75]}
+fz -2.0 {'common': 6908.2, 'valid': True, 'union': 1301157.337, 'implied': 6909.659, 'cut_ab': 948685.282, 'implied2': 6907.947, 'zr': [91.25, 130.7]}
+BUILD_DONE
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(21 %)							(26 %)							(31 %)							(36 %)							(42 %)							(47 %)							(52 %)							(57 %)							(63 %)							(68 %)							(73 %)							(78 %)							(84 %)							(89 %)							(94 %)							(100 %)									Postprocessing......
+						(100 %)									

@@ -1,0 +1,237 @@
+{
+ "part": "base",
+ "volume_mm3": 4326428.142,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 5,
+ "faces": 63,
+ "edges": 174,
+ "vertices": 116,
+ "bbox_plain": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": 0.0,
+  "zmax": 12.0
+ },
+ "bbox_optimal": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": 0.0,
+  "zmax": 12.0
+ },
+ "bbox": {
+  "xmin": -322.0,
+  "xmax": 322.0,
+  "ymin": -304.0,
+  "ymax": 304.0,
+  "zmin": 0.0,
+  "zmax": 12.0
+ },
+ "centre_of_mass": [
+  0.221,
+  -0.069,
+  6.002
+ ],
+ "features": [
+  {
+   "id": "BS1",
+   "feature": "plate length (A) = icd.footprint_x",
+   "volume_mm3": 4698624.0,
+   "built": 644.0,
+   "params": 644,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS1",
+   "feature": "plate width (T) = icd.footprint_y",
+   "volume_mm3": 4698624.0,
+   "built": 608.0,
+   "params": 608,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS1",
+   "feature": "plate thickness (Z) = base.plate_thickness",
+   "volume_mm3": 4698624.0,
+   "built": 12.0,
+   "params": 12,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS2",
+   "feature": "spigot hole diameter (D) = base.spigot_hole_dia",
+   "volume_mm3": 248853.345,
+   "built": 160.4,
+   "params": 160.4,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS2",
+   "feature": "drain hole diameter (D) = base.drain_hole_dia",
+   "volume_mm3": 248853.345,
+   "built": 26.0,
+   "params": 26,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS3",
+   "feature": "slot count (through, centre empty)",
+   "volume_mm3": 12430.513,
+   "built": 8,
+   "params": 8,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS3",
+   "feature": "slot length (A) = base.slot_length",
+   "volume_mm3": 12430.513,
+   "built": 20.0,
+   "params": 20,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS3",
+   "feature": "slot width (T) = base.slot_width",
+   "volume_mm3": 12430.513,
+   "built": 7.0,
+   "params": 7,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS3",
+   "feature": "slot pattern is not symmetric under a flip about X (Rule P)",
+   "volume_mm3": 12430.513,
+   "built": true,
+   "params": true,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "plate key pocket width (T) = base.key_pocket_size",
+   "volume_mm3": 110912.0,
+   "built": 12.0,
+   "params": 12,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "plate key pocket depth from the underside (Z) = base.pocket_depth",
+   "volume_mm3": 110912.0,
+   "built": 4.0,
+   "params": 4,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "stop pin pocket x (T)",
+   "volume_mm3": 110912.0,
+   "built": 10.0,
+   "params": 10,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "stop pin pocket y (T)",
+   "volume_mm3": 110912.0,
+   "built": 14.0,
+   "params": 14,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "stop pin pocket wall x (pin contact, declared)",
+   "volume_mm3": 110912.0,
+   "built": 244.0,
+   "params": 244.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "stop pin pocket depth (Z)",
+   "volume_mm3": 110912.0,
+   "built": 4.0,
+   "params": 4,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "column notch depth from the long edge (L) = base.column_notch[1]",
+   "volume_mm3": 110912.0,
+   "built": 65.0,
+   "params": 65,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "BS4",
+   "feature": "column notch width (T) = base.column_notch[0]",
+   "volume_mm3": 110912.0,
+   "built": 70.0,
+   "params": 70,
+   "tol": 0.02,
+   "pass": true,
+   "note": "notch spans x -base.column_notch_x to +base.column_notch_x about the column at x 0"
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "tools_fuse",
+   "kind": "fuse",
+   "faces_before": 84,
+   "faces_after": 84,
+   "faces_after_clean": 84,
+   "valid": true
+  },
+  {
+   "name": "tools_cut",
+   "kind": "cut",
+   "faces_before": 6,
+   "faces_after": 63,
+   "faces_after_clean": 63,
+   "valid": true,
+   "tool_faces": 84
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.4,
+ "build_seconds": 0.4,
+ "mass_note": "plate volume only; printed mass in findings"
+}

@@ -1,0 +1,133 @@
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.300 -> 1.6279 mm3 (0.4s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.500 -> 10.2047 mm3 (0.3s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.700 -> 30.9764 mm3 (0.4s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.924 -> 70.9273 mm3 (0.3s)
+TILT 1.200 -> 0.0006 mm3 (0.4s)
+TILT 1.600 -> 0.1879 mm3 (0.3s)
+TILT 2.000 -> 1.1601 mm3 (0.4s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 2.500 -> 42872.2902 mm3 (0.4s)
+TILT 3.000 -> 9.9266 mm3 (0.4s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 4.000 -> 34.1453 mm3 (0.5s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 5.000 -> 89.0793 mm3 (0.5s)
+TILT 0.300 -> 0.0000 mm3 (0.1s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.500 -> 105.3388 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.700 -> 376.4055 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.924 -> 787.0776 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 1.200 -> 1387.1134 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 1.600 -> 2383.6912 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 2.000 -> 3475.4528 mm3 (0.3s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 2.500 -> 4933.0352 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 3.000 -> 6474.0084 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 4.000 -> 9773.6884 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 5.000 -> 13346.1796 mm3 (0.2s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.924 -> 70.9273 mm3 (0.3s)
+<TopoShape> TopoShapeExpansion.cpp(922): hasher mismatch
+TILT 0.600 -> 18.9507 mm3 (0.3s)
+PROBE_DONE tilt 7.6s
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(4 %)	
+						(9 %)	
+						(14 %)	
+						(19 %)	
+						(23 %)	
+						(28 %)	
+						(33 %)	
+						(38 %)	
+						(42 %)	
+						(47 %)	
+						(52 %)	
+						(57 %)	
+						(61 %)	
+						(66 %)	
+						(71 %)	
+						(76 %)	
+						(80 %)	
+						(85 %)	
+						(90 %)	
+						(95 %)	
+						(100 %)	
+								
+Postprocessing......
+						(100 %)	
+								
+Importing project files......
+						(5 %)	
+						(10 %)	
+						(15 %)	
+						(20 %)	
+						(25 %)	
+						(30 %)	
+						(35 %)	
+						(40 %)	
+						(45 %)	
+						(50 %)	
+						(55 %)	
+						(60 %)	
+						(65 %)	
+						(70 %)	
+						(75 %)	
+						(80 %)	
+						(85 %)	
+						(90 %)	
+						(95 %)	
+						(100 %)	
+								
+Postprocessing......
+						(100 %)	
+								
+Importing project files......
+						(3 %)	
+						(7 %)	
+						(11 %)	
+						(14 %)	
+						(18 %)	
+						(22 %)	
+						(25 %)	
+						(29 %)	
+						(33 %)	
+						(37 %)	
+						(40 %)	
+						(44 %)	
+						(48 %)	
+						(51 %)	
+						(55 %)	
+						(59 %)	
+						(62 %)	
+						(66 %)	
+						(70 %)	
+						(74 %)	
+						(77 %)	
+						(81 %)	
+						(85 %)	
+						(88 %)	
+						(92 %)	
+						(96 %)	
+						(100 %)	
+								
+Postprocessing......
+						(100 %)	
+								
+ELAPSED_S 8
+BUILD_DONE

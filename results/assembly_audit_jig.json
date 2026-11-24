@@ -1,0 +1,430 @@
+{
+ "sentinel": "AUDIT_OK",
+ "pose": "Kd1",
+ "tag": "100p0",
+ "audit": {
+  "objects": [
+   {
+    "name": "base",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": true,
+    "phi_mod360_deg": 0.0,
+    "z": 0.0,
+    "volume": 5282021.396018288,
+    "faces": 258,
+    "solids": 2,
+    "bbox_plain_z": [
+     -3.520000588751182e-14,
+     132.1
+    ],
+    "bbox_optimal_z": [
+     -3.52e-14,
+     128.50000010000005
+    ]
+   },
+   {
+    "name": "holder",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": 49.09,
+    "volume": 459449.00277713407,
+    "faces": 40,
+    "solids": 1,
+    "bbox_plain_z": [
+     49.089999999999975,
+     159.84
+    ],
+    "bbox_optimal_z": [
+     49.089999999999975,
+     159.84
+    ]
+   },
+   {
+    "name": "collet",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": 40.0,
+    "volume": 104701.52315985871,
+    "faces": 129,
+    "solids": 1,
+    "bbox_plain_z": [
+     39.99999999999997,
+     72.00000000000034
+    ],
+    "bbox_optimal_z": [
+     39.99999999999997,
+     72.00000010000034
+    ]
+   },
+   {
+    "name": "nut",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": -159.52500000000006,
+    "z": 97.1,
+    "volume": 352473.76639858546,
+    "faces": 195,
+    "solids": 1,
+    "bbox_plain_z": [
+     93.5,
+     153.10000000000005
+    ],
+    "bbox_optimal_z": [
+     97.09999989999996,
+     153.10000010000002
+    ]
+   },
+   {
+    "name": "washer",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": -159.52500000000006,
+    "z": 145.09499999999997,
+    "volume": 1814.2270123298204,
+    "faces": 7,
+    "solids": 1,
+    "bbox_plain_z": [
+     145.09499999999994,
+     146.395
+    ],
+    "bbox_optimal_z": [
+     145.09499999999994,
+     146.395
+    ]
+   },
+   {
+    "name": "core",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": 42.505,
+    "volume": 4004523.752881511,
+    "faces": 4,
+    "solids": 1,
+    "bbox_plain_z": [
+     42.505,
+     542.505
+    ],
+    "bbox_optimal_z": [
+     42.505,
+     542.505
+    ]
+   },
+   {
+    "name": "frame",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -0.005,
+    "volume": 2930129.1905093477,
+    "faces": 2478,
+    "solids": 6,
+    "bbox_plain_z": [
+     -60.005,
+     -0.004999999999995897
+    ],
+    "bbox_optimal_z": [
+     -60.005,
+     -0.004999999999995897
+    ]
+   },
+   {
+    "name": "bracket",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -0.005,
+    "volume": 474126.0832634716,
+    "faces": 288,
+    "solids": 12,
+    "bbox_plain_z": [
+     -58.505,
+     -1.505
+    ],
+    "bbox_optimal_z": [
+     -58.505,
+     -1.505
+    ]
+   },
+   {
+    "name": "tnut",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -0.005,
+    "volume": 132839.8431977892,
+    "faces": 1344,
+    "solids": 96,
+    "bbox_plain_z": [
+     -53.005,
+     -7.005000000000001
+    ],
+    "bbox_optimal_z": [
+     -53.005,
+     -7.005000000000001
+    ]
+   },
+   {
+    "name": "cutter",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": true,
+    "phi_mod360_deg": 0.0,
+    "z": 0.0,
+    "volume": 951102.1246961649,
+    "faces": 16,
+    "solids": 4,
+    "bbox_plain_z": [
+     184.84,
+     684.84
+    ],
+    "bbox_optimal_z": [
+     184.84,
+     684.84
+    ]
+   },
+   {
+    "name": "tray",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": true,
+    "phi_mod360_deg": 0.0,
+    "z": 0.0,
+    "volume": 3051605.7897000657,
+    "faces": 29,
+    "solids": 1,
+    "bbox_plain_z": [
+     12.0,
+     37.0
+    ],
+    "bbox_optimal_z": [
+     12.0,
+     37.0
+    ]
+   },
+   {
+    "name": "plug",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": true,
+    "phi_mod360_deg": 0.0,
+    "z": 0.0,
+    "volume": 23594.31238677738,
+    "faces": 12,
+    "solids": 1,
+    "bbox_plain_z": [
+     12.0,
+     41.0
+    ],
+    "bbox_optimal_z": [
+     12.0,
+     41.0
+    ]
+   },
+   {
+    "name": "stop",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": true,
+    "phi_mod360_deg": 0.0,
+    "z": 0.0,
+    "volume": 42378.91334405777,
+    "faces": 8,
+    "solids": 1,
+    "bbox_plain_z": [
+     172.84,
+     184.84
+    ],
+    "bbox_optimal_z": [
+     172.84,
+     184.84
+    ]
+   },
+   {
+    "name": "caddy",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -68.0,
+    "volume": 3961670.815584938,
+    "faces": 55,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     -22.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     -22.0
+    ]
+   },
+   {
+    "name": "gauge",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -68.0,
+    "volume": 984604.5983932232,
+    "faces": 17,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     107.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     107.0
+    ]
+   },
+   {
+    "name": "rest",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": 350.0,
+    "volume": 544616.9926176125,
+    "faces": 66,
+    "solids": 1,
+    "bbox_plain_z": [
+     320.0,
+     600.0
+    ],
+    "bbox_optimal_z": [
+     320.0,
+     600.0
+    ]
+   },
+   {
+    "name": "foot_1",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -68.0,
+    "volume": 46943.670886156964,
+    "faces": 9,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     -60.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     -60.0
+    ]
+   },
+   {
+    "name": "foot_2",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 0.0,
+    "z": -68.0,
+    "volume": 46943.670886156964,
+    "faces": 9,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     -60.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     -60.0
+    ]
+   },
+   {
+    "name": "foot_3",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 180.0,
+    "z": -68.0,
+    "volume": 46943.670886156964,
+    "faces": 9,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     -60.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     -60.0
+    ]
+   },
+   {
+    "name": "foot_4",
+    "matches_ledger": true,
+    "diff": 0.0,
+    "identity": false,
+    "phi_mod360_deg": 180.0,
+    "z": -68.0,
+    "volume": 46943.670886156964,
+    "faces": 9,
+    "solids": 1,
+    "bbox_plain_z": [
+     -68.0,
+     -60.0
+    ],
+    "bbox_optimal_z": [
+     -68.0,
+     -60.0
+    ]
+   }
+  ],
+  "max_diff": 0.0,
+  "all_match": true,
+  "non_identity": [
+   "holder",
+   "collet",
+   "nut",
+   "washer",
+   "core",
+   "frame",
+   "bracket",
+   "tnut",
+   "caddy",
+   "gauge",
+   "rest",
+   "foot_1",
+   "foot_2",
+   "foot_3",
+   "foot_4"
+  ]
+ },
+ "objects": [
+  "base",
+  "holder",
+  "collet",
+  "nut",
+  "washer",
+  "core",
+  "frame",
+  "bracket",
+  "tnut",
+  "cutter",
+  "tray",
+  "plug",
+  "stop",
+  "caddy",
+  "gauge",
+  "rest",
+  "foot_1",
+  "foot_2",
+  "foot_3",
+  "foot_4"
+ ]
+}

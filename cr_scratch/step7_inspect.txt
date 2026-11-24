@@ -1,0 +1,33 @@
+R_100p0
+base base nsol=2 vol=5282021 z[-0.00,132.10] x[-322.0,322.0] y[-304.0,304.0] vis=True
+holder holder nsol=1 vol=459449 z[53.63,164.38] x[-76.2,76.2] y[-76.2,76.2] vis=True
+collet collet nsol=1 vol=104734 z[40.00,72.00] x[-67.0,67.0] y[-67.0,67.0] vis=True
+nut nut nsol=1 vol=352474 z[98.77,158.37] x[-95.1,95.1] y[-113.8,113.8] vis=True
+washer washer nsol=1 vol=1814 z[150.37,151.67] x[-71.6,71.6] y[-71.6,71.6] vis=True
+core core nsol=1 vol=3925605 z[43.50,543.50] x[-50.0,50.0] y[-50.0,50.0] vis=True
+frame frame nsol=6 vol=2930129 z[-60.01,-0.00] x[-322.0,322.0] y[-304.0,304.0] vis=True
+bracket bracket nsol=12 vol=474126 z[-58.51,-1.50] x[-319.0,319.0] y[-244.0,244.0] vis=True
+tnut tnut nsol=96 vol=132840 z[-53.01,-7.01] x[-313.1,313.1] y[-252.3,252.3] vis=True
+cutter cutter nsol=4 vol=951102 z[184.84,684.84] x[-86.2,86.2] y[-86.2,86.2] vis=True
+Kmax_100p0
+base base nsol=2 vol=5282021 z[-0.00,132.10] x[-322.0,322.0] y[-304.0,304.0] vis=True
+holder holder nsol=1 vol=459449 z[42.00,152.75] x[-76.2,76.2] y[-76.2,76.2] vis=True
+collet collet nsol=1 vol=104864 z[40.00,72.00] x[-67.0,67.0] y[-67.0,67.0] vis=True
+nut nut nsol=1 vol=352474 z[86.41,146.01] x[-97.4,97.4] y[-104.3,104.3] vis=True
+washer washer nsol=1 vol=1814 z[138.00,139.31] x[-71.6,71.6] y[-71.6,71.6] vis=True
+core core nsol=1 vol=3808700 z[42.51,542.50] x[-49.2,49.2] y[-49.2,49.2] vis=True
+frame frame nsol=6 vol=2930129 z[-60.01,-0.00] x[-322.0,322.0] y[-304.0,304.0] vis=True
+bracket bracket nsol=12 vol=474126 z[-58.51,-1.50] x[-319.0,319.0] y[-244.0,244.0] vis=True
+tnut tnut nsol=96 vol=132840 z[-53.01,-7.01] x[-313.1,313.1] y[-252.3,252.3] vis=True
+cutter cutter nsol=4 vol=951102 z[184.84,684.84] x[-86.2,86.2] y[-86.2,86.2] vis=True
+Kd1_100p0
+base base nsol=2 vol=5282021 z[-0.00,132.10] x[-322.0,322.0] y[-304.0,304.0] vis=True
+holder holder nsol=1 vol=459449 z[49.09,159.84] x[-76.2,76.2] y[-76.2,76.2] vis=True
+collet collet nsol=1 vol=104702 z[40.00,72.00] x[-67.0,67.0] y[-67.0,67.0] vis=True
+nut nut nsol=1 vol=352474 z[93.50,153.10] x[-110.2,110.2] y[-95.1,95.1] vis=True
+washer washer nsol=1 vol=1814 z[145.09,146.40] x[-71.6,71.6] y[-71.6,71.6] vis=True
+core core nsol=1 vol=4004524 z[42.51,542.50] x[-50.5,50.5] y[-50.5,50.5] vis=True
+frame frame nsol=6 vol=2930129 z[-60.01,-0.00] x[-322.0,322.0] y[-304.0,304.0] vis=True
+bracket bracket nsol=12 vol=474126 z[-58.51,-1.50] x[-319.0,319.0] y[-244.0,244.0] vis=True
+tnut tnut nsol=96 vol=132840 z[-53.01,-7.01] x[-313.1,313.1] y[-252.3,252.3] vis=True
+cutter cutter nsol=4 vol=951102 z[184.84,684.84] x[-86.2,86.2] y[-86.2,86.2] vis=True

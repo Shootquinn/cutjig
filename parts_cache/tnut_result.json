@@ -1,0 +1,129 @@
+{
+ "part": "tnut",
+ "volume_mm3": 1383.748,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 3,
+ "faces": 14,
+ "edges": 33,
+ "vertices": 22,
+ "bbox_plain": {
+  "xmin": -8.0,
+  "xmax": 8.0,
+  "ymin": -8.0,
+  "ymax": 8.0,
+  "zmin": -8.258,
+  "zmax": 0.0
+ },
+ "bbox_optimal": {
+  "xmin": -8.0,
+  "xmax": 8.0,
+  "ymin": -8.0,
+  "ymax": 8.0,
+  "zmin": -8.258,
+  "zmax": 0.0
+ },
+ "bbox": {
+  "xmin": -8.0,
+  "xmax": 8.0,
+  "ymin": -8.0,
+  "ymax": 8.0,
+  "zmin": -8.258,
+  "zmax": 0.0
+ },
+ "centre_of_mass": [
+  0.0,
+  0.0,
+  -4.516
+ ],
+ "features": [
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy overall height (A) = neck + body",
+   "volume_mm3": 1383.748,
+   "built": 8.2575,
+   "params": 8.2575,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy body width across the slot (T)",
+   "volume_mm3": 1383.748,
+   "built": 16.0,
+   "params": 16,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy neck width, under the profile opening (T)",
+   "volume_mm3": 1383.748,
+   "built": 7.6,
+   "params": 7.6,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy neck length along the slot (L)",
+   "volume_mm3": 1383.748,
+   "built": 12.0,
+   "params": 12,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy bottom width after the 45 deg chamfers (T)",
+   "volume_mm3": 1383.748,
+   "built": 9.03,
+   "params": 9.03,
+   "tol": 0.001,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR3",
+   "feature": "T-nut proxy tapped-hole region diameter (D)",
+   "volume_mm3": 162.136,
+   "built": 5.0,
+   "params": 5.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "body_neck_fuse",
+   "kind": "fuse",
+   "faces_before": 14,
+   "faces_after": 13,
+   "faces_after_clean": 13,
+   "valid": true
+  },
+  {
+   "name": "hole_cut",
+   "kind": "cut",
+   "faces_before": 13,
+   "faces_after": 14,
+   "faces_after_clean": 14,
+   "valid": true,
+   "tool_faces": 3
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 0.2,
+ "build_seconds": 0.2,
+ "assumption": "PZRT 3030 has no CAD on disk; proxy envelope from profile.* (ASSUMED)",
+ "cavity_width": 16.5,
+ "opening": 8.0
+}

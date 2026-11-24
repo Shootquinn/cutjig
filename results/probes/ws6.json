@@ -1,0 +1,31 @@
+{
+ "pose": "Kd1",
+ "tag": "100p0",
+ "fired": [
+  "A1",
+  "F3"
+ ],
+ "reasons": {
+  "A1": [
+   "collet|core: C: overlap 29228.636273674572"
+  ],
+  "F3": [
+   "core against collet overlap 29228.636 contact 807.2"
+  ]
+ },
+ "expected": [
+  "A1",
+  "F3"
+ ],
+ "absent": {
+  "fit_column_foot": "ABSENT FEATURE: fit_column_foot needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree",
+  "fit_carriage_guide": "ABSENT FEATURE: fit_carriage_guide needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree"
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "ws6",
+ "run_started_epoch": 1794434029.3134315,
+ "run_seconds": 3071.6,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\assembly\\ws6.FCStd"
+ ]
+}

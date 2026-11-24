@@ -1,0 +1,270 @@
+{
+ "tilt_deg": 0.924,
+ "register": {
+  "insertion_mm": 48.75,
+  "z_hb": 39.75,
+  "stop_deg": 0.5963134765625,
+  "clear_deg": 0.595703125,
+  "common_at_zero_mm3": 0.0,
+  "valid": true
+ },
+ "short_register": {
+  "insertion_mm": 14.75,
+  "z_hb": 73.75,
+  "stop_deg": 1.826171875,
+  "clear_deg": 1.8255615234375,
+  "common_at_zero_mm3": 0.0,
+  "valid": true
+ },
+ "short_lh_mm": 54.0,
+ "alpha_crit_deg_from_params": 1.5318124822255021,
+ "register_common_at_2x_crit_mm3": 1949.228683541778,
+ "slab_half_width_mm": 20.0,
+ "bisect_tol_deg": 0.001,
+ "samples": [
+  {
+   "deg": 0.0,
+   "z_hb": 39.75,
+   "common": 0.0,
+   "via_cut": 6.751820910722017e-05,
+   "valid": true
+  },
+  {
+   "deg": 5.0,
+   "z_hb": 39.75,
+   "common": 4146.859534676826,
+   "via_cut": 4146.859631596366,
+   "valid": true
+  },
+  {
+   "deg": 2.5,
+   "z_hb": 39.75,
+   "common": 1384.8001738191542,
+   "via_cut": 1384.8005844301078,
+   "valid": true
+  },
+  {
+   "deg": 1.25,
+   "z_hb": 39.75,
+   "common": 304.07094623075193,
+   "via_cut": 304.07141059369314,
+   "valid": true
+  },
+  {
+   "deg": 0.625,
+   "z_hb": 39.75,
+   "common": 1.178115067967301,
+   "via_cut": 1.1786806407617405,
+   "valid": true
+  },
+  {
+   "deg": 0.3125,
+   "z_hb": 39.75,
+   "common": 0.0,
+   "via_cut": -1.0155257768929005e-05,
+   "valid": true
+  },
+  {
+   "deg": 0.46875,
+   "z_hb": 39.75,
+   "common": 0.0,
+   "via_cut": -1.0155257768929005e-05,
+   "valid": true
+  },
+  {
+   "deg": 0.546875,
+   "z_hb": 39.75,
+   "common": 0.0,
+   "via_cut": -1.0155257768929005e-05,
+   "valid": true
+  },
+  {
+   "deg": 0.5859375,
+   "z_hb": 39.75,
+   "common": 0.0,
+   "via_cut": -1.0155257768929005e-05,
+   "valid": true
+  },
+  {
+   "deg": 0.60546875,
+   "z_hb": 39.75,
+   "common": 0.15259007711132042,
+   "via_cut": 0.1531626550713554,
+   "valid": true
+  },
+  {
+   "deg": 0.595703125,
+   "z_hb": 39.75,
+   "common": 0.008217808065465237,
+   "via_cut": 0.00853552168700844,
+   "valid": true
+  },
+  {
+   "deg": 0.6005859375,
+   "z_hb": 39.75,
+   "common": 0.05342657835450115,
+   "via_cut": 0.05374058848246932,
+   "valid": true
+  },
+  {
+   "deg": 0.59814453125,
+   "z_hb": 39.75,
+   "common": 0.024926056665623086,
+   "via_cut": 0.025241595809347928,
+   "valid": true
+  },
+  {
+   "deg": 0.596923828125,
+   "z_hb": 39.75,
+   "common": 0.01522419881033965,
+   "via_cut": 0.015540736960247159,
+   "valid": true
+  },
+  {
+   "deg": 0.5963134765625,
+   "z_hb": 39.75,
+   "common": 0.011401634162447438,
+   "via_cut": 0.01171899726614356,
+   "valid": true
+  },
+  {
+   "deg": 0.0,
+   "z_hb": 73.75,
+   "common": 0.0,
+   "via_cut": 8.578773122280836e-05,
+   "valid": true
+  },
+  {
+   "deg": 5.0,
+   "z_hb": 73.75,
+   "common": 363.0299340582622,
+   "via_cut": 363.030772222206,
+   "valid": true
+  },
+  {
+   "deg": 2.5,
+   "z_hb": 73.75,
+   "common": 23.8693843447629,
+   "via_cut": 23.870060231885873,
+   "valid": true
+  },
+  {
+   "deg": 1.25,
+   "z_hb": 73.75,
+   "common": 0.0,
+   "via_cut": 8.16222745925188e-06,
+   "valid": true
+  },
+  {
+   "deg": 1.875,
+   "z_hb": 73.75,
+   "common": 0.20486087430141323,
+   "via_cut": 0.2055779795628041,
+   "valid": true
+  },
+  {
+   "deg": 1.5625,
+   "z_hb": 73.75,
+   "common": 0.0,
+   "via_cut": 8.16222745925188e-06,
+   "valid": true
+  },
+  {
+   "deg": 1.71875,
+   "z_hb": 73.75,
+   "common": 0.0,
+   "via_cut": 8.16222745925188e-06,
+   "valid": true
+  },
+  {
+   "deg": 1.796875,
+   "z_hb": 73.75,
+   "common": 0.0,
+   "via_cut": 8.16222745925188e-06,
+   "valid": true
+  },
+  {
+   "deg": 1.8359375,
+   "z_hb": 73.75,
+   "common": 0.02741886214493916,
+   "via_cut": 0.02775509108323604,
+   "valid": true
+  },
+  {
+   "deg": 1.81640625,
+   "z_hb": 73.75,
+   "common": 0.0021695273031728246,
+   "via_cut": 0.002506254124455154,
+   "valid": true
+  },
+  {
+   "deg": 1.826171875,
+   "z_hb": 73.75,
+   "common": 0.010539647865458912,
+   "via_cut": 0.01087331015150994,
+   "valid": true
+  },
+  {
+   "deg": 1.8212890625,
+   "z_hb": 73.75,
+   "common": 0.0054132745131478255,
+   "via_cut": 0.005750397103838623,
+   "valid": true
+  },
+  {
+   "deg": 1.82373046875,
+   "z_hb": 73.75,
+   "common": 0.007724334409698497,
+   "via_cut": 0.008059305371716619,
+   "valid": true
+  },
+  {
+   "deg": 1.824951171875,
+   "z_hb": 73.75,
+   "common": 0.009067013645195576,
+   "via_cut": 0.009403315372765064,
+   "valid": true
+  },
+  {
+   "deg": 1.8255615234375,
+   "z_hb": 73.75,
+   "common": 0.009786849525425634,
+   "via_cut": 0.010119061567820609,
+   "valid": true
+  },
+  {
+   "deg": 3.0636249644510043,
+   "z_hb": 39.75,
+   "common": 1949.228683541778,
+   "via_cut": 1949.2290662943851,
+   "valid": true
+  }
+ ],
+ "g_reg": 0.25,
+ "register_bore_radius": 67.29,
+ "holder_radius": 67.04,
+ "register_chamfer": 1.0,
+ "flank_gap_zero_tilt_mm": 0.10605802541304771,
+ "fit_g_a": 0.3,
+ "axial_drop": {
+  "0.100": {
+   "common_mm3": 0.0,
+   "valid": true
+  },
+  "0.200": {
+   "common_mm3": 0.11551391772598343,
+   "valid": true
+  }
+ },
+ "drop_band_mm": 0.05,
+ "register_seconds": 23.7,
+ "sentinel": "PROBE_OK",
+ "probe": "tilt",
+ "run_started_epoch": 1794344331.282318,
+ "run_seconds": 24.4,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\holder.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd"
+ ]
+}

@@ -1,0 +1,247 @@
+{
+ "part": "receiver",
+ "volume_mm3": 955903.815,
+ "bbox": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -80.0,
+  "ymax": 80.0,
+  "zmin": -40.0,
+  "zmax": 88.5
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 4,
+ "centre_of_mass": [
+  -0.182,
+  -0.171,
+  0.615
+ ],
+ "features": [
+  {
+   "feature": "`thread.major` (D) from crest radius",
+   "built": 149.58,
+   "params": 149.58,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.minor` (D) from root radius",
+   "built": 144.58,
+   "params": 144.58,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.pitch` (A) tooth period",
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "tooth width at pitch line = pitch / 2 (A)",
+   "built": 4.0,
+   "params": 4.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.land_width` crest flat (A)",
+   "built": 1.51,
+   "params": 1.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "hand: tooth shift per +90 deg = pitch/4 means right",
+   "built": 2.0,
+   "params": 2.0,
+   "tol": 0.1,
+   "pass": true,
+   "note": "left hand would read 3 x pitch/4"
+  },
+  {
+   "feature": "`thread.starts` (period / pitch)",
+   "built": 1.0,
+   "params": 1,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.flank_deg` from tooth widths (deg)",
+   "built": 45.0,
+   "params": 45,
+   "tol": 0.5,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "thread run start z (lowest tooth start)",
+   "built": 40.5,
+   "params": 40.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.lead_in_length` rim chamfer (R, to pitch line)",
+   "built": 1.249,
+   "params": 1.25,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.runout_land` length (A)",
+   "built": 4.0,
+   "params": 4.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "shoulder z (A)",
+   "built": 36.5,
+   "params": 36.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.spigot_od` (D)",
+   "built": 160.0,
+   "params": 160,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_bore_radius` (R)",
+   "built": 67.29,
+   "params": 67.29,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_chamfer` (A)",
+   "built": 0.999,
+   "params": 1.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.rim_above_floor` (A)",
+   "built": 88.5,
+   "params": 88.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_slot_depth` (R)",
+   "built": 3.3,
+   "params": 3.3,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_slot_width` (T)",
+   "built": 12.0,
+   "params": 12,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_offset_deg` slot azimuth (deg)",
+   "built": 37.0,
+   "params": 37,
+   "tol": 0.3,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "slot runs from floor to rim (open at both ends)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.floor_hole_dia` (D)",
+   "built": 80.0,
+   "params": 80.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "floor top z = 0 (floor frame)",
+   "built": 0.0,
+   "params": 0.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "receiver bottom z = -icd.floor_above_datum_a",
+   "built": -40.0,
+   "params": -40,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_depth` = holder.length - nut.skirt_below_flange (param identity, not built)",
+   "built": 48.0,
+   "params": 48.0,
+   "tol": 0.001,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P key slot off-axis (azimuth not 0/90/180/270)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 84.1,
+ "notes": [
+  "solid spigot tube below z = 0 to datum A: assumption",
+  "thread phase arbitrary: helix starts at theta 0, z_run - pitch"
+ ],
+ "derived": {
+  "P": 8,
+  "tanf": 1.0,
+  "r_maj": 74.79,
+  "r_min": 72.29,
+  "r_pitch": 73.54,
+  "z_top": 88.5,
+  "z_run": 40.5,
+  "z_sh": 36.5,
+  "z_bot": -40,
+  "r_sp": 80.0,
+  "r_reg": 67.29,
+  "r_hole": 40.0,
+  "land": 1.5
+ }
+}

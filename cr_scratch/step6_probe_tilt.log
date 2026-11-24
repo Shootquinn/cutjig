@@ -1,0 +1,45 @@
+REG z_hb 39.75 a 0.0000 common 0.0000 viaCut 0.0001 ok
+REG z_hb 39.75 a 5.0000 common 4146.8595 viaCut 4146.8596 ok
+REG z_hb 39.75 a 2.5000 common 1384.8002 viaCut 1384.8006 ok
+REG z_hb 39.75 a 1.2500 common 304.0709 viaCut 304.0714 ok
+REG z_hb 39.75 a 0.6250 common 1.1781 viaCut 1.1787 ok
+REG z_hb 39.75 a 0.3125 common 0.0000 viaCut -0.0000 ok
+REG z_hb 39.75 a 0.4688 common 0.0000 viaCut -0.0000 ok
+REG z_hb 39.75 a 0.5469 common 0.0000 viaCut -0.0000 ok
+REG z_hb 39.75 a 0.5859 common 0.0000 viaCut -0.0000 ok
+REG z_hb 39.75 a 0.6055 common 0.1526 viaCut 0.1532 ok
+REG z_hb 39.75 a 0.5957 common 0.0082 viaCut 0.0085 ok
+REG z_hb 39.75 a 0.6006 common 0.0534 viaCut 0.0537 ok
+REG z_hb 39.75 a 0.5981 common 0.0249 viaCut 0.0252 ok
+REG z_hb 39.75 a 0.5969 common 0.0152 viaCut 0.0155 ok
+REG z_hb 39.75 a 0.5963 common 0.0114 viaCut 0.0117 ok
+REG z_hb 73.75 a 0.0000 common 0.0000 viaCut 0.0001 ok
+REG z_hb 73.75 a 5.0000 common 363.0299 viaCut 363.0308 ok
+REG z_hb 73.75 a 2.5000 common 23.8694 viaCut 23.8701 ok
+REG z_hb 73.75 a 1.2500 common 0.0000 viaCut 0.0000 ok
+REG z_hb 73.75 a 1.8750 common 0.2049 viaCut 0.2056 ok
+REG z_hb 73.75 a 1.5625 common 0.0000 viaCut 0.0000 ok
+REG z_hb 73.75 a 1.7188 common 0.0000 viaCut 0.0000 ok
+REG z_hb 73.75 a 1.7969 common 0.0000 viaCut 0.0000 ok
+REG z_hb 73.75 a 1.8359 common 0.0274 viaCut 0.0278 ok
+REG z_hb 73.75 a 1.8164 common 0.0022 viaCut 0.0025 ok
+REG z_hb 73.75 a 1.8262 common 0.0105 viaCut 0.0109 ok
+REG z_hb 73.75 a 1.8213 common 0.0054 viaCut 0.0058 ok
+REG z_hb 73.75 a 1.8237 common 0.0077 viaCut 0.0081 ok
+REG z_hb 73.75 a 1.8250 common 0.0091 viaCut 0.0094 ok
+REG z_hb 73.75 a 1.8256 common 0.0098 viaCut 0.0101 ok
+REG z_hb 39.75 a 3.0636 common 1949.2287 viaCut 1949.2291 ok
+DROP 0.100 common 0.0000 viaCut 0.0000
+DROP 0.200 common 0.1155 viaCut 0.1198
+PROBE_DONE tilt 22.2s
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(4 %)							(9 %)							(14 %)							(19 %)							(23 %)							(28 %)							(33 %)							(38 %)							(42 %)							(47 %)							(52 %)							(57 %)							(61 %)							(66 %)							(71 %)							(76 %)							(80 %)							(85 %)							(90 %)							(95 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(5 %)							(10 %)							(15 %)							(20 %)							(25 %)							(30 %)							(35 %)							(40 %)							(45 %)							(50 %)							(55 %)							(60 %)							(65 %)							(70 %)							(75 %)							(80 %)							(85 %)							(90 %)							(95 %)							(100 %)									Postprocessing......
+						(100 %)									Importing project files......
+						(3 %)							(7 %)							(11 %)							(15 %)							(19 %)							(23 %)							(26 %)							(30 %)							(34 %)							(38 %)							(42 %)							(46 %)							(50 %)							(53 %)							(57 %)							(61 %)							(65 %)							(69 %)							(73 %)							(76 %)							(80 %)							(84 %)							(88 %)							(92 %)							(96 %)							(100 %)									Postprocessing......
+						(100 %)									

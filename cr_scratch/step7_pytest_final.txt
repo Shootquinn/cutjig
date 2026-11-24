@@ -1,0 +1,737 @@
+.......FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.......FFFFFFFFFFFFFFFFFF [ 10%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 21%]
+FFFFFF.................................................................. [ 32%]
+.....................................FFFFFFFFFFFFF.FFFFFFFFFFFF.FF.F.FF. [ 43%]
+...........F............................................................ [ 54%]
+........................................................................ [ 65%]
+........................................................................ [ 76%]
+......................................FF....................FFFFFFFFFFFF [ 87%]
+..FFFFFFFFFFFFFFFFFFF.F.FFFFFFF.FFFFFFFFFFFFFFFFFFFFF..............F.... [ 97%]
+...FFFFFF.FFFF                                                           [100%]
+================================== FAILURES ===================================
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws1.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws1.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws2.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws2.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws3.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws3.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws4.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws4.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws6.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws6.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws7.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws7.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws10.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws10.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws11.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws11.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws8.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws8.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws9.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws9.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\receiver.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\receiver.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\holder.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\holder.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\nut.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\nut.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\washer.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\washer.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\footring.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\footring.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_090p0.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_090p0.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_092p5.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_092p5.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_095p0.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_095p0.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_097p5.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_097p5.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_100p0.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_100p0.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_102p5.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_102p5.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_105p0.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\collet_105p0.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\assembly.step
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\step\assembly.step
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\receiver.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\receiver.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\holder.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\holder.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\nut.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\nut.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\washer.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\washer.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\footring.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\footring.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_090p0.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_090p0.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_092p5.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_092p5.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_095p0.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_095p0.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_097p5.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_097p5.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_100p0.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_100p0.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_102p5.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_102p5.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_105p0.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\collet_105p0.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\nut.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\nut.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\receiver.stl
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\output\stl\receiver.stl
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\rebuild_record.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\rebuild_record.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\independent\x1_remeasure.py
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\independent\x1_remeasure.py
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\independent\x1_remeasure.py
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\independent\x1_remeasure.py
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: ('K-max', -15.22500000000003)
+    assert 16.72500000000003 <= 0.05
+     +  where 16.72500000000003 = abs((-15.22500000000003 - 1.5))
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\test_step6_parts.py:319: AssertionError: ('K-max', -15.22500000000003)
+E   AssertionError: ('K d+1', -8.135000000000026)
+    assert 16.725000000000026 <= 0.05
+     +  where 16.725000000000026 = abs((-8.135000000000026 - 8.59))
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\test_step6_parts.py:319: AssertionError: ('K d+1', -8.135000000000026)
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws1.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws1.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws2.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws2.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws3.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws3.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws4.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws4.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws6.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws6.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws7.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws7.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws8.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws8.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws9.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws9.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws10.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws10.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws11.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws11.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\ws0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\frame_instances.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\assembly_poses.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\assembly_poses.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_interference_report.md
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_092p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_095p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_097p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_100p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_102p5.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: ABSENT FEATURE: common.holding_torque(params, d) prediction record (inputs with labels), T7
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:74: AssertionError: ABSENT FEATURE: common.holding_torque(params, d) prediction record (inputs with labels), T7
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kd1_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_090p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_R_105p0.json
+E   AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\tests\cad_helpers.py:65: AssertionError: MISSING: C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\results\probes\pose_Kmax_105p0.json
+=========================== short test summary info ===========================
+FAILED tests/test_assembly.py::test_A1_holder_nut_contact_area_at_R_is_within_the_geometric_maximum
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[090p0-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[090p0-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[090p0-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[092p5-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[092p5-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[092p5-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[095p0-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[095p0-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[095p0-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[097p5-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[097p5-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[097p5-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[100p0-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[100p0-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[100p0-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[102p5-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[102p5-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[102p5-Kmax]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[105p0-R]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[105p0-Kd1]
+FAILED tests/test_assembly.py::test_A1a_pair_matrix_by_pose_and_size[105p0-Kmax]
+FAILED tests/test_assembly.py::test_A1b_fastener_head_clear_radius_and_key_sector
+FAILED tests/test_assembly.py::test_A1c_no_printed_solid_in_the_column_foot_path
+FAILED tests/test_assembly.py::test_A1d_column_to_base_plate_is_class_G_or_F
+FAILED tests/test_assembly.py::test_A1e_strap_handle_clears_the_parked_upper_assembly
+FAILED tests/test_assembly.py::test_A2a_frame_rest_and_cable_solids_clear_the_keepout_cylinder
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[090p0]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[092p5]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[095p0]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[097p5]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[100p0]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[102p5]
+FAILED tests/test_assembly.py::test_A2b_stop_gap_above_the_collar_top[105p0]
+FAILED tests/test_assembly.py::test_A2c_stop_and_torque_path_holds_no_printed_member
+FAILED tests/test_assembly.py::test_A2d_no_cutter_or_lead_in_face_bears_on_the_core_at_the_stop
+FAILED tests/test_assembly.py::test_A2e_released_rest_arm_stays_outside_the_swing_radius
+FAILED tests/test_assembly.py::test_A2f_cam_lug_not_below_the_cutter_and_swept_volume_clear
+FAILED tests/test_assembly.py::test_A2g_released_arm_clear_of_the_cutter_and_lug_swept_volume
+FAILED tests/test_assembly.py::test_A2h_manual_raise_path_holds_no_printed_member
+FAILED tests/test_assembly.py::test_A3b_built_fits_within_the_coaxiality_chain_key_pin_and_spigot
+FAILED tests/test_assembly.py::test_A3b_built_fits_within_the_coaxiality_chain_column_foot_and_carriage_guide
+FAILED tests/test_assembly.py::test_A3c_core_axis_offset_at_the_collet[Kd1]
+FAILED tests/test_assembly.py::test_A3c_core_axis_offset_at_the_collet[Kmax]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[090p0]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[092p5]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[095p0]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[097p5]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[100p0]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[102p5]
+FAILED tests/test_assembly.py::test_A3d_lead_in_clearance_over_core_radius[105p0]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[090p0-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[090p0-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[090p0-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[092p5-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[092p5-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[092p5-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[095p0-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[095p0-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[095p0-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[097p5-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[097p5-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[097p5-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[100p0-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[100p0-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[100p0-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[102p5-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[102p5-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[102p5-Kmax]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[105p0-R]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[105p0-Kd1]
+FAILED tests/test_assembly.py::test_A3e_holder_bottom_above_the_receiver_floor[105p0-Kmax]
+FAILED tests/test_assembly.py::test_A3f_clamped_tilt[Kd1] - AssertionError: M...
+FAILED tests/test_assembly.py::test_A3f_clamped_tilt[Kmax] - AssertionError: ...
+FAILED tests/test_assembly.py::test_A3g_funnel_capture_radius - AssertionErro...
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[090p0-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[090p0-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[090p0-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[092p5-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[092p5-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[092p5-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[095p0-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[095p0-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[095p0-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[097p5-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[097p5-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[097p5-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[100p0-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[100p0-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[100p0-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[102p5-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[102p5-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[102p5-Kmax]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[105p0-R]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[105p0-Kd1]
+FAILED tests/test_assembly.py::test_A3h_nut_skirt_at_least_one_pitch_above_the_floor[105p0-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[090p0-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[090p0-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[090p0-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[092p5-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[092p5-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[092p5-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[095p0-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[095p0-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[095p0-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[097p5-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[097p5-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[097p5-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[100p0-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[100p0-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[100p0-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[102p5-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[102p5-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[102p5-Kmax]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[105p0-R]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[105p0-Kd1]
+FAILED tests/test_assembly.py::test_A3i_engaged_thread_length_in_every_pose[105p0-Kmax]
+FAILED tests/test_assembly.py::test_A4_product_tree[R] - AssertionError: MISS...
+FAILED tests/test_assembly.py::test_A4_product_tree[Kd1] - AssertionError: MI...
+FAILED tests/test_assembly.py::test_A4_product_tree[Kmax] - AssertionError: M...
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS1]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS2]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS3]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS4]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS5]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS6]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS7]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS10]
+FAILED tests/test_assembly.py::test_A6_planted_wrong_state_fires_a_gate[WS11]
+FAILED tests/test_assembly.py::test_A6a_receiver_underside_carries_no_force_on_the_base_plate
+FAILED tests/test_assembly.py::test_A6b_holder_bottomed_state_ws8_fires - Ass...
+FAILED tests/test_assembly.py::test_A6c_nut_bottomed_on_base_state_ws9_fires
+FAILED tests/test_assembly.py::test_F6_holder_stroke_gap_and_ring_top_gap[R]
+FAILED tests/test_assembly.py::test_F6_holder_stroke_gap_and_ring_top_gap[Kd1]
+FAILED tests/test_assembly.py::test_F6_holder_stroke_gap_and_ring_top_gap[Kmax]
+FAILED tests/test_assembly.py::test_P6b_frame_solids_644_by_608 - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[receiver] - AssertionError:...
+FAILED tests/test_exports.py::test_E1_step_export[holder] - AssertionError: M...
+FAILED tests/test_exports.py::test_E1_step_export[nut] - AssertionError: MISS...
+FAILED tests/test_exports.py::test_E1_step_export[washer] - AssertionError: M...
+FAILED tests/test_exports.py::test_E1_step_export[footring] - AssertionError:...
+FAILED tests/test_exports.py::test_E1_step_export[collet_090p0] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_092p5] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_095p0] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_097p5] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_100p0] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_102p5] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[collet_105p0] - AssertionEr...
+FAILED tests/test_exports.py::test_E1_step_export[assembly] - AssertionError:...
+FAILED tests/test_exports.py::test_E2_stl_export[receiver] - AssertionError: ...
+FAILED tests/test_exports.py::test_E2_stl_export[holder] - AssertionError: MI...
+FAILED tests/test_exports.py::test_E2_stl_export[nut] - AssertionError: MISSI...
+FAILED tests/test_exports.py::test_E2_stl_export[washer] - AssertionError: MI...
+FAILED tests/test_exports.py::test_E2_stl_export[footring] - AssertionError: ...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_090p0] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_092p5] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_095p0] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_097p5] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_100p0] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_102p5] - AssertionErr...
+FAILED tests/test_exports.py::test_E2_stl_export[collet_105p0] - AssertionErr...
+FAILED tests/test_exports.py::test_T1d_export_chirality_stl_and_step[nut] - A...
+FAILED tests/test_exports.py::test_T1d_export_chirality_stl_and_step[receiver]
+FAILED tests/test_exports.py::test_B1_rebuild_twice_gives_equal_volumes - Ass...
+FAILED tests/test_exports.py::test_X1_independent_remeasure_agrees_with_the_build_side
+FAILED tests/test_exports.py::test_X1_negative_controls_fire - AssertionError...
+FAILED tests/test_exports.py::test_E3_collets_and_assembly_reopen_with_every_deliverable_named[assembly]
+FAILED tests/test_step6_parts.py::test_HD7_tick_reads_the_zone_edge_at_the_built_pose[K-max-holder.stroke_gap_min_K]
+FAILED tests/test_step6_parts.py::test_HD7_tick_reads_the_zone_edge_at_the_built_pose[K d+1-witness.zone_high]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[core_axis_offset]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[clamped_tilt_deg]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[lead_in_clearance]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[funnel_capture_radius]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[receiver_underside_contact_mm2]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[frame_footprint_y]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[slit_width_clamped_min]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[nut_stop_travel_mm]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[nut_tilt_deg]
+FAILED tests/test_step7_assembly.py::test_G1_measure_passes_its_good_value_and_fires_on_its_known_bad_control[holder_tilt_deg]
+FAILED tests/test_step7_assembly.py::test_G1_nut_stop_travel_with_relief_is_10_01_and_without_relief_about_4
+FAILED tests/test_step7_assembly.py::test_G1_lead_in_bore_is_the_working_bore_not_the_cutting_face
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS1]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS2]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS3]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS4]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS5]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS6]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS7]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS8]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS9]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS10]
+FAILED tests/test_step7_assembly.py::test_G2_planted_state_fires_its_expected_gate_and_only_the_six[WS11]
+FAILED tests/test_step7_assembly.py::test_G3_unplanted_poses_fire_none_of_the_six_gates
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[bracket|bracket]
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[tnut|tnut]
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[bracket|member]
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[member|tnut]
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[bracket|tnut]
+FAILED tests/test_step7_assembly.py::test_G4_instance_pairs_of_each_kind_have_no_common_volume[member|member]
+FAILED tests/test_step7_assembly.py::test_G4_every_bracket_touches_its_eight_tnuts
+FAILED tests/test_step7_assembly.py::test_G5_poses_come_from_one_base_pose_by_the_screw_motion
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[090p0]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[092p5]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[095p0]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[097p5]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[100p0]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[102p5]
+FAILED tests/test_step7_assembly.py::test_G6_report_is_tool_generated_and_its_cells_equal_the_probe_json[105p0]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[090p0-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[090p0-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[090p0-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[092p5-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[092p5-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[092p5-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[095p0-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[095p0-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[095p0-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[097p5-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[097p5-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[097p5-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[100p0-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[100p0-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[100p0-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[102p5-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[102p5-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[102p5-Kmax]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[105p0-R]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[105p0-Kd1]
+FAILED tests/test_step7_assembly.py::test_G7_pose_collet_is_the_generator_solid_for_that_pose[105p0-Kmax]
+FAILED tests/test_thread_clamp.py::test_T7_holding_torque_prediction_record_with_labelled_inputs
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[R-90.0] - Assert...
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[R-105.0] - Asser...
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[Kd1-90.0] - Asse...
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[Kd1-105.0] - Ass...
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[Kmax-90.0] - Ass...
+FAILED tests/test_thread_clamp.py::test_T4_thread_engagement[Kmax-105.0] - As...
+FAILED tests/test_thread_clamp.py::test_T5_clamp_range_at_the_extremes[090p0-R]
+FAILED tests/test_thread_clamp.py::test_T5_clamp_range_at_the_extremes[090p0-Kmax]
+FAILED tests/test_thread_clamp.py::test_T5_clamp_range_at_the_extremes[105p0-R]
+FAILED tests/test_thread_clamp.py::test_T5_clamp_range_at_the_extremes[105p0-Kmax]
+240 failed, 422 passed in 93.94s (0:01:33)

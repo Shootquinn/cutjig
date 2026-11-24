@@ -1,0 +1,483 @@
+{
+ "part": "receiver",
+ "volume_mm3": 955593.229,
+ "bbox": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -80.0,
+  "ymax": 80.0,
+  "zmin": -40.0,
+  "zmax": 88.5
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 20,
+ "centre_of_mass": [
+  -0.168,
+  -0.19,
+  0.598
+ ],
+ "features": [
+  {
+   "feature": "`thread.major` (D) from crest radius",
+   "built": 149.58,
+   "params": 149.58,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.minor` (D) from root radius",
+   "built": 144.58,
+   "params": 144.58,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.pitch` (A) tooth period",
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "tooth width at pitch line = pitch / 2 (A)",
+   "built": 4.0,
+   "params": 4.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.land_width` crest flat (A)",
+   "built": 1.51,
+   "params": 1.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "hand: tooth shift per +90 deg = pitch/4 means right",
+   "built": 2.0,
+   "params": 2.0,
+   "tol": 0.1,
+   "pass": true,
+   "note": "left hand would read 3 x pitch/4"
+  },
+  {
+   "feature": "`thread.starts` (period / pitch)",
+   "built": 1.0,
+   "params": 1,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.flank_deg` from tooth widths (deg)",
+   "built": 45.0,
+   "params": 45,
+   "tol": 0.5,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "thread run start z (lowest tooth start)",
+   "built": 40.5,
+   "params": 40.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.lead_in_length` rim chamfer (R, to pitch line)",
+   "built": 1.249,
+   "params": 1.25,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.runout_land` length (A)",
+   "built": 4.0,
+   "params": 4.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "shoulder z (A)",
+   "built": 36.5,
+   "params": 36.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.spigot_od` (D)",
+   "built": 160.0,
+   "params": 160,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_bore_radius` (R)",
+   "built": 67.29,
+   "params": 67.29,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_chamfer` (A)",
+   "built": 0.999,
+   "params": 1.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.rim_above_floor` (A)",
+   "built": 88.5,
+   "params": 88.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_slot_depth` (R)",
+   "built": 3.3,
+   "params": 3.3,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_slot_width` (T)",
+   "built": 12.0,
+   "params": 12,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.key_offset_deg` slot azimuth (deg)",
+   "built": 37.0,
+   "params": 37,
+   "tol": 0.3,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "slot runs from floor to rim (open at both ends)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.floor_hole_dia` (D)",
+   "built": 80.0,
+   "params": 80.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "floor top z = 0 (floor frame)",
+   "built": 0.0,
+   "params": 0.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "receiver bottom z = -icd.floor_above_datum_a",
+   "built": -40.0,
+   "params": -40,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`receiver.register_depth` = holder.length - nut.skirt_below_flange (param identity, not built)",
+   "built": 48.0,
+   "params": 48.0,
+   "tol": 0.001,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P key slot off-axis (azimuth not 0/90/180/270)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "RC6 ruler channel floor distance from the axis (R)",
+   "built": 71.99,
+   "params": 71.99,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 ruler channel width (T)",
+   "built": 12.0,
+   "params": 12.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation count",
+   "built": 14,
+   "params": 14,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation 0 z (A): skirt bottom face at gap 0",
+   "built": 48.5,
+   "params": 48.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation pitch (A)",
+   "built": 1.0,
+   "params": 1.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation height (A)",
+   "built": 0.4,
+   "params": 0.4,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation depth below the channel floor (R)",
+   "built": 0.5,
+   "params": 0.5,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 graduation length (T)",
+   "built": 4.0,
+   "params": 4.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 major graduation length (T)",
+   "built": 5.2,
+   "params": 5.2,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 wrong-collet band low: z extent (A)",
+   "built": 1.5,
+   "params": 1.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 wrong-collet band high: z extent (A)",
+   "built": 4.536,
+   "params": 4.536,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 wrong-collet band high: top z (A)",
+   "built": 61.626,
+   "params": 61.626,
+   "tol": 0.05,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  },
+  {
+   "feature": "RC6 digit pocket count (0, 5, 10)",
+   "built": 3,
+   "params": 3,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "RC6",
+   "volume_mm3": 550.861
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 98.2,
+ "notes": [
+  "solid spigot tube below z = 0 to datum A: assumption",
+  "thread phase arbitrary: helix starts at theta 0, z_run - pitch"
+ ],
+ "derived": {
+  "P": 8,
+  "tanf": 1.0,
+  "r_maj": 74.79,
+  "r_min": 72.29,
+  "r_pitch": 73.54,
+  "z_top": 88.5,
+  "z_run": 40.5,
+  "z_sh": 36.5,
+  "z_bot": -40,
+  "r_sp": 80.0,
+  "r_reg": 67.29,
+  "r_hole": 40.0,
+  "land": 1.5
+ },
+ "witness": {
+  "azimuth_deg": 127,
+  "zone": [
+   1.5,
+   8.59
+  ],
+  "band_low": [
+   0.0,
+   1.5
+  ],
+  "band_high": [
+   8.59,
+   13.126
+  ],
+  "z0": 48.5,
+  "marks_z": [
+   48.5,
+   49.5,
+   50.5,
+   51.5,
+   52.5,
+   53.5,
+   54.5,
+   55.5,
+   56.5,
+   57.5,
+   58.5,
+   59.5,
+   60.5,
+   61.5
+  ],
+  "digits": [
+   {
+    "k": 0,
+    "text": "0",
+    "z": 48.5
+   },
+   {
+    "k": 5,
+    "text": "5",
+    "z": 53.5
+   },
+   {
+    "k": 10,
+    "text": "10",
+    "z": 58.5
+   }
+  ],
+  "channel_floor_d": 71.99000000000001,
+  "reading_plane": "nut skirt bottom face (flange underside - nut.skirt_below_flange)"
+ },
+ "booleans": [
+  {
+   "name": "ruler_tool_fuse",
+   "kind": "fuse",
+   "faces_before": 120,
+   "faces_after": 101,
+   "faces_after_clean": 98,
+   "valid": true
+  },
+  {
+   "name": "KeySlotAndRuler",
+   "kind": "cut",
+   "faces_before": 12,
+   "faces_after": 113,
+   "tool_faces": 104
+  },
+  {
+   "name": "ThreadStud",
+   "kind": "cut",
+   "faces_before": 113,
+   "faces_after": 195
+  }
+ ],
+ "boolean_count": 3,
+ "bbox_plain": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -80.0,
+  "ymax": 80.0,
+  "zmin": -40.0,
+  "zmax": 92.1
+ },
+ "bbox_optimal": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -80.0,
+  "ymax": 80.0,
+  "zmin": -40.0,
+  "zmax": 88.5
+ },
+ "run_seconds": 98.0,
+ "rebuild": {
+  "before_volume": 955903.815,
+  "before_faces": 91,
+  "before_euler": 4,
+  "before_features": 25,
+  "after_volume": 955593.229,
+  "after_faces": 195,
+  "after_euler": 20,
+  "reason_ids": [
+   "RC6",
+   "AC4"
+  ],
+  "volume_ratio": 0.99968
+ }
+}

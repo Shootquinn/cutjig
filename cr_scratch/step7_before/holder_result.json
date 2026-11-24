@@ -1,0 +1,310 @@
+{
+ "part": "holder",
+ "volume_mm3": 407841.181,
+ "bbox": {
+  "xmin": -72.04,
+  "xmax": 72.04,
+  "ymin": -72.04,
+  "ymax": 72.04,
+  "zmin": -0.0,
+  "zmax": 104.75
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 8,
+ "centre_of_mass": [
+  0.175,
+  0.161,
+  56.873
+ ],
+ "features": [
+  {
+   "feature": "holder outer diameter (D) = 2 (register r - g_reg)",
+   "built": 134.08,
+   "params": 134.08,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "inner cone radius at bottom (R)",
+   "built": 62.0398,
+   "params": 62.04,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`cone.alpha` measured from r(z) slope (deg)",
+   "built": 10.0,
+   "params": 10,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "cone height `chain.H` (A)",
+   "built": 30.0,
+   "params": 30,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "inner cone radius at top (R)",
+   "built": 56.7502,
+   "params": 56.7502,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "bore above the cone (D)",
+   "built": 113.5004,
+   "params": 113.5004,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.length` bottom to flange underside (A)",
+   "built": 88.0,
+   "params": 88.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.flange_thickness` (A)",
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.flange_od` (D)",
+   "built": 144.08,
+   "params": 144.08,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "holder top height (A) = length + flange + washer proud + plate + lift play",
+   "built": 104.75,
+   "params": 104.75,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.key_width` (T)",
+   "built": 11.75,
+   "params": 11.75,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.key_height` (R)",
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`holder.key_length` (A)",
+   "built": 40.0,
+   "params": 40.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "key azimuth = `receiver.key_offset_deg` (key present at azimuth, absent opposite)",
+   "built": 37,
+   "params": 37,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P index notch width (T)",
+   "built": 6.0,
+   "params": 6.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P index notch depth (R)",
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P index notch off-axis (azimuth not 0/90/180/270)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "insert bore depth (A)",
+   "built": 12.0,
+   "params": 12.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "insert bore diameter (D)",
+   "built": 5.0,
+   "params": 5.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "insert circle radius",
+   "built": 62.0,
+   "params": 62.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "insert bore count (`holder.insert_count`)",
+   "built": 4,
+   "params": 4,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "HD7 tick groove width (T)",
+   "built": 1.0,
+   "params": 1.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "HD7",
+   "volume_mm3": 5.998
+  },
+  {
+   "feature": "HD7 tick groove depth from the flange OD (R)",
+   "built": 2.0,
+   "params": 2.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "HD7",
+   "volume_mm3": 5.998
+  },
+  {
+   "feature": "HD7 tick groove height above the flange underside (A)",
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "HD7",
+   "volume_mm3": 5.998
+  },
+  {
+   "feature": "HD7 tick lower edge = flange underside (A)",
+   "built": 88.0,
+   "params": 88.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "HD7",
+   "volume_mm3": 5.998
+  },
+  {
+   "feature": "HD7 tick azimuth = witness.azimuth_deg (deg), groove empty at the azimuth, flange solid at +-120",
+   "built": 127,
+   "params": 127,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "HD7",
+   "volume_mm3": 5.998
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 0.5,
+ "notes": [],
+ "derived": {
+  "tan_a": 0.1763,
+  "r_od": 67.04,
+  "r_cone_bot": 62.04,
+  "H": 30,
+  "r_cone_top": 56.7502,
+  "L": 88.0,
+  "t_f": 8,
+  "r_fl": 72.04,
+  "z_top": 104.75
+ },
+ "booleans": [
+  {
+   "name": "Key",
+   "kind": "fuse",
+   "faces_before": 9,
+   "faces_after": 13
+  },
+  {
+   "name": "NotchInsertsTick",
+   "kind": "cut",
+   "faces_before": 13,
+   "faces_after": 28,
+   "tool_faces": 24
+  }
+ ],
+ "boolean_count": 2,
+ "bbox_plain": {
+  "xmin": -72.04,
+  "xmax": 72.04,
+  "ymin": -72.04,
+  "ymax": 72.04,
+  "zmin": -0.0,
+  "zmax": 104.75
+ },
+ "bbox_optimal": {
+  "xmin": -72.04,
+  "xmax": 72.04,
+  "ymin": -72.04,
+  "ymax": 72.04,
+  "zmin": -0.0,
+  "zmax": 104.75
+ },
+ "run_seconds": 0.5,
+ "witness": {
+  "azimuth_deg": 127,
+  "tick_lowest_z": 88.0,
+  "tick_height": 3.0
+ },
+ "rebuild": {
+  "before_volume": 407847.179,
+  "before_faces": 24,
+  "before_euler": 8,
+  "before_features": 21,
+  "after_volume": 407841.181,
+  "after_faces": 28,
+  "after_euler": 8,
+  "reason_ids": [
+   "HD7",
+   "AC5"
+  ],
+  "volume_ratio": 0.99999
+ }
+}

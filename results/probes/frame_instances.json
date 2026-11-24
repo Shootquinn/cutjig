@@ -1,0 +1,1021 @@
+{
+ "pairs": {
+  "member_rail_1|member_end_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|member_end_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_purchased_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_purchased_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_purchased_5": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_purchased_7": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_printed_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|bracket_printed_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_5": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_7": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_17": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_19": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_21": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_23": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_33": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_35": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_37": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_39": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_49": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_51": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_53": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_55": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_65": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_67": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_69": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_71": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_81": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_83": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_85": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_1|tnut_87": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|member_end_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|member_end_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_purchased_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_purchased_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_purchased_6": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_purchased_8": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_printed_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|bracket_printed_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_9": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_11": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_13": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_15": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_25": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_27": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_29": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_31": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_41": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_43": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_45": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_47": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_57": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_59": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_61": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_63": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_73": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_75": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_77": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_79": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_89": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_91": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_93": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_rail_2|tnut_95": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|bracket_purchased_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|bracket_purchased_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|bracket_purchased_5": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|bracket_purchased_6": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_6": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_8": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_10": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_12": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_14": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_16": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_34": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_36": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_38": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_40": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_42": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_44": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_46": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_1|tnut_48": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|bracket_purchased_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|bracket_purchased_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|bracket_purchased_7": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|bracket_purchased_8": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_18": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_20": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_22": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_24": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_26": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_28": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_30": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_32": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_50": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_52": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_54": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_56": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_58": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_60": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_62": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_end_2|tnut_64": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|bracket_printed_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|bracket_printed_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_66": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_68": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_70": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_72": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_74": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_76": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_78": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_1|tnut_80": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|bracket_printed_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|bracket_printed_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_82": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_84": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_86": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_88": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_90": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_92": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_94": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "member_plate_support_2|tnut_96": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_1": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_2": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_3": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_4": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_5": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_6": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_7": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_1|tnut_8": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_9": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_10": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_11": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_12": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_13": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_14": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_15": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_2|tnut_16": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_17": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_18": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_19": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_20": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_21": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_22": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_23": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_3|tnut_24": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_25": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_26": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_27": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_28": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_29": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_30": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_31": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_4|tnut_32": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_33": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_34": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_35": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_36": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_37": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_38": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_39": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_5|tnut_40": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_41": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_42": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_43": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_44": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_45": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_46": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_47": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_6|tnut_48": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_49": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_50": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_51": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_52": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_53": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_54": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_55": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_7|tnut_56": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_57": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_58": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_59": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_60": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_61": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_62": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_63": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_purchased_8|tnut_64": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_65": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_66": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_67": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_68": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_69": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_70": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_71": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_1|tnut_72": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_73": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_74": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_75": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_76": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_77": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_78": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_79": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_2|tnut_80": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_81": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_82": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_83": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_84": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_85": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_86": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_87": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_3|tnut_88": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_89": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_90": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_91": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_92": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_93": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_94": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_95": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  },
+  "bracket_printed_4|tnut_96": {
+   "overlap_mm3": 0.0,
+   "min_dist": 0.0
+  }
+ },
+ "counts": {
+  "member": 6,
+  "bracket": 12,
+  "tnut": 96
+ },
+ "scanned": 6441,
+ "bbox_skipped": 6221,
+ "per_bracket_tnuts": {
+  "bracket_purchased_1": [
+   "tnut_1",
+   "tnut_2",
+   "tnut_3",
+   "tnut_4",
+   "tnut_5",
+   "tnut_6",
+   "tnut_7",
+   "tnut_8"
+  ],
+  "bracket_purchased_2": [
+   "tnut_9",
+   "tnut_10",
+   "tnut_11",
+   "tnut_12",
+   "tnut_13",
+   "tnut_14",
+   "tnut_15",
+   "tnut_16"
+  ],
+  "bracket_purchased_3": [
+   "tnut_17",
+   "tnut_18",
+   "tnut_19",
+   "tnut_20",
+   "tnut_21",
+   "tnut_22",
+   "tnut_23",
+   "tnut_24"
+  ],
+  "bracket_purchased_4": [
+   "tnut_25",
+   "tnut_26",
+   "tnut_27",
+   "tnut_28",
+   "tnut_29",
+   "tnut_30",
+   "tnut_31",
+   "tnut_32"
+  ],
+  "bracket_purchased_5": [
+   "tnut_33",
+   "tnut_34",
+   "tnut_35",
+   "tnut_36",
+   "tnut_37",
+   "tnut_38",
+   "tnut_39",
+   "tnut_40"
+  ],
+  "bracket_purchased_6": [
+   "tnut_41",
+   "tnut_42",
+   "tnut_43",
+   "tnut_44",
+   "tnut_45",
+   "tnut_46",
+   "tnut_47",
+   "tnut_48"
+  ],
+  "bracket_purchased_7": [
+   "tnut_49",
+   "tnut_50",
+   "tnut_51",
+   "tnut_52",
+   "tnut_53",
+   "tnut_54",
+   "tnut_55",
+   "tnut_56"
+  ],
+  "bracket_purchased_8": [
+   "tnut_57",
+   "tnut_58",
+   "tnut_59",
+   "tnut_60",
+   "tnut_61",
+   "tnut_62",
+   "tnut_63",
+   "tnut_64"
+  ],
+  "bracket_printed_1": [
+   "tnut_65",
+   "tnut_66",
+   "tnut_67",
+   "tnut_68",
+   "tnut_69",
+   "tnut_70",
+   "tnut_71",
+   "tnut_72"
+  ],
+  "bracket_printed_2": [
+   "tnut_73",
+   "tnut_74",
+   "tnut_75",
+   "tnut_76",
+   "tnut_77",
+   "tnut_78",
+   "tnut_79",
+   "tnut_80"
+  ],
+  "bracket_printed_3": [
+   "tnut_81",
+   "tnut_82",
+   "tnut_83",
+   "tnut_84",
+   "tnut_85",
+   "tnut_86",
+   "tnut_87",
+   "tnut_88"
+  ],
+  "bracket_printed_4": [
+   "tnut_89",
+   "tnut_90",
+   "tnut_91",
+   "tnut_92",
+   "tnut_93",
+   "tnut_94",
+   "tnut_95",
+   "tnut_96"
+  ]
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "frame_instances",
+ "run_started_epoch": 1794464313.1465285,
+ "run_seconds": 1426.8,
+ "inputs": [
+  "C:\\Users\\QUINNM~1\\AppData\\Local\\Temp\\claude\\6f0343b2791941ad\\200377dc-f257-44be-a8a6-5a439d6cd6be\\scratchpad\\pd_R100\\pose_R_100p0.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\results\\assembly_poses.json"
+ ]
+}

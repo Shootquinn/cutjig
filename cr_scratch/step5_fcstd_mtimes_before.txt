@@ -1,0 +1,18 @@
+
+Name                    LastWriteTime        
+----                    -------------        
+footring.FCStd          11/8/2026 8:28:32 PM 
+footring_result.json    11/8/2026 8:28:32 PM 
+frame_profiles.FCStd    11/8/2026 5:44:25 PM 
+holder.FCStd            11/8/2026 8:21:49 PM 
+holder_result.json      11/8/2026 8:21:49 PM 
+nut.FCStd               11/8/2026 10:42:29 PM
+nut_result.json         11/8/2026 10:42:29 PM
+receiver.FCStd          11/8/2026 10:45:48 PM
+receiver_result.json    11/8/2026 10:45:48 PM
+step3_cross_checks.json 11/8/2026 10:46:21 PM
+washer.FCStd            11/8/2026 8:28:31 PM 
+washer_result.json      11/8/2026 8:28:31 PM 
+
+
+

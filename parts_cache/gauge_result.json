@@ -1,0 +1,167 @@
+{
+ "part": "gauge",
+ "volume_mm3": 984604.598,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 3,
+ "faces": 17,
+ "edges": 42,
+ "vertices": 28,
+ "bbox_plain": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -67.04,
+  "ymax": 67.04,
+  "zmin": 0.0,
+  "zmax": 175.0
+ },
+ "bbox_optimal": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -67.04,
+  "ymax": 67.04,
+  "zmin": 0.0,
+  "zmax": 175.0
+ },
+ "bbox": {
+  "xmin": -80.0,
+  "xmax": 80.0,
+  "ymin": -67.04,
+  "ymax": 67.04,
+  "zmin": 0.0,
+  "zmax": 175.0
+ },
+ "centre_of_mass": [
+  0.081,
+  0.061,
+  96.404
+ ],
+ "features": [
+  {
+   "id": "AC2",
+   "feature": "gauge plug diameter (D)",
+   "volume_mm3": 882486.697,
+   "built": 134.08,
+   "params": 134.08,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge plug length (A)",
+   "volume_mm3": 882486.697,
+   "built": 150.0,
+   "params": 150,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge cavity diameter (D)",
+   "volume_mm3": 882486.697,
+   "built": 110.0,
+   "params": 110,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge cavity depth from below (A)",
+   "volume_mm3": 882486.697,
+   "built": 130.0,
+   "params": 130,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge key width (T)",
+   "volume_mm3": 1450.377,
+   "built": 11.75,
+   "params": 11.75,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge key height (R)",
+   "volume_mm3": 1450.377,
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge key length (A)",
+   "volume_mm3": 1450.377,
+   "built": 40.0,
+   "params": 40.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge key azimuth = receiver.key_offset_deg (deg): key present, absent opposite",
+   "volume_mm3": 1450.377,
+   "built": 37,
+   "params": 37,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge handle bar length (L)",
+   "volume_mm3": 100000.0,
+   "built": 160.0,
+   "params": 160,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge handle bar width (T)",
+   "volume_mm3": 100000.0,
+   "built": 25.0,
+   "params": 25,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC2",
+   "feature": "gauge overall height (A)",
+   "volume_mm3": 984604.598,
+   "built": 175.0,
+   "params": 175,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "plug_key_bar_fuse",
+   "kind": "fuse",
+   "faces_before": 17,
+   "faces_after": 19,
+   "faces_after_clean": 17,
+   "valid": true
+  }
+ ],
+ "boolean_count": 1,
+ "run_seconds": 0.1,
+ "build_seconds": 0.1
+}

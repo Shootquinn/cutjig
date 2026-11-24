@@ -1,0 +1,10 @@
+tt -1.0 {'common_3d_full': 40.716, 'common_3d_slab': 40.716, 'slice_integral_slab': 0.0, 'secs': 56.2}
+tt -2.0 {'common_3d_full': 6908.2, 'common_3d_slab': 3493.633, 'slice_integral_slab': 0.0, 'secs': 60.8}
+BUILD_DONE
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(21 %)							(26 %)							(31 %)							(36 %)							(42 %)							(47 %)							(52 %)							(57 %)							(63 %)							(68 %)							(73 %)							(78 %)							(84 %)							(89 %)							(94 %)							(100 %)									Postprocessing......
+						(100 %)									

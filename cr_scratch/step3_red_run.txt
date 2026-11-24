@@ -1,0 +1,1856 @@
+.......................................................F.........FFFFFFF [ 36%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 73%]
+FFFFFFFFFFFFFFFFFFFFFFFFFF.FFFFF..FFFFFFF...F.FFFFFFF                    [100%]
+================================== FAILURES ===================================
+____________ test_P10_icd_frozen_keys_exist_with_source_and_status ____________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P10_icd_frozen_keys_exist_with_source_and_status(params):
+        missing = []
+        for key, want in ICD_FROZEN.items():
+            try:
+                lf = common.leaf(params, key)
+            except KeyError:
+                missing.append(f"{key}: missing")
+                continue
+            if not str(lf.get("source", "")).strip():
+                missing.append(f"{key}: no source")
+            if lf.get("status") not in common.STATUSES:
+                missing.append(f"{key}: status {lf.get('status')!r}")
+            if want is not None and lf["value"] != want:
+                missing.append(f"{key}: value {lf['value']!r}, frozen {want!r}")
+>       assert missing == []
+E       AssertionError: assert ['icd.stop_he...4, 815]', ...] == []
+E         
+E         Left contains 8 more items, first extra item: 'icd.stop_height: value 160, frozen 184.84'
+E         Use -v to get more diff
+
+tests\test_params_bom.py:386: AssertionError
+_________________ test_P11_key_present[thread.lead_in_length] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'thread.lead_in_length', want = 8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'thread.lead_in_length: missing' is None
+E        +  where 'thread.lead_in_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'thread.lead_in_length', 8, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+___________________ test_P11_key_present[thread.land_width] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'thread.land_width', want = 1.0, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'thread.land_width: missing' is None
+E        +  where 'thread.land_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'thread.land_width', 1.0, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+_____________ test_P11_key_present[receiver.register_bore_radius] _____________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.register_bore_radius', want = 67.29, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.register_bore_radius: missing' is None
+E        +  where 'receiver.register_bore_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.register_bore_radius', 67.29, 'DERIVED')
+
+tests\test_params_bom.py:530: AssertionError
+________________ test_P11_key_present[receiver.register_depth] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.register_depth', want = 24, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.register_depth: missing' is None
+E        +  where 'receiver.register_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.register_depth', 24, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+________________ test_P11_key_present[receiver.key_slot_width] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.key_slot_width', want = 12, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.key_slot_width: missing' is None
+E        +  where 'receiver.key_slot_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.key_slot_width', 12, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+________________ test_P11_key_present[receiver.key_slot_depth] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.key_slot_depth', want = 6, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.key_slot_depth: missing' is None
+E        +  where 'receiver.key_slot_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.key_slot_depth', 6, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+________________ test_P11_key_present[receiver.key_offset_deg] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.key_offset_deg', want = 37, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.key_offset_deg: missing' is None
+E        +  where 'receiver.key_offset_deg: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.key_offset_deg', 37, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+__________________ test_P11_key_present[receiver.spigot_od] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'receiver.spigot_od', want = 160, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'receiver.spigot_od: missing' is None
+E        +  where 'receiver.spigot_od: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'receiver.spigot_od', 160, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+________________ test_P11_key_present[holder.flange_thickness] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'holder.flange_thickness', want = 8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'holder.flange_thickness: missing' is None
+E        +  where 'holder.flange_thickness: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'holder.flange_thickness', 8, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+___________________ test_P11_key_present[holder.key_width] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'holder.key_width', want = 11.4, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'holder.key_width: missing' is None
+E        +  where 'holder.key_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'holder.key_width', 11.4, 'DERIVED')
+
+tests\test_params_bom.py:530: AssertionError
+___________________ test_P11_key_present[holder.key_height] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'holder.key_height', want = 5, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P11, ids=[k for k, _, _ in NEW_P11])
+    def test_P11_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'holder.key_height: missing' is None
+E        +  where 'holder.key_height: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'holder.key_height', 5, 'ASSUMED')
+
+tests\test_params_bom.py:530: AssertionError
+_________________ test_P12_key_present[nut.washer_pocket_od] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.washer_pocket_od', want = 143.8, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.washer_pocket_od: missing' is None
+E        +  where 'nut.washer_pocket_od: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.washer_pocket_od', 143.8, 'DERIVED')
+
+tests\test_params_bom.py:552: AssertionError
+________________ test_P12_key_present[nut.washer_pocket_depth] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.washer_pocket_depth', want = 0.8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.washer_pocket_depth: missing' is None
+E        +  where 'nut.washer_pocket_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.washer_pocket_depth', 0.8, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+___________________ test_P12_key_present[nut.arrow_length] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.arrow_length', want = 40, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.arrow_length: missing' is None
+E        +  where 'nut.arrow_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.arrow_length', 40, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+____________________ test_P12_key_present[nut.arrow_depth] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.arrow_depth', want = 0.8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.arrow_depth: missing' is None
+E        +  where 'nut.arrow_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.arrow_depth', 0.8, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+__________________ test_P12_key_present[nut.tommy_hole_dia] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.tommy_hole_dia', want = 13, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.tommy_hole_dia: missing' is None
+E        +  where 'nut.tommy_hole_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.tommy_hole_dia', 13, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+_________________ test_P12_key_present[nut.tommy_hole_count] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.tommy_hole_count', want = 4, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.tommy_hole_count: missing' is None
+E        +  where 'nut.tommy_hole_count: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.tommy_hole_count', 4, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+_________________ test_P12_key_present[nut.tommy_hole_depth] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.tommy_hole_depth', want = 20, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.tommy_hole_depth: missing' is None
+E        +  where 'nut.tommy_hole_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.tommy_hole_depth', 20, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+_________________ test_P12_key_present[nut.tommy_bar_length] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.tommy_bar_length', want = 300, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.tommy_bar_length: missing' is None
+E        +  where 'nut.tommy_bar_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.tommy_bar_length', 300, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+__________________ test_P12_key_present[nut.release_marker] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.release_marker', want = 'aligned mark plus a keep-turning arrow'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.release_marker: missing' is None
+E        +  where 'nut.release_marker: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.release_marker', 'aligned mark plus a keep-turning arrow', 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+_______________ test_P12_key_present[nut.release_dead_turn_deg] _______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.release_dead_turn_deg', want = 33.75, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.release_dead_turn_deg: missing' is None
+E        +  where 'nut.release_dead_turn_deg: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.release_dead_turn_deg', 33.75, 'DERIVED')
+
+tests\test_params_bom.py:552: AssertionError
+________________ test_P12_key_present[nut.washer_window_count] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.washer_window_count', want = 3, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.washer_window_count: missing' is None
+E        +  where 'nut.washer_window_count: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.washer_window_count', 3, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+________________ test_P12_key_present[nut.washer_window_width] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'nut.washer_window_width', want = 10, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'nut.washer_window_width: missing' is None
+E        +  where 'nut.washer_window_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'nut.washer_window_width', 10, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+___________________ test_P12_key_present[washer.retention] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'washer.retention', want = 'snap lip in the nut pocket'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'washer.retention: missing' is None
+E        +  where 'washer.retention: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'washer.retention', 'snap lip in the nut pocket', 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+________________ test_P12_key_present[loads.nut_torque_abuse] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'loads.nut_torque_abuse', want = 25, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'loads.nut_torque_abuse: missing' is None
+E        +  where 'loads.nut_torque_abuse: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'loads.nut_torque_abuse', 25, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+_________________ test_P12_key_present[loads.hand_force_bar] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'loads.hand_force_bar', want = 100, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P12, ids=[k for k, _, _ in NEW_P12])
+    def test_P12_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'loads.hand_force_bar: missing' is None
+E        +  where 'loads.hand_force_bar: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'loads.hand_force_bar', 100, 'ASSUMED')
+
+tests\test_params_bom.py:552: AssertionError
+__________________ test_P13_key_present[wingnut.wing_count] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.wing_count', want = 2, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.wing_count: missing' is None
+E        +  where 'wingnut.wing_count: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.wing_count', 2, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+__________________ test_P13_key_present[wingnut.wing_height] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.wing_height', want = 40, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.wing_height: missing' is None
+E        +  where 'wingnut.wing_height: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.wing_height', 40, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[wingnut.wing_root_width] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.wing_root_width', want = 40, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.wing_root_width: missing' is None
+E        +  where 'wingnut.wing_root_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.wing_root_width', 40, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[wingnut.wing_tip_width] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.wing_tip_width', want = 28, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.wing_tip_width: missing' is None
+E        +  where 'wingnut.wing_tip_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.wing_tip_width', 28, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[wingnut.wing_thickness] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.wing_thickness', want = 14, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.wing_thickness: missing' is None
+E        +  where 'wingnut.wing_thickness: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.wing_thickness', 14, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+__________________ test_P13_key_present[wingnut.edge_radius] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.edge_radius', want = 6, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.edge_radius: missing' is None
+E        +  where 'wingnut.edge_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.edge_radius', 6, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_______________ test_P13_key_present[wingnut.knuckle_clearance] _______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.knuckle_clearance', want = 50, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.knuckle_clearance: missing' is None
+E        +  where 'wingnut.knuckle_clearance: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.knuckle_clearance', 50, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+______________ test_P13_key_present[wingnut.sweep_clear_radius] _______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.sweep_clear_radius', want = 115, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.sweep_clear_radius: missing' is None
+E        +  where 'wingnut.sweep_clear_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.sweep_clear_radius', 115, 'DERIVED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[wingnut.turns_to_clamp] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'wingnut.turns_to_clamp', want = 4.45, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'wingnut.turns_to_clamp: missing' is None
+E        +  where 'wingnut.turns_to_clamp: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'wingnut.turns_to_clamp', 4.45, 'DERIVED')
+
+tests\test_params_bom.py:582: AssertionError
+___________________ test_P13_key_present[witness.zone_high] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.zone_high', want = 8.59, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'witness.zone_high: missing' is None
+E        +  where 'witness.zone_high: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'witness.zone_high', 8.59, 'DERIVED')
+
+tests\test_params_bom.py:582: AssertionError
+__________________ test_P13_key_present[witness.scale_pitch] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.scale_pitch', want = 1.0, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'witness.scale_pitch: missing' is None
+E        +  where 'witness.scale_pitch: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'witness.scale_pitch', 1.0, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_____________ test_P13_key_present[witness.wrong_collet_band_low] _____________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.wrong_collet_band_low', want = [0.0, 1.5], status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'witness.wrong_collet_band_low: missing' is None
+E        +  where 'witness.wrong_collet_band_low: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'witness.wrong_collet_band_low', [0.0, 1.5], 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+____________ test_P13_key_present[witness.wrong_collet_band_high] _____________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.wrong_collet_band_high', want = [8.59, 13.126]
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'witness.wrong_collet_band_high: missing' is None
+E        +  where 'witness.wrong_collet_band_high: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'witness.wrong_collet_band_high', [8.59, 13.126], 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[witness.step_per_family] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.step_per_family', want = 7.09, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'witness.step_per_family: missing' is None
+E        +  where 'witness.step_per_family: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'witness.step_per_family', 7.09, 'DERIVED')
+
+tests\test_params_bom.py:582: AssertionError
+____________________ test_P13_key_present[rest.roller_dia] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.roller_dia', want = 40, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.roller_dia: missing' is None
+E        +  where 'rest.roller_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.roller_dia', 40, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+____________________ test_P13_key_present[rest.arm_length] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.arm_length', want = 200, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.arm_length: missing' is None
+E        +  where 'rest.arm_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.arm_length', 200, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P13_key_present[rest.swing_clear_radius] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.swing_clear_radius', want = 125, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.swing_clear_radius: missing' is None
+E        +  where 'rest.swing_clear_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.swing_clear_radius', 125, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_______________ test_P13_key_present[rest.close_handle_length] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.close_handle_length', want = 120, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.close_handle_length: missing' is None
+E        +  where 'rest.close_handle_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.close_handle_length', 120, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_________________ test_P13_key_present[rest.hold_open_detent] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.hold_open_detent', want = True, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.hold_open_detent: missing' is None
+E        +  where 'rest.hold_open_detent: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.hold_open_detent', True, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+___________________ test_P13_key_present[rest.height_rule] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.height_rule', want = 'L - 190', status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'rest.height_rule: missing' is None
+E        +  where 'rest.height_rule: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'rest.height_rule', 'L - 190', 'DERIVED')
+
+tests\test_params_bom.py:582: AssertionError
+_________________ test_P13_key_present[access.key_sector_deg] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'access.key_sector_deg', want = 60, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'access.key_sector_deg: missing' is None
+E        +  where 'access.key_sector_deg: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'access.key_sector_deg', 60, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_________________ test_P13_key_present[access.key_arm_length] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'access.key_arm_length', want = 150, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'access.key_arm_length: missing' is None
+E        +  where 'access.key_arm_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'access.key_arm_length', 150, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+_______________ test_P13_key_present[access.head_clear_radius] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'access.head_clear_radius', want = 25, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P13, ids=[k for k, _, _ in NEW_P13])
+    def test_P13_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'access.head_clear_radius: missing' is None
+E        +  where 'access.head_clear_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'access.head_clear_radius', 25, 'ASSUMED')
+
+tests\test_params_bom.py:582: AssertionError
+________________ test_P14_key_present[collet.relief_hole_dia] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.relief_hole_dia', want = 3.0, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.relief_hole_dia: missing' is None
+E        +  where 'collet.relief_hole_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.relief_hole_dia', 3.0, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.foot_ring_width] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.foot_ring_width', want = 10, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.foot_ring_width: missing' is None
+E        +  where 'collet.foot_ring_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.foot_ring_width', 10, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.core_seat_height] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.core_seat_height', want = 4, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.core_seat_height: missing' is None
+E        +  where 'collet.core_seat_height: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.core_seat_height', 4, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.core_seat_width] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.core_seat_width', want = 3, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.core_seat_width: missing' is None
+E        +  where 'collet.core_seat_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.core_seat_width', 3, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.rim_notch_count] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.rim_notch_count'
+want = 'round((d - core.diameters[0]) / collets.spacing) + 1'
+status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.rim_notch_count: missing' is None
+E        +  where 'collet.rim_notch_count: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.rim_notch_count', 'round((d - core.diameters[0]) / collets.spacing) + 1', 'DERIVED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.rim_notch_width] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.rim_notch_width', want = 6, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.rim_notch_width: missing' is None
+E        +  where 'collet.rim_notch_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.rim_notch_width', 6, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.rim_notch_depth] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.rim_notch_depth', want = 3, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.rim_notch_depth: missing' is None
+E        +  where 'collet.rim_notch_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.rim_notch_depth', 3, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+_______________ test_P14_key_present[collet.label_text_format] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.label_text_format', want = 'd | lo-hi', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.label_text_format: missing' is None
+E        +  where 'collet.label_text_format: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.label_text_format', 'd | lo-hi', 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+__________________ test_P14_key_present[collet.label_height] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.label_height', want = 8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.label_height: missing' is None
+E        +  where 'collet.label_height: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.label_height', 8, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+__________________ test_P14_key_present[collet.label_depth] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.label_depth', want = 0.8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.label_depth: missing' is None
+E        +  where 'collet.label_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.label_depth', 0.8, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+_______________ test_P14_key_present[collet.file_name_pattern] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.file_name_pattern', want = 'collet_{int}p{frac}'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.file_name_pattern: missing' is None
+E        +  where 'collet.file_name_pattern: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.file_name_pattern', 'collet_{int}p{frac}', 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.chamfer_lead_in] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.chamfer_lead_in', want = 'wall - collet.min_wall'
+status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.chamfer_lead_in: missing' is None
+E        +  where 'collet.chamfer_lead_in: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.chamfer_lead_in', 'wall - collet.min_wall', 'DERIVED')
+
+tests\test_params_bom.py:605: AssertionError
+_________________ test_P14_key_present[collet.chamfer_floor] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.chamfer_floor', want = 1.5, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.chamfer_floor: missing' is None
+E        +  where 'collet.chamfer_floor: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.chamfer_floor', 1.5, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[collet.bore_lip_radius] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.bore_lip_radius', want = 1.0, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.bore_lip_radius: missing' is None
+E        +  where 'collet.bore_lip_radius: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.bore_lip_radius', 1.0, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+_____________________ test_P14_key_present[collet.colour] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.colour'
+want = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', ...]
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'collet.colour: missing' is None
+E        +  where 'collet.colour: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'collet.colour', ['red', 'orange', 'yellow', 'green', 'blue', 'violet', ...], 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+________________ test_P14_key_present[strength.tensile_design] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'strength.tensile_design', want = 45, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P14, ids=[k for k, _, _ in NEW_P14])
+    def test_P14_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'strength.tensile_design: missing' is None
+E        +  where 'strength.tensile_design: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'strength.tensile_design', 45, 'ASSUMED')
+
+tests\test_params_bom.py:605: AssertionError
+_________________ test_P15_key_present[base.plate_thickness] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'base.plate_thickness', want = 12, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'base.plate_thickness: missing' is None
+E        +  where 'base.plate_thickness: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'base.plate_thickness', 12, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+_________________ test_P15_key_present[base.spigot_hole_dia] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'base.spigot_hole_dia', want = 160.4, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'base.spigot_hole_dia: missing' is None
+E        +  where 'base.spigot_hole_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'base.spigot_hole_dia', 160.4, 'DERIVED')
+
+tests\test_params_bom.py:632: AssertionError
+____________________ test_P15_key_present[base.slot_width] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'base.slot_width', want = 7, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'base.slot_width: missing' is None
+E        +  where 'base.slot_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'base.slot_width', 7, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+___________________ test_P15_key_present[base.slot_length] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'base.slot_length', want = 20, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'base.slot_length: missing' is None
+E        +  where 'base.slot_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'base.slot_length', 20, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+______________________ test_P15_key_present[tray.length] ______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.length', want = 560, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.length: missing' is None
+E        +  where 'tray.length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.length', 560, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+______________________ test_P15_key_present[tray.width] _______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.width', want = 520, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.width: missing' is None
+E        +  where 'tray.width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.width', 520, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+______________________ test_P15_key_present[tray.depth] _______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.depth', want = 25, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.depth: missing' is None
+E        +  where 'tray.depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.depth', 25, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+______________________ test_P15_key_present[tray.lip_z] _______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.lip_z', want = 'wing underside - 50', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.lip_z: missing' is None
+E        +  where 'tray.lip_z: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.lip_z', 'wing underside - 50', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+____________________ test_P15_key_present[tray.drain_dia] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.drain_dia', want = 25, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.drain_dia: missing' is None
+E        +  where 'tray.drain_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.drain_dia', 25, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+_________________ test_P15_key_present[tray.floor_slope_deg] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.floor_slope_deg', want = 3, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.floor_slope_deg: missing' is None
+E        +  where 'tray.floor_slope_deg: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.floor_slope_deg', 3, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+____________________ test_P15_key_present[tray.drain_plug] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tray.drain_plug', want = 'threaded, large knob', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tray.drain_plug: missing' is None
+E        +  where 'tray.drain_plug: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tray.drain_plug', 'threaded, large knob', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+__________________ test_P15_key_present[caddy.socket_clear] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'caddy.socket_clear', want = 3, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'caddy.socket_clear: missing' is None
+E        +  where 'caddy.socket_clear: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'caddy.socket_clear', 3, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+__________________ test_P15_key_present[caddy.socket_depth] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'caddy.socket_depth', want = 40, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'caddy.socket_depth: missing' is None
+E        +  where 'caddy.socket_depth: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'caddy.socket_depth', 40, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+________________ test_P15_key_present[gauge.register_plug_dia] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'gauge.register_plug_dia', want = 134.08, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'gauge.register_plug_dia: missing' is None
+E        +  where 'gauge.register_plug_dia: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'gauge.register_plug_dia', 134.08, 'DERIVED')
+
+tests\test_params_bom.py:632: AssertionError
+_____________________ test_P15_key_present[gauge.length] ______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'gauge.length', want = 150, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'gauge.length: missing' is None
+E        +  where 'gauge.length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'gauge.length', 150, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+_____________________ test_P15_key_present[bracket.face] ______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'bracket.face', want = 'vertical inside faces', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'bracket.face: missing' is None
+E        +  where 'bracket.face: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'bracket.face', 'vertical inside faces', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+___________________ test_P15_key_present[bolt_down.method] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'bolt_down.method'
+want = 'foot plate 100 x 60 x 8 on two M6 T-nuts at 30 pitch'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'bolt_down.method: missing' is None
+E        +  where 'bolt_down.method: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'bolt_down.method', 'foot plate 100 x 60 x 8 on two M6 T-nuts at 30 pitch', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+____________________ test_P15_key_present[bolt_down.count] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'bolt_down.count', want = 4, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'bolt_down.count: missing' is None
+E        +  where 'bolt_down.count: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'bolt_down.count', 4, 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+_______________ test_P15_key_present[bolt_down.floor_fastener] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'bolt_down.floor_fastener', want = 'M8', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'bolt_down.floor_fastener: missing' is None
+E        +  where 'bolt_down.floor_fastener: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'bolt_down.floor_fastener', 'M8', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+_________________ test_P15_key_present[bolt_down.head_access] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'bolt_down.head_access', want = 'same sector as access.key_sector_deg'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P15, ids=[k for k, _, _ in NEW_P15])
+    def test_P15_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'bolt_down.head_access: missing' is None
+E        +  where 'bolt_down.head_access: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'bolt_down.head_access', 'same sector as access.key_sector_deg', 'ASSUMED')
+
+tests\test_params_bom.py:632: AssertionError
+__________________ test_P16_key_present[tnut.head_width_max] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tnut.head_width_max', want = 16.0, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tnut.head_width_max: missing' is None
+E        +  where 'tnut.head_width_max: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tnut.head_width_max', 16.0, 'DERIVED')
+
+tests\test_params_bom.py:646: AssertionError
+__________________ test_P16_key_present[tnut.neck_width_max] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'tnut.neck_width_max', want = 7.7, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'tnut.neck_width_max: missing' is None
+E        +  where 'tnut.neck_width_max: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'tnut.neck_width_max', 7.7, 'DERIVED')
+
+tests\test_params_bom.py:646: AssertionError
+_______________ test_P16_key_present[hardware.adjust_interface] _______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.adjust_interface', want = 'T-handle', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'hardware.adjust_interface: missing' is None
+E        +  where 'hardware.adjust_interface: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'hardware.adjust_interface', 'T-handle', 'ASSUMED')
+
+tests\test_params_bom.py:646: AssertionError
+______________ test_P16_key_present[hardware.tnut_fit_30series] _______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnut_fit_30series'
+want = 'unmeasured: accept a nut only if head <= tnut.head_width_max and neck <= tnut.neck_width_max'
+status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'hardware.tnut_fit_30series: missing' is None
+E        +  where 'hardware.tnut_fit_30series: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'hardware.tnut_fit_30series', 'unmeasured: accept a nut only if head <= tnut.head_width_max and neck <= tnut.neck_width_max', 'ASSUMED')
+
+tests\test_params_bom.py:646: AssertionError
+_____________ test_P16_key_present[hardware.printed_bracket_file] _____________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.printed_bracket_file'
+want = '8020 30 Series Corner Bracket 3dp.stl', status = 'VERIFIED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'hardware.printed_bracket_file: missing' is None
+E        +  where 'hardware.printed_bracket_file: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'hardware.printed_bracket_file', '8020 30 Series Corner Bracket 3dp.stl', 'VERIFIED')
+
+tests\test_params_bom.py:646: AssertionError
+__________ test_P16_key_present[hardware.printed_bracket_slot_width] __________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.printed_bracket_slot_width', want = 7.0, status = 'VERIFIED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'hardware.printed_bracket_slot_width: missing' is None
+E        +  where 'hardware.printed_bracket_slot_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'hardware.printed_bracket_slot_width', 7.0, 'VERIFIED')
+
+tests\test_params_bom.py:646: AssertionError
+__________ test_P16_key_present[hardware.printed_bracket_slot_pitch] __________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.printed_bracket_slot_pitch', want = 29.2, status = 'VERIFIED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P16, ids=[k for k, _, _ in NEW_P16])
+    def test_P16_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'hardware.printed_bracket_slot_pitch: missing' is None
+E        +  where 'hardware.printed_bracket_slot_pitch: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'hardware.printed_bracket_slot_pitch', 29.2, 'VERIFIED')
+
+tests\test_params_bom.py:646: AssertionError
+____________________ test_P17_key_present[stop.pad_width] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.pad_width', want = 60, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P17, ids=[k for k, _, _ in NEW_P17])
+    def test_P17_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'stop.pad_width: missing' is None
+E        +  where 'stop.pad_width: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'stop.pad_width', 60, 'ASSUMED')
+
+tests\test_params_bom.py:657: AssertionError
+____________________ test_P17_key_present[stop.pad_length] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.pad_length', want = 60, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P17, ids=[k for k, _, _ in NEW_P17])
+    def test_P17_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'stop.pad_length: missing' is None
+E        +  where 'stop.pad_length: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'stop.pad_length', 60, 'ASSUMED')
+
+tests\test_params_bom.py:657: AssertionError
+_________________ test_P17_key_present[stop.collar_top_z_min] _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.collar_top_z_min', want = 152.75, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P17, ids=[k for k, _, _ in NEW_P17])
+    def test_P17_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'stop.collar_top_z_min: missing' is None
+E        +  where 'stop.collar_top_z_min: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'stop.collar_top_z_min', 152.75, 'DERIVED')
+
+tests\test_params_bom.py:657: AssertionError
+_________________ test_P17_key_present[upper.load_clearance] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'upper.load_clearance', want = 50, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", NEW_P17, ids=[k for k, _, _ in NEW_P17])
+    def test_P17_key_present(params, key, want, status):
+>       assert _problem(params, key, want, status) is None
+E       AssertionError: assert 'upper.load_clearance: missing' is None
+E        +  where 'upper.load_clearance: missing' = _problem({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'upper.load_clearance', 50, 'ASSUMED')
+
+tests\test_params_bom.py:657: AssertionError
+_____________________ test_P18_changed_value[stop.g_stop] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.g_stop', want = 25, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('stop.g_stop', 10, 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+__________________ test_P18_changed_value[core.min_exposed] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'core.min_exposed', want = 143.12, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('core.min_exposed', 128.12, 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+__________________ test_P18_changed_value[stop.collar_top_z] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.collar_top_z', want = 159.84, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('stop.collar_top_z', 150, 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+____________________ test_P18_changed_value[stop.height_z] ____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.height_z', want = 184.84, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('stop.height_z', 160, 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+___________________ test_P18_changed_value[icd.stop_height] ___________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'icd.stop_height', want = 184.84, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('icd.stop_height', 160, 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+__________________ test_P18_changed_value[stop.height_range] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.height_range', want = [184.84, 315], status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('stop.height_range', [160, 300], 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+____________________ test_P18_changed_value[stop.start_z] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.start_z', want = [684.84, 815], status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('stop.start_z', [660, 800], 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+____________________ test_P18_changed_value[upper.park_z] _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'upper.park_z', want = 959.84, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('upper.park_z', 950, 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+__________________ test_P18_changed_value[upper.park_stroke] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'upper.park_stroke', want = 775.0, status = 'DERIVED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('upper.park_stroke', 780, 'DERIVED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+__________________ test_P18_changed_value[hardware.tnut_sku] __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnut_sku', want = '13098', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('hardware.tnut_sku', '40-3914', 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+________________ test_P18_changed_value[hardware.tnut_sku_alt] ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnut_sku_alt', want = '40-3914, unverified', status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('hardware.tnut_sku_alt', '13031', 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+_____________ test_P18_changed_value[hardware.tnuts_per_bracket] ______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnuts_per_bracket', want = 8, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+        lf = common.leaf(params, key)
+        ok = lf["status"] == status and str(lf["source"]).strip() != ""
+        if want is not None:
+            ok = ok and (lf["value"] == pytest.approx(want))
+>       assert ok, (key, lf["value"], lf["status"])
+E       AssertionError: ('hardware.tnuts_per_bracket', 2, 'ASSUMED')
+E       assert False
+
+tests\test_params_bom.py:685: AssertionError
+_____________ test_P18_changed_value[hardware.tnut_fit_30series] ______________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnut_fit_30series', want = None, status = 'ASSUMED'
+
+    @pytest.mark.parametrize("key,want,status", CHANGED, ids=[k for k, _, _ in CHANGED])
+    def test_P18_changed_value(params, key, want, status):
+>       lf = common.leaf(params, key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:681: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'hardware.tnut_fit_30series'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'hardware.tnut_fit_30series'
+
+build_parts\common.py:62: KeyError
+_________________ test_P18_collar_top_recomputed_from_params __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P18_collar_top_recomputed_from_params(params):
+        """Highest clamped collar top (pose K, core d + 1.0) from params. 13.626 holder bottom in R minus the
+        4.536 drop to d + 1.0 (stroke_gap_R 13.126 - witness.zone_high 8.59), plus holder length 88, flange 8 and nut plate 8
+        (Loftsman stack: 16), plus collar.top_above_plate 6.75, plus the floor offset 40 (icd.floor_above_datum_a)."""
+        g = lambda k: common.get(params, k)
+>       drop = g("holder.stroke_gap_R") - g("witness.zone_high")
+                                          ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:693: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_params_bom.py:692: in <lambda>
+    g = lambda k: common.get(params, k)
+                  ^^^^^^^^^^^^^^^^^^^^^
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'witness.zone_high'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'witness.zone_high'
+
+build_parts\common.py:62: KeyError
+____________________ test_P18_start_z_and_park_arithmetic _____________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P18_start_z_and_park_arithmetic(params):
+        g = lambda k: common.get(params, k)
+        assert [h + g("upper.travel_max") for h in g("stop.height_range")] == pytest.approx(g("stop.start_z"))
+>       assert g("upper.park_z") == pytest.approx(g("stop.collar_top_z") + g("core.length_install") + g("upper.load_clearance"))
+                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:711: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_params_bom.py:709: in <lambda>
+    g = lambda k: common.get(params, k)
+                  ^^^^^^^^^^^^^^^^^^^^^
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'upper.load_clearance'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'upper.load_clearance'
+
+build_parts\common.py:62: KeyError
+_______________________ test_P18_clamped_range_and_step _______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P18_clamped_range_and_step(params):
+        import math
+        g = lambda k: common.get(params, k)
+>       assert g("stop.collar_top_z") - g("stop.collar_top_z_min") == pytest.approx(g("witness.step_per_family"), abs=0.01)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:718: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_params_bom.py:717: in <lambda>
+    g = lambda k: common.get(params, k)
+                  ^^^^^^^^^^^^^^^^^^^^^
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'stop.collar_top_z_min'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'stop.collar_top_z_min'
+
+build_parts\common.py:62: KeyError
+_______________________ test_P18_tommy_bar_gives_15_nm ________________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P18_tommy_bar_gives_15_nm(params):
+        g = lambda k: common.get(params, k)
+>       assert g("loads.hand_force_bar") * g("nut.tommy_bar_length") / 2 / 1000 == pytest.approx(15.0)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:724: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_params_bom.py:723: in <lambda>
+    g = lambda k: common.get(params, k)
+                  ^^^^^^^^^^^^^^^^^^^^^
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'loads.hand_force_bar'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'loads.hand_force_bar'
+
+build_parts\common.py:62: KeyError
+_________________ test_P18_rest_height_rule_matches_positions _________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P18_rest_height_rule_matches_positions(params):
+>       assert common.get(params, "rest.height_rule") == "L - 190"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'rest.height_rule'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'rest.height_rule'
+
+build_parts\common.py:62: KeyError
+__________________________ test_P19_tensile_renamed ___________________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P19_tensile_renamed(params):
+>       assert _has(params, "strength.tensile_design") and not _has(params, "friction.tensile_in_layer")
+E       AssertionError: assert (False)
+E        +  where False = _has({'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}, 'strength.tensile_design')
+
+tests\test_params_bom.py:735: AssertionError
+__________________ test_P19_no_fdm_wording_in_design_sources __________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P19_no_fdm_wording_in_design_sources(params):
+        bad = [k for k, lf in common.iter_leaves(params) if "FDM" in str(lf.get("source", ""))]
+>       assert bad == []
+E       AssertionError: assert ['collet.web_...riction.mu_k'] == []
+E         
+E         Left contains 2 more items, first extra item: 'collet.web_strain_allow'
+E         Use -v to get more diff
+
+tests\test_params_bom.py:740: AssertionError
+__________________ test_P19_no_reference_to_old_tensile_name __________________
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+
+    def test_P19_no_reference_to_old_tensile_name(root):
+        old = "tensile_in_" + "layer"
+        hits = [f for f in ("params.yaml", "report_assumptions.md", "build_parts/common.py", "build_parts/bom_tools.py")
+                if old in (root / f).read_text(encoding="utf-8")]
+>       assert hits == []
+E       AssertionError: assert ['params.yaml...sumptions.md'] == []
+E         
+E         Left contains 2 more items, first extra item: 'params.yaml'
+E         Use -v to get more diff
+
+tests\test_params_bom.py:747: AssertionError
+________________ test_P20_family_derived_keys_follow_diameters ________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P20_family_derived_keys_follow_diameters(params):
+>       assert common.get(params, "collet.rim_notch_count") == "round((d - core.diameters[0]) / collets.spacing) + 1"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_params_bom.py:774: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+build_parts\common.py:70: in get
+    return leaf(params, key)["value"]
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+key = 'collet.rim_notch_count'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'collet.rim_notch_count'
+
+build_parts\common.py:62: KeyError
+______________________ test_P21_printed_bracket_measured ______________________
+
+params = {'meta': {'units': {'value': 'mm', 'unit': '', 'source': 'gameplan Design Notes 4', 'status': 'DECLARED'}, 'seed_date'... dome offset; exceeds travel_max, ceiling holds (cr_scratch/step2_system_concept.md)', 'status': 'DERIVED'}, ...}, ...}
+
+    def test_P21_printed_bracket_measured(params):
+        pb = common.get(params, "hardware.printed_bracket")
+>       assert "29.2" in pb and "7.0 mm" in pb and "68 mm" in pb
+E       AssertionError: assert ('29.2' in '68 mm legs, 57 mm wide, 7 mm plate, slotted 7 mm holes at 30 mm pitch, clearing M6')
+
+tests\test_params_bom.py:791: AssertionError
+____ test_P21_handwritten_file_carries_measurement[bom_purchased.md-13098] ____
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'bom_purchased.md', needle = '13098'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert '13098' in '## Brackets\n\n| Class | Candidate SKU | Qty | Note |\n|---|---|---|---|\n| full-size 30-series corner bracket, leg a...D3 inventory list. Counts are computed by build_parts/bom_tools.py from params.yaml `hardware.*` and `frame.joints`.\n'
+E        +  where '## Brackets\n\n| Class | Candidate SKU | Qty | Note |\n|---|---|---|---|\n| full-size 30-series corner bracket, leg a...D3 inventory list. Counts are computed by build_parts/bom_tools.py from params.yaml `hardware.*` and `frame.joints`.\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'bom_purchased.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+____ test_P21_handwritten_file_carries_measurement[bom_purchased.md-29.2] _____
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'bom_purchased.md', needle = '29.2'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert '29.2' in '## Brackets\n\n| Class | Candidate SKU | Qty | Note |\n|---|---|---|---|\n| full-size 30-series corner bracket, leg a...D3 inventory list. Counts are computed by build_parts/bom_tools.py from params.yaml `hardware.*` and `frame.joints`.\n'
+E        +  where '## Brackets\n\n| Class | Candidate SKU | Qty | Note |\n|---|---|---|---|\n| full-size 30-series corner bracket, leg a...D3 inventory list. Counts are computed by build_parts/bom_tools.py from params.yaml `hardware.*` and `frame.joints`.\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'bom_purchased.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+_ test_P21_handwritten_file_carries_measurement[reference/vendor_sources.md-step3_engineer_hardware_confirm] _
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'reference/vendor_sources.md'
+needle = 'step3_engineer_hardware_confirm'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert 'step3_engineer_hardware_confirm' in '## Vendor reference record (2026-11-08)\n\nUpdate 2026-11-08 (Step 2): the human supplied `8020-30-6060 X 1540.step`,... the STEP at Step 2. The 8020-14089 SKU and the 68 mm printed-bracket facts are ASSUMED in params (Step 3 confirms).\n'
+E        +  where '## Vendor reference record (2026-11-08)\n\nUpdate 2026-11-08 (Step 2): the human supplied `8020-30-6060 X 1540.step`,... the STEP at Step 2. The 8020-14089 SKU and the 68 mm printed-bracket facts are ASSUMED in params (Step 3 confirms).\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'reference/vendor_sources.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+_______ test_P21_handwritten_file_carries_measurement[ASSEMBLY.md-29.2] _______
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'ASSEMBLY.md', needle = '29.2'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert '29.2' in '# ASSEMBLY.md (Step 2 integration of the system concept)\n\nSource: cr_scratch/step2_system_concept.md (signed Loftsm...rget 40 kg; height. The 2 m jig height is the soft target `jig.height_target`, recorded and reported, never a limit.\n'
+E        +  where '# ASSEMBLY.md (Step 2 integration of the system concept)\n\nSource: cr_scratch/step2_system_concept.md (signed Loftsm...rget 40 kg; height. The 2 m jig height is the soft target `jig.height_target`, recorded and reported, never a limit.\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'ASSEMBLY.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+______ test_P21_handwritten_file_carries_measurement[gameplan.md-13098] _______
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'gameplan.md', needle = '13098'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert '13098' in '# Core Cutter Test Jig Gameplan\n\n**Document(s) under work:** workorder.md (core cutter test jig: base with tubular ...locking, non-blocking, UNVERIFIED) | Manager | R (replaced by Gate Decisions and Design Notes 12) | Gate Decisions |\n'
+E        +  where '# Core Cutter Test Jig Gameplan\n\n**Document(s) under work:** workorder.md (core cutter test jig: base with tubular ...locking, non-blocking, UNVERIFIED) | Manager | R (replaced by Gate Decisions and Design Notes 12) | Gate Decisions |\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'gameplan.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+_ test_P21_handwritten_file_carries_measurement[report_assumptions.md-hardware.tnut_fit_30series] _
+
+root = WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig')
+fname = 'report_assumptions.md', needle = 'hardware.tnut_fit_30series'
+
+    @pytest.mark.parametrize("fname,needle", [
+        ("bom_purchased.md", "13098"), ("bom_purchased.md", "29.2"), ("reference/vendor_sources.md", "step3_engineer_hardware_confirm"),
+        ("ASSEMBLY.md", "29.2"), ("gameplan.md", "13098"), ("report_assumptions.md", "hardware.tnut_fit_30series")])
+    def test_P21_handwritten_file_carries_measurement(root, fname, needle):
+>       assert needle in (root / fname).read_text(encoding="utf-8")
+E       AssertionError: assert 'hardware.tnut_fit_30series' in '## Report assumptions list\n\nCounts: DECLARED 22, ASSUMED 94, VERIFIED 34, DERIVED 43, total 193\n\n| Key | Label | ... (DECLARED, gate B6), recorded and reported, not tested; frame 60 + columns 1540 = 1600 mm before overhang (Step 2).\n'
+E        +  where '## Report assumptions list\n\nCounts: DECLARED 22, ASSUMED 94, VERIFIED 34, DERIVED 43, total 193\n\n| Key | Label | ... (DECLARED, gate B6), recorded and reported, not tested; frame 60 + columns 1540 = 1600 mm before overhang (Step 2).\n' = read_text(encoding='utf-8')
+E        +    where read_text = (WindowsPath('C:/Users/Quinn Morley/OneDrive/PROJECTS/CC/CuttingJig') / 'report_assumptions.md').read_text
+
+tests\test_params_bom.py:799: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_params_bom.py::test_P10_icd_frozen_keys_exist_with_source_and_status
+FAILED tests/test_params_bom.py::test_P11_key_present[thread.lead_in_length]
+FAILED tests/test_params_bom.py::test_P11_key_present[thread.land_width] - As...
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.register_bore_radius]
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.register_depth]
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.key_slot_width]
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.key_slot_depth]
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.key_offset_deg]
+FAILED tests/test_params_bom.py::test_P11_key_present[receiver.spigot_od] - A...
+FAILED tests/test_params_bom.py::test_P11_key_present[holder.flange_thickness]
+FAILED tests/test_params_bom.py::test_P11_key_present[holder.key_width] - Ass...
+FAILED tests/test_params_bom.py::test_P11_key_present[holder.key_height] - As...
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.washer_pocket_od]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.washer_pocket_depth]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.arrow_length] - Ass...
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.arrow_depth] - Asse...
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.tommy_hole_dia] - A...
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.tommy_hole_count]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.tommy_hole_depth]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.tommy_bar_length]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.release_marker] - A...
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.release_dead_turn_deg]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.washer_window_count]
+FAILED tests/test_params_bom.py::test_P12_key_present[nut.washer_window_width]
+FAILED tests/test_params_bom.py::test_P12_key_present[washer.retention] - Ass...
+FAILED tests/test_params_bom.py::test_P12_key_present[loads.nut_torque_abuse]
+FAILED tests/test_params_bom.py::test_P12_key_present[loads.hand_force_bar]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.wing_count] - A...
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.wing_height] - ...
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.wing_root_width]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.wing_tip_width]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.wing_thickness]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.edge_radius] - ...
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.knuckle_clearance]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.sweep_clear_radius]
+FAILED tests/test_params_bom.py::test_P13_key_present[wingnut.turns_to_clamp]
+FAILED tests/test_params_bom.py::test_P13_key_present[witness.zone_high] - As...
+FAILED tests/test_params_bom.py::test_P13_key_present[witness.scale_pitch] - ...
+FAILED tests/test_params_bom.py::test_P13_key_present[witness.wrong_collet_band_low]
+FAILED tests/test_params_bom.py::test_P13_key_present[witness.wrong_collet_band_high]
+FAILED tests/test_params_bom.py::test_P13_key_present[witness.step_per_family]
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.roller_dia] - Asse...
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.arm_length] - Asse...
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.swing_clear_radius]
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.close_handle_length]
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.hold_open_detent]
+FAILED tests/test_params_bom.py::test_P13_key_present[rest.height_rule] - Ass...
+FAILED tests/test_params_bom.py::test_P13_key_present[access.key_sector_deg]
+FAILED tests/test_params_bom.py::test_P13_key_present[access.key_arm_length]
+FAILED tests/test_params_bom.py::test_P13_key_present[access.head_clear_radius]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.relief_hole_dia]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.foot_ring_width]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.core_seat_height]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.core_seat_width]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.rim_notch_count]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.rim_notch_width]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.rim_notch_depth]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.label_text_format]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.label_height] - ...
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.label_depth] - A...
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.file_name_pattern]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.chamfer_lead_in]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.chamfer_floor]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.bore_lip_radius]
+FAILED tests/test_params_bom.py::test_P14_key_present[collet.colour] - Assert...
+FAILED tests/test_params_bom.py::test_P14_key_present[strength.tensile_design]
+FAILED tests/test_params_bom.py::test_P15_key_present[base.plate_thickness]
+FAILED tests/test_params_bom.py::test_P15_key_present[base.spigot_hole_dia]
+FAILED tests/test_params_bom.py::test_P15_key_present[base.slot_width] - Asse...
+FAILED tests/test_params_bom.py::test_P15_key_present[base.slot_length] - Ass...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.length] - Assertio...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.width] - Assertion...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.depth] - Assertion...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.lip_z] - Assertion...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.drain_dia] - Asser...
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.floor_slope_deg]
+FAILED tests/test_params_bom.py::test_P15_key_present[tray.drain_plug] - Asse...
+FAILED tests/test_params_bom.py::test_P15_key_present[caddy.socket_clear] - A...
+FAILED tests/test_params_bom.py::test_P15_key_present[caddy.socket_depth] - A...
+FAILED tests/test_params_bom.py::test_P15_key_present[gauge.register_plug_dia]
+FAILED tests/test_params_bom.py::test_P15_key_present[gauge.length] - Asserti...
+FAILED tests/test_params_bom.py::test_P15_key_present[bracket.face] - Asserti...
+FAILED tests/test_params_bom.py::test_P15_key_present[bolt_down.method] - Ass...
+FAILED tests/test_params_bom.py::test_P15_key_present[bolt_down.count] - Asse...
+FAILED tests/test_params_bom.py::test_P15_key_present[bolt_down.floor_fastener]
+FAILED tests/test_params_bom.py::test_P15_key_present[bolt_down.head_access]
+FAILED tests/test_params_bom.py::test_P16_key_present[tnut.head_width_max] - ...
+FAILED tests/test_params_bom.py::test_P16_key_present[tnut.neck_width_max] - ...
+FAILED tests/test_params_bom.py::test_P16_key_present[hardware.adjust_interface]
+FAILED tests/test_params_bom.py::test_P16_key_present[hardware.tnut_fit_30series]
+FAILED tests/test_params_bom.py::test_P16_key_present[hardware.printed_bracket_file]
+FAILED tests/test_params_bom.py::test_P16_key_present[hardware.printed_bracket_slot_width]
+FAILED tests/test_params_bom.py::test_P16_key_present[hardware.printed_bracket_slot_pitch]
+FAILED tests/test_params_bom.py::test_P17_key_present[stop.pad_width] - Asser...
+FAILED tests/test_params_bom.py::test_P17_key_present[stop.pad_length] - Asse...
+FAILED tests/test_params_bom.py::test_P17_key_present[stop.collar_top_z_min]
+FAILED tests/test_params_bom.py::test_P17_key_present[upper.load_clearance]
+FAILED tests/test_params_bom.py::test_P18_changed_value[stop.g_stop] - Assert...
+FAILED tests/test_params_bom.py::test_P18_changed_value[core.min_exposed] - A...
+FAILED tests/test_params_bom.py::test_P18_changed_value[stop.collar_top_z] - ...
+FAILED tests/test_params_bom.py::test_P18_changed_value[stop.height_z] - Asse...
+FAILED tests/test_params_bom.py::test_P18_changed_value[icd.stop_height] - As...
+FAILED tests/test_params_bom.py::test_P18_changed_value[stop.height_range] - ...
+FAILED tests/test_params_bom.py::test_P18_changed_value[stop.start_z] - Asser...
+FAILED tests/test_params_bom.py::test_P18_changed_value[upper.park_z] - Asser...
+FAILED tests/test_params_bom.py::test_P18_changed_value[upper.park_stroke] - ...
+FAILED tests/test_params_bom.py::test_P18_changed_value[hardware.tnut_sku] - ...
+FAILED tests/test_params_bom.py::test_P18_changed_value[hardware.tnut_sku_alt]
+FAILED tests/test_params_bom.py::test_P18_changed_value[hardware.tnuts_per_bracket]
+FAILED tests/test_params_bom.py::test_P18_changed_value[hardware.tnut_fit_30series]
+FAILED tests/test_params_bom.py::test_P18_collar_top_recomputed_from_params
+FAILED tests/test_params_bom.py::test_P18_start_z_and_park_arithmetic - KeyEr...
+FAILED tests/test_params_bom.py::test_P18_clamped_range_and_step - KeyError: ...
+FAILED tests/test_params_bom.py::test_P18_tommy_bar_gives_15_nm - KeyError: '...
+FAILED tests/test_params_bom.py::test_P18_rest_height_rule_matches_positions
+FAILED tests/test_params_bom.py::test_P19_tensile_renamed - AssertionError: a...
+FAILED tests/test_params_bom.py::test_P19_no_fdm_wording_in_design_sources - ...
+FAILED tests/test_params_bom.py::test_P19_no_reference_to_old_tensile_name - ...
+FAILED tests/test_params_bom.py::test_P20_family_derived_keys_follow_diameters
+FAILED tests/test_params_bom.py::test_P21_printed_bracket_measured - Assertio...
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[bom_purchased.md-13098]
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[bom_purchased.md-29.2]
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[reference/vendor_sources.md-step3_engineer_hardware_confirm]
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[ASSEMBLY.md-29.2]
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[gameplan.md-13098]
+FAILED tests/test_params_bom.py::test_P21_handwritten_file_carries_measurement[report_assumptions.md-hardware.tnut_fit_30series]
+126 failed, 71 passed in 9.67s

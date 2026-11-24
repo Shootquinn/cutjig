@@ -1,0 +1,21 @@
+{
+ "baseline_common": 0.0,
+ "screw_common": {
+  "15": 0.0,
+  "90": 0.0,
+  "180": 0.0,
+  "360": 0.0
+ },
+ "opposite_hand_90": 10130.63717071719,
+ "pure_rotation_90": 6269.023022867446,
+ "cw_down_common": 0.0,
+ "cw_down_dz": -2.0,
+ "sentinel": "PROBE_OK",
+ "probe": "thread_mesh",
+ "run_started_epoch": 1794344331.4205413,
+ "run_seconds": 18.1,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd"
+ ]
+}

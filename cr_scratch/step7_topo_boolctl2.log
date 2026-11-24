@@ -1,0 +1,11 @@
+receiver {'z': [39.63, 55.63], 'slice_integral': 97298.67, 'common': 96867.51, 'common_compound': 96867.51, 'rel_err': -0.004431, 'secs': 0.4, 'checkA': [15079.644737231007, 15079.644737231007, 5840.565787299725]}
+nut {'z': [111.38, 127.38], 'slice_integral': 88521.52, 'common': 88522.25, 'common_compound': 88522.25, 'rel_err': 8e-06, 'secs': 0.6, 'checkA': [4618.419949680716, 4618.420266377227, 4618.41989588445]}
+secs 88.66562008857727
+BUILD_DONE
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Importing project files......
+						(5 %)							(10 %)							(15 %)							(21 %)							(26 %)							(31 %)							(36 %)							(42 %)							(47 %)							(52 %)							(57 %)							(63 %)							(68 %)							(73 %)							(78 %)							(84 %)							(89 %)							(94 %)							(100 %)									Postprocessing......
+						(100 %)									

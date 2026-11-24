@@ -1,0 +1,126 @@
+{
+ "part": "core",
+ "volume_mm3": 3925605.375,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 2,
+ "faces": 4,
+ "edges": 5,
+ "vertices": 3,
+ "bbox_plain": {
+  "xmin": -50.0,
+  "xmax": 50.0,
+  "ymin": -50.0,
+  "ymax": 50.0,
+  "zmin": 0.0,
+  "zmax": 500.0
+ },
+ "bbox_optimal": {
+  "xmin": -50.0,
+  "xmax": 50.0,
+  "ymin": -50.0,
+  "ymax": 50.0,
+  "zmin": 0.0,
+  "zmax": 500.0
+ },
+ "bbox": {
+  "xmin": -50.0,
+  "xmax": 50.0,
+  "ymin": -50.0,
+  "ymax": 50.0,
+  "zmin": 0.0,
+  "zmax": 500.0
+ },
+ "centre_of_mass": [
+  0.0,
+  0.0,
+  249.912
+ ],
+ "features": [
+  {
+   "id": "L2",
+   "feature": "core diameter = core.diameter_nominal (D)",
+   "volume_mm3": 3925605.375,
+   "built": 100.0,
+   "params": 100,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "core length = core.length_capture (A)",
+   "volume_mm3": 3925605.375,
+   "built": 500.0,
+   "params": 500,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "bottom end square: radius at z 0.001 equals the full radius (R)",
+   "volume_mm3": 3925605.375,
+   "built": 50.0,
+   "params": 50.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "top end chamfered: radius at z top - 0.001 equals r - core.top_chamfer (R)",
+   "volume_mm3": 3925605.375,
+   "built": 47.001,
+   "params": 47.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "chamfer height core.top_chamfer (A): side wall ends at top - chamfer",
+   "volume_mm3": 3925605.375,
+   "built": 3.0,
+   "params": 3.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "Rule P single-end chamfer: bottom corner solid, top corner removed",
+   "volume_mm3": 3925605.375,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L2",
+   "feature": "axis x = y = 0 (bbox centre offset)",
+   "volume_mm3": 3925605.375,
+   "built": 0.0,
+   "params": 0.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [],
+ "boolean_count": 0,
+ "run_seconds": 0.0,
+ "build_seconds": 0.0,
+ "diameter": 100,
+ "length": 500,
+ "top_chamfer": 3.0,
+ "recorded_lengths": [
+  500,
+  750,
+  1000
+ ]
+}

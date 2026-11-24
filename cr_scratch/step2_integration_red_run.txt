@@ -1,0 +1,22 @@
+key = 'hardware.bracket_leg_min'
+
+    def leaf(params, key):
+        node = params
+        for part in key.split("."):
+            if not isinstance(node, dict) or part not in node:
+>               raise KeyError(key)
+E               KeyError: 'hardware.bracket_leg_min'
+
+build_parts\common.py:62: KeyError
+=========================== short test summary info ===========================
+FAILED tests/test_params_bom.py::test_P10_icd_frozen_keys_exist_with_source_and_status
+FAILED tests/test_params_bom.py::test_P10_every_key_in_concept_icd_table_exists
+FAILED tests/test_params_bom.py::test_P10_coaxiality_chain_sums_inside_budget
+FAILED tests/test_params_bom.py::test_P10_working_stroke_per_core_class - Key...
+FAILED tests/test_params_bom.py::test_P10_stop_ownership_upper_assembly - Ass...
+FAILED tests/test_params_bom.py::test_P10_assembly_load_loop_ten_members - As...
+FAILED tests/test_params_bom.py::test_P10_height_soft_recorded_reported_untested
+FAILED tests/test_params_bom.py::test_P10_P8_against_final_throat - Attribute...
+FAILED tests/test_params_bom.py::test_P10_envelope_request_refused_above_cap
+FAILED tests/test_params_bom.py::test_P10_bracket_rule_superseded - KeyError:...
+10 failed, 55 passed in 2.63s

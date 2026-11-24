@@ -1,0 +1,78 @@
+{
+ "receiver": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 955903.5059819127,
+  "euler_VEF": 4,
+  "flip_mismatch_fraction": 0.5896449997817532,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 15
+ },
+ "holder": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 407847.1788755124,
+  "euler_VEF": 8,
+  "flip_mismatch_fraction": 0.11753502853253128,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 15
+ },
+ "nut": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 322244.0695602276,
+  "euler_VEF": 8,
+  "flip_mismatch_fraction": 0.2935658724478245,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 17
+ },
+ "washer": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 1814.2270123298385,
+  "euler_VEF": 2,
+  "flip_mismatch_fraction": 0.008508609460629923,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 13
+ },
+ "footring": {
+  "valid": true,
+  "closed": true,
+  "solids": 1,
+  "shells": 1,
+  "volume": 17034.85014233211,
+  "euler_VEF": 3,
+  "flip_mismatch_fraction": 0.2251948207950123,
+  "bodies": [
+   "Body"
+  ],
+  "object_count": 13
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "step3_parts",
+ "run_started_epoch": 1794204410.4022436,
+ "run_seconds": 2.6,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\holder.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\washer.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\footring.FCStd"
+ ]
+}

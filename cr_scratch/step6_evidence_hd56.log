@@ -1,0 +1,7 @@
+EVID window written r0 65.00 r1 68.54 holder OD r 67.04 key tip r 70.04
+EVID as written: azimuths with !=1 interval [(68.54, 33, 2), (68.54, 36, 2), (68.54, 39, 2)]
+EVID excluding the key sector (+-7.9 deg about 37): remaining []
+EVID HD6 interval at r 66.77 (written, inside the tube wall): [(0.0, 104.75)]
+EVID HD6 interval at r 69.54 (flange annulus): [(88.0, 96.0)]
+EVID HD6 downward planar faces z: [0.0, 88.0] allowed [bottom -0.000, flange underside 88.000]
+EVID_DONE

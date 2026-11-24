@@ -1,0 +1,175 @@
+{
+ "part": "bracket_printed",
+ "volume_mm3": 47943.867,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 2,
+ "faces": 40,
+ "edges": 114,
+ "vertices": 76,
+ "bbox_plain": {
+  "xmin": 0.0,
+  "xmax": 68.0,
+  "ymin": -0.0,
+  "ymax": 68.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "bbox_optimal": {
+  "xmin": 0.0,
+  "xmax": 68.0,
+  "ymin": -0.0,
+  "ymax": 68.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "bbox": {
+  "xmin": 0.0,
+  "xmax": 68.0,
+  "ymin": -0.0,
+  "ymax": 68.0,
+  "zmin": 0.0,
+  "zmax": 57.0
+ },
+ "centre_of_mass": [
+  19.668,
+  19.668,
+  28.5
+ ],
+ "features": [
+  {
+   "id": "FR2",
+   "feature": "printed bracket leg B length (L)",
+   "volume_mm3": 51471.0,
+   "built": 68.0,
+   "params": 68,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed bracket leg A length (L)",
+   "volume_mm3": 51471.0,
+   "built": 68.0,
+   "params": 68,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed bracket plate thickness (T)",
+   "volume_mm3": 51471.0,
+   "built": 7.0,
+   "params": 7,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed bracket width (Z)",
+   "volume_mm3": 51471.0,
+   "built": 57.0,
+   "params": 57,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed bracket holes or slots per bracket (8: two per row, two rows, two legs)",
+   "volume_mm3": 3527.133,
+   "built": 8,
+   "params": 8,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed first hole or slot position along the leg (A)",
+   "volume_mm3": 3527.133,
+   "built": 19.4,
+   "params": 19.4,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed second hole or slot position along the leg (A)",
+   "volume_mm3": 3527.133,
+   "built": 48.6,
+   "params": 48.6,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed first hole or slot length along the leg (A)",
+   "volume_mm3": 3527.133,
+   "built": 11.0,
+   "params": 11.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed second hole or slot length along the leg (A)",
+   "volume_mm3": 3527.133,
+   "built": 10.0,
+   "params": 10.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "FR2",
+   "feature": "printed hole rows across the leg: lower row positions equal upper (A)",
+   "volume_mm3": 3527.133,
+   "built": 13.9,
+   "params": 13.9,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "printed_legs_fuse",
+   "kind": "fuse",
+   "faces_before": 12,
+   "faces_after": 14,
+   "faces_after_clean": 8,
+   "valid": true
+  },
+  {
+   "name": "printed_hole_tools_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 48,
+   "faces_after_clean": 48,
+   "valid": true
+  },
+  {
+   "name": "printed_holes_cut",
+   "kind": "cut",
+   "faces_before": 8,
+   "faces_after": 40,
+   "faces_after_clean": 40,
+   "valid": true,
+   "tool_faces": 48
+  }
+ ],
+ "boolean_count": 3,
+ "run_seconds": 0.2,
+ "build_seconds": 0.2,
+ "kind": "printed"
+}

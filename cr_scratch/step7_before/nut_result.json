@@ -1,0 +1,551 @@
+{
+ "part": "nut",
+ "volume_mm3": 358837.755,
+ "bbox": {
+  "xmin": -115.0,
+  "xmax": 115.0,
+  "ymin": -95.14,
+  "ymax": 95.14,
+  "zmin": -0.0,
+  "zmax": 56.0
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 10,
+ "centre_of_mass": [
+  0.113,
+  -0.141,
+  28.26
+ ],
+ "features": [
+  {
+   "feature": "thread crest (nut) D = minor + 2 `fit.c_r`",
+   "built": 145.28,
+   "params": 145.28,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "thread root (nut) D = major + 2 `fit.c_r`",
+   "built": 150.28,
+   "params": 150.28,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.pitch` tooth period (A)",
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "nut tooth at pitch line = pitch/2 - `fit.g_a` (A)",
+   "built": 3.7,
+   "params": 3.7,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "nut crest flat (A)",
+   "built": 1.91,
+   "params": 1.9,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "hand: tooth shift per +90 deg = pitch/4 means right",
+   "built": 2.0,
+   "params": 2.0,
+   "tol": 0.1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.starts` (period / pitch)",
+   "built": 1.0,
+   "params": 1,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`thread.nut_lead_in_length` bottom chamfer (R to pitch line)",
+   "built": 0.899,
+   "params": 0.9,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "one-ended thread start: groove present below plate underside",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": "azimuths with groove at r mid: 25 of 72"
+  },
+  {
+   "feature": "one-ended thread start: no groove at or above plate underside (outside windows)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": "voids: 0"
+  },
+  {
+   "feature": "`nut.length` + washer proud = plate underside z (A)",
+   "built": 48.5,
+   "params": 48.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.plate_thickness` (A)",
+   "built": 7.5,
+   "params": 7.5,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.overall_height` (A)",
+   "built": 56.0,
+   "params": 56.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.body_od` (D)",
+   "built": 166.28,
+   "params": 166.28,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.plate_hole_dia` (D)",
+   "built": 136.08,
+   "params": 136.08,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.washer_pocket_od` (D)",
+   "built": 143.8,
+   "params": 143.8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.washer_pocket_depth` (A)",
+   "built": 0.8,
+   "params": 0.8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.pad_count`",
+   "built": 3,
+   "params": 3,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.pad_id` (D)",
+   "built": 143.0,
+   "params": 143.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.pad_arc` (T, sampled at 0.05 deg)",
+   "built": 9.9833,
+   "params": 10.0,
+   "tol": 0.15,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.pad_height` (A): pad bottom at plate underside, top at pocket floor",
+   "built": 0.8,
+   "params": 0.8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tab_inner_radius` (R)",
+   "built": 70.6,
+   "params": 70.6,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tab_width` (T)",
+   "built": 5.0,
+   "params": 5.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.washer_window_count`",
+   "built": 3,
+   "params": 3,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.washer_window_width` (T)",
+   "built": 10.0,
+   "params": 10,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.span` (D)",
+   "built": 230.0,
+   "params": 230,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.wing_root_width` (A, extrapolated to body)",
+   "built": 40.0,
+   "params": 40,
+   "tol": 0.1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.wing_tip_width` (A, extrapolated to tip)",
+   "built": 28.0,
+   "params": 28,
+   "tol": 0.1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "wing taper per edge (deg)",
+   "built": 10.6653,
+   "params": 10.6653,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.wing_thickness` (T)",
+   "built": 14.0,
+   "params": 14,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`wingnut.edge_radius` tip corners rounded (corner out, 6+1 below inside)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P marked wing: glyph pair recessed on wing 0, absent on wing 1",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tommy_boss_od` (D)",
+   "built": 23.0,
+   "params": 23,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tommy_hole_dia` (D)",
+   "built": 13.0,
+   "params": 13,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tommy_hole_depth` (R): boss end r - hole bottom r",
+   "built": 20.0,
+   "params": 20,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "tommy hole bottom r (`nut.tommy_hole_bottom_r`)",
+   "built": 78.14,
+   "params": 78.14,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "tommy axis z = overall height - hole depth",
+   "built": 36.0,
+   "params": 36.0,
+   "tol": 0.1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.tommy_hole_count` bosses",
+   "built": 4,
+   "params": 4,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.release_dead_turn_deg` arrow span (deg, incl. head and mark line)",
+   "built": 33.85,
+   "params": 33.75,
+   "tol": 1.0,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "`nut.arrow_depth` (A)",
+   "built": 0.8,
+   "params": 0.8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P nut tab azimuth off-axis",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "NT4 tighten glyph sense (-1 clockwise from +Z)",
+   "built": -1,
+   "params": -1,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "NT4",
+   "volume_mm3": 28.328
+  },
+  {
+   "feature": "NT4 tighten glyph principal span, inside nut.arrow_length (mm)",
+   "built": 9.0378,
+   "params": 10.0,
+   "tol": 1.5,
+   "pass": true,
+   "note": "",
+   "id": "NT4",
+   "volume_mm3": 28.328
+  },
+  {
+   "feature": "NT5 loosen glyph sense (+1 counter-clockwise from +Z)",
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": "",
+   "id": "NT5",
+   "volume_mm3": 28.328
+  },
+  {
+   "feature": "NT5 loosen glyph principal span, inside nut.arrow_length (mm)",
+   "built": 9.0378,
+   "params": 10.0,
+   "tol": 1.5,
+   "pass": true,
+   "note": "",
+   "id": "NT5",
+   "volume_mm3": 28.328
+  },
+  {
+   "feature": "NT8 release arrow recess area (mm2) equals NT4 tighten recess area within 10 percent",
+   "built": 34.3683,
+   "params": 35.41,
+   "tol": 3.540999999999997,
+   "pass": true,
+   "note": "",
+   "id": "NT8",
+   "volume_mm3": 27.495
+  },
+  {
+   "feature": "NT7 dust skirt outer radius (R)",
+   "built": 95.14,
+   "params": 95.14,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "NT7",
+   "volume_mm3": 36437.7
+  },
+  {
+   "feature": "NT7 dust skirt bottom z (A)",
+   "built": 5.0,
+   "params": 5.0,
+   "tol": 0.02,
+   "pass": true,
+   "note": "",
+   "id": "NT7",
+   "volume_mm3": 36437.7
+  },
+  {
+   "feature": "NT7 dust skirt cone slope (deg)",
+   "built": 30.2564,
+   "params": 30.2564,
+   "tol": 0.3,
+   "pass": true,
+   "note": "",
+   "id": "NT7",
+   "volume_mm3": 36437.7
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 95.4,
+ "notes": [
+  "thread helix ends where the groove top meets the plate underside (z_end = z_pu - groove half-width at the crest radius)",
+  "wing mark length: arm length minus two tab widths (40 mm `nut.arrow_length` exceeds the 31.86 mm arm)",
+  "tommy axis z = overall height - `nut.tommy_hole_depth` (Loftsman: axis 20 below plate top)"
+ ],
+ "derived": {
+  "P": 8,
+  "tanf": 1.0,
+  "r_c": 72.64,
+  "r_root": 75.14,
+  "r_pitch": 73.54,
+  "r_body": 83.14,
+  "H": 56.0,
+  "z_pu": 48.5,
+  "pd": 0.8,
+  "r_pk": 71.9,
+  "r_hole": 68.04,
+  "lead": 0.9,
+  "h_wp": 0.5,
+  "crest_flat": 1.9
+ },
+ "glyphs": {
+  "tighten": {
+   "wing": 0,
+   "face": "+z",
+   "direction_sign": -1,
+   "radial_span": 9.038,
+   "sense": "clockwise from +Z",
+   "tail_to_tip_y": [
+    5.0,
+    -5.0
+   ],
+   "centre_x": 102.32,
+   "depth": 0.8,
+   "band": [
+    88.14,
+    110.0
+   ]
+  },
+  "loosen": {
+   "wing": 0,
+   "face": "-z",
+   "direction_sign": 1,
+   "radial_span": 9.038,
+   "sense": "counter-clockwise from +Z",
+   "tail_to_tip_y": [
+    -5.0,
+    5.0
+   ],
+   "centre_x": 102.32,
+   "depth": 0.8,
+   "band": [
+    88.14,
+    110.0
+   ]
+  },
+  "band_length_mm": 21.86,
+  "face_slope_deg": 10.66525218064837
+ },
+ "booleans": [
+  {
+   "name": "PadsTabWingsBossesSkirt",
+   "kind": "fuse",
+   "faces_before": 9,
+   "faces_after": 54,
+   "tool_faces": 61
+  },
+  {
+   "name": "ThreadStud",
+   "kind": "cut",
+   "faces_before": 54,
+   "faces_after": 136
+  },
+  {
+   "name": "WindowsHolesGlyphs",
+   "kind": "cut",
+   "faces_before": 136,
+   "faces_after": 195,
+   "tool_faces": 67
+  }
+ ],
+ "boolean_count": 3,
+ "bbox_plain": {
+  "xmin": -115.0,
+  "xmax": 115.0,
+  "ymin": -95.14,
+  "ymax": 95.14,
+  "zmin": -3.6,
+  "zmax": 56.0
+ },
+ "bbox_optimal": {
+  "xmin": -115.0,
+  "xmax": 115.0,
+  "ymin": -95.14,
+  "ymax": 95.14,
+  "zmin": -0.0,
+  "zmax": 56.0
+ },
+ "run_seconds": 95.2,
+ "rebuild": {
+  "before_volume": 322243.778,
+  "before_faces": 183,
+  "before_euler": 8,
+  "before_features": 41,
+  "after_volume": 358837.755,
+  "after_faces": 195,
+  "after_euler": 10,
+  "reason_ids": [
+   "NT4",
+   "NT5",
+   "NT7"
+  ],
+  "volume_ratio": 1.11356
+ },
+ "nt9": "no nut window: the reading plane is the skirt bottom face (Loftsman C1, C2)"
+}

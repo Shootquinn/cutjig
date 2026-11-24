@@ -1,0 +1,1 @@
+nut far vertex az=64.908 r=115.21 z=116.99

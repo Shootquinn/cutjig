@@ -1,0 +1,37 @@
+{
+"pairs": {
+"member|member": [
+4,
+0.0,
+0.0
+],
+"bracket_purchased|member": [
+16,
+0.0,
+0.0
+],
+"bracket_printed|member": [
+8,
+0.0,
+0.0
+],
+"member|tnut": [
+96,
+0.0,
+0.0
+],
+"bracket_purchased|tnut": [
+64,
+0.0,
+0.0
+],
+"bracket_printed|tnut": [
+32,
+0.0,
+0.0
+]
+},
+"over": [],
+"n": 114,
+"secs": 5.188990592956543
+}

@@ -1,0 +1,185 @@
+RENDER_START 03:52:45 only=
+view=View3DInventor
+OK washer_iso 1600x1200 cov=3.2
+OK washer_top 1600x1200 cov=4.5
+OK washer_front 1600x1200 cov=1.1
+OK footring_iso 1600x1200 cov=16.7
+OK footring_top 1600x1200 cov=30.0
+OK footring_front 1600x1200 cov=2.0
+OK receiver_iso 1600x1200 cov=31.6
+OK receiver_top 1600x1200 cov=38.0
+OK receiver_front 1600x1200 cov=77.5
+OK holder_iso 1600x1200 cov=31.2
+OK holder_top 1600x1200 cov=19.3
+OK holder_front 1600x1200 cov=77.9
+OK nut_iso 1600x1200 cov=26.0
+OK nut_top 1600x1200 cov=26.3
+OK nut_front 1600x1200 cov=25.2
+OK base_iso 1600x1200 cov=32.2
+OK base_top 1600x1200 cov=62.9
+OK base_front 1600x1200 cov=2.2
+OK tray_iso 1600x1200 cov=33.7
+OK tray_top 1600x1200 cov=63.7
+OK tray_front 1600x1200 cov=4.9
+OK plug_iso 1600x1200 cov=32.9
+OK plug_top 1600x1200 cov=50.5
+OK plug_front 1600x1200 cov=50.2
+OK foot_iso 1600x1200 cov=37.6
+OK foot_top 1600x1200 cov=67.2
+OK foot_front 1600x1200 cov=9.3
+OK tnut_iso 1600x1200 cov=36.2
+OK tnut_top 1600x1200 cov=59.5
+OK tnut_front 1600x1200 cov=55.1
+OK bracket_purchased_iso 1600x1200 cov=23.8
+OK bracket_purchased_top 1600x1200 cov=12.9
+OK bracket_purchased_front 1600x1200 cov=61.7
+OK bracket_printed_iso 1600x1200 cov=25.1
+OK bracket_printed_top 1600x1200 cov=12.6
+OK bracket_printed_front 1600x1200 cov=71.9
+OK caddy_iso 1600x1200 cov=35.5
+OK caddy_top 1600x1200 cov=54.6
+OK caddy_front 1600x1200 cov=8.5
+OK gauge_iso 1600x1200 cov=23.9
+OK gauge_top 1600x1200 cov=53.1
+OK gauge_front 1600x1200 cov=50.8
+OK rest_iso 1600x1200 cov=7.7
+OK rest_top 1600x1200 cov=12.2
+OK rest_front 1600x1200 cov=9.0
+OK stop_iso 1600x1200 cov=46.3
+OK stop_top 1600x1200 cov=63.2
+OK stop_front 1600x1200 cov=23.0
+OK base_bottom 1600x1200 cov=62.9
+OK rest_iso_back 1600x1200 cov=7.7
+OK receiver_bottom 1600x1200 cov=38.0
+OK nut_bottom 1600x1200 cov=26.3
+OK holder_bottom 1600x1200 cov=19.3
+OK collet_090p0_iso 1600x1200 cov=27.3
+OK collet_090p0_top 1600x1200 cov=29.4
+OK collet_090p0_section 1600x1200 cov=17.1
+OK collet_097p5_iso 1600x1200 cov=26.2
+OK collet_097p5_top 1600x1200 cov=25.7
+OK collet_097p5_section 1600x1200 cov=17.1
+OK collet_105p0_iso 1600x1200 cov=25.3
+OK collet_105p0_top 1600x1200 cov=21.7
+OK collet_105p0_section 1600x1200 cov=17.0
+nut z at y7.5: x99.07 bot None top None ; x105.07 bot None top None
+FAIL-JOB job_nut Traceback (most recent call last):
+  File "C:\Users\Quinn Morley\AppData\Local\Temp\rend\render.py", line 175, in run
+    try: fn()
+         ^^^^
+  File "C:\Users\Quinn Morley\AppData\Local\Temp\rend\render.py", line 239, in job_nut
+    ft = (zt1 - zt0)/6.0; fb = (zb1 - zb0)/6.0
+          ~~~~^~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+OK receiver_rim_scale_closeup 1600x1200 cov=100.0
+OK receiver_rim_scale_oblique 1600x1200 cov=100.0
+OK receiver_rim_scale_context 1600x1200 cov=63.4
+OK holder_tick_closeup 1600x1200 cov=100.0
+OK holder_tick_below 1600x1200 cov=47.9
+OK holder_tick_oblique 1600x1200 cov=90.6
+OK witness_Kmax_view 1600x1200 cov=48.8
+OK witness_Kmax_closeup 1600x1200 cov=100.0
+OK witness_Kmax_section 1600x1200 cov=57.6
+OK witness_Kd1_view 1600x1200 cov=51.0
+OK witness_Kd1_closeup 1600x1200 cov=100.0
+OK witness_Kd1_section 1600x1200 cov=56.9
+OK base_tray_iso 1600x1200 cov=32.6
+OK base_tray_top 1600x1200 cov=63.1
+OK base_tray_front 1600x1200 cov=5.8
+OK base_tray_drain_top 1600x1200 cov=100.0
+OK base_tray_relief_closeup 1600x1200 cov=59.8
+OK base_slots_closeup 1600x1200 cov=67.7
+OK base_tray_section 1600x1200 cov=5.8
+OK base_tray_drain_section 1600x1200 cov=53.0
+OK base_slots_closeup_iso 1600x1200 cov=68.5
+OK tray_ramp_section 1600x1200 cov=4.9
+OK frame_iso 1600x1200 cov=30.9
+OK frame_top 1600x1200 cov=35.3
+OK frame_front 1600x1200 cov=10.8
+OK frame_bottom 1600x1200 cov=35.3
+OK frame_brackets_closeup 1600x1200 cov=79.5
+OK frame_brackets_closeup_under 1600x1200 cov=79.5
+OK frame_notch_top 1600x1200 cov=58.4
+OK frame_notch_iso 1600x1200 cov=50.6
+RENDER_DONE
+RENDER_START 03:55:10 only=nut_*
+view=View3DInventor
+OK nut_iso 1600x1200 cov=26.0
+OK nut_top 1600x1200 cov=26.3
+OK nut_front 1600x1200 cov=25.2
+OK nut_bottom 1600x1200 cov=26.3
+nut z at y7.5: x99.07 bot 19.0 top 53.0 ; x105.07 bot 20.129943502824858 top 51.87005649717514
+OK nut_top 1600x1200 cov=26.4
+OK nut_bottom 1600x1200 cov=26.4
+OK nut_wing0_top 1600x1200 cov=43.1
+OK nut_wing0_under 1600x1200 cov=31.1
+OK nut_glyph_nt4_top 1600x1200 cov=87.8
+OK nut_glyph_nt4_oblique 1600x1200 cov=75.3
+OK nut_glyph_nt5_under 1600x1200 cov=87.8
+OK nut_glyph_nt5_oblique 1600x1200 cov=75.4
+OK nut_skirt_below 1600x1200 cov=47.4
+OK nut_skirt_section 1600x1200 cov=30.2
+RENDER_DONE
+RENDER_START 03:55:42 only=nut_glyph_nt4_top,nut_glyph_nt4_oblique,nut_glyph_nt5_under,nut_glyph_nt5_oblique
+view=View3DInventor
+nut z at y7.5: x99.07 bot 19.0 top 53.0 ; x105.07 bot 20.129943502824858 top 51.87005649717514
+OK nut_glyph_nt4_top 1600x1200 cov=88.7
+OK nut_glyph_nt4_oblique 1600x1200 cov=86.7
+OK nut_glyph_nt5_under 1600x1200 cov=88.5
+OK nut_glyph_nt5_oblique 1600x1200 cov=86.7
+RENDER_DONE
+RENDER_START 03:56:01 only=frame_tnuts_closeup
+view=View3DInventor
+OK frame_tnuts_closeup 1600x1200 cov=29.3
+RENDER_DONE
+RENDER_START 04:20:21 only=nut_*,rest_*,tray_*,plug_*,witness_*,base_tray_*
+RENDER_START 04:22:55 only=nut_*,rest_*,tray_*,plug_*,witness_*,base_tray_*
+view=View3DInventor
+OK nut_iso 1600x1200 cov=26.0
+OK nut_top 1600x1200 cov=26.3
+OK nut_front 1600x1200 cov=25.2
+OK tray_iso 1600x1200 cov=33.6
+OK tray_top 1600x1200 cov=63.7
+OK tray_front 1600x1200 cov=4.9
+OK plug_iso 1600x1200 cov=25.3
+OK plug_top 1600x1200 cov=50.5
+OK plug_front 1600x1200 cov=74.6
+OK rest_iso 1600x1200 cov=7.8
+OK rest_top 1600x1200 cov=12.6
+OK rest_front 1600x1200 cov=9.0
+OK rest_bottom 1600x1200 cov=12.6
+OK rest_slot_closeup 1600x1200 cov=57.2
+OK rest_iso_back 1600x1200 cov=7.8
+OK nut_bottom 1600x1200 cov=26.3
+nut z at y7.5: x102.32 bot 19.612052730696803 top 52.38794726930321 ; x108.32 bot 20.74199623352166 top 51.25800376647834
+OK nut_top 1600x1200 cov=26.4
+OK nut_bottom 1600x1200 cov=26.4
+OK nut_wing0_top 1600x1200 cov=43.1
+OK nut_wing0_under 1600x1200 cov=31.1
+OK nut_glyph_nt4_top 1600x1200 cov=87.6
+OK nut_glyph_nt4_oblique 1600x1200 cov=86.7
+OK nut_glyph_nt5_under 1600x1200 cov=87.6
+OK nut_glyph_nt5_oblique 1600x1200 cov=86.7
+OK nut_skirt_below 1600x1200 cov=47.4
+OK nut_skirt_section 1600x1200 cov=30.2
+OK witness_Kmax_view 1600x1200 cov=48.9
+OK witness_Kmax_closeup 1600x1200 cov=100.0
+OK witness_Kmax_section 1600x1200 cov=56.9
+OK witness_Kd1_view 1600x1200 cov=51.1
+OK witness_Kd1_closeup 1600x1200 cov=100.0
+OK witness_Kd1_section 1600x1200 cov=56.2
+OK base_tray_iso 1600x1200 cov=32.5
+OK base_tray_top 1600x1200 cov=63.1
+OK base_tray_front 1600x1200 cov=5.8
+OK base_tray_drain_top 1600x1200 cov=100.0
+OK base_tray_relief_closeup 1600x1200 cov=59.7
+OK base_tray_section 1600x1200 cov=5.8
+OK base_tray_drain_section 1600x1200 cov=55.1
+OK tray_ramp_section 1600x1200 cov=4.9
+OK tray_cross_section 1600x1200 cov=5.6
+RENDER_DONE
+RENDER_START 04:23:55 only=rest_slot_closeup
+view=View3DInventor
+OK rest_slot_closeup 1600x1200 cov=68.9
+RENDER_DONE

@@ -1,0 +1,92 @@
+{
+ "sentinel": "FRAME_PROFILES_OK",
+ "run_started_epoch": 1794188658.065163,
+ "members": [
+  {
+   "name": "rail_1",
+   "cut_mm": 644,
+   "length_mm": 644.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    644.0
+   ],
+   "volume_mm3": 589831.2864650069,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841722
+  },
+  {
+   "name": "rail_2",
+   "cut_mm": 644,
+   "length_mm": 644.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    644.0
+   ],
+   "volume_mm3": 589831.2864650069,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841722
+  },
+  {
+   "name": "end_1",
+   "cut_mm": 488,
+   "length_mm": 488.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    488.0
+   ],
+   "volume_mm3": 446952.9003026753,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841707
+  },
+  {
+   "name": "end_2",
+   "cut_mm": 488,
+   "length_mm": 488.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    488.0
+   ],
+   "volume_mm3": 446952.9003026753,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841707
+  },
+  {
+   "name": "plate_support_1",
+   "cut_mm": 468,
+   "length_mm": 468.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    468.0
+   ],
+   "volume_mm3": 428635.1584869922,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841713
+  },
+  {
+   "name": "plate_support_2",
+   "cut_mm": 468,
+   "length_mm": 468.0,
+   "bbox_mm": [
+    60.0,
+    60.0,
+    468.0
+   ],
+   "volume_mm3": 428635.1584869922,
+   "valid": true,
+   "solids": 1,
+   "area_mm2": 915.8870907841713
+  }
+ ],
+ "freecad_version": "1.1.4",
+ "area_model_analytic_mm2": 916.1726926708517
+}

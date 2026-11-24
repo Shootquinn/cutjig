@@ -1,0 +1,9 @@
+START caddy pid=35008 t=02:50:40
+RESULT caddy volume=3961670.816 valid=True solids=1 pass=True sec=0.5
+BUILD_DONE caddy
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Recompute......
+						(100 %)									

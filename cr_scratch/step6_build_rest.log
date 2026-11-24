@@ -1,0 +1,9 @@
+START rest pid=34932 t=04:15:48
+RESULT rest volume=544616.993 valid=True solids=1 pass=True sec=7.2
+BUILD_DONE rest
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Recompute......
+						(100 %)									

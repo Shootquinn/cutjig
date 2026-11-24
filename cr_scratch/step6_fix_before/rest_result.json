@@ -1,0 +1,243 @@
+{
+ "part": "rest",
+ "volume_mm3": 536079.587,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "euler_VEF": 13,
+ "faces": 51,
+ "edges": 114,
+ "vertices": 76,
+ "bbox_plain": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "bbox_optimal": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "bbox": {
+  "xmin": -70.711,
+  "xmax": 130.0,
+  "ymin": -100.0,
+  "ymax": 244.0,
+  "zmin": -30.0,
+  "zmax": 250.0
+ },
+ "centre_of_mass": [
+  10.219,
+  101.061,
+  20.106
+ ],
+ "features": [
+  {
+   "id": "AC3",
+   "feature": "interface plane y = column face (block back face)",
+   "volume_mm3": 108000.0,
+   "built": 244.0,
+   "params": 244.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block width x (T)",
+   "volume_mm3": 108000.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block thickness y (L)",
+   "volume_mm3": 108000.0,
+   "built": 30.0,
+   "params": 30,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "block height z (Z)",
+   "volume_mm3": 108000.0,
+   "built": 60.0,
+   "params": 60,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "hinge boss diameter (D) at y = rest.arm_length",
+   "volume_mm3": 75398.224,
+   "built": 34.641,
+   "params": 34.641,
+   "tol": 0.02,
+   "pass": true,
+   "note": "chord at y = boss centre - boss_r / 2 on the boss"
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring outer radius (R)",
+   "volume_mm3": 116037.866,
+   "built": 100.0,
+   "params": 100,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring inner radius (R)",
+   "volume_mm3": 116037.866,
+   "built": 62.0,
+   "params": 62,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring thickness (Z)",
+   "volume_mm3": 116037.866,
+   "built": 8.0,
+   "params": 8,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "C-ring mouth arc (deg) = rest.mouth_deg",
+   "volume_mm3": 116037.866,
+   "built": 89.9,
+   "params": 90,
+   "tol": 0.30000000000000004,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller count at azimuth 360/n x k",
+   "volume_mm3": 37699.112,
+   "built": 3,
+   "params": 3,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "roller diameter (D) = rest.roller_dia",
+   "volume_mm3": 37699.112,
+   "built": 34.641,
+   "params": 34.641,
+   "tol": 0.02,
+   "pass": true,
+   "note": "chord at y = roller_dia / 4"
+  },
+  {
+   "id": "AC3",
+   "feature": "roller pin bridges the roller to ring gap (rest.roller_pin_gap) and the gap stays open beside the pin",
+   "volume_mm3": 4201.88,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "close handle length (L) = rest.close_handle_length",
+   "volume_mm3": 37699.112,
+   "built": 120.0,
+   "params": 120,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "hold-open detent notch depth (R) = rest.detent_depth",
+   "volume_mm3": 1855.61,
+   "built": 4.0,
+   "params": 4,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower inboard face radius (R)",
+   "volume_mm3": 56000.0,
+   "built": 84.0,
+   "params": 84,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower tangential width (T)",
+   "volume_mm3": 56000.0,
+   "built": 14.0,
+   "params": 14,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "AC3",
+   "feature": "release tower top z = height_positions[1] - [0] (A)",
+   "volume_mm3": 56000.0,
+   "built": 250.0,
+   "params": 250,
+   "tol": 0.02,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [
+  {
+   "name": "rest_fuse",
+   "kind": "fuse",
+   "faces_before": 48,
+   "faces_after": 52,
+   "faces_after_clean": 47,
+   "valid": true
+  },
+  {
+   "name": "detent_cut",
+   "kind": "cut",
+   "faces_before": 47,
+   "faces_after": 51,
+   "faces_after_clean": 51,
+   "valid": true,
+   "tool_faces": 6
+  }
+ ],
+ "boolean_count": 2,
+ "run_seconds": 2.9,
+ "build_seconds": 2.9,
+ "pose": "closed",
+ "roller_plane_above_seat": 310,
+ "interface": {
+  "plane": "y = 244.0",
+  "normal": "-y",
+  "owner": "upper assembly column"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "boxes": {
+  "expected": 600.0,
+  "measured": 599.9999999999999
+ },
+ "tubes": {
+  "expected": 18849.55592153876,
+  "measured": 18849.55592153876
+ },
+ "invalid_raises": true,
+ "sentinel": "PROBE_OK",
+ "probe": "common_guard",
+ "run_started_epoch": 1794463962.52874,
+ "run_seconds": 0.0,
+ "inputs": []
+}

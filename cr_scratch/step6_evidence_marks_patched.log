@@ -1,0 +1,6 @@
+EVID glyph_errors: []
+EVID scale_errors: []
+EVID HD7 K-max reading 1.5250 want 1.500 diff 0.0250 pass True tick_count 1
+EVID HD7 K d+1 reading 8.6150 want 8.590 diff 0.0250 pass True tick_count 1
+EVID json tighten True True True True
+EVID json loosen True True True True

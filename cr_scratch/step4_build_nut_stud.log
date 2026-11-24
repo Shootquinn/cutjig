@@ -1,0 +1,14 @@
+START nut pid=31716 t=22:41:01
+stud valid=True volume=38917.3 solids=1
+nut shape done 3.2s volume=322243.8 valid=True
+RESULT nut volume=322243.778 valid=True solids=1 pass=True sec=88.0
+BUILD_DONE nut
+FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)
+(C) 2001-2026 FreeCAD contributors
+FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.
+
+Recompute......
+						(9 %)							(18 %)							(27 %)							(36 %)							(45 %)							(54 %)							(63 %)							(72 %)							(81 %)							(90 %)							(100 %)									Recompute......
+						(7 %)							(15 %)							(23 %)							(30 %)							(38 %)							(46 %)							(53 %)							(61 %)							(69 %)							(76 %)							(84 %)							(92 %)							(100 %)									Recompute......
+						(6 %)							(13 %)							(20 %)							(26 %)							(33 %)							(40 %)							(46 %)							(53 %)							(60 %)							(66 %)							(73 %)							(80 %)							(86 %)							(93 %)							(100 %)									Recompute......
+						(5 %)							(11 %)							(17 %)							(23 %)							(29 %)							(35 %)							(41 %)							(47 %)							(52 %)							(58 %)							(64 %)							(70 %)							(76 %)							(82 %)							(88 %)							(94 %)							(100 %)									

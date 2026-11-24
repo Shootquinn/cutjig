@@ -1,0 +1,24 @@
+{
+ "receiver_plain_wall": {
+  "slice_integral": 146014.14,
+  "common": 146014.14,
+  "rel_err": 0.0
+ },
+ "receiver_thread": {
+  "slice_integral": 51543.07,
+  "common": 51544.44,
+  "rel_err": 2.7e-05
+ },
+ "thread_x_thread_0.3": {
+  "common_3d_full": 0.0,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 30.1
+ },
+ "thread_x_thread_1.0": {
+  "common_3d_full": 0.0,
+  "common_3d_slab": 0.0,
+  "slice_integral_slab": 0.0,
+  "secs": 27.1
+ }
+}

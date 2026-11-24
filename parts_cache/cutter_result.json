@@ -1,0 +1,186 @@
+{
+ "part": "cutter",
+ "volume_mm3": 951102.125,
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 4,
+ "shell_count": 4,
+ "euler_VEF": 8,
+ "faces": 16,
+ "edges": 24,
+ "vertices": 16,
+ "bbox_plain": {
+  "xmin": -86.2,
+  "xmax": 86.2,
+  "ymin": -86.2,
+  "ymax": 86.2,
+  "zmin": 184.84,
+  "zmax": 684.84
+ },
+ "bbox_optimal": {
+  "xmin": -86.2,
+  "xmax": 86.2,
+  "ymin": -86.2,
+  "ymax": 86.2,
+  "zmin": 184.84,
+  "zmax": 684.84
+ },
+ "bbox": {
+  "xmin": -86.2,
+  "xmax": 86.2,
+  "ymin": -86.2,
+  "ymax": 86.2,
+  "zmin": 184.84,
+  "zmax": 684.84
+ },
+ "centre_of_mass": [
+  -0.0,
+  -0.0,
+  384.323
+ ],
+ "features": [
+  {
+   "id": "L3",
+   "feature": "cutter lowest z = stop.collar_top_z + stop.g_stop (A)",
+   "volume_mm3": 951102.125,
+   "built": 184.84,
+   "params": 184.84,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "cutter top z = stop.start_z[0] (A), tube top",
+   "volume_mm3": 951102.125,
+   "built": 684.84,
+   "params": 684.84,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "cutter outer radius = drill.r_face (R)",
+   "volume_mm3": 951102.125,
+   "built": 86.2,
+   "params": 86.2,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "four solids",
+   "volume_mm3": 951102.125,
+   "built": 4,
+   "params": 4,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "each solid: 4 faces, euler 2, valid",
+   "volume_mm3": 951102.125,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "each solid BOP-check clean (shape.check(True))",
+   "volume_mm3": 951102.125,
+   "built": 1,
+   "params": 1,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "solids touch on faces: largest pair common volume (mm3)",
+   "volume_mm3": 951102.125,
+   "built": 0.0,
+   "params": 0.0,
+   "tol": 0.01,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "funnel mouth radius = icd.core_lead_in_bore + icd.core_lead_in_capture (R)",
+   "volume_mm3": 951102.125,
+   "built": 66.0,
+   "params": 66.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "L3",
+   "feature": "lead-in working bore radius = icd.core_lead_in_bore (R), smallest coaxial cylinder",
+   "volume_mm3": 951102.125,
+   "built": 56.0,
+   "params": 56.0,
+   "tol": 0.015,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "booleans": [],
+ "boolean_count": 0,
+ "run_seconds": 0.1,
+ "build_seconds": 0.1,
+ "solids": {
+  "annulus": {
+   "volume_mm3": 23212.026,
+   "faces": 4,
+   "euler_VEF": 2,
+   "valid": true
+  },
+  "tube": {
+   "volume_mm3": 739500.771,
+   "faces": 4,
+   "euler_VEF": 2,
+   "valid": true
+  },
+  "funnel": {
+   "volume_mm3": 50369.698,
+   "faces": 4,
+   "euler_VEF": 2,
+   "valid": true
+  },
+  "ring": {
+   "volume_mm3": 138019.629,
+   "faces": 4,
+   "euler_VEF": 2,
+   "valid": true
+  }
+ },
+ "solids_bop_clean": {
+  "annulus": true,
+  "tube": true,
+  "funnel": true,
+  "ring": true
+ },
+ "compound_bop_clean": false,
+ "compound_note": "the compound check flags SelfIntersect on the coincident faces between touching solids; boolean and distance work per solid (comp.Solids)",
+ "pair_common_mm3": {
+  "annulus|tube": 0.0,
+  "annulus|funnel": 0.0,
+  "annulus|ring": 0.0,
+  "tube|funnel": 0.0,
+  "tube|ring": 0.0,
+  "funnel|ring": 0.0
+ },
+ "z": {
+  "annulus": [
+   184.84,
+   188.01500000000001
+  ]
+ }
+}

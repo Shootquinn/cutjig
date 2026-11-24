@@ -1,0 +1,85 @@
+{
+ "part": "washer",
+ "volume_mm3": 1814.227,
+ "bbox": {
+  "xmin": -71.6,
+  "xmax": 71.6,
+  "ymin": -71.6,
+  "ymax": 71.6,
+  "zmin": -0.0,
+  "zmax": 1.3
+ },
+ "isValid": true,
+ "isClosed": true,
+ "solid_count": 1,
+ "shell_count": 1,
+ "genus": null,
+ "genus_note": "not computable from the B-rep: faces are annular or periodic, so V-E+F is not an Euler count of discs",
+ "euler_VEF": 2,
+ "centre_of_mass": [
+  -0.48,
+  -0.361,
+  0.65
+ ],
+ "features": [
+  {
+   "feature": "washer.id (D)",
+   "built": 136.8,
+   "params": 136.8,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "washer.od (D)",
+   "built": 143.2,
+   "params": 143.2,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "washer.thickness",
+   "built": 1.3,
+   "params": 1.3,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "washer.notch_depth (R)",
+   "built": 2.0,
+   "params": 2.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "notch floor radius",
+   "built": 69.6,
+   "params": 69.6,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "washer.notch_width (T)",
+   "built": 6.0,
+   "params": 6.0,
+   "tol": 0.05,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "feature": "Rule P notch off-axis (azimuth not 0/90/180/270)",
+   "built": true,
+   "params": true,
+   "tol": null,
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "all_features_pass": true,
+ "build_seconds": 0.3,
+ "notes": []
+}

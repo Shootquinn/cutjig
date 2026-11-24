@@ -1,0 +1,42 @@
+{
+ "source": "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\frame.FCStd",
+ "counts": {
+  "member": 6,
+  "bracket": 12,
+  "tnut": 96
+ },
+ "summary": {
+  "bracket|member": {
+   "pairs_near": 24,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 24
+  },
+  "bracket|tnut": {
+   "pairs_near": 96,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 96
+  },
+  "member|member": {
+   "pairs_near": 4,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 4
+  },
+  "member|tnut": {
+   "pairs_near": 96,
+   "pairs_over_tol": 0,
+   "max_common_mm3": 0.0,
+   "total_common_mm3": 0.0,
+   "touching": 96
+  }
+ },
+ "tnuts_with_host_contact": 96,
+ "brackets_with_member_contact": 12,
+ "pairs_over_tol": {},
+ "seconds": 155.8
+}

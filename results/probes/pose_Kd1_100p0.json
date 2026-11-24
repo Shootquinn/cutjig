@@ -1,0 +1,351 @@
+{
+ "pose": "Kd1",
+ "tag": "100p0",
+ "tree": [
+  "base",
+  "bracket",
+  "collet",
+  "core",
+  "cutter",
+  "frame",
+  "holder",
+  "nut",
+  "tnut",
+  "washer"
+ ],
+ "visible_count": 10,
+ "pairs": {
+  "base|holder": {
+   "min_dist": 0.12499999999997267,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "base|collet": {
+   "min_dist": 0.0,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 6965.611614585121
+  },
+  "base|nut": {
+   "min_dist": 0.003529380012066767,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 5703.601067985901
+  },
+  "base|washer": {
+   "min_dist": 16.594999999999942,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "base|core": {
+   "min_dist": 2.5050000000000026,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "base|frame": {
+   "min_dist": 0.004999999999996,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 121902.0
+  },
+  "base|bracket": {
+   "min_dist": 1.505,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "base|tnut": {
+   "min_dist": 7.005000000000001,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "base|cutter": {
+   "min_dist": 56.33999999999995,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|collet": {
+   "min_dist": 0.00515587929499641,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 4164.474617515348
+  },
+  "holder|nut": {
+   "min_dist": 0.5099999999999625,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|washer": {
+   "min_dist": 0.004999999999910187,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 1380.324971699114
+  },
+  "holder|core": {
+   "min_dist": 4.5,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|frame": {
+   "min_dist": 51.836939017250124,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|bracket": {
+   "min_dist": 134.17842909020123,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|tnut": {
+   "min_dist": 149.3640698533508,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "holder|cutter": {
+   "min_dist": 25.0,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|nut": {
+   "min_dist": 29.52377851811098,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|washer": {
+   "min_dist": 73.83184061912664,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|core": {
+   "min_dist": 0.00499996395058974,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 7454.53521515104
+  },
+  "collet|frame": {
+   "min_dist": 43.318496109737374,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|bracket": {
+   "min_dist": 131.06903418022227,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|tnut": {
+   "min_dist": 146.24052756813796,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "collet|cutter": {
+   "min_dist": 113.63786057593471,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "nut|washer": {
+   "min_dist": 0.0,
+   "overlap_mm3": 2.3866678321689503,
+   "contact_area_mm2": 1393.2464187392065
+  },
+  "nut|core": {
+   "min_dist": 17.54000000000002,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "nut|frame": {
+   "min_dist": 97.10880817413009,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "nut|bracket": {
+   "min_dist": 141.36269266354554,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "nut|tnut": {
+   "min_dist": 155.16668051576733,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "nut|cutter": {
+   "min_dist": 31.73999999999998,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "washer|core": {
+   "min_dist": 17.90000000000002,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "washer|frame": {
+   "min_dist": 145.62191338073308,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "washer|bracket": {
+   "min_dist": 189.2695766327427,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "washer|tnut": {
+   "min_dist": 202.62204881822677,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "washer|cutter": {
+   "min_dist": 38.44500000000002,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "core|frame": {
+   "min_dist": 53.70991173708415,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "core|bracket": {
+   "min_dist": 147.53110993844092,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "core|tnut": {
+   "min_dist": 162.68701777670233,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "core|cutter": {
+   "min_dist": 5.499999999999993,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "frame|bracket": {
+   "min_dist": 0.0,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 57218.344321405784
+  },
+  "frame|tnut": {
+   "min_dist": 0.0,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 12288.0
+  },
+  "frame|cutter": {
+   "min_dist": 184.845,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "bracket|tnut": {
+   "min_dist": 0.0,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 4550.131263946852
+  },
+  "bracket|cutter": {
+   "min_dist": 213.94715800795623,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  },
+  "tnut|cutter": {
+   "min_dist": 225.8980587324764,
+   "overlap_mm3": 0.0,
+   "contact_area_mm2": 0.0
+  }
+ },
+ "feature_pairs": {
+  "holder bottom|receiver floor": {
+   "gap": 9.089999999999975
+  },
+  "holder flange underside|receiver rim": {
+   "gap": 8.590000000000003
+  },
+  "nut skirt bottom|receiver floor": {
+   "gap": 57.09999989999996
+  },
+  "nut plate top|holder collar underside": {
+   "gap": 0.7399998999999582
+  },
+  "nut collar top|cutter lowest point": {
+   "gap": 25.0
+  },
+  "holder bottom|collet foot ring top": {
+   "gap": 7.0949999999999775
+  }
+ },
+ "measures": {
+  "floor_z": 40.0,
+  "holder_bottom_above_floor": 9.089999999999975,
+  "collar_top_z": 159.84,
+  "nut_skirt_bottom_above_floor": 57.09999989999996,
+  "engaged_mm": 31.400000000000077,
+  "nut_stop_travel_mm": 17.1015625,
+  "core_axis_offset": 8.237731996393433e-15,
+  "clamped_tilt_deg": 0.0,
+  "lead_in_bore_radius": 56.0,
+  "lead_in_clearance": 5.5,
+  "funnel_capture_radius": 15.5,
+  "receiver_underside_contact_mm2": 0.0,
+  "frame_footprint_x": 644.0,
+  "frame_footprint_y": 608.0,
+  "collet_volume_mm3": 104701.52315985871,
+  "slit_width_clamped_min": 1.2382006122008473,
+  "nut_tilt_deg": 0.0,
+  "holder_tilt_deg": 0.0,
+  "fit_spigot_hole": 0.20000000000000284,
+  "fit_plate_key_stop_pin": 0.25
+ },
+ "controls": {
+  "nut_stop_travel_mm": {
+   "good": 17.1015625,
+   "bad": 10.6015625
+  },
+  "core_axis_offset": {
+   "good": 8.237731996393433e-15,
+   "bad": 0.9999999999999929
+  },
+  "clamped_tilt_deg": {
+   "good": 0.0,
+   "bad": 1.0
+  },
+  "lead_in_clearance": {
+   "good": 5.5,
+   "bad": 0.5
+  },
+  "funnel_capture_radius": {
+   "good": 15.5,
+   "bad": -4.5
+  },
+  "receiver_underside_contact_mm2": {
+   "good": 0.0,
+   "bad": 1.4328283390794354
+  },
+  "frame_footprint_y": {
+   "good": 608.0,
+   "bad": 548.0
+  },
+  "frame_footprint_x": {
+   "good": 644.0,
+   "bad": 644.0
+  },
+  "slit_width_clamped_min": {
+   "good": 1.2382006122008473,
+   "bad": 0.0
+  },
+  "nut_tilt_deg": {
+   "good": 0.0,
+   "bad": 1.9999999999999472
+  },
+  "holder_tilt_deg": {
+   "good": 0.0,
+   "bad": 1.9999999999999472
+  },
+  "fit_spigot_hole": {
+   "good": 0.20000000000000284,
+   "bad": 0.5999999999999943
+  },
+  "fit_plate_key_stop_pin": {
+   "good": 0.25,
+   "bad": 0.75
+  }
+ },
+ "absent": {
+  "fit_column_foot": "ABSENT FEATURE: fit_column_foot needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree",
+  "fit_carriage_guide": "ABSENT FEATURE: fit_carriage_guide needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree"
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "pose_Kd1_100p0",
+ "run_started_epoch": 1794441035.687719,
+ "run_seconds": 2246.0,
+ "inputs": [
+  "C:\\Users\\QUINNM~1\\AppData\\Local\\Temp\\claude\\6f0343b2791941ad\\200377dc-f257-44be-a8a6-5a439d6cd6be\\scratchpad\\pd_100p0\\pose_Kd1_100p0.FCStd"
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "pose": "Kd1",
+ "tag": "100p0",
+ "fired": [
+  "A1",
+  "A3",
+  "T1"
+ ],
+ "reasons": {
+  "A1": [
+   "base|collet: C: min_dist 27.999999999999986",
+   "base|collet: C: patch 0.0 <= floor 1.0",
+   "base|nut: C: min_dist 85.09999999999994",
+   "base|nut: C: patch 0.0 <= floor 1.0",
+   "holder flange underside|receiver rim: gap 125.09000000000002 vs 8.59",
+   "holder bottom|receiver floor: gap 37.08999999999996 vs 9.089"
+  ],
+  "A3": [
+   "holder bottom 37.090 vs 9.090",
+   "engaged 0.000 < 24"
+  ],
+  "T1": [
+   "no thread engagement"
+  ]
+ },
+ "expected": [
+  "A1",
+  "A3"
+ ],
+ "absent": {
+  "nut_stop_travel_mm": "ABSENT FEATURE: could not read nut_stop_travel_mm from the built shape",
+  "fit_plate_key_stop_pin": "ABSENT FEATURE: key pocket (2 solid intervals) or stop pin pocket (2 intervals) not found in base at z -114.500: 0 / 0",
+  "fit_column_foot": "ABSENT FEATURE: fit_column_foot needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree",
+  "fit_carriage_guide": "ABSENT FEATURE: fit_carriage_guide needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree"
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "ws10",
+ "run_started_epoch": 1794429051.115402,
+ "run_seconds": 3599.8,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\assembly\\ws10.FCStd"
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "az": 127,
+ "rim_top_z": 88.50000000000003,
+ "edge_zero": 48.50000000000003,
+ "poses": {
+  "K-max": {
+   "gap": 1.5,
+   "nut_z": 50.00000000000003,
+   "edge": 50.0,
+   "expected_edge": 50.00000000000003,
+   "lines_visible": 2,
+   "line_z": [
+    48.5,
+    49.5
+   ]
+  },
+  "K d+1": {
+   "gap": 8.59,
+   "nut_z": 57.09000000000003,
+   "edge": 57.1,
+   "expected_edge": 57.09000000000003,
+   "lines_visible": 9,
+   "line_z": [
+    48.5,
+    49.5,
+    50.5,
+    51.5,
+    52.5,
+    53.5,
+    54.5,
+    55.5,
+    56.5
+   ]
+  }
+ },
+ "control": {
+  "gap": 1.5,
+  "nut_z": 45.00000000000003,
+  "edge": 45.0,
+  "expected_edge": 50.00000000000003,
+  "lines_visible": 0
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "witness_sight",
+ "run_started_epoch": 1794344331.263549,
+ "run_seconds": 252.3,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\receiver.FCStd",
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\nut.FCStd"
+ ]
+}

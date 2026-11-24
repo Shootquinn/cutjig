@@ -1,0 +1,46 @@
+{
+ "pose": "Kd1",
+ "tag": "100p0",
+ "fired": [
+  "A1",
+  "A3",
+  "F1"
+ ],
+ "reasons": {
+  "A1": [
+   "base|holder: G: min_dist 0.0 < g_min 0.12",
+   "base|holder: G: overlap 40570.93326922895",
+   "holder|collet: C: overlap 32832.38754127139",
+   "holder|collet: C: patch 2.6179938779914944 <= floor 200",
+   "holder|nut: G: min_dist 0.0 < g_min 0.5",
+   "holder|nut: G: overlap 164.11345662351212",
+   "holder|washer: C: overlap 26.33708954353765",
+   "holder|washer: C: patch 0.0 <= floor 1.0",
+   "holder bottom|collet foot ring top: gap 1.095000000000006 vs 7.089",
+   "holder flange underside|receiver rim: gap -85.41000000000003 vs 8.59",
+   "holder bottom|receiver floor: gap 3.0900000000000034 vs 9.089",
+   "nut plate top|holder collar underside: gap -5.260000100000013 vs 0.75"
+  ],
+  "A3": [
+   "holder bottom 3.090 vs 9.090"
+  ],
+  "F1": [
+   "cone seat overlap 32832.388 contact 2.6"
+  ]
+ },
+ "expected": [
+  "A1",
+  "A3"
+ ],
+ "absent": {
+  "fit_column_foot": "ABSENT FEATURE: fit_column_foot needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree",
+  "fit_carriage_guide": "ABSENT FEATURE: fit_carriage_guide needs a separate spigot, key, pin, column foot or carriage guide object; none is in the 10-part tree"
+ },
+ "sentinel": "PROBE_OK",
+ "probe": "ws2",
+ "run_started_epoch": 1794434029.1916883,
+ "run_seconds": 3168.2,
+ "inputs": [
+  "C:\\Users\\Quinn Morley\\OneDrive\\PROJECTS\\CC\\CuttingJig\\parts_cache\\assembly\\ws2.FCStd"
+ ]
+}

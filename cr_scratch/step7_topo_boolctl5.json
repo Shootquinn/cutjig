@@ -1,0 +1,14 @@
+{
+ "thread_x_thread_-1.0": {
+  "common_3d_full": 40.716,
+  "common_3d_slab": 40.716,
+  "slice_integral_slab": 0.0,
+  "secs": 56.2
+ },
+ "thread_x_thread_-2.0": {
+  "common_3d_full": 6908.2,
+  "common_3d_slab": 3493.633,
+  "slice_integral_slab": 0.0,
+  "secs": 60.8
+ }
+}

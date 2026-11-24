@@ -1,0 +1,234 @@
+RENDER_START 16:05:05 only=
+MEAS R_100p0 {"nut_zmin": 98.771, "nut_zmax": 158.37100000000004, "reading_z": 102.37099999999995, "holder_zmin": 53.62599999999997, "holder_zmax": 164.376, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000024, "washer_zmin": 150.36599999999996, "nut_far_vertex_az": 81.15327146899767, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kd1_100p0 {"nut_zmin": 93.5, "nut_zmax": 153.10000000000005, "reading_z": 97.09999999999995, "holder_zmin": 49.089999999999975, "holder_zmax": 159.84, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 145.09499999999994, "nut_far_vertex_az": 16.991728531002273, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kmax_100p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000037, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_090p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000026, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_105p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+WINGS R_100p0 centres [77.5, 257.5]
+WINGS Kmax_100p0 centres [61.5, 241.5]
+COLLET_COLOUR params collet.colour=['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'white'] core.diameters=[90.0, 92.5, 95.0, 97.5, 100.0, 102.5, 105.0]
+OK whole_R_100p0_front 1600x1200 cov=18.4
+OK whole_R_100p0_side 1600x1200 cov=17.6
+OK whole_R_100p0_top 1600x1200 cov=69.9
+OK whole_R_100p0_iso 1600x1200 cov=15.5
+OK whole_Kmax_100p0_front 1600x1200 cov=18.3
+OK whole_Kmax_100p0_side 1600x1200 cov=17.5
+OK whole_Kmax_100p0_top 1600x1200 cov=69.9
+OK whole_Kmax_100p0_iso 1600x1200 cov=15.5
+OK whole_Kmax_090p0_front 1600x1200 cov=18.3
+OK whole_Kmax_090p0_side 1600x1200 cov=17.4
+OK whole_Kmax_090p0_top 1600x1200 cov=69.9
+OK whole_Kmax_090p0_iso 1600x1200 cov=15.5
+OK whole_Kmax_105p0_front 1600x1200 cov=18.4
+OK whole_Kmax_105p0_side 1600x1200 cov=17.5
+OK whole_Kmax_105p0_top 1600x1200 cov=69.8
+OK whole_Kmax_105p0_iso 1600x1200 cov=15.5
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 73.407 past the plane)
+mesh_halfcut: triangles 7838 kept of 15224, cap area 1241.2 mm2 (2 loops, 0 open)
+CHK section_R_100p0 receiver cross-section pixels 6.21 percent PASS
+OK section_R_100p0 1600x1200 cov=48.8
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 70.393 past the plane)
+mesh_halfcut: triangles 7671 kept of 15224, cap area 1240.6 mm2 (2 loops, 0 open)
+CHK section_Kd1_100p0 receiver cross-section pixels 6.21 percent PASS
+OK section_Kd1_100p0 1600x1200 cov=49.9
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 65.987 past the plane)
+mesh_halfcut: triangles 7676 kept of 15224, cap area 1241.3 mm2 (2 loops, 0 open)
+CHK section_Kmax_100p0 receiver cross-section pixels 6.21 percent PASS
+OK section_Kmax_100p0 1600x1200 cov=48.3
+OK witness_R_100p0_view 1600x1200 cov=49.2
+OK witness_R_100p0_closeup 1600x1200 cov=100.0
+OK witness_Kd1_100p0_view 1600x1200 cov=51.9
+OK witness_Kd1_100p0_closeup 1600x1200 cov=100.0
+FALLBACK mesh cut (halfcut FAILED: volume 697731.3 -> 697731.3 valid=False)
+mesh_halfcut: triangles 4967 kept of 9512, cap area 3372.8 mm2 (2 loops, 1 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 73.248 past the plane)
+mesh_halfcut: triangles 4029 kept of 7824, cap area 2325.8 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 108.064 past the plane)
+mesh_halfcut: triangles 7684 kept of 15224, cap area 1240.8 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 68.826 past the plane)
+mesh_halfcut: triangles 520 kept of 1016, cap area 8.3 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 64.395 past the plane)
+mesh_halfcut: triangles 7610 kept of 14932, cap area 639.3 mm2 (2 loops, 0 open)
+CHK witness_Kd1_100p0_section receiver cross-section pixels 6.56 percent PASS
+OK witness_Kd1_100p0_section 1600x1200 cov=56.2
+OK holder_tick_Kd1_100p0 1600x1200 cov=100.0
+OK witness_Kmax_100p0_view 1600x1200 cov=51.4
+OK witness_Kmax_100p0_closeup 1600x1200 cov=100.0
+FALLBACK mesh cut (halfcut FAILED: volume 804646.0 -> 804646.0 valid=False)
+mesh_halfcut: triangles 4967 kept of 9512, cap area 3939.8 mm2 (2 loops, 1 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 73.248 past the plane)
+mesh_halfcut: triangles 4029 kept of 7824, cap area 2325.8 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 99.786 past the plane)
+mesh_halfcut: triangles 7747 kept of 15224, cap area 1239.5 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 68.826 past the plane)
+mesh_halfcut: triangles 520 kept of 1016, cap area 8.3 mm2 (2 loops, 0 open)
+FALLBACK mesh cut (halfcut FAILED: result extends 64.395 past the plane)
+mesh_halfcut: triangles 7724 kept of 15158, cap area 644.3 mm2 (2 loops, 0 open)
+CHK witness_Kmax_100p0_section receiver cross-section pixels 7.93 percent PASS
+OK witness_Kmax_100p0_section 1600x1200 cov=59.8
+OK holder_tick_Kmax_100p0 1600x1200 cov=100.0
+OK receiver_top 1600x1200 cov=38.0
+OK receiver_iso 1600x1200 cov=31.5
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+CHK receiver_section receiver cross-section pixels 19.92 percent PASS
+OK receiver_section 1600x1200 cov=77.5
+OK holder_top 1600x1200 cov=24.4
+OK holder_iso 1600x1200 cov=30.7
+OK holder_bottom 1600x1200 cov=24.4
+OK holder_section 1600x1200 cov=74.2
+OK baseplate_top 1600x1200 cov=62.9
+OK baseplate_bottom 1600x1200 cov=62.9
+OK baseplate_iso 1600x1200 cov=32.2
+OK baseplate_receiver_iso 1600x1200 cov=33.7
+OK baseplate_slots_closeup 1600x1200 cov=39.4
+OK tray_plug_iso 1600x1200 cov=32.5
+OK tray_plug_top 1600x1200 cov=63.1
+OK tray_plug_drain_section 1600x1200 cov=42.5
+OK stop_closeup 1600x1200 cov=16.7
+OK washer_R_100p0_top 1600x1200 cov=4.5
+OK washer_R_100p0_iso 1600x1200 cov=3.2
+FALLBACK mesh cut (halfcut FAILED: result extends 73.407 past the plane)
+mesh_halfcut: triangles 5636 kept of 11024, cap area 760.0 mm2 (2 loops, 0 open)
+OK washer_R_100p0_section 1600x1200 cov=41.5
+OK nut_R_100p0_top 1600x1200 cov=18.4
+OK nut_R_100p0_bottom 1600x1200 cov=18.4
+OK nut_R_100p0_iso 1600x1200 cov=26.6
+wing 0 az 77.5 R_100p0: top 153.942..153.626 bot 122.800..123.116
+OK nut_R_100p0_wing0_nt4 1600x1200 cov=47.8
+OK nut_R_100p0_wing0_nt4_oblique 1600x1200 cov=75.7
+OK nut_R_100p0_wing0_nt5 1600x1200 cov=47.8
+OK nut_R_100p0_wing0_nt5_oblique 1600x1200 cov=75.7
+wing 1 az 257.5 R_100p0: top 154.756..153.626 bot 121.986..123.116
+OK nut_R_100p0_wing1_nt4 1600x1200 cov=47.9
+OK nut_R_100p0_wing1_nt4_oblique 1600x1200 cov=77.1
+OK nut_R_100p0_wing1_nt5 1600x1200 cov=47.9
+OK nut_R_100p0_wing1_nt5_oblique 1600x1200 cov=77.1
+OK washer_Kmax_100p0_top 1600x1200 cov=4.5
+OK washer_Kmax_100p0_iso 1600x1200 cov=3.2
+FALLBACK mesh cut (halfcut FAILED: result extends 65.987 past the plane)
+mesh_halfcut: triangles 5572 kept of 11136, cap area 759.8 mm2 (2 loops, 0 open)
+OK washer_Kmax_100p0_section 1600x1200 cov=41.5
+OK nut_Kmax_100p0_top 1600x1200 cov=21.9
+OK nut_Kmax_100p0_bottom 1600x1200 cov=21.9
+OK nut_Kmax_100p0_iso 1600x1200 cov=29.3
+wing 0 az 61.5 Kmax_100p0: top 142.399..141.269 bot 109.621..110.751
+OK nut_Kmax_100p0_wing0_nt4 1600x1200 cov=47.8
+OK nut_Kmax_100p0_wing0_nt4_oblique 1600x1200 cov=75.3
+OK nut_Kmax_100p0_wing0_nt5 1600x1200 cov=47.8
+OK nut_Kmax_100p0_wing0_nt5_oblique 1600x1200 cov=75.3
+wing 1 az 241.5 Kmax_100p0: top 142.399..141.269 bot 109.621..110.751
+OK nut_Kmax_100p0_wing1_nt4 1600x1200 cov=47.8
+OK nut_Kmax_100p0_wing1_nt4_oblique 1600x1200 cov=75.3
+OK nut_Kmax_100p0_wing1_nt5 1600x1200 cov=47.8
+OK nut_Kmax_100p0_wing1_nt5_oblique 1600x1200 cov=75.3
+OK collet_R_100p0_underside 1600x1200 cov=24.4
+OK collet_R_100p0_top 1600x1200 cov=24.4
+OK collet_R_100p0_in_situ_top 1600x1200 cov=31.4
+OK collet_R_100p0_in_situ_iso 1600x1200 cov=49.0
+OK collet_Kmax_090p0_underside 1600x1200 cov=31.4
+OK collet_Kmax_090p0_top 1600x1200 cov=31.4
+OK collet_Kmax_090p0_in_situ_top 1600x1200 cov=31.4
+OK collet_Kmax_090p0_in_situ_iso 1600x1200 cov=49.0
+OK collet_Kmax_100p0_underside 1600x1200 cov=26.5
+OK collet_Kmax_100p0_top 1600x1200 cov=26.5
+OK collet_Kmax_100p0_in_situ_top 1600x1200 cov=31.4
+OK collet_Kmax_100p0_in_situ_iso 1600x1200 cov=49.0
+OK collet_Kmax_105p0_underside 1600x1200 cov=0.4
+OK collet_Kmax_105p0_top 1600x1200 cov=10.9
+OK collet_Kmax_105p0_in_situ_top 1600x1200 cov=24.0
+OK collet_Kmax_105p0_in_situ_iso 1600x1200 cov=47.8
+OK core_R_100p0_top_closeup 1600x1200 cov=72.1
+OK core_R_100p0_top_section 1600x1200 cov=47.3
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+CHK core_R_100p0_stand_section receiver cross-section pixels 21.29 percent PASS
+OK core_R_100p0_stand_section 1600x1200 cov=99.8
+OK cutter_R_100p0_iso 1600x1200 cov=29.7
+FALLBACK mesh cut (halfcut FAILED: result extends 73.407 past the plane)
+mesh_halfcut: triangles 7838 kept of 15224, cap area 1241.2 mm2 (2 loops, 0 open)
+OK cutter_R_100p0_section 1600x1200 cov=32.4
+OK core_Kmax_100p0_top_closeup 1600x1200 cov=71.4
+OK core_Kmax_100p0_top_section 1600x1200 cov=45.7
+FALLBACK mesh cut (halfcut FAILED: volume 955593.2 -> 955593.2 valid=False)
+mesh_halfcut: triangles 5155 kept of 9512, cap area 4772.0 mm2 (2 loops, 6 open)
+CHK core_Kmax_100p0_stand_section receiver cross-section pixels 21.65 percent PASS
+OK core_Kmax_100p0_stand_section 1600x1200 cov=99.8
+OK cutter_Kmax_100p0_iso 1600x1200 cov=30.1
+FALLBACK mesh cut (halfcut FAILED: result extends 65.987 past the plane)
+mesh_halfcut: triangles 7676 kept of 15224, cap area 1241.3 mm2 (2 loops, 0 open)
+OK cutter_Kmax_100p0_section 1600x1200 cov=31.1
+OK frame_top 1600x1200 cov=34.9
+OK frame_iso 1600x1200 cov=30.9
+OK frame_bottom 1600x1200 cov=34.9
+OK frame_notch_top 1600x1200 cov=58.4
+OK frame_notch_iso 1600x1200 cov=50.6
+OK frame_plate_seat_closeup 1600x1200 cov=41.9
+OK c6_site_1_top 1600x1200 cov=68.8
+OK c6_site_1_under 1600x1200 cov=68.8
+OK c6_site_2_top 1600x1200 cov=68.8
+OK c6_site_2_under 1600x1200 cov=68.7
+OK c6_site_3_top 1600x1200 cov=68.8
+OK c6_site_3_under 1600x1200 cov=68.8
+OK c6_site_4_top 1600x1200 cov=68.8
+OK c6_site_4_under 1600x1200 cov=68.8
+OK bracket_tnut_closeup 1600x1200 cov=19.8
+OK bracket_tnut_in_frame 1600x1200 cov=50.0
+OK context_front 1600x1200 cov=22.0
+OK context_side 1600x1200 cov=20.2
+OK context_top 1600x1200 cov=38.4
+OK context_iso 1600x1200 cov=16.0
+OK context_caddy_iso 1600x1200 cov=35.5
+OK context_gauge_iso 1600x1200 cov=23.9
+OK context_rest_iso 1600x1200 cov=7.8
+RENDER_DONE
+RENDER_START 16:12:50 only=collet_Kmax_105p0_underside
+MEAS R_100p0 {"nut_zmin": 98.771, "nut_zmax": 158.37100000000004, "reading_z": 102.37099999999995, "holder_zmin": 53.62599999999997, "holder_zmax": 164.376, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000024, "washer_zmin": 150.36599999999996, "nut_far_vertex_az": 81.15327146899767, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kd1_100p0 {"nut_zmin": 93.5, "nut_zmax": 153.10000000000005, "reading_z": 97.09999999999995, "holder_zmin": 49.089999999999975, "holder_zmax": 159.84, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 145.09499999999994, "nut_far_vertex_az": 16.991728531002273, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kmax_100p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000037, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_090p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000026, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_105p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+WINGS R_100p0 centres [77.5, 257.5]
+WINGS Kmax_100p0 centres [61.5, 241.5]
+COLLET_COLOUR params collet.colour=['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'white'] core.diameters=[90.0, 92.5, 95.0, 97.5, 100.0, 102.5, 105.0]
+FAIL collet_Kmax_105p0_underside Traceback (most recent call last):
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 246, in snap
+    if dark: setbg(DARK)
+             ^^^^^^^^^^^
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 185, in setbg
+    view.setBackgroundColor(c[0], c[1], c[2])
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: setBackgroundColor
+
+FAIL-JOB job_internals Traceback (most recent call last):
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 343, in run
+    try: fn()
+         ^^^^
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 520, in job_internals
+    snap("collet_%s_underside" % tag, pose_of(tag), sz(tag), "collet from below: foot key, slit phase", "4", bb=bb, d=(0,0,1), up=(0,1,0))
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 251, in snap
+    if dark: setbg(BG)
+             ^^^^^^^^^
+  File "C:\Users\Quinn Morley\OneDrive\PROJECTS\CC\CuttingJig\cr_scratch\step7_render.py", line 185, in setbg
+    view.setBackgroundColor(c[0], c[1], c[2])
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: setBackgroundColor
+
+RENDER_DONE
+RENDER_START 16:15:32 only=collet_Kmax_105p0_underside
+MEAS R_100p0 {"nut_zmin": 98.771, "nut_zmax": 158.37100000000004, "reading_z": 102.37099999999995, "holder_zmin": 53.62599999999997, "holder_zmax": 164.376, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000024, "washer_zmin": 150.36599999999996, "nut_far_vertex_az": 81.15327146899767, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kd1_100p0 {"nut_zmin": 93.5, "nut_zmax": 153.10000000000005, "reading_z": 97.09999999999995, "holder_zmin": 49.089999999999975, "holder_zmax": 159.84, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 145.09499999999994, "nut_far_vertex_az": 16.991728531002273, "nut_far_vertex_r": 115.21284650593444}
+MEAS Kmax_100p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000037, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_090p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000026, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+MEAS Kmax_105p0 {"nut_zmin": 86.41, "nut_zmax": 146.01000000000002, "reading_z": 90.00999999999995, "holder_zmin": 41.99999999999997, "holder_zmax": 152.75, "collet_zmin": 39.99999999999997, "collet_zmax": 72.00000000000034, "washer_zmin": 138.00499999999997, "nut_far_vertex_az": 64.90827146899744, "nut_far_vertex_r": 115.2128465059344}
+WINGS R_100p0 centres [77.5, 257.5]
+WINGS Kmax_100p0 centres [61.5, 241.5]
+COLLET_COLOUR params collet.colour=['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'white'] core.diameters=[90.0, 92.5, 95.0, 97.5, 100.0, 102.5, 105.0]
+OK collet_Kmax_105p0_underside 1600x1200 cov=23.9
+RENDER_DONE
