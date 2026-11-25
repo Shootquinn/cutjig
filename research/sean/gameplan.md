@@ -515,6 +515,12 @@ Human gate: Sean, then pushed for Quinn.
 
 **16. The kept base parts carry the cut reaction under the screw lift (for Sean to confirm; Quinn rules, N5).** With a powered screw lift, the cut force is applied by the screws and reacts through the work: cutter, core, collet core stop, collet, holder, receiver, base plate, base frame, anchor frame member, anchors, screws in tension, nuts, ring, drill-to-ring bearing, drill (S3-3). ASSEMBLY.md Load path ("1000 N path is cutter, carriage, metal stop, columns, frame. It never enters the nut, holder, collet, receiver or base plate") and A2d (axial force 0 at the stop) describe the old design and are false during a powered cut. S3 reports the axial force in each kept part at 1000 N (`loads.wob_max`) and at the lift's stall thrust. Quinn rules in batch 1 whether the kept parts accept it or need a rating check; the ASSEMBLY.md and A2d dispositions follow at 4a.
 
+**17. Floor datum (Sean, Step 1.0, blocker B1).** Sketch heights are measured from the shop floor, which sits at z_A − `jig.datum_a_above_floor`, where datum A is the base-plate underside. The value is 60 mm ASSUMED, derived from `profile.height` on the assumption the frame has no feet; it goes to Quinn as batch row N10. This supersedes "z_A + 40" in K6. ASSEMBLY.md's "z_A − 40" refers to the receiver floor, not the shop floor. K6 B2 plants an offset 60 mm low; a new B2b plants one 100 mm low.
+
+**19. Bore ceiling is drill-relative (Sean, Step 1.0, correction 2).** `drill.bore_ceiling_z` is replaced by the leaf `drill.bore_ceiling_above_tip` (800 mm ASSUMED; Q2e asks Quinn for the real offset). check_stack.py computes the ceiling z for each pose. Question batch 1 (`research/sean/cr_scratch/step1_quinn_batch1.md`, 17 rows) was approved by Sean as drafted on 2026-11-24.
+
+**18. Step 1.0 review roster (Sean, Step 1.0).** The Loftsman (K6, K7, S1-6) and The Topologist (K5, K8, K7 classes, K9) cross-review the harness in Wave 2 alongside The Software Engineer, under A.4 step 2's geometry cross-review rule.
+
 ---
 
 ## Echo Site Registry

@@ -1,0 +1,178 @@
+{
+  "check": "Q3-0",
+  "script": "research/sean/cr_scratch/step3_check.py",
+  "runs": [
+    {
+      "control": "red-first",
+      "expected": "FAIL",
+      "match": true,
+      "check": "Q3-0",
+      "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_empty.md",
+      "timestamp": "2026-11-24T22:16:52",
+      "rows": [],
+      "failures": [
+        "table has no rows"
+      ],
+      "row_count": 0,
+      "result": "FAIL"
+    },
+    {
+      "control": "Z",
+      "expected": "PASS",
+      "match": true,
+      "check": "Q3-0",
+      "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_z_complete.md",
+      "timestamp": "2026-11-24T22:16:53",
+      "rows": [
+        {
+          "line": 5,
+          "id": "Z1",
+          "failures": []
+        },
+        {
+          "line": 6,
+          "id": "Z2",
+          "failures": []
+        },
+        {
+          "line": 7,
+          "id": "Z3",
+          "failures": []
+        }
+      ],
+      "failures": [],
+      "row_count": 3,
+      "result": "PASS"
+    },
+    {
+      "control": "B",
+      "expected": "FAIL",
+      "match": true,
+      "check": "Q3-0",
+      "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_b_blank_standin.md",
+      "timestamp": "2026-11-24T22:16:53",
+      "rows": [
+        {
+          "line": 5,
+          "id": "B1",
+          "failures": []
+        },
+        {
+          "line": 6,
+          "id": "B2",
+          "failures": [
+            "blank standin"
+          ]
+        },
+        {
+          "line": 7,
+          "id": "B3",
+          "failures": []
+        }
+      ],
+      "failures": [
+        "line 6 row 'B2': blank standin"
+      ],
+      "row_count": 3,
+      "result": "FAIL"
+    },
+    {
+      "control": "batch",
+      "expected": "PASS",
+      "match": true,
+      "check": "Q3-0",
+      "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step1_quinn_batch1.md",
+      "timestamp": "2026-11-24T22:17:40",
+      "rows": [
+        {
+          "line": 11,
+          "id": "Q2a",
+          "failures": []
+        },
+        {
+          "line": 12,
+          "id": "Q2b",
+          "failures": []
+        },
+        {
+          "line": 13,
+          "id": "Q2c",
+          "failures": []
+        },
+        {
+          "line": 14,
+          "id": "Q2d",
+          "failures": []
+        },
+        {
+          "line": 15,
+          "id": "Q2e",
+          "failures": []
+        },
+        {
+          "line": 16,
+          "id": "Q9",
+          "failures": []
+        },
+        {
+          "line": 17,
+          "id": "DN23-a",
+          "failures": []
+        },
+        {
+          "line": 18,
+          "id": "DN23-b",
+          "failures": []
+        },
+        {
+          "line": 19,
+          "id": "DN23-c",
+          "failures": []
+        },
+        {
+          "line": 20,
+          "id": "DN23-d",
+          "failures": []
+        },
+        {
+          "line": 21,
+          "id": "DN23-e",
+          "failures": []
+        },
+        {
+          "line": 22,
+          "id": "N5",
+          "failures": []
+        },
+        {
+          "line": 23,
+          "id": "N6",
+          "failures": []
+        },
+        {
+          "line": 24,
+          "id": "N7",
+          "failures": []
+        },
+        {
+          "line": 25,
+          "id": "N8",
+          "failures": []
+        },
+        {
+          "line": 26,
+          "id": "N9",
+          "failures": []
+        },
+        {
+          "line": 27,
+          "id": "N10",
+          "failures": []
+        }
+      ],
+      "failures": [],
+      "row_count": 17,
+      "result": "PASS"
+    }
+  ]
+}
