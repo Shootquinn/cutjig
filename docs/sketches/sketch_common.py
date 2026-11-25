@@ -178,7 +178,8 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
     """One annotation per spec row with a label, gid label:<id>, anchored at the right edge of the row's drawn pieces.
     margin=True (S1 r3, Designer M1 r2 F4): every label and every note goes into one column right of the axes, each
     with a leader to its anchor, stacked in anchor-z order with LABEL_GAP_LINES of free space between text boxes.
-    Call after finish_axes (the column reads the final limits). notes: (anchor (x, z) or None, text) pairs, untagged."""
+    Call after finish_axes (the column reads the final limits). notes: (anchor (x, z) or None, text[, gid]) tuples;
+    a note without a gid is untagged (the figure note carries gid note:figure_note, Designer 1.2 (c) FIX R1)."""
     items = []
     for row in spec.get("features", []):
         if not row.get("label") or (pose and row.get("poses") and pose not in row["poses"]):
@@ -194,8 +195,8 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
                               arrowprops={"arrowstyle": "-", "linewidth": 0.5})
             ann.set_gid(gid)
         return
-    items += [(anc, txt, None) for anc, txt in notes if anc]
-    free = [txt for anc, txt in notes if not anc]
+    items += [(n[0], n[1], n[2] if len(n) > 2 else None) for n in notes if n[0]]
+    free = [(n[1], n[2] if len(n) > 2 else None) for n in notes if not n[0]]
     ax.apply_aspect()
     (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
     line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)   # one text line in data z
@@ -214,9 +215,9 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
         zs[i] = max(zs[i], floor_z)
     # notes without an anchor: same column, below the axes bottom, so no leader crosses them
     z = zlo - gap
-    for txt in free:
+    for txt, gid in free:
         h = line * (txt.count("\n") + 1)
-        order.append((None, txt, None))
+        order.append((None, txt, gid))
         zs.append(z - h / 2)
         z -= h + gap
     for (anc, txt, gid), z in zip(order, zs):
@@ -1052,13 +1053,14 @@ def part_head(part):
 def figure_note_issues(ctx):
     """Detail 1 common (b), from S2 on (1.2 (c), Designer 1.2 (b) FIX 3): the spec figure_note (plan_figure.figure_note
     or a top-level figure_note) names the head of every not_drawn part, and each figure carries a Text with gid
-    note:figure_note whose text names every head. A spec with not_drawn and no figure_note fails, S1 excepted (accepted
-    before the rule)."""
+    note:figure_note whose text names every head. A spec with not_drawn and no figure_note fails, whatever its sketch id
+    (Designer 1.2 (c) FIX R1). The only exempt record is one accepted before the rule with no not_drawn entry (S1 r4),
+    which this branch passes because its not_drawn is empty; S1 r5 on carries a figure_note."""
     spec = ctx.spec or {}
     note = (spec.get("plan_figure") or {}).get("figure_note") or spec.get("figure_note")
     nd = spec.get("not_drawn") or []
     if note is None:
-        return [f"spec error: not_drawn ({len(nd)}) without figure_note"] if nd and spec.get("sketch") != "s1" else []
+        return [f"spec error: not_drawn ({len(nd)}) without figure_note"] if nd else []
     norm = lambda s: " ".join(str(s).split())  # noqa: E731
     heads = [part_head(e.get("part") if isinstance(e, dict) else e) for e in nd]
     out = [f"spec figure_note lacks not_drawn part {h!r}" for h in heads if norm(h) not in norm(note)]
@@ -1535,9 +1537,22 @@ def k7(ctx):
         for a, row in rows.items():
             if not row.get("moves"):
                 continue
-            for nb in row.get("neighbours") or []:
+            nbs = row.get("neighbours") or []
+            unrestricted = {nb["id"] for nb in nbs if not nb.get("poses")}
+            seen_pr = set()
+            for nb in nbs:
                 b = nb["id"]
-                if b not in rows or rows[b].get("moves") or nb["class"] in ("C", "N") or nb.get("poses"):
+                if b not in rows or rows[b].get("moves") or nb["class"] == "N":
+                    continue
+                if nb.get("poses"):
+                    # LF-c1 (Loftsman 1.2 (c)): a pair declared at some poses only is undeclared at every swept
+                    # position between them, so it is swept as F (g_min 0); a declaration of the pair without
+                    # poses governs instead when there is one
+                    if b in unrestricted or b in seen_pr:
+                        continue
+                    seen_pr.add(b)
+                    nb = {"id": b, "class": "F", "g_min": 0}
+                elif nb["class"] == "C":
                     continue
                 tag = f"swept {lo}..{hi}/{a}|{b} {nb['class']}"
                 PL, PH = pieces(ctx.figs[lo].axes[0], a), pieces(ctx.figs[hi].axes[0], a)
@@ -1590,7 +1605,8 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
     reaches g_min); C pairs pass as z-contact or plan-contact on true sections only. Presence: a pair not settled by its
     z bands is tested only when both rows are drawn (else untestable, absent). One plan figure (spec plan_figure): the
     figure serves every stack pose; premise: every row's plan outline is the same at every pose (lint below, 4f).
-    Swept case: each moving row's outline against every fixed row (declared F or G without poses, or undeclared as F)
+    Swept case: each moving row's outline against every fixed row (declared F or G without poses; undeclared, or
+    declared with poses only, as F, LF-c1; N excepted)
     whose z band meets the sweep band (min to max of the moving row's z over the poses), Loftsman 1.2 (b) section 5."""
     states, tested, absent = [], 0, 0
     poses = list((ctx.stack or {}).get("poses", {})) or list(ctx.figs)
@@ -1639,10 +1655,11 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                     issues.append(f"{fid}: plan outline at {pose} differs from {ref[0]} by {d:.2f} mm; one plan figure needs pose-invariant plan positions")
                     failing += 1
                     break
-    all_decl = set()
+    all_decl = set()   # pairs declared at every pose (LF-c1: a pose-restricted declaration leaves the pair undeclared in the sweep)
     for a, row in rows.items():
         for nb in row.get("neighbours") or []:
-            all_decl.add(frozenset((a, nb["id"])))
+            if not nb.get("poses"):
+                all_decl.add(frozenset((a, nb["id"])))
     for pose in poses:
         declared = set()
         for a, row in rows.items():
@@ -1705,22 +1722,29 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
             if not za or not all(za):
                 continue
             sweep = [min(z[0] for z in za), max(z[1] for z in za)]
-            rel = {}
+            rel, rel_n = {}, set()
             for nb in row.get("neighbours") or []:
-                rel.setdefault(nb["id"], nb)
+                if nb["class"] == "N":
+                    rel_n.add(nb["id"])
+                if not nb.get("poses"):
+                    rel.setdefault(nb["id"], nb)
             for b, rb in rows.items():
                 if b == a or rb.get("moves"):
                     continue
                 for nb in rb.get("neighbours") or []:
                     if nb["id"] == a:
-                        rel.setdefault(b, nb)
+                        if nb["class"] == "N":
+                            rel_n.add(b)
+                        if not nb.get("poses"):
+                            rel.setdefault(b, nb)
                 nb = rel.get(b)
                 if nb is not None:
-                    if nb["class"] in ("C", "N") or nb.get("poses"):
+                    if nb["class"] in ("C", "N"):
                         continue
                     cls, g = nb["class"], nb.get("g_min") or 0
                 else:
-                    if frozenset((a, b)) in all_decl or not (_measurable(row) and _measurable(rb)):
+                    # undeclared, or declared with poses only (LF-c1): F; N excepted
+                    if b in rel_n or frozenset((a, b)) in all_decl or not (_measurable(row) and _measurable(rb)):
                         continue
                     cls, g = "F", 0
                 zbb = zb(b, lo)
@@ -1815,6 +1839,14 @@ def k8(ctx):
     lint, bad = sense_lint(rows_list)
     issues, n, absent = list(lint), 0, 0
     side, plan = ctx.view in SIDE_VIEWS, ctx.view == "plan_xy"
+    # TP1.2-1: the radial outboard form reads the plan centroid (x, y) in the drill-axis frame; in a side view the
+    # centroid is (x, z) and its hypot is no radius. frame: radial outside plan_xy is a spec error, reported once.
+    if not plan:
+        for fid, row in rows.items():
+            for pr in row.get("sense") or []:
+                if pr.get("pred") == "outboard" and pr.get("frame") == "radial" and id(pr) not in bad:
+                    issues.append(f"{fid} outboard of {pr.get('of')}: spec error, frame radial needs plan_xy (view {ctx.view})")
+                    bad.add(id(pr))
     for pose, fig in ctx.figs.items():
         ax = fig.axes[0]
         n += 1
@@ -1929,7 +1961,7 @@ def k8(ctx):
                     d = centroid(me)[0] - centroid(other)[0]
                     if d * pr["sign"] <= 0:
                         issues.append(f"{pose}/{fid} side of {other_id}: centroid x minus {other_id} x {d:.2f}, spec sign {pr['sign']:+d}")
-                elif kind == "outboard" and (pr.get("frame") == "radial" or plan):
+                elif kind == "outboard" and plan:
                     # 1.2 (c): radial form, the centroid farther from the drill axis than the other's (S2 rows carry
                     # frame: radial; at theta 90 the side form x cos(theta) reads 0)
                     ra, rb = math.hypot(*centroid(me)), math.hypot(*centroid(other))

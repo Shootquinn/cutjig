@@ -274,6 +274,10 @@ def draw_pose(P, spec, stack, pose):
         notes.append((None, f"park rule (option R, Design Notes 22):\npark = {spec['park_rule']['park']}\n"
                             f"= {glob['park_tip']:.2f} z_A = {pr['tip_z_S']:.2f} z_S"))
 
+    # Designer 1.2 (c) FIX R1: the spec figure note (not_drawn parts) on every pose figure, tagged for K4
+    if spec.get("figure_note"):
+        notes.append((None, spec["figure_note"], sc.NOTE_GID))
+
     sc.finish_axes(ax)
     sc.place_labels(ax, spec, P, pid, margin=True, stack_pose=feats, notes=notes)
     return fig

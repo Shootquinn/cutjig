@@ -185,6 +185,52 @@ def h1_b_png_pixels():
         return _res("H1", fired, " / ".join(msgs) + (f"; flagged {flagged}, docs/ {written}" if not fired else ""), 1 if fired else 0)
 
 
+def _harness_wip(wip, mismatch=0):
+    """wip/ controls results (3 rows, `mismatch` of them match "no") and a baseline record, as --controls and --baseline
+    leave them."""
+    rows = [{"id": f"K0-B{i}", "match": "no" if i < mismatch else "yes"} for i in range(3)]
+    ctrl = wip / cs.CONTROLS_RESULTS
+    ctrl.parent.mkdir(parents=True, exist_ok=True)
+    ctrl.write_text(json.dumps({"controls": rows}, indent=1), encoding="utf-8")
+    (wip / cs.BASELINE).write_text(json.dumps({"s1": {"run2": "fixture"}}, indent=1), encoding="utf-8")
+    return ctrl, wip / cs.BASELINE
+
+
+def h1_z_harness_copy():
+    """Z (SW 1.2 (c) FIX 4): H1-Z1 plus a matched wip/ controls results file and baseline record: accept exit 0 and both
+    land in docs/ byte-equal."""
+    with tempfile.TemporaryDirectory() as t:
+        docs, wip = _dirs(t)
+        _write(wip, _template())
+        (wip / "s1_summary_r4.md").write_text("summary\n", encoding="utf-8")
+        _png(wip / PNG)
+        _png(docs / PNG)
+        srcs = _harness_wip(wip)
+        rc, msgs = cs.accept("s1", 4, NOTE, docs, wip, out=_quiet)
+        issues = [] if rc == 0 else [f"accept exit {rc}: {' / '.join(msgs)}"]
+        for p in srcs:
+            dst = docs / p.relative_to(wip)
+            if not dst.is_file() or cs._sha(dst) != cs._sha(p):
+                issues.append(f"{p.relative_to(wip).as_posix()} not byte-equal in docs/")
+        return _res("H1", bool(issues), "; ".join(issues) or "accepted; controls results and baseline copied up byte-equal", len(issues))
+
+
+def h1_b_controls_mismatch():
+    """B (SW 1.2 (c) FIX 4): the same with one wip/ control row match "no": accept refused, record not flagged, docs/
+    unchanged."""
+    with tempfile.TemporaryDirectory() as t:
+        docs, wip = _dirs(t)
+        _write(wip, _template())
+        _png(wip / PNG)
+        _png(docs / PNG)
+        _harness_wip(wip, mismatch=1)
+        rc, msgs = cs.accept("s1", 4, NOTE, docs, wip, out=_quiet)
+        flagged = json.loads((wip / "s1_checks_r4.json").read_text(encoding="utf-8")).get("accepted")
+        written = sorted(p.name for p in docs.iterdir())
+        fired = rc != 0 and not flagged and written == [PNG]
+        return _res("H1", fired, " / ".join(msgs) + (f"; flagged {flagged}, docs/ {written}" if not fired else ""), 1 if fired else 0)
+
+
 # ---------------------------------------------------------------- H5 (1 m start-above-core term, symbol c)
 
 def _s1_stack(spec_mut=None):

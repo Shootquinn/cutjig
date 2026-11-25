@@ -548,6 +548,14 @@ def k7_b4():
     return _swept(400)
 
 
+def k7_b31():
+    """Loftsman 1.2 (c) FIX LF-c1, side branch: the K7-B4 member (mid-stroke, inside the ring outline, clear of all four
+    poses) declared G 10 against the ring at p4 only; swept as undeclared F, it fires."""
+    c = _swept(400)
+    c.spec["features"][0]["neighbours"][0]["poses"] = ["p4"]
+    return c
+
+
 def k7_b5():
     """LF-1: a C pair touching in XZ with depth bands 490 mm apart."""
     return _k7(_pair("C", depth_a=(0, 10), depth_b=(500, 510)), ONE,
@@ -972,6 +980,8 @@ def _s1_draw_pose(P, spec, stack, pid):
         else:
             sc.draw_rect(ax, fid, x0, x1, z0, z1)
     sc.place_labels(ax, spec, P, pid)
+    if spec.get("figure_note"):   # Designer 1.2 (c) FIX R1: S1 r5 figure note, as s1_side_poses.py draws it
+        ax.text(0, -0.06, spec["figure_note"], transform=ax.transAxes, fontsize=6).set_gid(sc.NOTE_GID)
     sc.finish_axes(ax)
     return fig
 
@@ -1272,6 +1282,44 @@ def k8_b15():
 def k8_b16():
     """r4 B (TP1.1-11): motor_shaft_a drawn 15 wider at each end; centre and spec footprint unchanged."""
     return _widen("motor_shaft_a", 15)
+
+
+def k8_b28():
+    """SW 1.2 (c) FIX 5 (r4 rule, low-x end of projected_extent): motor_shaft_a drawn 15 longer at its low-x end only;
+    the high-x end and the spec footprint unchanged. Fires projected_x (centre 7.50 off) and projected_extent (by 15.00)
+    at each of the four poses."""
+    c = _s1_ctx()
+    for fig in c.figs.values():
+        for a in sc.tagged(fig.axes[0]).get("motor_shaft_a", []):
+            a.set_x(a.get_x() - 15)
+            a.set_width(a.get_width() + 15)
+    return c
+
+
+def k5_b12():
+    """SW 1.2 (c) FIX 5 (r2 rule, bore_cone lower bound): a holder bore_cone trapezoid drawn 10 to 5 below the collet
+    bottom at capture_end (outside the mate's z extent on the low side; K5-B6 is the high side)."""
+    c = _s1_ctx()
+    ax = c.figs["capture_end"].axes[0]
+    z0 = c.stack["poses"]["capture_end"]["features"]["collet"]["z_min"]
+    r = c.P.get("receiver.register_bore_radius")
+    sc.draw("holder", Polygon([(r - 2, z0 - 10), (r, z0 - 10), (r, z0 - 5), (r - 3, z0 - 5)], closed=True, fill=False), ax)
+    return c
+
+
+def k8_b24():
+    """Topologist 1.2 (c) FIX TP1.2-1: live S1 (side view) with frame: radial on motor23_a's outboard predicate. The radial
+    form reads the plan centroid; in a side view it is a spec error, reported once."""
+    def mut(s):
+        row = next(r for r in s["features"] if r["id"] == "motor23_a")
+        next(p for p in row["sense"] if p.get("pred") == "outboard")["frame"] = "radial"
+    return _s1_ctx(spec_mut=mut)
+
+
+def k4_b6():
+    """Designer 1.2 (c) FIX R1: S1 r5 spec (not_drawn holds the LM20UU bushing) with its figure_note removed; the sketch-id
+    exemption is gone, so K4 fires on the spec."""
+    return _s1_ctx(spec_mut=lambda s: s.pop("figure_note", None))
 
 
 def k8_b17():
@@ -1681,6 +1729,66 @@ def k8_b23():
         sec = dict(c.stack["poses"][_s2_pose(c.spec)]["features"]["operator_sector"]["sector"], half_angle=40)
         return [Polygon(sc.sector_boundary(sec)[:-6], closed=True, fill=False)]
     return _s2_replace(_s2_ctx(), "operator_sector", fn)
+
+
+def _annulus_row(fid, d_in=0.0, d_out=0.0):
+    """Drawing-only: row fid (a section annulus) drawn as an Annulus about the axis with its inner radius moved d_in and
+    its outer radius moved d_out; the spec section unchanged."""
+    def fn(c):
+        names = c.stack["poses"][_s2_pose(c.spec)]["vars_z_A"]
+        row = next(r for r in c.spec["features"] if r["id"] == fid)
+        a, b = sorted(check_stack.eval_expr(e, c.P, names) for e in row["section"])
+        a, b = a + d_in, b + d_out
+        return [Annulus((0, 0), b, b - a, fill=False)]
+    return _s2_replace(_s2_ctx(), fid, fn)
+
+
+def k8_b25():
+    """SW 1.2 (c) FIX 1 (4g annulus containment): gear drawn with outer radius OD / 2 + 5 (section r 90 to 126.32)."""
+    return _annulus_row("gear", d_out=5)
+
+
+def k8_b26():
+    """SW 1.2 (c) FIX 1 (4g annulus containment): bearing drawn with its bore radius 5 under its section."""
+    return _annulus_row("bearing", d_in=-5)
+
+
+def k8_b27():
+    """SW 1.2 (c) FIX 2 (sector equality, wider direction): operator sector drawn at half-angle 50, spec 45; drawn
+    points 400 sin 5 = 34.86 outside the wedge."""
+    def fn(c):
+        sec = dict(c.stack["poses"][_s2_pose(c.spec)]["features"]["operator_sector"]["sector"], half_angle=50)
+        return [Polygon(sc.sector_boundary(sec)[:-6], closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "operator_sector", fn)
+
+
+def k5_b13():
+    """SW 1.2 (c) FIX 5 (TP-13 hub width): pinion_a hub drawn on the heel edge with half-width w + 5 (wider than the
+    heel half-width w); teeth as the spec."""
+    def fn(c):
+        pl = _s2_place(c, "pinion_a")
+        heel, w = c.P.get("pinion.r_heel"), pl["half_width"]
+        return [Polygon(_radial_poly(pl["r_in"], heel, pl["theta"], w * pl["r_in"] / heel, w), closed=True, fill=False),
+                Polygon(_radial_poly(heel, pl["r_out"], pl["theta"], w + 5), closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "pinion_a", fn)
+
+
+def s2_6_b2():
+    """SW 1.2 (c) FIX 3 (S2-6 notch clearance): member c drawn 2 toward the plate edge in the notch (3.00 against
+    notch_clear 5); drawing only."""
+    return _shift(_s2_ctx(), "frame_upper_c", 2, 0)
+
+
+def k7_b30():
+    """Loftsman 1.2 (c) FIX LF-c1: the K7-B29 bar (fixed, r 150 to 170 at theta 0, z 300 to 310, inside the ring annulus
+    and inside its sweep, clear at all four poses) declared G 10 against the ring at capture_end (p4) only. The pair is
+    undeclared at every swept position, so it is swept as F and fires."""
+    rows = [("ring", None, ("tip + 100", "tip + 120"), [("bar", "G", 10)],
+             {"kind": "plate", "projection": "circle", "section": [100, 210], "moves": True}),
+            ("bar", _rad(150, 170, 0, 10), (300, 310), None, {})]
+    c = _k7_plan(rows, poses=FOUR)
+    c.spec["features"][0]["neighbours"][0]["poses"] = ["p4"]
+    return c
 
 
 # X1 shared-row lint (Loftsman 1.2 (b) section 2)

@@ -521,6 +521,13 @@ def accept(s, k, note, docs, wip, out=print):
         for b in blocks:
             say(f"refused: {b}")
         return 1, msgs
+    ctrl = wip / CONTROLS_RESULTS   # SW 1.2 (c) FIX 4: a revision is not accepted on a red harness
+    if ctrl.is_file():
+        rows = json.loads(ctrl.read_text(encoding="utf-8")).get("controls", [])
+        nbad = sum(1 for r in rows if r.get("match") != "yes")
+        if nbad:
+            say(f"refused: wip/ controls results: {nbad} mismatched ({CONTROLS_RESULTS}; re-run --controls)")
+            return 1, msgs
     stamp = TIMESTAMP()
     rec.update({"accepted": True, "accepted_note": note.strip(), "accepted_at": stamp})
     src.write_text(json.dumps(rec, indent=1, default=str), encoding="utf-8")

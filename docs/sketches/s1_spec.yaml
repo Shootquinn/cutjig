@@ -156,6 +156,9 @@ descent_stop: "drawn: row descent_stop, metal pad on post descent_stop_post on b
 # r5 (detail 1 common (b)): parts a shape string names that have no row.
 not_drawn:
   - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2, as S2)"}
+# r5 (Designer 1.2 (c) FIX R1): detail 1 common (b) second clause; s1_side_poses.py draws it on each pose figure as
+# Text gid note:figure_note, and K4 checks both against not_drawn.
+figure_note: "Not drawn: LM20UU bushing (inside the housing and lug)"
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups): {use: <group>} in a row's neighbours expands to these.
 neighbour_groups:
