@@ -81,70 +81,123 @@ Steps 1 to 4 produce sketches, scripts, check records and decision tables; none 
 
 ## Steps
 
-| # | Step | Assigned To | Status |
-|---|------|-------------|--------|
-| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | In progress (drafted; Software Engineer revision, Wave 2 review, Engineer revision and Manager close to follow) |
-| 1 | Sketch set S1 to S6, one sub-step per sketch, each with its own human correction pass before the next is drawn. See detail 1. | The Engineer (scripts, checks), The Designer (params review, visual gate on an image-capable model), The Loftsman and The Topologist (geometry cross-review on 1.1, 1.2, 1.3, 1.5), The Software Engineer (check harness review at 1.0), Sean (human correction pass) | Not started |
-| 1.0 | Sketch harness: proposed-keys overlay, shared plot and check library, controls, red-first baseline | The Engineer (write), The Software Engineer (review, signs) | Not started |
-| 1.1 | S1 side XZ, whole jig, four poses: is it tall enough, where does the ring sit on the drill, what is the park rule | The Engineer, The Designer, The Loftsman, The Topologist, Sean | Not started |
-| 1.2 | S2 plan XY: footprint, three screws and three pinions at 120 deg, drill and keep-out, collet axis, operator side | The Engineer, The Designer, The Loftsman, The Topologist, Sean | Not started |
-| 1.3 | S3 (redefined) side section through one jack screw: bottom anchor, screw, nut on ring, top guide, motor, sync method, load arrows | The Engineer, The Designer, The Loftsman, The Topologist, Sean | Not started |
-| 1.4 | S4 side section through the base: collet, holder, nut, receiver, push-pop advance path | The Engineer, The Designer, Sean | Not started |
-| 1.5 | S6 side, ring-gear and pinion close-up: gear on drill tube, pinions, NEMA 23 motors, support ring, torque reaction path to the frame | The Engineer, The Designer, The Loftsman, The Topologist, Sean | Not started |
-| 1.6 | S5 stock map: each on-hand 30-6060 length placed in the frame, leftovers | The Engineer, The Designer, Sean | Not started |
-| 2 | Lift detail decision record: screw sync, anchoring, top guide, anti-rotation and torque reaction, screw size (T8 or TR10/TR12), NEMA 17 count. See detail 2. | The Engineer (author), The Systems Engineer (review), Sean (decides), Quinn (consulted on motors) | Not started |
-| 3 | Open-question sweep: each Q1 to Q11 and each DN23 open gets an answer or an owner. See detail 3. | The Engineer (table), The Manager (owner check), Sean, Quinn (answers Q2 and the DN23 drill items) | Not started |
-| 4 | Params and test change list (Q11), then execution through LLM-PLM: params first, re-run pytest, retirement record. See detail 4. | The Software Engineer (test audit, signs), The Engineer (params change, test run), The Systems Engineer (ICD and ASSEMBLY.md coherence), Sean (approves the list before execution) | Not started |
-| 5 | Week-close configuration record for Quinn: 5.1 test suite, 5.2 outline validated against the suite, 5.3 write, 5.4 revise. See detail 5. | The Software Engineer (5.1, signs 5.2), The Engineer (5.2, 5.3), The Designer (5.4 review), Sean | Not started |
-| 6 | Manager week close: configuration accepted, change list executed, every question answered or owned, accumulator entries | The Manager, Sean | Not started |
-| 7 | Upper-assembly CAD: placeholder, scoped at the week-close gate | Scoped at the week-close gate | Not started |
+| # | Step | Assigned To | TDD stage | Status |
+|---|------|-------------|-----------|--------|
+| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | Acceptance list: step0_manager_open.md section 1 | In progress (drafted; Software Engineer revision done; Wave 2 review, Engineer revision and Manager close to follow) |
+| 1 | Sketch set S1 to S6, one sub-step per sketch, each with its own human correction pass before the next is drawn. See detail 1. | The Engineer (spec, scripts, checks), The Designer (params review, spec sign-off, visual gate on an image-capable model), The Loftsman and The Topologist (geometry cross-review on 1.1, 1.2, 1.3, 1.5), The Software Engineer (harness at 1.0), Sean (human correction pass) | Per sub-step: spec (outline), red on stub, draw, checks green, cross-review, M1 visual gate, M2 human pass | Not started |
+| 1.0 | Sketch harness: proposed-keys overlay, spec format, shared plot and check library K1 to K9, fixtures, red-first baseline | The Engineer (write), The Software Engineer (review, signs) | Test suite before any sketch geometry; Z and B fixture run; stub run | Not started |
+| 1.1 | S1 side XZ, whole jig, four poses: is it tall enough, where does the ring sit on the drill, what is the park rule | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S1-1 to S1-6 | Not started |
+| 1.2 | S2 plan XY: footprint, three screws and three pinions at 120 deg, drill and keep-out, collet axis, operator side | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S2-1 to S2-5 | Not started |
+| 1.3 | S3 (redefined) side section through one jack screw: bottom anchor, screw, nut on ring, top guide, motor, sync method, load arrows | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S3-1 to S3-2 | Not started |
+| 1.4 | S4 side section through the base: collet, holder, nut, receiver, push-pop advance path | The Engineer, The Designer, Sean | as row 1; checks K1 to K9, S4-1 to S4-2 | Not started |
+| 1.5 | S6 side, ring-gear and pinion close-up: gear on drill tube, pinions, NEMA 23 motors, support ring, torque reaction path to the frame | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S6-1 to S6-4 | Not started |
+| 1.6 | S5 stock map: each on-hand 30-6060 length placed in the frame, leftovers | The Engineer, The Designer, Sean | as row 1; checks K1 to K4, K9, S5-1 to S5-3 | Not started |
+| 2 | Lift detail decision record: screw sync, anchoring, top guide, anti-rotation and torque reaction, screw size (T8 or TR10/TR12), NEMA 17 count. See detail 2. | The Engineer (author), The Systems Engineer (review, runs checklist), Sean (decides), Quinn (consulted on motors) | Checklist plus scripted cross-check X2-1 to X2-4, red on the empty record | Not started |
+| 3 | Open-question sweep: each Q1 to Q11 and each DN23 open gets an answer or an owner. See detail 3. | The Engineer (table), The Manager (owner check, runs Q-check), Sean, Quinn (answers Q2 and the DN23 drill items) | Scripted status check Q3-1, red on the current table | Not started |
+| 4 | Params and test change list (Q11), then execution through LLM-PLM: params first, re-run pytest, retirement record. See detail 4. | The Software Engineer (test audit, signs), The Engineer (params change, test run), The Systems Engineer (ICD and ASSEMBLY.md coherence), Sean (approves the list before execution) | Test audit (Principle 6) is the suite; audit checks A4-1 to A4-4; pytest baseline before any edit | Not started |
+| 5 | Week-close configuration record for Quinn (prose, A.6.2), as four ordered sub-steps. See detail 5. | as 5.1 to 5.4 | Test suite, outline, write, revise | Not started |
+| 5.1 | Test suite for the record | The Software Engineer (write), The Designer (comprehension tests) | Suite, about 30 tests, sources verified | Not started |
+| 5.2 | Topic-sentence outline, validated against the suite by the coverage matrix | The Engineer (write), The Software Engineer (runs matrix, signs) | Outline plus coverage matrix with Z and B | Not started |
+| 5.3 | Write the record from the outline | The Engineer | Suite run on the draft | Not started |
+| 5.4 | Revise; echo-site and fact audit | The Designer (review), The Engineer (fix) | Suite re-run after revision, must stay green | Not started |
+| 6 | Manager week close: configuration accepted, change list executed, every question answered or owned, accumulator entries | The Manager, Sean | Re-run of every scripted check from Steps 1 to 5 | Not started |
+| 7 | Upper-assembly CAD: placeholder, scoped at the week-close gate | Scoped at the week-close gate | Work order and test suite before geometry (LLM-PLM 7.2) | Not started |
 
 ### Step details
 
-Marks of the form **[SE: ...]** are places The Software Engineer fills in his revision pass.
+Source tags used below: **[CP §n, mm:ss]** is a section and meeting timestamp in `context/2026-11-24_cutjig_critical_path.md`; **[DN23]** is Design Note 23 of `research/quinn/gameplan.md`; **[params key]** carries the status written in `params.yaml`. Status words: DECLARED (a human said it), ASSUMED (working value), DERIVED (arithmetic on the others). Z is a zero control (must read clean), B a known-bad control (must fire), tdd_method Principle 9. A check whose B reads clean is broken and blocks the step.
+
+**Reported values.** A value a sketch reports for a decision (height margin to the 2000 mm soft target, screw length against 800 to 900 mm, exposed length of a 100 mm core, leftover stock, gear ratio and torque) has no pass threshold and carries no controls. Its arithmetic is covered by K6 and by the cross-review. A soft key (`jig.height_target`, core lengths beyond 0.5 m) is never asserted (design freedom rule, preamble of Quinn's CAD Test Specification; tests P23); K1 B2 guards this.
 
 **Detail 1.0. Sketch harness.**
-Objective: one library every sketch script uses, so the checks are written once, shown to fire once, and applied to all six sketches.
+Objective: one library every sketch script uses, so each check is written once, shown to fire once, and applied to all six sketches.
 Files (all scratch until a sketch is accepted, Design Notes 7):
-- `research/sean/cr_scratch/sketches/proposed_params.yaml`: keys the sketches need that `params.yaml` lacks, same leaf schema (value, unit, source, status). Seed namespaces: `drill.length` (800, ASSUMED, critical-path 18:20), `ring.*` (structure outline, position along the drill), `gear.*` (ring gear pitch diameter, face width), `pinion.*` (count 3, angle 120 deg, motor class NEMA 23), `jackscrew.*` (count 3, angle 120 deg, pitch radius, nominal 8 mm, length 800 to 900, anchor z, top guide z), `liftmotor.*` (NEMA 17), `frame_upper.*`. Promotion into `params.yaml` happens at Step 4 only (Design Notes 6).
-- `research/sean/cr_scratch/sketches/sketch_common.py`: loader (params.yaml, then overlay), feature table per sketch (name, keys, view, projection kind, neighbour class), 8.4.2 figure setup, and the check library K1 to K8.
-- `research/sean/cr_scratch/sketches/check_sketch.py sN`: runs K1 to K8 on sketch N, writes `research/sean/cr_scratch/sketches/sN_checks.json`.
-- `research/sean/cr_scratch/sketches/fixtures/`: one zero-control and one known-bad fixture per check.
-TDD stage: test suite (the check library) before any sketch geometry.
-Scripted checks (each with zero control Z and known-bad control B, tdd_method Principle 9):
+- `research/sean/cr_scratch/sketches/proposed_params.yaml`: keys the sketches need that `params.yaml` lacks, same leaf schema (value, unit, source, status). Seed namespaces: `drill.length` (800, ASSUMED, [CP §3.2, 18:20]), `drill.mass` (ASSUMED, Q2), `ring.*` (structure outline, position along the drill, mass), `gear.*` (pitch diameter, face width, tooth count, pitch angle, bore, mass), `pinion.*` (count 3, angle 120 deg [DN23], tooth count, pitch angle, motor class NEMA 23 [DN23]), `jackscrew.*` (count 3, angle 120 deg, pitch radius, nominal 8 mm and length 800 to 900 [DN23], root diameter, lead, anchor z, top guide z, anchor and guide allowances), `nut.*` is taken in params, so lead-screw nut keys go under `jackscrew.nut_*`; `liftmotor.*` (NEMA 17 [DN23]), `frame_upper.*`. Promotion into `params.yaml` happens at Step 4 only (Design Notes 6).
+- `research/sean/cr_scratch/sketches/sketch_common.py`: loader (params.yaml, then overlay); `setup_figure(view)`, the only place figure size, dpi, aspect and grid are set; `draw(feature_id, patch)`, which tags each patch with `gid = feature_id`; the check library K1 to K9.
+- `research/sean/cr_scratch/sketches/check_stack.py`: pose stack arithmetic from params and overlay. It imports the loader and nothing from the sketch scripts or the drawing helpers (K6 B3 guards this).
+- `research/sean/cr_scratch/sketches/check_sketch.py sN [--rev k]`: runs K1 to K9 and the sketch's own checks, writes `research/sean/cr_scratch/sketches/sN_checks_r<k>.json` (per check: ID, result, measured value, threshold, Z result, B result, source tags).
+- `research/sean/cr_scratch/sketches/fixtures/`: one Z fixture and the B fixtures per check; `stubs/sN_stub.py`: loads params, calls `setup_figure`, draws the floor line only.
+- `research/sean/cr_scratch/sketches/sN_spec.yaml`: the sketch spec (detail 1, step b). It is also the feature table the checks read, so the spec and the checks cannot drift apart.
+
+Spec format (one file per sketch; the sketch's analogue of the topic-sentence outline):
+- Header: question (one sentence), R-rows and Q-rows it closes, view (`side_xz`, `plan_xy`, `section_xz`, `stock`), poses, rubric additions, reported values.
+- One row per feature: `id`; `name` (label text); `shape` (the Designer's representative-shape note, 8.4b); `kind` (cylinder, cone, gear, screw, prism, plate, line, arrow, callout); `axis` (X, Y or Z, for cylinders and cones); `projection` (rectangle, circle, trapezoid, polygon) per 8.4.1; `keys` (params or overlay keys for every dimension and position); `z_rule` (the stack expression check_stack.py evaluates, floor frame); `depth` (min and max along the view direction, side views only); `label` (key whose value the label prints, rounding); `neighbours` (id, class C, G or F, g_min, source); `sense` (signed predicates for K8); `chain` (torque or weight path membership, S6).
 
 | ID | Check | Z (must read clean) | B (must fire) |
 |---|---|---|---|
-| K1 | No hard-coded dimension: AST scan of the sketch script for numeric literals outside an allowlist (0, 1, 2, figure settings, 120 and 360 deg only through `pinion.angle` and `jackscrew.angle`) | Fixture script reading every value from the loader | Planted literal 152.4 |
-| K2 | Provenance: every feature-table key resolves in params.yaml or the overlay; an overlay key that shadows a params.yaml key fails | Fixture table with resolvable keys | Overlay key `drill.tube_od` planted |
-| K3 | Plot conventions (8.4.2): title names the view, axis labels in mm, equal aspect, major and minor grid, figsize at least (14, 10) side or (10, 10) plan, 150 dpi; read from the Figure object | Conforming fixture figure | `set_aspect('auto')` |
-| K4 | Every labelled feature carries its dimension (8.4.2): each feature-table row has an annotation matching name plus number | Fixture with all labels dimensioned | One label without a number |
-| K5 | Projection (8.4.1): no Circle patch for a cylinder whose axis is perpendicular to the view direction; circles only in end views or for spheres | Drill tube as rectangle in XZ | Drill tube as Circle in XZ |
-| K6 | Stack arithmetic: each pose's z values recomputed from params by a function independent of the drawing code, compared with drawn patch extents within 0.5 mm | Fixture drawn from the same params | Drill shifted 10 mm in the drawing only |
-| K7 | 2D overlap between neighbouring outlines (LLM-PLM 7.4 at sketch level; shapely absent, so polygon clipping in plain Python or `matplotlib.path`): class C contact, G gap at least g_min, F free | Two rectangles 100 mm apart read F | 1 mm overlap fires every class |
-| K8 | Sense and orientation: signed predicates per part (drill tip below drill top; core bottom on the collet stop; screw anchor below the nut in every pose; ring gear plane normal to Z; motors on the side of the gear the feature table states) | Fixture in correct sense | Drill flipped tip-up |
+| K1 | Literals and soft keys: AST scan of the sketch script for numeric literals outside {0, 1, -1, 2, 0.5}; angles come from `pinion.angle`, `jackscrew.angle` or `math.tau`; figure settings live only in `setup_figure`. Also fails on any comparison with a soft key | Fixture reading every value from the loader | B1 planted literal 152.4; B2 planted `assert top < get("jig.height_target")` |
+| K2 | Provenance: every spec key resolves in params.yaml or the overlay; every overlay leaf has value, unit, source and a legal status; an overlay key that shadows a params.yaml key fails; a DECLARED overlay leaf cites [CP §n, mm:ss] or [DN23] | Fixture overlay with sourced leaves | B1 overlay key `drill.tube_od`; B2 overlay leaf with empty source; B3 DECLARED leaf with no citation |
+| K3 | Plot conventions (8.4.2), read from the Figure object: title contains the spec view name; both axis labels end in "(mm)"; aspect equal; major and minor grid on; figsize at least (14, 10) side or (10, 10) plan; dpi 150 | Conforming fixture figure | One mutated fixture per property (six): no view in title, label without unit, `set_aspect('auto')`, minor grid off, default figsize (6.4, 4.8), dpi 100 |
+| K4 | Labels carry their dimension (8.4.2): each spec row with `label` has one annotation containing its name and the number formatted from its key; a label number that differs from the key value fails | Fixture with all labels from keys | B1 label without a number; B2 label "tube OD 150" against `drill.tube_od` 152.4 |
+| K5 | Projection (8.4.1): per tagged patch, by spec kind and axis against the view normal: cylinder axis perpendicular to the view, no Circle or Ellipse; axis parallel, Circle; cone in a view showing the taper, four-vertex polygon; an untagged patch fails | Drill tube as rectangle in XZ and as circle in XY | B1 drill tube as Circle in XZ; B2 bevel pinion as rectangle in side view; B3 untagged patch |
+| K6 | Stack: check_stack.py evaluates every `z_rule` per pose in the floor frame (z = z_A + `icd.floor_above_datum_a`, ASSEMBLY.md Coordinate frame) and compares each with the drawn patch extent in data coordinates, tolerance 0.05 mm | Fixture drawn from the same params | B1 drill shifted 6.75 mm in the drawing only (6.75 = `collar.top_above_plate`, the smallest term in the collar stack); B2 one part plotted in the datum-A frame (40 mm low); B3 check_stack.py importing a sketch script |
+| K7 | 2D overlap between neighbours (LLM-PLM 7.4 at sketch level): convex polygon clipping (Sutherland-Hodgman) and minimum distance in plain Python; non-convex outlines are split into convex pieces in the spec. In side views a pair is tested only when its depth bands overlap; other pairs are listed "depth-separated". Classes: C contact (distance 0 within 0.05 mm, overlap area at most 0.01 mm²), G gap at least the pair's g_min, F free (overlap 0) | Z1 rectangles 100 mm apart read F; Z2 rectangles overlapping in XZ with disjoint depth bands read depth-separated; Z3 touching rectangles read C | B1 1 mm overlap fires every class; B2 1 mm gap on a C pair fires; B3 a G pair at g_min - 1 fires |
+| K8 | Sense and orientation: the spec's signed predicates, computed from drawn patch coordinates. Seed set: drill head below the gear (tail off the nose); drill tip z below drill top z; core bottom on the collet core stop (0 within 0.05 mm); anchor z below nut z below guide z on every screw in every pose; gear section patches mirror about the drill axis at equal z (gear plane normal to Z); motors on the side of the gear the spec states; plan axes not inverted and azimuth counter-clockwise from +X seen from +Z (ASSEMBLY.md Coordinate frame) | Fixture in correct sense | B1 drill flipped tip-up; B2 a screw with its anchor above the nut; B3 plan view with the y axis inverted |
+| K9 | Coverage (the figure against its spec, as an outline against its suite): every spec row has at least one patch with its gid; every tagged patch has a spec row | Fixture matching its spec | B1 spec row with no patch (anti-rotation member deleted from the figure); B2 extra tagged patch with no spec row |
 
-**[SE: confirm K1 allowlist, K6 tolerance, K7 neighbour classes and g_min per pair; add or cut checks.]**
-Red-first baseline (Principle 10): run `check_sketch.py` for S1 to S6 before any sketch script exists; every check reports red (missing script, missing figure). Record the result in `research/sean/cr_scratch/sketches/baseline_red.json`. Any check that passes at baseline is relabelled an invariant or replaced.
-Visual gate: none (no figure).
-Human gate: none; The Software Engineer signs the harness and the control results.
+g_min seed values for K7 (ASSUMED unless a source is given; The Designer confirms them in each params review, and the spec carries the value and source per pair):
+- Any part other than the core, the collet (slice mode) and the gear hub against the drill swept envelope at `icd.keepout_radius` 86.2: G, g_min 0. The keep-out already carries the 10 mm face margin in `drill.r_face`.
+- Moving parts (ring, gear, pinions, NEMA 23 motors, lead-screw nuts) against fixed frame members and lift motors: G, 10 mm.
+- Ring and gear against the 0.5 m core top at end of capture: G, `stop.g_stop` 25 (DECLARED as the cutter gap; its reuse here is ASSUMED).
+- Operator loading sector against screws, motors and frame members (plan view): F.
+
+Red-first baseline (Principle 10), two runs, recorded in `research/sean/cr_scratch/sketches/baseline_red.json`:
+1. Fixture run: every K-check on its Z and B fixtures. Every Z reads clean and every B fires, or the harness is not signed.
+2. Stub run for S1: `stubs/s1_stub.py` with `s1_spec.yaml`. Expected red, each for its own reason: K4, K6, K7, K8, K9 and S1-1 to S1-6. Expected green on the stub, labelled guards: K1, K2, K3, K5 (a stub has nothing to violate; their evidence is the B fixture). A check that is red on the stub only because a file is missing is rewritten until it fails on content. S2 to S6 run their stub at their own sub-step, step (c).
+Visual gate: none (no figure of record).
+Human gate: none; The Software Engineer signs the harness, the fixture run and the S1 stub run.
 Run with `C:\Users\UR\AppData\Local\Programs\Python\Python312\python.exe` (matplotlib 3.11.2, PyYAML 6.0.4; shapely absent).
 
 **Detail 1, common to 1.1 to 1.6.**
-Each sketch sub-step runs in this order: (a) Designer params review of the keys the sketch will plot, with a representative-shape spec (8.4a: a ring gear reads as a toothed ring with pinions, a jack screw shows nut, bottom anchor and top guide, the ring structure reads as a structure); (b) short sketch spec written before drawing: every feature, its key, its view and its projection kind (8.4.1) **[SE: fill the spec format]**; (c) The Engineer writes the script and runs K1 to K8; (d) geometry cross-review where the sketch computes placement or projection (A.4 step 2; The Loftsman on arithmetic and placement, The Topologist on orientation and half-space sense); (e) visual gate on an image-capable model (A.3.1); (f) Sean's correction pass; (g) every correction recorded in Design Notes 13 as `S<N>-r<k>: <correction>` and the sketch redrawn as revision r<k+1> until Sean accepts it. The next sketch opens only after acceptance.
-Visual gate rubric (every sketch): top on top; the drill axis is vertical and the spinning part spins about Z; the drill tip is at the bottom (tail off the nose); core upright in the collet, never inverted; screws vertical with anchors at the bottom; every label legible and dimensioned; each part reads as the part it is (8.4b). A text-only reviewer returns its numeric results and "visual gate NOT RUN". **[SE: per-sketch rubric items below are a start; complete them.]**
-PNG naming: `research/sean/cr_scratch/s<N>_<name>_r<k>.png`. Accepted PNG, script and checks JSON move to the shared location proposed in Design Notes 7.
+Each sketch sub-step runs in this order:
+- (a) Designer params review of the keys the sketch will plot, with a representative-shape note per part (8.4a and 8.4b: a ring gear reads as a toothed ring with pinions, a jack screw shows nut, bottom anchor and top guide, the ring structure reads as a structure). The notes go into the spec `shape` field.
+- (b) The Engineer writes `sN_spec.yaml`. The Designer signs it, and The Loftsman signs it where cross-review applies. No drawing before the spec is signed.
+- (c) Red-first: `check_sketch.py sN --rev 0` on the stub with the signed spec; reds recorded in `sN_checks_r0.json`. A sketch check green on the stub is rewritten.
+- (d) The Engineer writes the script and iterates until K1 to K9 (K5 to K8 do not apply to S5) and the sketch checks are green.
+- (e) Geometry cross-review where the sketch computes placement or projection (A.4 step 2; The Loftsman on arithmetic and placement, The Topologist on orientation and half-space sense). Each reviewer re-computes at least one check value by hand and writes it next to the JSON value.
+- (f) M1, visual gate on an image-capable model (A.3.1).
+- (g) M2, Sean's correction pass.
+- (h) Every correction is recorded in Design Notes 13 as `S<N>-r<k>`. A correction a signed predicate can express becomes a K8 predicate with a B fixture that reproduces the error, so the error cannot return in a later revision or a later sketch. The sketch is redrawn as revision r<k+1> and runs (d) to (g) again until Sean accepts it. The next sketch opens only after acceptance.
+
+**M1, visual gate (manual, image-capable reviewer).** The Designer on an image-capable model; the reviewer did not produce the image. Inputs: the PNGs, the spec, the checks JSON. Output: `research/sean/cr_scratch/sketches/sN_visual_gate_r<k>.md`, one line per rubric item: PASS or FAIL with what the reviewer sees. Overall PASS only if every item passes. A text-only reviewer writes its numeric results and "visual gate NOT RUN", and the sub-step cannot close on that file.
+Controls, once per reviewer model at the first gate (1.1): the reviewer also receives the K8 Z fixture figure and the K8 B1 figure (drill tip-up), unlabelled. Z must pass; B1 must fail V3. If B1 passes, the reviewer model is replaced before any sketch is gated.
+
+| Item | Rubric (every sketch) |
+|---|---|
+| V1 | Top on top: the floor is at the bottom of every side view; parts that hang (motors, nuts) hang as the spec states |
+| V2 | Spin axis: the drill axis is vertical; the gear section is symmetric about it and the pinion axes are radial, so the drill spins about Z |
+| V3 | Tail off the nose: cutting head and iris at the bottom of the drill; gear and drive where the spec puts them |
+| V4 | Core upright in the collet, bottom on the stop, never inverted |
+| V5 | Screws vertical, anchors at the bottom, guides at the top, nut on the ring |
+| V6 | Projection: cylinders seen from the side are rectangles; circles appear only in plan views and end-view insets |
+| V7 | Each part reads as the part it is (8.4b): ring gear with teeth and pinions, jack screw with nut, anchor and guide, ring structure as a structure, motor as body and shaft |
+| V8 | Labels legible at 100 percent, none overlapping, every labelled feature dimensioned |
+| V9 | The reviewer states, from the figure alone, the answer to the spec's question in one sentence; the sentence is compared with the spec |
+
+**M2, Sean's correction pass (manual).** Sean sees the PNGs, the M1 file and a one-screen checks summary. He answers V1 to V5 and V9 yes or no and gives free corrections. Each correction goes to Design Notes 13 with Sean's words, the fix, and the K8 predicate ID added (or "visual only"). Acceptance is recorded in Design Notes 13 as "S<N>-r<k> accepted" with the date.
+
+PNG naming: `research/sean/cr_scratch/s<N>_<name>_r<k>.png`. Accepted PNG, script, spec and checks JSON move to the shared location proposed in Design Notes 7.
 
 **Detail 1.1. S1, side XZ, whole jig, four poses.**
 Question: is the jig tall enough, where along the drill does the ring sit, where are the screw anchors and top guides, and what is the park rule?
-Shows: floor, base frame, receiver, collet, holder, nut, core (0.5 m capture core; 0.75 m install core as a dashed outline in the load and park poses), drill tube (rectangle, 152.4 wide), keep-out 86.2, ring structure, ring gear, pinions and NEMA 23 motors, two of the three jack screws as projected at their 120 deg azimuths, nuts, anchors, top guides, lift motors, height of the 2000 mm soft target as a reference line. One figure per pose: load, start of cut, end of 500 mm capture, park.
+Shows: floor, base frame, receiver, collet, holder, nut, core (0.5 m capture core; 0.75 m install core as a dashed outline in the load and park poses), drill tube (rectangle, 152.4 wide), keep-out 86.2, ring structure, ring gear, pinions and NEMA 23 motors, two of the three jack screws as projected at their 120 deg azimuths, nuts, anchors, top guides, lift motors, the 2000 mm soft target as a reference line. One figure per pose: load, start of cut, end of 500 mm capture, park.
 Closes: R1 to R8, R17; Q1 (confirms 650 on the drawing), Q9; carries Q2 as ASSUMED 800; re-derives the U13 park rule (`upper.park_z` 959.84 sits below `stop.start_z` 965 for the 0.75 m case) and `stop.height_range[1]` (315, marked not re-derived in params).
-Params keys: `upper.travel_max`, `upper.drill_advance_500core`, `upper.load_clearance`, `upper.park_z`, `stop.collar_top_z`, `stop.height_z`, `stop.height_range`, `stop.start_z`, `stop.g_stop`, `core.length_capture`, `core.length_install`, `core.min_exposed`, `drill.tube_od`, `drill.r_face`, `drill.dome_pole_offset`, `icd.floor_above_datum_a`, `jig.height_target`, `profile.*`; overlay `drill.length`, `ring.*`, `gear.*`, `pinion.*`, `jackscrew.*`, `liftmotor.*`.
+Params keys: `upper.travel_max`, `upper.drill_advance_500core`, `upper.load_clearance`, `upper.park_z`, `stop.collar_top_z`, `stop.height_z`, `stop.height_range`, `stop.start_z`, `stop.g_stop`, `core.length_capture`, `core.length_install`, `core.min_exposed`, `drill.tube_od`, `drill.r_face`, `drill.dome_pole_offset`, `icd.floor_above_datum_a`, `icd.keepout_radius`, `jig.height_target` (reference line only), `profile.*`; overlay `drill.length`, `drill.mass`, `ring.*`, `gear.*`, `pinion.*`, `jackscrew.*`, `liftmotor.*`.
 Script: `research/sean/cr_scratch/sketches/s1_side_poses.py`. PNGs: `research/sean/cr_scratch/s1_pose_load_r1.png`, `s1_pose_start_r1.png`, `s1_pose_capture_end_r1.png`, `s1_pose_park_r1.png`.
-Sketch-specific checks: K6 stack per pose (tip z, drill top z, ring z, nut z on each screw, screw anchor z and top guide z, top of motors); ring z range within screw nut travel (anchor + nut length below, top guide above) at all four poses; drill tip at end of capture equals `stop.height_z`; park clears the 0.75 m core top by `upper.load_clearance`; ring and gear stay above the 0.5 m core top at end of capture (K7 class G). Known-bad: travel set to 500 in a fixture fires the capture-end check. **[SE: controls per check.]**
-Rubric additions: the ring is on the drill above the core at every pose; the motors sit above or below the gear as the spec says, in every pose alike.
-Cross-review: The Loftsman (stack arithmetic, projection of 120 deg screws onto XZ), The Topologist (sense: anchors below nuts, tip down).
-Gate: visual gate by The Designer on an image-capable model, then Sean.
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S1-1 | Capture reach: start tip z minus end-of-capture tip z is at least `upper.drill_advance_500core` and at most `upper.travel_max` | Live params | Fixture with `upper.travel_max` 500 (below 534.93) | travel DECLARED [CP §15], [DN23]; advance DERIVED |
+| S1-2 | Park above the working range: park tip z above max(`stop.start_z`) for every supported core class | Fixture with the re-derived park rule | Live params.yaml (959.84 below 965), the red state of test_P10_working_stroke_per_core_class | [DN23] (U13 re-derive); park ASSUMED |
+| S1-3 | Park clears the install core: park tip z minus `upper.load_clearance` at least core-stop z plus core length, for each length in the spec's Q9 list | Live params with the re-derived rule | Park z lowered by `upper.load_clearance` + 1 | `core.length_install` DECLARED; clearance ASSUMED |
+| S1-4 | Ring within nut travel at all four poses: anchor z + anchor allowance + half nut length at most nut z, and nut z at most guide z - guide allowance - half nut length | Fixture from the spec | Ring 100 mm above the top guide at park | overlay `jackscrew.*` ASSUMED |
+| S1-5 | Ring and gear clear the 0.5 m core top at end of capture (K7 class G, g_min 25) | Fixture from the spec | `ring.position` set at mid-drill | `stop.g_stop` reuse ASSUMED |
+| S1-6 | Screw projection: drawn x of each screw equals r cos(theta), depth band at r sin(theta), theta per ASSEMBLY.md Coordinate frame | Fixture from the spec | Screw drawn at x = r | overlay `jackscrew.angle` DECLARED [DN23] |
+
+Reported: highest point at each pose and its margin to the 2000 mm soft target; ring position along the drill (N1) and the anchor and guide heights it sets; the re-derived park rule as an expression for Step 4.
+Rubric additions: the ring is on the drill above the core in every pose; the motors sit on the same side of the gear in every pose; the 0.75 m core is dashed in the load and park poses only.
+Cross-review: The Loftsman (stack arithmetic, S1-6 projection), The Topologist (sense: anchors below nuts, tip down).
+Gate: M1 by The Designer on an image-capable model (with the reviewer controls), then M2.
 
 **Detail 1.2. S2, plan XY.**
 Question: does it fit, stay coaxial, and leave the operator a side to load the core and change collets?
@@ -152,40 +205,77 @@ Shows: base footprint (644 x 608 today, open), frame members, three screw axes a
 Closes: R9, R13, R16 (layout part); the frame's role under a ring on three screws (Design Notes 2); the operator access question.
 Params keys: `drill.tube_od`, `drill.tube_id`, `icd.keepout_radius`, `icd.footprint_x`, `icd.footprint_y`, `icd.datum_*`, `icd.mounting_pattern`, `frame.*`, `profile.*`, `base.*`; overlay `pinion.*`, `jackscrew.*`, `ring.*`, `frame_upper.*`.
 Script: `research/sean/cr_scratch/sketches/s2_plan.py`. PNG: `research/sean/cr_scratch/s2_plan_r1.png`.
-Sketch-specific checks: screw and pinion azimuths 120 deg apart within 0.1 deg; screw axes outside the keep-out plus nut radius (K7 class G); pinion mesh points on the gear pitch circle; operator sector free of screws and motors (K7 class F). **[SE: controls.]**
-Cross-review: The Loftsman (azimuths, radii), The Topologist (handedness of the plan view, +X along slot line C, theta counter-clockwise from +X seen from +Z per ASSEMBLY.md).
-Gate: visual gate (image-capable), then Sean.
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S2-1 | Azimuths measured from drawn centres: screws 120 deg apart within 0.1 deg; pinions likewise; the stated screw-to-pinion phase within 0.1 deg | Fixture from the spec | One screw at 110 deg | [DN23], [CP §15] |
+| S2-2 | Screws clear the keep-out: screw pitch radius minus nut flange radius minus `icd.keepout_radius` at least 10 mm (K7 G) | Fixture from the spec | Screw pitch radius equal to the keep-out radius | keep-out DERIVED; 10 mm ASSUMED |
+| S2-3 | Pinion mesh: each pinion pitch point at the gear pitch radius within 0.05 mm | Fixture from the spec | Pinion placed on the gear OD | overlay `gear.*` ASSUMED |
+| S2-4 | Nominal coaxiality: drill, collet, ring and gear centres coincide within 0.05 mm (the 1.0 mm R13 budget is a build tolerance, outside sketch scope) | Fixture from the spec | Collet axis drawn 2 mm off | R13 ASSUMED [CP §14] |
+| S2-5 | Operator sector (apex on the axis, half-angle and radius in the spec, set by The Designer) free of screws, motors and frame members (K7 F) | Fixture with a 90 deg sector between two screws | Sector widened to 130 deg, wider than the gap between two screws at 120 deg | sector ASSUMED |
+
+Reported: outline extents against the current 644 x 608 footprint (open, not asserted).
+Cross-review: The Loftsman (azimuths, radii), The Topologist (handedness: +X along slot line C, theta counter-clockwise from +X seen from +Z per ASSEMBLY.md; K8 B3).
+Gate: M1, then M2.
 
 **Detail 1.3. S3, redefined: side section through one jack screw.**
 The critical-path 7.3 definition ("S1 drawn once for option A and once for option B") is void: the lift is decided. Redefinition for Sean to confirm (Design Notes 4).
 Question: how is each screw anchored, guided, driven and synced, and does the 1000 N axial load put it in tension?
-Shows: bottom anchor with thrust bearing, screw (rectangle, 8 mm nominal), brass nut fixed to the ring, top guide (radial support only), NEMA 17 mount and coupling, sync method (belt loop drawn, or one controller noted), load arrows: cutting reaction up through ring, nut and screw below the nut to the anchor (tension); ring weight down (compression); frame member that carries the anchor and the guide.
+Shows: bottom anchor with thrust bearing, screw (rectangle, 8 mm nominal), brass nut fixed to the ring, top guide (radial support only), NEMA 17 mount and coupling, sync method (belt loop drawn, or one controller noted), load arrows per load case, frame member that carries the anchor and the guide.
 Closes: R14 (path), Q7 detail, Q8 (powered feed), DN23 sync and anchoring items; TR10/TR12 fallback check.
-Params keys: `loads.axial_design`, `upper.travel_max`, `profile.*`; overlay `jackscrew.*`, `liftmotor.*`, `ring.*`, `frame_upper.*`.
+Params keys: `loads.axial_design`, `upper.travel_max`, `core.length_capture`, `profile.*`; overlay `jackscrew.*`, `liftmotor.*`, `ring.*`, `gear.*`, `pinion.*`, `drill.mass`, `frame_upper.*`.
 Script: `research/sean/cr_scratch/sketches/s3_jackscrew_section.py`. PNG: `research/sean/cr_scratch/s3_jackscrew_section_r1.png`.
-Sketch-specific checks: screw length equals travel + nut length + anchor and guide allowances and falls in 800 to 900 mm (or the sketch states the change); force per screw = axial load / 3 with a stated share assumption; the segment between nut and anchor is in tension in the cut case at every nut position; Euler buckling of the compression segment under ring weight with the end condition stated, and the 1000 N compression case reported as the fallback trigger. **[SE: controls; source tags for the buckling formula inputs.]**
-Cross-review: The Loftsman (lengths, buckling arithmetic), The Topologist (anchor below nut in every pose).
-Gate: visual gate (image-capable), then Sean.
+Load cases (spec table; per-screw force = case load / 3, equal share ASSUMED; the two-screw share, load / 2, is reported):
+- Cut: 1000 N up on the ring (`loads.axial_design`, ASSUMED design choice).
+- Static: W down, W = ring + drill + gear + three NEMA 23 + nuts (overlay masses, ASSUMED until Q2 and DN23-d are answered).
+- Capture lift: W + the 0.5 m core, 10.4 kg (Quinn's Source Verification Register: DERIVED, density ASSUMED).
+- Retract with bind: W + F_bind (ASSUMED; Sean owns the value at Step 2).
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S3-1 | Sign: the screw segment from nut to anchor is in tension in the cut case at every nut position from the S1 poses | Spec as drawn (bottom anchor) | Anchor moved to the top guide (screw hung from the top) | [DN23] |
+| S3-2 | Buckling of the nut-to-anchor segment at its longest (nut at park), worst compression case per screw: P_cr = pi² E I / (K L)², I = pi d_r⁴ / 64. Pass: P_cr / F at least SF. Inputs stated in the spec: d_r (T8 root diameter, ASSUMED until vendor data, Sean), E (ASSUMED), K (1.0 with nut and anchor both held laterally; 2.0 if the nut is free laterally), SF (ASSUMED 3, Sean confirms) | 100 mm segment under W | 1000 N compression on an 850 mm T8, which [DN23] states would buckle | [DN23]; inputs ASSUMED |
+
+A failure of S3-2 is a finding for the Step 2 screw-size row (TR10 or TR12, or a compression-free mounting), not a redraw by itself.
+Reported: screw length L = travel + nut length + anchor allowance + guide allowance + ring nut-housing height, against the 800 to 900 mm estimate in [DN23] (outside the range goes to Sean with the sketch); critical speed at the stated rapid traverse (ASSUMED) with the end-condition factor stated; P_cr margin for every compression case.
+Sync: the spec states the method. A belt is checked by K7 (belt path against keep-out and frame) and K9 (pulleys at all three screws); one controller is a K9 callout.
+Cross-review: The Loftsman (lengths, buckling arithmetic, hand re-computation of P_cr), The Topologist (anchor below nut in every pose, K8).
+Gate: M1, then M2.
 
 **Detail 1.4. S4, side section through the base.**
 Question: how does the core move up through the collet (push-pop), and does the kept collet family cover a 100 mm tall core?
 Shows: collet, holder, wing nut, receiver, PTFE washer, core stop, and the advance path for the core (the current receiver has a floor and the core stands on the collet core stop, so nothing moves the core up today); taller collet option; sacrificial collet or liner option; 100 x 100 mm core.
 Closes: R10, R11, R12; Q4, Q5, Q6, Q10.
-Params keys: `collet.*`, `holder.*`, `receiver.*`, `nut.*`, `washer.*`, `seat.*`, `core.diameters`, `core.length_*`, `icd.floor_above_datum_a`.
+Params keys: `collet.*`, `holder.*`, `receiver.*`, `nut.*`, `washer.*`, `seat.*`, `collar.*`, `witness.zone_high`, `core.diameters`, `core.length_*`, `icd.floor_above_datum_a`.
 Script: `research/sean/cr_scratch/sketches/s4_base_section.py`. PNG: `research/sean/cr_scratch/s4_base_section_r1.png`.
-Sketch-specific checks: the base parts plotted from params agree with the Step 7 built heights (`stop.collar_top_z` 159.84 recomputed) within 0.5 mm; the advance path clears the receiver floor or the sketch shows the floor change it needs (K7). **[SE: controls.]**
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S4-1 | check_stack.py computes the collar top with the formula of test_P18_collar_top_recomputed_from_params (tests/test_params_bom.py 694-702) and gets `stop.collar_top_z` 159.84 within 0.01 mm; drawn heights follow through K6 | Live params | `holder.flange_thickness` dropped from the stack (151.84) | `stop.collar_top_z` DERIVED |
+| S4-2 | Advance path against the receiver floor (K7 F): the core's upward path from the core stop does not pass through receiver solid | Fixture with a floor opening | The current receiver as built (floor present) | [CP §9, Q4] |
+
+Reported: exposed length of a 100 mm tall core against `core.min_exposed` 143.12 (Q10); collet length options (Q5); sacrificial collet or liner (Q6).
 Cross-review: none required (no new placement computed); The Designer reviews the kept parts as drawn.
-Gate: visual gate (image-capable), then Sean.
+Gate: M1, then M2.
 
 **Detail 1.5. S6, side, ring-gear and pinion close-up (drawn before S5, Design Notes 5).**
 Question: where does the spin torque go, what carries the drill weight, and how does the iris drive sit with three pinions?
-Shows: drill tube with the ring gear mounted on it, three bevel pinions (two visible in projection, trapezoids in side view), NEMA 23 motors with optional gearbox, support ring with shaft bushings, the ring structure section, torque reaction path from motor mounts into the ring and from the ring into whatever stops it rotating (screws are lead screws and react torque only in bending; the sketch must show the anti-rotation member), drill weight path into the pinions. Plan inset of the gear and pinions (end view: circles allowed).
-Closes: R4, R5; Q3 detail; DN23 opens on ring gear size and source, gearbox ratio, drill rpm and torque target (as owner items if unanswered), iris drive with three pinions.
-Params keys: `drill.tube_od`, `drill.r_face`, `icd.keepout_radius`, `icd.torque_reaction`; overlay `gear.*`, `pinion.*`, `ring.*`, `drill.length`.
+Shows: drill tube with the ring gear mounted on it, three bevel pinions (two visible in projection, trapezoids in side view), NEMA 23 motors with optional gearbox, support ring with shaft bushings, the ring structure section, torque reaction path from motor mounts into the ring and from the ring into whatever stops it rotating (the screws react torque only in bending; the sketch must show the anti-rotation member), drill weight path into the pinions. Plan inset of the gear and pinions (end view: circles allowed). A callout "iris drive: open, owner Quinn" (DN23-e).
+Closes: R4, R5; Q3 detail; DN23 opens on ring gear size and source, gearbox ratio, drill rpm and torque target (as owner items if unanswered), iris drive with three pinions (as owner item).
+Params keys: `drill.tube_od`, `drill.r_face`, `icd.keepout_radius`, `icd.torque_reaction`; overlay `gear.*`, `pinion.*`, `ring.*`, `drill.length`, `drill.mass`, `frame_upper.*`.
 Script: `research/sean/cr_scratch/sketches/s6_ring_gear.py`. PNG: `research/sean/cr_scratch/s6_ring_gear_r1.png`.
-Sketch-specific checks: gear bore clears the drill tube OD by a stated fit; pinion pitch cones meet the gear pitch cone at one apex (bevel geometry); torque path drawn as a closed chain of members, each in the feature table; K5 with pinions as trapezoids in side view. **[SE: controls.]**
-Cross-review: The Loftsman (bevel cone apex, gear ratio arithmetic), The Topologist (pinion side and spin sense).
-Gate: visual gate (image-capable), then Sean.
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S6-1 | Gear bore fit: gear bore minus `drill.tube_od` inside the spec fit band | Fixture from the spec | Bore = tube OD - 1 mm | fit band ASSUMED |
+| S6-2 | Bevel geometry from the drawn trapezoid edges: gear and pinion pitch lines meet within 0.5 mm of the drill axis at the spec apex height; for a 90 deg shaft angle, tan(gear pitch angle) = gear teeth / pinion teeth within 0.5 percent | Fixture from the spec | Gear and pinion pitch angles swapped | overlay `gear.*`, `pinion.*` ASSUMED |
+| S6-3 | Torque chain closed: spec chain drill tube, gear, pinion, NEMA 23 mount, ring, anti-rotation member, frame, floor; each consecutive pair is class C in the spec and touching in the figure (K7 C) | Fixture from the spec | Anti-rotation member removed | Design Notes 11; `icd.torque_reaction` ASSUMED |
+| S6-4 | Weight chain closed: drill, gear, pinions (and support ring if drawn), ring, nuts, screws, anchors, frame; same method | Fixture from the spec | Support ring drawn 1 mm clear of the pinion shafts | [DN23] |
+
+Reported: gear ratio; drill torque per NEMA 23 torque and gearbox ratio (DN23-b, DN23-c open); reaction torque the anti-rotation member carries.
+The iris drive is untestable this week: the drivetrain that closes the iris (INSITU2 via [DN23]) has no defined path through three pinions. K9 requires the callout; Step 3 owns the question.
+Cross-review: The Loftsman (bevel apex, gear ratio arithmetic), The Topologist (pinion side and spin sense).
+Gate: M1, then M2.
 
 **Detail 1.6. S5, stock map.**
 Question: can the frame, screw supports and anti-rotation members be built from whole on-hand lengths?
@@ -193,51 +283,83 @@ Shows: each on-hand 30-6060 length (1540 x 4, 980 x 4, 952 x 1, 728 x 2, 644 x 2
 Closes: R16; the 1540 reservation in `bom_stock_allocation.md` (held for columns that no longer exist).
 Params keys: `stock.on_hand`, `frame.members`, `profile.*`; overlay `frame_upper.*`.
 Script: `research/sean/cr_scratch/sketches/s5_stock_map.py`. PNG: `research/sean/cr_scratch/s5_stock_map_r1.png`.
-Sketch-specific checks: per length, assigned pieces at most on-hand quantity (mirrors P3); every frame member in the overlay maps to a stock length or to the extra-cut table; leftovers summed. Known-bad: one 1540 assigned five times fires. **[SE: controls.]**
-Cross-review: none (no placement).
-Gate: visual gate (image-capable), then Sean.
+
+| ID | Check | Z | B | Source |
+|---|---|---|---|---|
+| S5-1 | Per stock length, assigned pieces at most the on-hand quantity | Base allocation only | One 1540 assigned five times | `stock.on_hand` DECLARED |
+| S5-2 | Every frame member in the accepted S1, S2, S3 and S6 specs maps to a stock length or to the extra-cut table | Fixture from the specs | One member unmapped | specs |
+| S5-3 | Each member's cut length at most its source length | Fixture from the specs | A 1000 mm member from a 980 | `stock.on_hand` DECLARED |
+
+Reported: leftovers per length; count of members that need a cut (R16 prefers whole lengths); 1540 use, which conflicts with test_P3_1540_unused and goes on the Step 4 list.
+K5 to K8 do not apply (a stock map has no projection, stack or sense). Cross-review: none (no placement).
+Gate: M1, then M2.
 
 **Detail 2. Lift detail decision record.**
-Objective: one table that decides sync (single controller or belt link), anchoring (bottom thrust bearing, top guide type), anti-rotation and torque reaction member, screw size (T8 if every operating case is tension, TR10 or TR12 if a compression case exists), lift motor count against the NEMA 17s on hand.
-Inputs: accepted S1, S2, S3, S6; Quinn DN23.
-Output: `research/sean/cr_scratch/step2_lift_decision.md` (table: item, options, choice, reason, sketch reference, owner if open). If a choice changes a frame member, S5 is re-run as a new revision and re-gated.
-TDD stage: checks before writing. **[SE: fill: e.g. every row cites an accepted sketch revision; every choice traces to a K-check result or a DECLARED source; a planted row with no sketch reference fires.]**
-Red-first: the checks run on an empty record and fail.
+Objective: one table that decides sync (single controller or belt link), anchoring (bottom thrust bearing, top guide type), anti-rotation and torque reaction member, screw size (T8 if every operating case passes S3-2, TR10 or TR12 otherwise), lift motor count against the NEMA 17s on hand, F_bind value.
+Inputs: accepted S1, S2, S3, S6 and their checks JSON; [DN23].
+Output: `research/sean/cr_scratch/step2_lift_decision.md` (table: item, options, choice, reason, sketch revision, check ID or source, owner if open). If a choice changes a frame member, S5 is re-run as a new revision and gated again (M1, M2).
+TDD stage: checklist and one scripted cross-check, both written before the record.
+Checklist (The Systems Engineer, manual): every row cites an accepted sketch revision listed in Design Notes 13; every reason names a check ID or a DECLARED source; every row has a choice, or an owner and a due step.
+Scripted cross-check `research/sean/cr_scratch/step2_check.py` (the record against the accepted sketch files, where slips between files happen):
+
+| ID | Check | Z | B |
+|---|---|---|---|
+| X2-1 | Screw-size row says T8 only if every compression case passes S3-2 in the accepted S3 checks JSON | Consistent fixture record | T8 row against a failing S3-2 margin |
+| X2-2 | Sync row matches the method in the accepted S3 spec | Consistent fixture | Record says belt, spec says one controller |
+| X2-3 | The anti-rotation member named in the record exists in the accepted S6 spec and in the S5 allocation | Consistent fixture | Member present in S6, absent from S5 |
+| X2-4 | Lift motor row: NEMA 17 count on hand at least 3, or the row states how the shortfall is met | Count 3 | Count 2 with no plan |
+
+Red-first: the script on an empty record fails all four.
 Visual gate: none (table), unless S5 is re-run.
 Human gate: Sean decides each row; Quinn consulted on motor counts.
 
 **Detail 3. Open-question sweep.**
 Objective: every Q1 to Q11 and every DN23 open item has an answer (with source and date) or an owner and a due point.
 Output: the Open Questions section of this gameplan updated, plus `research/sean/cr_scratch/step3_question_sweep.md` (the batch of questions sent to Quinn, his answers, and which sketch or record each closes).
-TDD stage: scripted check that each Q row in Open Questions has status ANSWERED (source, date) or OWNED (name, due step); zero control: a fully filled table passes; known-bad: one blank owner fires. **[SE: confirm.]**
-Red-first: run on the current Open Questions table, which has open rows, and record the failures.
+TDD stage: scripted check `research/sean/cr_scratch/step3_check.py`, Q3-1: each row of the Open Questions table has status ANSWERED (source, date) or OWNED (name, due step); an ANSWERED source must resolve to a file on disk and a section or line that exists there (Principle 7). Z: a fully filled fixture table passes. B1: one blank owner fires; B2: an ANSWERED row citing a section that does not exist fires.
+Red-first: run on the current Open Questions table, which has open rows; record the failures.
 Visual gate: none.
 Human gate: Sean confirms owners; Quinn answers Q2 and the drill items.
 
 **Detail 4. Params and test change list, then execution (Q11).**
-Objective: change the shared design files to match the accepted configuration through LLM-PLM 5.2 and 7.2: params first, re-run tests, record what retires. Nothing deleted unrecorded (critical-path 10, tdd_method Principle 6).
-4a. Change list (before any edit): every params key that changes, is added (promoted from the overlay) or becomes void; every test that opens or reads those keys or the retired structure (grep of tests/ and tests/probes/ for each key); disposition per test: KEEP, REWRITE (new criterion), RETIRE (reason, replacing test if any). Seed list for the audit, to be completed by grep:
-- Keys: `upper.park_z`, `upper.park_stroke`, `upper.park_lock`, `upper.manual_raise`, `upper.raise_fuse`, `hoist.anchor_member`, `column.spacing`, `stop.height_range`, `stop.start_z`, `stop.pad_xy` (column face 244), `icd.coaxiality_chain` (column foot 0.283, carriage guide 0.15), `icd.column_foot_moment`, `icd.tipover_statement`, `icd.mass_target`, `frame.members`, `bom_stock_allocation.md` 1540 reservation.
-- Tests: test_P10_working_stroke_per_core_class, test_P10_icd_frozen_keys_exist_with_source_and_status (frozen list names `upper.manual_raise`, `hoist.anchor_member`, `column.spacing`), test_P6c_working_stroke_per_core_class, test_P6d_park_clears_core_both_lengths, test_P18_start_z_and_park_arithmetic, test_P3_1540_unused, test_A1c, test_A1d, test_A1e, test_A3b column foot and carriage guide (green_at_12).
+Objective: change the shared design files to match the accepted configuration through LLM-PLM 5.2 and 7.2: params first, re-run tests, record what retires. Nothing deleted unrecorded ([CP §10], tdd_method Principle 6).
+4a. Change list (before any edit), file `research/sean/cr_scratch/step4_change_list.md`: every params key that changes, is added (promoted from the overlay) or becomes void; every test or probe that names those keys or the retired structure; disposition per test: KEEP, REWRITE (new criterion, LLM-PLM 7.2 change-order step 3), RETIRE (reason, replacing test or "none" with reason). Search terms: each key string, plus `column`, `hoist`, `carriage`, `park`, `strap`, `1540`, `manual_raise`, `raise_fuse`, over `tests/` and `tests/probes/`. Seed list from the current tests (grep 2026-11-24), to be completed by the audit:
+- Keys: `upper.park_z`, `upper.park_stroke`, `upper.park_lock`, `upper.manual_raise`, `upper.raise_fuse`, `upper.load_clearance`, `upper.metal_stop`, `hoist.anchor_member`, `column.spacing`, `strap.rating`, `strap.handle_radial`, `stop.height_range`, `stop.start_z`, `stop.pad_xy` (column face 244), `icd.coaxiality_chain` (column foot 0.283, carriage guide 0.15), `icd.column_foot_moment`, `icd.torque_reaction`, `icd.tipover_statement`, `icd.mass_target`, `icd.footprint_x`, `icd.footprint_y`, `frame.members`, the `bom_stock_allocation.md` 1540 reservation.
+- tests/test_params_bom.py: test_P10_working_stroke_per_core_class; test_P10_icd_frozen_keys_exist_with_source_and_status (ICD_FROZEN pins `upper.park_z`, `upper.manual_raise`, `upper.raise_fuse`, `hoist.anchor_member`, `column.spacing`, `strap.*`, `stop.start_z`, `stop.height_range`, `icd.coaxiality_chain` by value); test_P10_every_key_in_concept_icd_table_exists; test_P10_coaxiality_chain_sums_inside_budget; test_P10_stop_ownership_upper_assembly; test_P10_assembly_load_loop_ten_members; test_P6c_working_stroke_per_core_class; test_P6d_park_clears_core_both_lengths; test_P17_key_present[upper.load_clearance]; test_P18_changed_value rows `stop.height_range`, `stop.start_z`, `upper.park_z`, `upper.park_stroke` (values pinned); test_P18_start_z_and_park_arithmetic (park rule pinned); test_P3_1540_unused; test_P3_allocation_respects_stock; test_P5_frame_profile_bbox_and_length; test_P2_status_counts_match_register and test_P7_every_assumed_or_declared_listed (both move when keys are promoted); test_P7_keys_the_cad_tests_read_exist_or_are_declared_gaps (fails if a test still names a voided key).
+- tests/test_assembly.py: test_A1c_no_printed_solid_in_the_column_foot_path, test_A1d_column_to_base_plate_is_class_G_or_F, test_A1e_strap_handle_clears_the_parked_upper_assembly, test_A3b_built_fits_within_the_coaxiality_chain_column_foot_and_carriage_guide (green_at_12), test_P6b_frame_solids_644_by_608. tests/test_step7_fix_controls.py: the A3b and P6b control tests. tests/probes/probe_poses.py: `fit_column_foot`, `fit_carriage_guide`. tests/test_step6_parts.py: base `column_notch` feature.
 - ASSEMBLY.md: ICD row "travel 500 with start_z 684.84 / 815" (stale against params 650 and 834.84 / 965), load path bullets for descent, manual raise and column feet.
+- Cross-contributor dependency: test_P10_every_key_in_concept_icd_table_exists reads `research/quinn/cr_scratch/step2_system_concept.md`, which this gameplan may not edit. Its disposition (REWRITE to read a shared ICD source, or KEEP with the voided keys left in params as VOID) goes to Quinn in the Step 3 batch before 4b.
 4b. Sean approves the list.
-4c. Execution: edit `params.yaml` first, then ASSEMBLY.md, then tests (rewrite or retire with a retirement table in `research/sean/cr_scratch/step4_test_retirement.md`: test ID, old criterion, reason, replacement), then run pytest and record collected, pass, fail against the 672 / 620 / 52 baseline. Repository Sync rules apply; a conflict in a shared file stops the session.
-TDD stage: test audit (Principle 6) is the suite for this step. **[SE: fill the controls: a key in the change list with no test disposition fires; a retired test with no reason fires; planted deletion of a test file without a retirement row fires.]**
-Red-first: run pytest before any edit and record the baseline.
+4c. Execution: edit `params.yaml` first, then ASSEMBLY.md, then tests (rewrite or retire, with a retirement table in `research/sean/cr_scratch/step4_test_retirement.md`: test ID, old criterion, reason, replacement), then run pytest and record collected, pass, fail against the 4c baseline. Repository Sync rules apply; a conflict in a shared file stops the session.
+TDD stage: the test audit (Principle 6) is the suite for this step. Audit script `research/sean/cr_scratch/step4_audit.py`:
+
+| ID | Check | Z | B |
+|---|---|---|---|
+| A4-1 | Every changed or voided key: each test or probe file and function that names it (grep) has a disposition row | Fixture change list covering a fixture tests directory | A planted test naming `column.spacing` with no row |
+| A4-2 | Every RETIRE row has a reason and a replacement or "none" with reason | Complete fixture rows | Blank reason |
+| A4-3 | Test inventory: pytest node IDs collected before and after (`--collect-only -q`); every node ID that disappears has a RETIRE row | Identical inventories | A scratch copy of the tests with one function deleted and no row |
+| A4-4 | Every test red after the change and green before it is in the list as REWRITE or as expected red with a reason | Fixture before and after result files | One newly red test absent from the list |
+
+Red-first: run pytest before any edit and record collected, pass and fail (Quinn's header gives 672 / 620 / 52; the measured figure governs); run the audit on an empty change list, where A4-1 fires for every key in the seed list.
 Visual gate: none.
 Human gate: Sean at 4b and at the step close.
 
 **Detail 5. Week-close configuration record (prose for Quinn, A.6.2).**
-5.1 Test suite (tdd_method Prompt 1), sized to a short record (about 30 tests, tdd_method "On Test Count"), every fact test naming its source (critical-path section and timestamp, Quinn DN23, accepted sketch revision, or params key) and its status (DECLARED or ASSUMED). 5.2 Topic-sentence outline validated against the suite by a scripted coverage matrix. 5.3 Write. 5.4 Revise; Designer review of echo sites against the Echo Site Registry.
-Output: `research/sean/cr_scratch/step5_configuration_record.md`; the shared location is set at the gate (Design Notes 7).
-TDD stage: all four stages. **[SE: fill suite groups and the coverage-matrix check with controls.]**
+Output: `research/sean/cr_scratch/step5_configuration_record.md`; the shared location is set at the gate (Design Notes 7). Document Structure above holds the point, shape and limitation placement.
+5.1 Test suite (tdd_method Prompt 1), file `research/sean/cr_scratch/step5_suite.md`, about 30 tests (tdd_method "On Test Count"; a two-page record), one deliverable:
+- W, whole record (about 8): the point sentence on the first screen; first screen holds configuration, sketch links, decisions, change list and open items (LDR); every number agrees with the Echo Site Registry; every ASSUMED value is labelled at first use; no superseded option (Design Notes 2) appears as live; every internal code (S1, Q11, DN23, R14) is defined at first use; a reader holding only [DN23] and the record can find the sketch behind each decision; the ending names the next step.
+- S, per section (about 12): configuration (height stack per pose with margins, ring position, frame), lift decisions (one line per Step 2 row), change list (counts of keys and tests changed, retired, added, with the retirement table linked), open items (every OWNED row with owner and due step).
+- F, facts (about 10): one test per number or decision in the record, naming its source ([CP §n, mm:ss], [DN23], accepted sketch revision and check ID, or params key) and status (DECLARED, ASSUMED, DERIVED). Each source is checked against the file before the suite becomes the contract (A.10 item 2); a source not found is UNVERIFIED and goes to the orchestrator.
+5.2 Topic-sentence outline, file `research/sean/cr_scratch/step5_outline.md`, each paragraph tagged with the test IDs it serves. Coverage matrix script `research/sean/cr_scratch/step5_matrix.py`: every test maps to at least one paragraph, and every paragraph to at least one test (orphans are gaps, Principle 4). Z: complete fixture matrix passes. B1: one test unmapped fires; B2: one paragraph with no test fires. Red-first: the matrix on an empty outline fails.
+5.3 Write from the outline; run the suite on the draft.
+5.4 Revise (tdd_method Prompt 4). Number audit script (part of step5_matrix.py): every number in the record is extracted and matched to params, the overlay, an accepted checks JSON or the Echo Site Registry. Z: a clean fixture paragraph passes. B: a planted "travel 640 mm" fires. Link check: every sketch link resolves to an accepted PNG; B: a link to an r0 PNG fires. The suite is re-run after revision and stays green.
 Red-first: the suite runs on an empty record and fails.
-Visual gate: sketch links resolve to accepted PNGs (scripted).
+Visual gate: sketch links (scripted, above); the sketches themselves passed M1 at Step 1.
 Human gate: Sean, then pushed for Quinn.
 
-**Detail 6. Manager week close.** The Manager verifies Objectives 2 to 8 against outputs on disk, writes accumulator entries, and presents the configuration, the executed change list and the owner table at the gate.
+**Detail 6. Manager week close.** The Manager re-runs every scripted check on the accepted outputs (`check_sketch.py` for each accepted revision, `step2_check.py`, `step3_check.py`, `step4_audit.py`, the Step 5 suite and matrix), verifies Objectives 2 to 8 against outputs on disk, writes accumulator entries, and presents the configuration, the executed change list and the owner table at the gate. Any red result blocks the close.
 
-**Detail 7. Upper-assembly CAD.** Placeholder. Scoped at the week-close gate; it gets a work order and its own test suite before any geometry.
+**Detail 7. Upper-assembly CAD.** Placeholder. Scoped at the week-close gate; it gets a work order and its own test suite before any geometry (LLM-PLM 7.2), and the accepted specs seed its placement tests.
 
 ---
 
@@ -245,22 +367,23 @@ Human gate: Sean, then pushed for Quinn.
 
 | Step | Agent | Files / Excerpts |
 |------|-------|-----------------|
-| 1.0 | The Engineer | this gameplan (Objectives, detail 1.0, Design Notes), supplements/llm_plm_cad.md 7.4, 8.4 to 8.4.2, method/tdd_method.md (Principles 9, 10), params.yaml top-level key list |
-| 1.0 | The Software Engineer | detail 1.0, sketch_common.py, check_sketch.py, fixtures/, baseline_red.json, tdd_method.md |
-| 1.1 to 1.6 | The Designer (params review) | the sub-step's detail block, the params keys it lists (grep, not the whole file), proposed_params.yaml, llm_plm_cad.md 8.4 item a and b, Design Notes 1, 2, 13 (no scripts) |
-| 1.1 to 1.6 | The Engineer | the sub-step's detail block, the Designer's params review for that sketch, sketch_common.py, proposed_params.yaml, params.yaml keys listed, context/2026-11-24_cutjig_critical_path.md sections 7, 14, 15, Design Notes 13 (corrections so far), prior accepted sketch PNGs and checks JSON |
-| 1.1, 1.2, 1.3, 1.5 | The Loftsman, The Topologist | the sketch script, its checks JSON, the sketch spec, params and overlay keys it reads, ASSEMBLY.md Coordinate frame |
-| 1.1 to 1.6 | The Designer (visual gate, image-capable model) | the PNGs, the sketch spec, the rubric in detail 1, checks JSON, Design Notes 13 |
-| 2 | The Engineer | accepted S1, S2, S3, S6 PNGs and checks JSON, research/quinn/gameplan.md Design Note 23 (lines 774-780, read only), proposed_params.yaml, Design Notes 13 |
-| 2 | The Systems Engineer | step2_lift_decision.md, accepted sketches, Design Notes 1 to 4, critical-path section 15 |
-| 3 | The Engineer, The Manager | Open Questions section, critical-path section 9, research/quinn/gameplan.md Design Note 23 (read only), Step 2 record |
-| 4 | The Software Engineer | detail 4, tests/ file list, tests/test_params_bom.py, tests/test_assembly.py, proposed_params.yaml, step2_lift_decision.md, method/tdd_method.md Principle 6, llm_plm_cad.md 5.2, 7.2 |
-| 4 | The Engineer | approved change list, params.yaml, ASSEMBLY.md, proposed_params.yaml, tests named in the list, Repository Sync section |
-| 4 | The Systems Engineer | change list, ASSEMBLY.md (Load path, Interface control table), params.yaml `icd.*`, `upper.*`, `stop.*` |
-| 5.1, 5.2 | The Software Engineer | Document Structure, accepted sketches, step2_lift_decision.md, step4_test_retirement.md, Open Questions, tdd_method.md, operational_guide A.10 |
-| 5.2, 5.3 | The Engineer | suite, Document Structure, supplements/writing-guides/reporting-copy.md, accepted sketches, Step 2 to 4 outputs |
-| 5.4 | The Designer | record draft, suite, Echo Site Registry, accepted sketch PNGs |
-| 6 | The Manager | this gameplan, all Step 1 to 5 outputs, research/sean/accumulator.md (persona sections) |
+| 1.0 | The Engineer | this gameplan (Objectives, Steps, detail 1.0, detail 1 common, Design Notes 1 to 14), supplements/llm_plm_cad.md 7.4, 8.4 to 8.4.2, method/tdd_method.md (Principles 9, 10), params.yaml top-level key list, ASSEMBLY.md Coordinate frame, tests/test_params_bom.py lines 694-718 (collar-top and park formulas) |
+| 1.0 | The Software Engineer | detail 1.0, sketch_common.py, check_stack.py, check_sketch.py, fixtures/, stubs/, s1_spec.yaml, baseline_red.json, method/tdd_method.md |
+| 1.1 to 1.6 | The Designer (params review, spec sign-off) | the sub-step's detail block, detail 1 common, the params keys it lists (grep, not the whole file), proposed_params.yaml, the draft sN_spec.yaml, llm_plm_cad.md 8.4 items a and b, the K7 g_min seed list, Design Notes 1, 2, 13 (no scripts) |
+| 1.1 to 1.6 | The Engineer | the sub-step's detail block, detail 1 common, the signed sN_spec.yaml, the Designer's params review for that sketch, sketch_common.py, check_stack.py, proposed_params.yaml, params.yaml keys listed, context/2026-11-24_cutjig_critical_path.md sections 7, 14, 15, Design Notes 13 and 14, prior accepted sketch specs and checks JSON |
+| 1.1, 1.2, 1.3, 1.5 | The Loftsman, The Topologist | the sketch script, sN_spec.yaml, sN_checks_r<k>.json, params and overlay keys it reads, ASSEMBLY.md Coordinate frame, the sub-step's check table |
+| 1.1 to 1.6 | The Designer (M1 visual gate, image-capable model) | the PNGs, sN_spec.yaml, the M1 rubric (detail 1), sN_checks_r<k>.json, Design Notes 13; at 1.1 also the K8 Z and B1 fixture figures, unlabelled |
+| 2 | The Engineer | accepted S1, S2, S3, S6 PNGs, specs and checks JSON, S5 allocation, research/quinn/gameplan.md Design Note 23 (lines 774-780, read only), proposed_params.yaml, Design Notes 13, detail 2 |
+| 2 | The Systems Engineer | step2_lift_decision.md, step2_check.py output, the detail 2 checklist, accepted sketch specs and checks JSON, Design Notes 1 to 4 and 11, critical-path section 15 |
+| 3 | The Engineer, The Manager | Open Questions section, detail 3, step3_check.py, critical-path section 9, research/quinn/gameplan.md Design Note 23 (read only), Step 2 record, step4 cross-contributor item (detail 4a) |
+| 4 | The Software Engineer | detail 4, tests/ file list, tests/test_params_bom.py, tests/test_assembly.py, tests/test_step7_fix_controls.py, tests/probes/probe_poses.py, proposed_params.yaml, step2_lift_decision.md, accepted S1 park rule, method/tdd_method.md Principle 6, llm_plm_cad.md 5.2, 7.2 |
+| 4 | The Engineer | approved step4_change_list.md, params.yaml, ASSEMBLY.md, proposed_params.yaml, tests named in the list, step4_audit.py, Repository Sync section |
+| 4 | The Systems Engineer | step4_change_list.md, ASSEMBLY.md (Load path, Interface control table), params.yaml `icd.*`, `upper.*`, `stop.*` |
+| 5.1 | The Software Engineer, The Designer | Document Structure, detail 5, accepted sketches and checks JSON, step2_lift_decision.md, step4_test_retirement.md, Open Questions, Echo Site Registry, method/tdd_method.md, operational_guide A.10 |
+| 5.2 | The Engineer, The Software Engineer | step5_suite.md, Document Structure, step5_matrix.py |
+| 5.3 | The Engineer | step5_outline.md, step5_suite.md, supplements/writing-guides/reporting-copy.md, accepted sketches, Step 2 to 4 outputs |
+| 5.4 | The Designer | step5_configuration_record.md, step5_suite.md, Echo Site Registry, accepted sketch PNGs, step5_matrix.py output |
+| 6 | The Manager | this gameplan, all Step 1 to 5 outputs and check scripts, research/sean/accumulator.md (persona sections) |
 
 ---
 
@@ -305,6 +428,15 @@ Human gate: Sean, then pushed for Quinn.
 | ID | Date | Correction (Sean's words) | Fixed in |
 |---|---|---|---|
 | | | | |
+
+**14. Test-design decisions (The Software Engineer, Step 0).**
+- The sketch spec `sN_spec.yaml` is also the feature table every check reads. One file, so the spec and the checks cannot disagree; K9 checks the figure against the spec as an outline is checked against its suite.
+- K7 tests a side-view pair only when the depth bands overlap. Two outlines that overlap in XZ while separated in Y are no interference; with depth bands, a side-view hit plus the plan view behaves as a box interference check for the prismatic parts sketched this week.
+- K6 compares data coordinates at 0.05 mm, and its known-bad shift is 6.75 mm, the smallest term in the collar stack, so the control proves the check sees the smallest real term.
+- Values reported for a decision carry no threshold and no controls; soft keys (`jig.height_target`, core lengths beyond 0.5 m) are never asserted (K1 B2).
+- Where the live design is the defect (S1-2: park 959.84 below start 965; S4-2: receiver floor), the live params or part is the known-bad control.
+- A human correction that a signed predicate can express becomes a K8 predicate with a B fixture reproducing the error.
+- The M1 reviewer model is controlled once, at 1.1, with an unlabelled correct figure and a drill-tip-up figure; it must fail the second on V3.
 
 ---
 
