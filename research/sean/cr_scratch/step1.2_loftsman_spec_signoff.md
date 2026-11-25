@@ -169,3 +169,57 @@ S1 ids kept for the 43 shared rows, same place and z_rule expressions (footprint
 ```
 | Member tops **1225 z_A** (members a, b: 12 + frame_upper.member_length 1213; member c: 0 + frame_upper.member_length_rail 1225) = jackscrew.top_guide_z 1165 + profile.height 60 | overlay frame_upper.member_length, frame_upper.member_length_rail, jackscrew.top_guide_z | DERIVED (stack tie at 1.2 (c), Loftsman 1.2 (b) NOTE 2) |
 ```
+
+---
+
+## Re-check after fix pass
+
+Inputs: research/sean/cr_scratch/step1.2_engineer_spec_fixes.md; docs/sketches/s1_spec.yaml, s2_spec.yaml, check_stack.py (`plan_poly_pieces`, `evaluate_spec`), sketch_common.py (`plan_footprint`, `plan_contact_fn`, K8 plan_poly branch), fixtures/manifest.yaml (K7-B20, K7-B21, K8-B17); Design Notes 28 (option A).
+
+### Corrections to the brief
+
+1. **S1-5b: the Engineer is right and my sign-off was wrong.** Section 3 of my sign-off took the certified value as max(z gap, plan gap). The S1-5b rule certifies the side-view XZ distance (LF-1: max of depth-band gap and XZ distance; plan gap where both rows are placed). The XZ Euclidean distance is a valid lower bound on the 3D distance, and it exceeds both of its components. Hand values (DERIVED):
+   - housing|collar: dx = 210 - 76.20 = 133.80, dz = 284.84 - 159.84 = 125.00, XZ distance = sqrt(133.80² + 125.00²) = **183.105**.
+   - housing|wing-nut sweep: dx = 210 - 115 = 95.00; wing-nut top = collar top 159.84 - collar.top_above_plate 6.75 = 153.09 z_A, so dz = 131.75; XZ distance = sqrt(95.00² + 131.75²) = **162.43**.
+   - bearing|collar: the radii overlap in x (100 against 76.20), so the pair is pure z: 301.84 - 159.84 = **142.00**. It stays the least.
+   
+   S1-5b least 142.00, unchanged. My expected 125.00 to 133.80 is withdrawn, together with the conditional l.234 / N1 change.
+
+### Hand checks
+
+| Item | Hand (DERIVED) | Code (MEASURED) | Ruling |
+|---|---|---|---|
+| Tie a axis: u = unit((237.29, 137.00) - (230, 0)) | L 137.194, u (0.05314, 0.99859) | n/a | n/a |
+| `back` 30: start = rod - 30 u | (228.406, -29.958) | n/a | n/a |
+| `stop_at` K = member b near corner (u 244, v -30 at 30 deg) | (226.31, 96.02); station u · (K - rod) = 95.69; strip 125.69 x 60 | station 95.69 | agree |
+| Tie a corners (start ∓ n, end ∓ n; n = 30 (-u_y, u_x) = (-29.958, 1.594)) | (258.36, -31.55), (265.04, 93.96), (205.13, 97.15), (198.45, -28.36) | same to 0.01 | agree |
+| Tie a / member b contact | both square edges leave K forward in u (u · r̂ = 0.545, u · t̂ = 0.838), so the square lies at station ≥ 95.69 and touches the strip only at K: distance 0, overlap 0 | 0.000 / 0.000 | point contact, plan-contact passes |
+| Tie z: top_guide_z to + profile.height | 1165 to 1225 z_A = 1225 to 1285 z_S | 1225 to 1285 every pose (S1 and S2) | agree |
+| plan_poly depth band = plan y extent (S1 ties) | y from -31.55 to 97.15 (corner minimum and maximum) | depth [-31.55, 97.15] every pose | agree |
+| Housing a, S1 | x 210 to 250, y ±20, z_S 1119.84 / 994.84 / 344.84 / 1119.84 (bottom) | same | agree |
+| K7-B20 extra 4 (member a turned 45 deg): turned square y min = 137 - 42.43 sin 60 = 100.26; tie b y max 97.15 | bands 3.11 apart; tie b|frame_upper_a C fails at 4 poses; 8 + 4 = 12 | "bands 3.111 apart", planted 12 | agree; the manifest change is correct |
+| K7-B21 (strip to the member centre) | the strip runs into the square; overlap > 0.01 | overlap 1655.177, fires 4 | fires on its reason |
+| K8-B17 (tie drawn 10 wider) | outside plan_x by 10.00 | "(by 10.00)", fires 4 | fires on its reason |
+
+### Code rulings
+
+1. **`back` and `stop_at`** (`plan_poly_pieces`): s0 = -back and s1 = u · (stop_at - from), and both ends are re-based along u before `strip_corners`. The math is correct. A `to` equal to `from` raises. Without `back` or `stop_at` the original from-to strip is unchanged (s1 = L). Sound.
+2. **Depth band = plan y extent** (`evaluate_spec`): this applies only to a row with `plan_poly`, no `place` and no `depth`. The y projection of the convex pieces is the exact side-view depth band of the part the pieces bound, so the band is a containment bound. Its premise is the K8 branch. Sound.
+3. **`plan_footprint` for plan_poly**: one piece is the piece. Several pieces give their convex hull, which contains the union and so is valid for F and G relief only. `plan_contact_fn` admits only a one-piece plan_poly as placed, so a hull never certifies contact. Sound. Today only the S1 ties reach this branch (S1 base_plate and base_frame carry `depth` and no plan_poly).
+4. **K8 plan_poly branch**: for a row with no `place`, the drawn x extent (and y in plan) must lie inside plan_x (and plan_y), with TOL_Z. This is the containment premise of rulings 2 and 3, and K8-B17 is its B (red on the pre-fix code, per the Engineer). It is an extent test only, so a part drawn narrower passes, the same limit as projected_extent (TP r4 NOTE). Sound for the relief it supports.
+5. **Shared rows**: 47 ids are in both specs (MEASURED, my compare). `place`, `z_rule` and `plan_poly` are string-equal wherever both specs carry the field. Fields in S2 only: keepout `place`, base_plate and base_frame `plan_poly`. The X1 lint at (c) must include `plan_poly` and skip-and-list those three.
+
+### NOTES (new)
+
+1. The tie|member C is a point contact at K, with no bearing area. The tie's structural seat is the arm (C, plan overlap 146.37 with z contact at 1165, plan C rule at (c) item 4e). The member C is geometric only, and a 0.05 shift away from the member fails it. That is acceptable as the Designer's stand-in (Step 2 decides the tie).
+2. Engineer open item 4: S1 `fixed_g10` omits the ties, so in S1 the moving parts take undeclared F against the ties, and every pair passes. S2 carries the swept G 10. No change needed.
+
+### Verdict
+
+**SPEC SIGNED (Loftsman).** FIX 1 is closed (Design Notes 28, option A). S1-5b stays 142.00 (Correction 1). Open for 1.2 (c): the X1 lint (now with `plan_poly`), the plan C rule (4e), and NOTES 2 and 3 of the sign-off (member-top stack tie, K7 pair ids in the record).
+
+### Gameplan lines to change
+
+- Withdrawn: my conditional change to l.234 / N1 (S1-5b least 125.00 to 133.80). The Engineer's l.235 and l.713 texts (step1.2_engineer_spec_fixes.md, Gameplan lines to change) are arithmetically correct (183.11, 162.43, 142.00). Apply them as written.
+- My K-table X1 row, B cell and description. Old: `` `place` and `z_rule` expressions equal after whitespace normalisation `` New: `` `place`, `z_rule` and `plan_poly` expressions equal after whitespace normalisation `` and in the Z cell, old: `(43 compared, keepout skipped)` new: `(47 compared; keepout place, base_plate and base_frame plan_poly skipped)`.
+- My l.248 fragment. Old (as I proposed): `same place and z_rule expressions` New: `same place, z_rule and plan_poly expressions`. The row count in the same line changes from "43 shared rows" to "47 shared rows" (adds guide_bushing_a/_b, guide_tie_a/_b).

@@ -182,3 +182,49 @@ SPEC SIGNED (Designer) follows when FIX 1 to 4 are applied as written, with no o
    `| Guide rod top tie **30-6060, z_A 1165 to 1225** on the top-guide arm, rod top 1212 in the tie, end at the member's near corner (125.69 x 60) | overlay \`guide.top_support\`, \`jackscrew.top_guide_z\`, \`profile.*\`, \`frame_upper.radius\` | ASSUMED (Designer 1.2 (b) sign-off FIX 1; Step 2 decides) |`
 2. l.166 (detail 1 common (b)). Old: `and the figure note states the not-drawn parts` New: `and the figure note states the not-drawn parts (spec field \`figure_note\` on the figure entry, checked against \`not_drawn\` from S2 on)`
 3. Progress Log row 1.2 (append): `P3a Designer sign-off: FIX 4 (guide tie on the top-guide arm z 1165 to 1225 ending at the member corner; LM20UU bushing not_drawn; figure_note; motor_mount_placement text); part list 41 rows / 3 not_drawn / 1 missing.`
+
+---
+
+# Re-check after fix pass
+
+Read 2026-11-25: `research/sean/cr_scratch/step1.2_engineer_spec_fixes.md`, revised `docs/sketches/s2_spec.yaml` (guide_tie_a/_b, `plan_figure`, `not_drawn`, `part_list`, keepout S2-a group, rubric additions), `docs/sketches/s1_spec.yaml` (header l.8-18, `not_drawn` l.157, guide_lug_a/_b, guide_bushing_a/_b, guide_tie_a/_b), `docs/sketches/proposed_params.yaml` (`guide.top_support`, `ring.motor_mount_placement`); gameplan Design Notes 28 (Sean, option A on Loftsman FIX 1).
+
+**Verdict: SPEC SIGNED (Designer).**
+
+## Corrections to the brief
+
+1. **My FIX 1 neighbour line gave the tie|arm overlap as 492.21. The correct figure is 146.37 mm².** 492.21 was the Engineer's figure for the old strip, which ran to the member centre, and I carried it over without re-measuring. The amended strip, ending at corner K, overlaps the arm in a corner patch of **146.367 mm²** (DERIVED, my Sutherland-Hodgman clip of the tie rectangle against the arm strip r 181 to 244 x 60 at theta 30; Engineer MEASURED 146.367). Tie|member overlap is 0.000 (DERIVED).
+
+## FIX and NOTE closure
+
+| Item | Ruled | Found | Result |
+|---|---|---|---|
+| FIX 1 tie geometry | z 1165 to 1225; strip from rod centre - 30 u to the station of the member near corner K; 125.69 x 60 | z_rule `jackscrew.top_guide_z` to `+ profile.height`. Strip `back: profile.width / 2`. `stop_at` K = (R - w/2) r̂ - (w/2) t̂ for tie a at angle[0], and + (w/2) t̂ for tie b at angle[1], checked term by term against my definition. Corners match mine to 0.01 | CLOSED |
+| FIX 1 neighbours | rod N, arm C, member C; keys added | as ruled, both ties, both specs | CLOSED |
+| FIX 1 tie\|arm contact | tie bottom on the arm top, bolted | 146.37 mm² plan overlap with z contact at 1165 (tie bottom = arm top = `jackscrew.top_guide_z`). This is the intended C contact: the tie seats on the arm top where it crosses the arm's outer corner next to the member. The plan-C rule for z contact with plan overlap is (c) open item 4e | CLOSED. NOTE R1 |
+| FIX 1 clearances | as my table | Engineer MEASURED: guide block 44.556, NEMA 23 46.161, pinion 54.436, gear 73.343, keep-out 113.467 (mine 44.56, 46.16, 54.44, 73.35, 113.47) | CLOSED |
+| FIX 1 overlay text | `guide.top_support` | my text, source "Designer 1.2 (b) sign-off FIX 1" | CLOSED |
+| FIX 2 LM20UU bushing | not_drawn + part_list | present in S2 (`not_drawn`, `part_list`) and in S1 (`not_drawn`; housing shape strings name it as not drawn) | CLOSED |
+| FIX 3 figure note | `plan_figure.figure_note` | present; names wing nut, collet, holder, hold device, LM20UU bushing, pads at 30 and 270, which is every `not_drawn` part. The drawn-text check comes at (c) with Z and B | CLOSED (check open for (c)) |
+| FIX 4 phase echo | `ring.motor_mount_placement` | "pinion azimuths = screw azimuths + 60 deg (pinion.angle)" | CLOSED |
+| NOTE 1 ties in S2-a | keepout group | guide_tie_a/_b G 0, 113.47 | CLOSED |
+| NOTE 2 S1 r5 header | ties listed | header l.15-18 states the housings and ties are now S1 rows (option A) | CLOSED |
+| NOTE 3 rubric line 4 | "(visual only, V7)" | present | CLOSED |
+
+Part list after the fix pass: **41 rows / 4 not_drawn groups (6 `not_drawn` entries: wing nut, collet and holder split, hold device, LM20UU bushing, pads at 30 and 270) / 0 missing.**
+
+## S1 r5 rows added under option A (Design Notes 28), checked as design
+
+- **guide_bushing_a/_b:** `place` and `z_rule` are string-equal to S2. Projection is rectangle (axis-Z cylinder in a side view, V6). The shape names lug, rod and the not-drawn bushing, and each named part has a row or a not_drawn entry (process fix (b) holds for S1 r5). Neighbours: s1_5b_base, fixed_g10, rod N. lug|housing C on the lug rows. S1-5b least stays 142.00. The housing is least at 162.43 to the wing-nut sweep (MEASURED, Engineer). Reads as an LM20UU housing hanging under the lug. PASS.
+- **guide_tie_a/_b:** `z_rule` and `plan_poly` are string-equal to S2. Neighbours as S2: rod N, arm C, member C by plan-contact. The shape names arm, member and rod rows. PASS. In the side view the tie (x 198.45 to 265.04, z_S 1225 to 1285) lies inside member b's x extent (196.31 to 278.27) and in front of it (y -31.55 to 97.15 against 96.02 to 177.98). It draws as a dashed bar across the member top, flush with it. The r5 M1 gate should read it as the rod top tie and confirm the label or the dashing separates it from the member (NOTE R2).
+- **guide_lug_a/_b:** shape text now matches S2 (housing and rod rows named, r 250, 40 wide). PASS.
+- S1 `fixed_g10` does not list the ties (Engineer open item 4). In S1, moving parts against the ties are undeclared F and pass. The swept G 10 case is carried by S2. Accepted.
+
+## NOTES
+
+- **R1 (Step 2 tie row):** the stand-in seats on the arm over a 146.37 mm² corner patch and touches the member at one point, K. That is a stand-in, not a joint. The Step 2 tie (`guide.top_support`) needs a real seat: an angle bracket on the member face, or a tie run along the arm. Carry this to the Step 2 frame row with N2.
+- **R2 (S1 r5 M1):** tie and member overlap in the side view (above). This is a V7/V8 readability item at the r5 gate. No spec change.
+
+## Gameplan lines to change
+
+None new. Item 1 of the first section (Echo Site Registry tie row) stands. The Engineer's fix file carries the same row text, so apply it once.
