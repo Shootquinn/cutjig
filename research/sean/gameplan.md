@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.1 (Step 1.0 approved by Sean 2026-11-25, G1 to G7 accepted; Step 1.1 not opened)
+**Current step:** 1.1 (in progress: (b) spec sign-offs P3a/P3b; see latest Progress Log row)
 **lit_review:** no
 
 ---
