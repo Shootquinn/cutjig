@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.2 (Step 1.1 closed by Manager; awaiting Sean at the gate)
+**Current step:** 1.2 (Step 1.1 approved by Sean 2026-11-25; Step 1.2 not opened)
 **lit_review:** no
 
 ---
@@ -472,6 +472,7 @@ Human gate: Sean, then pushed for Quinn.
 | 1.1 | 2026-11-25 | S1 pose table confirmed by Sean 2026-11-25 (STOP S-1; Design Notes 23). (b) done: P2 spec revision, P3a Designer and P3b Loftsman sign-offs (both NOT SIGNED, 6 + 5 FIX), P2f fix pass (`step1.1_engineer_spec_fixes.md`; controls 84: Z 24/24, B 59/59, smoke 1/1), re-checks: both SIGNED. Section 4 gameplan edits applied. Next: (c) P4 Engineer red-first. |
 | 1.1 | 2026-11-25 | M2: S1 r4 accepted by Sean with F6 assigned to Step 2 and S2 (Design Notes 24). r2 from (e) findings, r3 from Designer M1 on r2, r4 from r3 re-checks (LF1.1-8 = TP1.1-12, TP1.1-11). Next: P10 move to docs/sketches/, P11 Manager close. |
 | 1.1 | 2026-11-25 | P10 done (76e7da6; `research/sean/cr_scratch/step1.1_engineer_move_notes.md`). Closed by Manager (`research/sean/cr_scratch/step1.1_manager_close.md`): READY FOR SEAN, E1 to E12 met. Manager re-run from `docs/sketches/`: controls Z 35/35, B 81/81, smoke 1/1 (146 s); `s1 --rev 4` 17/17 (12 s), checks JSON and mass report equal to the P10 record; `--stale` 0 records (no accepted flag), `--stale --include-unaccepted` 1 record, 0 differences. Manager edits: Current step, Steps rows 1 and 1.1, detail 1.0 paths and spec fields, K5 to K9 rows and control pointer (r2 to r4), g_min seed (collar), red-first and M1 paths, PNG rule, detail 1 common (b), (f), (h) process fixes, detail 1.1 paths, S1-4 and S1-5b rows, rubric (K9 pose set), detail 1.2 carried line, detail 1.3 L expression, script paths S2 to S5, Design Notes 1, 6, 7 (move record), 13 (S1-r1 to S1-r4), 20 (closure status), 22, 24, new 25 (items carried from 1.1, harness rulings H1 to H6), Echo Site Registry (L, stroke, park rule, core stop, ring and screw heights, highest point), Open Questions N1, Q9. Gate decisions in the close file section 3. |
+| 1.1 | 2026-11-25 | Approved by Sean at the gate: decisions 1 to 4 accepted as recommended (Design Notes 26). Next: Step 1.2 (S2). |
 
 ---
 
@@ -622,6 +623,12 @@ Status at the 1.1 close (Manager, 2026-11-25; evidence in `docs/sketches/s1_chec
 | TP1.1-9 | A zero-height Rectangle passes K5 as "rectangle"; optional K5 lint for zero-area patches on non-line rows | 1.3 (S3), with TP-7 | The Topologist proposes; The Engineer |
 | LF1.1-9 to -11 | As T2-b; S1 placement correct, shapes owned by Step 2 and S3 | Step 2; 1.3 (S3) | The Engineer; The Loftsman re-checks at S3 (e) |
 | N1 (SW NOTE 1) | S1-5b does not set the N1 lower bound on the signed values; ring_on_tube and the S1-4 anchor margin bind. S6 (bearing, gear) may move the ring | 1.5 (S6), step (i) | The Designer |
+
+**26. Step 1.1 gate rulings (Sean, 2026-11-25; all four accepted as recommended in `research/sean/cr_scratch/step1.1_manager_close.md`).**
+- 1: unaccepted revision outputs r0 to r<k> are written to `docs/sketches/wip/` (git-ignored); only the accepted revision is copied up at acceptance.
+- 2: the Engineer writes the 1 m park-rule text (Design Notes 23, stop 392.50 + c) into `docs/sketches/s1_spec.yaml` at 1.2 step 0 and the Loftsman checks it; no redraw while S1 stays 17/17 and `--stale` stays clean.
+- 3: the process fixes in detail 1 common (b) shape-text parts each carry a row or a `not_drawn` reason, (f) M1 runs in parallel with (e) on r1, (h) a new relief rule ships with its premise check (Z and B) before M1, are confirmed.
+- 4: the orchestrator applies each agent's "gameplan lines to change" at the next save point; the Manager close audits.
 
 ---
 
