@@ -2,14 +2,14 @@
 
 **Document(s) under work:** cut jig configuration: 2D sketch set (LLM-PLM section 8.4), then the upper assembly and any base redesign it requires
 **Operational guide:** method/operational_guide.md. Contributor: sean. Scratch: research/sean/cr_scratch/. Repository sync rules: section "Repository Sync" at the end of this file; they apply to every step.
-**Accumulator file:** none yet; research/sean/accumulator.md is created at Step 0 close
+**Accumulator file:** research/sean/accumulator.md
 **Other reference files:**
 - context/2026-11-24_cutjig_critical_path.md (read first: this week's goal, requirements, open questions, sketch set)
 - workorder.md, ASSEMBLY.md, params.yaml, bom_stock_allocation.md
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.1 (Step 1.0 closed by Manager; awaiting Sean at the gate)
+**Current step:** 1.1 (Step 1.0 approved by Sean 2026-11-25, G1 to G7 accepted; Step 1.1 not opened)
 **lit_review:** no
 
 ---
@@ -465,6 +465,7 @@ Human gate: Sean, then pushed for Quinn.
 | 0 | 2026-11-24 | Closed pending Sean approval. Manager close (`research/sean/cr_scratch/step0_manager_close.md`): READY FOR SEAN; acceptance list 9 of 9, Designer close checklist 12 of 12; header, Start here and Repository Sync byte-identical to commit 4bfad31 except Current step. Manager edits: Current step, Steps row 0, check Q3-0 (batch mode of step3_check.py, written at 1.0), Context Recipe 5.4 Engineer. Accumulator created (`research/sean/accumulator.md`). Gate brief: 13 decisions in the close file. |
 | 0 | 2026-11-24 | Approved by Sean at the gate: all 13 decisions accepted as recommended in `research/sean/cr_scratch/step0_manager_close.md` (lit_review no; S3 one-screw section plus three-screw inset; docs/sketches/; order S1, S2, S3, S4, S6, Step 2, S5; shared-file changes after Quinn's review; base carries cut reaction, to Quinn as N5; batch 1 at Step 1.0 open; prose week-close record; proposed-keys overlay; 2D matplotlib, Engineer draws, Designer gates; owners as listed; ASSUMED seeds owned by Sean; rulings T1 to T7 ratified). Next: Step 1.0. |
 | 1.0 | 2026-11-24 | Closed by Manager (`research/sean/cr_scratch/step1.0_manager_close.md`): READY FOR SEAN, D1 to D11 met. Batch 1 (17 rows, Q3-0 PASS) approved by Sean and pushed (903755f). Harness: Wave 1b (baf3dbc), Wave 2 SW 1 BLOCK 8 FIX 8 NOTE, LF 1 BLOCK 6 FIX 8 NOTE, TP 1 BLOCK 8 FIX 5 NOTE (24e45cd); Engineer revision closed all 3 BLOCK and 22 FIX (7860c63); Software Engineer SIGNED, Loftsman and Topologist PASS (6fb76bc). Manager re-run: controls Z 17/17, B 50/50, smoke 1/1; S1 stub 16/16 against baseline_red.json; Q3-0 4/4; `--stale` clean. Manager edits: Current step, Steps row 1.0, K6 row (Design Notes 17 wording), K7 swept wording (LF-17), K table control pointer (SW-19), detail 1 common (c) sketch-fixture run, carried-item lines in details 1.1, 1.2, 1.3, 4a, Design Notes 14 annotation, Design Notes 18/19 order, Design Notes 20, Open Questions N10, Echo Site Registry floor datum. Gate decisions in the close file section 3. |
+| 1.0 | 2026-11-25 | Approved by Sean at the gate: G1 to G7 accepted as recommended (Design Notes 21); header Accumulator line updated (G6). Next: Step 1.1 (S1). |
 
 ---
 
@@ -553,6 +554,15 @@ Human gate: Sean, then pushed for Quinn.
 | TP-7 | K3 to K9 iterate over declared inset Axes, with a B control | 1.3 (S3), before the stub run | The Engineer; The Topologist verifies |
 | LF-13 | test_P18 literal 8 for the nut plate | 4a | The Software Engineer |
 | LF-17, SW-19 | K7 swept wording; K table pointer to the manifest | done at close | The Manager |
+
+**21. Step 1.0 gate rulings G1 to G7 (Sean, 2026-11-25; all accepted as recommended in `research/sean/cr_scratch/step1.0_manager_close.md` section 3).**
+- G1: the park rule measures the core bottom from the core stop (42.5 z_A), the plane the core stands on.
+- G2: the start pose is reworded "top of the 650 mm travel". The 500 mm capture is cut from the 0.75 m install core, which completes with 72.73 mm to spare; from a 0.5 m core it falls 177.27 mm short. The Designer adds a capture-reach check from the drawn core top at 1.1 (b).
+- G3: lift stroke stays distinct from travel. The Designer sets ring position, anchor height and screw length at 1.1 (a); S1 reports screw length for each Q9 option.
+- G4: the core stop becomes overlay leaf `collet.core_stop_z` (42.5 z_A, ASSUMED), confirmed by the Designer at 1.1 (a) and placed on the 4a promotion list.
+- G5: the LF-1 change to the K7 depth-band rule (the Engineer's edit at the K table) is ratified.
+- G6: the header Accumulator line is updated to point to `research/sean/accumulator.md`.
+- G7: the -25 mm height margin (2025 mm against the 2000 mm soft target) takes no action until Quinn answers Q2.
 
 ---
 
