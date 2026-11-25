@@ -306,3 +306,52 @@ The signature is subject to FIX LF1.1-8 on frame_upper_a/_b, which is open to th
 RE-CHECK PASS. BLOCK 0, FIX 1 open (LF1.1-8), NOTE 3 new (LF1.1-9 to -11). Carried: LF1.1-4 to -7 and R2-1.
 
 Gameplan l.140 plan-contact text: add "both footprints contain their parts".
+
+## Re-check r4
+
+Inputs: step1.1_engineer_revision_r4.md, s1_spec.yaml frame_upper_a/_b `place`, fixtures/manifest.yaml K7-B20. HAND values are DERIVED; quoted values are MEASURED by the Engineer.
+
+### LF1.1-8: closed
+
+| Item | HAND | r4 |
+|---|---|---|
+| Footprint | r 300 -/+ 30 = 270 to 330, hw 30, radial, one face toward the axis | place r_in radius - width / 2, r_out radius + width / 2, hw width / 2, radial |
+| Drawn x, theta 150 | 330 cos 150 - 15 = -285.79 - 15 = -300.79; 270 cos 150 + 15 = -233.83 + 15 = -218.83; width 60 (cos 30 + sin 30) = 81.96 | -300.79 to -218.83 |
+| Depth band | 135 - 30 cos 30 = 109.02 to 165 + 25.98 = 190.98 | 109.02 to 190.98 |
+| arm\|member | arm r_out 270 = member inner face 270, shared 60 edge | plan-contact 0.000 / 0.000 |
+| K7-B20 (rot 45) | The corner is 30 sqrt 2 = 42.426 from the centre, at r 300 - 42.426 = 257.574, 12.426 into the arm face. The wedge between two 45 deg faces of depth h has area h^2 = 12.426^2 = 154.41 mm2. Its base 2h = 24.85 lies inside the arm width 60. Count: 2 arms x 4 poses = 8 | fires 8 x 154.416 mm2 |
+| ring\|frame_upper_a, capture_end | Plan: the ring disk r 210 against the inner face at r 270 gives 60.00 (59.94 with the circumscribed 128-gon r 210.06). Side: ring rim x -210 against member x -218.83 gives 8.83 < 10. The true clearance is at least max(60, 8.83) = 60 | plan-separated 59.944, side 8.827 |
+| guide_lug_a\|frame_upper_b (spot check) | Member inner corner (248.83, 109.02) against lug y <= 20: 89.02 >= 10 | K7 pass |
+
+The side-view drop from 19.81 (r3) to 8.83 is the true projected width of the square. The real clearance is the plan 60.
+
+### Proposed gameplan wording
+
+- **l.141** (projected_extent) is correct as written.
+- **l.144** (117 controls: Z 35, B 81, smoke 1; K8-B7 planted 3) is correct as written.
+- **l.140** has two amendments.
+  1. The clause "as a true section with no circumscribing circle for a non-round part" conflicts with signed footprints:
+     - The lift motor is a circumscribing circle r 21 sqrt 2 = 29.70 around a 42 square (FIX 4b, 1.1 (b)).
+     - Every round part is a circumscribed 128-gon.
+     - Containment is the condition for F and G relief, and a circumscribing footprint satisfies it conservatively.
+     - Only plan-contact needs more. A touch on a circumscribing boundary does not prove the part touches, so a C pair passes plan-contact only when both footprints are the part's true plan section. The 128-gon of a round part counts as true within the 0.01 mm2 area bound.
+
+     Replace that clause with: "every row's plan footprint contains its whole part (a circumscribing footprint is admitted for the F and G relief); plan-contact for a C pair requires both footprints to be the parts' true plan sections (a 128-gon for a round part)".
+  2. Tag the orientation as a design value: "(a 30-6060 member is a 60 x 60 square, one face toward the axis, ASSUMED, Designer M1 r2 F2)".
+
+  The rest of the l.140 text and its control list are correct.
+
+Live C plan-contact pairs against amendment 1:
+- arm|member: square against rectangle, true.
+- shaft|motor23: rectangles, true.
+- arm|block: the block is round r 21 by declaration (NOTE LF1.1-9), so its footprint is its declared section.
+
+None is a circumscribing footprint, so amendment 1 changes no result.
+
+### Member placement re-signature
+
+**SPEC PLACEMENT SIGNED (Loftsman, r4)** for frame_upper_a/_b: radial r 270 to 330, hw 30, face toward the axis. With this, the r3 placement signature holds without condition. The Designer re-signs the drawn width of 81.96.
+
+### Verdict r4
+
+RE-CHECK PASS. LF1.1-8 is closed. BLOCK 0, FIX 0 open. Wording note: the two l.140 amendments above. Carried NOTEs: LF1.1-4 to -7, LF1.1-9 to -11, R2-1.

@@ -271,3 +271,49 @@ Every new row is on the correct side of its mating face. The arm has no `inboard
 | TP1.1-1, -2, -3, -7 | remain closed (controls re-run above) |
 
 CROSS-REVIEW FAIL (TP1.1-11, TP1.1-12 FIX; 0 BLOCK). The plan-contact rule is sound under its premises. As implemented, it passes an interference drawn wider than the spec footprint, and an interference hidden by the inscribed frame_upper footprint.
+
+## Re-check r4
+
+Inputs: `step1.1_engineer_revision_r4.md`; `sketch_common.py` k8 projected_extent (1226-1239) and plan_footprint; `check_stack.radial_corners` and place_extents with `rot`; `s1_spec.yaml` frame_upper_a/_b `place`; the r4 figures from `s1_side_poses.build`. All values MEASURED 2026-11-25, in-process. No harness file was written. Probe: scratchpad `tp11_r4_probe.py`.
+
+**Controls (manifest, in-process, matched on reason and planted count):** K5 Z 2/2, B 6/6; K7 Z 11/11, B 20/20; K8 Z 5/5, B 16/16; K9 Z 2/2, B 5/5.
+- K8-Z5 is clean: 330 predicates.
+- K8-B15 fires 4x: "(by 20.00)".
+- K8-B16 fires 4x: "(by 15.00)".
+- K7-B20 fires 8x: "overlap 154.416 mm2".
+- K7-Z10 is clean, with states including plan-contact and plan-separated.
+
+**K8-B7, third issue.** The mini fixture mirrors motor23_a to +x. Its footprint is r 125 to 201 at theta 210, half-width 28.5:
+- Projected x [201 cos 210 - 28.5 x 0.5, 125 cos 210 + 14.25] = [-188.32, -94.00].
+- Drawn x [94.00, 188.32].
+- Excess: ex_hi - fx_hi = 188.32 + 94.00 = 282.32 (hand = code).
+
+The mirrored part lies wholly outside its footprint. projected_extent is an independent half-space test (drawn interval ⊆ footprint interval), so a third detection of the one planted defect is legitimate. Planted 3 is correct.
+
+**TP1.1-11 probes on r4:**
+- Arm +20 at each end: K8 fires 4x, by 20.00.
+- Shaft +15 at each end: K8 fires 4x, by 15.00.
+- Arm 10 short at the member end: K8 projected_x fires (-190.29 vs -195.29).
+
+Across all four poses, 148 placed-row instances were checked. Max excess is 0.00 and none is drawn narrower than its footprint (MEASURED). The invariant is now complete: the drawn extent is contained in the spec footprint projection, and K7 plan tests run on that footprint. A drawn interference therefore cannot hide behind plan-contact.
+
+**TP1.1-12 hand values, frame_upper_a (theta 150).** The footprint is radial, r 270 to 330, half-width 30, one face toward the axis.
+
+| Quantity | Hand | Code |
+|---|---|---|
+| Corner radii | sqrt(270² + 30²) = 271.66; sqrt(330² + 30²) = 331.36 | 271.66, 331.36 |
+| Drawn x | 330 cos 150 - 15 = -300.79; 270 cos 150 + 15 = -218.83 | [-300.788, -218.827] = place x |
+| Depth band | 150 ± 25.98 = [109.02, 190.98] | [109.02, 190.98] |
+| Arm\|member plan | | distance 0.0000, overlap 0.0000 |
+
+The arm end at r 270 lies on the member inner face, so the face contact is exact; the r3 128-gon artefact is gone. With `place.rot 45` set on the live spec, K7 fires 8x at 154.416 mm2. Hand: (270 - 257.57)² = 12.43² = 154.5; the corner is 300 - 30 sqrt 2 = 257.57. `radial_corners` rotates in the (radial, tangential) frame about the footprint centre and then maps by theta. It is correct.
+
+| ID | Status |
+|---|---|
+| TP1.1-11 | CLOSED. K8 projected_extent; K8-Z5, B15, B16; r3 probes fire. |
+| TP1.1-12 | CLOSED. Square member footprint, face toward the axis; `place.rot`; K7-B20; r3 corner probe fires as a spec mutation. |
+| NOTE (new) | projected_extent is containment, not equality. A part drawn narrower than its footprint passes; probe: member drawn 60 wide as in r3, all pass. That error is in the safe direction for interference, so only the M1 read sees it. The live r4 drawing is exact on every placed row. |
+| NOTE (r4 correction 3) | ring\|frame_upper passes on the plan gap 59.94 (hand 270 - 210 = 60). The side view reads 8.83 against g_min 10, because the oblique member's projection is wider than its plan distance. Correct under containment. |
+| TP1.1-1, -2, -3, -7 | remain closed |
+
+CROSS-REVIEW PASS (TP1.1-11, TP1.1-12 closed; plan-contact rule signed by the Topologist on its containment premise, now enforced by K8 projected_extent and the true member section)

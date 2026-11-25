@@ -83,3 +83,26 @@ All bracket and post values stay ASSUMED until Step 2 rules the bracket design.
 
 ---
 Footer (orchestrator): control scoring per key.json recorded at the r2 gate. Reviewer verdicts there: ctrl_a fails V3, ctrl_b passes V1 to V5.
+
+## r4 (re-sign, The Designer)
+
+Inputs: step1.1_engineer_revision_r4.md; s1_pose_{load,start,capture_end,park}_r4.png. Each PNG was opened with Read and returned image content. key.json was not opened.
+
+Change seen: frame_upper_a/_b are now drawn about 82 wide, x about -301 to -219 at theta 150 and mirrored at theta 30. The Engineer's value is 81.96 (MEASURED). This is the true projection of the 60 x 60 member at r 270 to 330.
+
+Readability of the r4 change:
+- The ring guide rods (theta 0 / 180) now draw inside the member outline. They still read as rods standing in front of the member.
+- The anchor and guide arms end on the member's inner face. The axial loop still reads.
+- The ring rim (x -210) sits 8.83 from the member edge in projection. In plan the gap is 60 (Engineer, Correction 3).
+
+Nothing else on the figures changed from r3.
+
+| Item | load | start | capture_end | park |
+|---|---|---|---|---|
+| V1 to V9 | PASS | PASS | PASS | PASS |
+| V10 | PASS | n/a | FAIL (F6, carried to Sean at M2) | n/a |
+| Rubric additions (4) | PASS | PASS | PASS | PASS |
+
+Re-sign: frame_upper `place` as a radial footprint, r 270 to 330, half-width 30, one face toward the axis. **Signed.** It matches the 30-6060 section at frame_upper.radius 300 (ASSUMED). `place.rot`, K8 projected_extent and the l.140 wording belong to the Loftsman and the Topologist.
+
+r4 verdict: all drawing items pass. The overall verdict is **FAIL on F6 alone, FAIL count 1**. It becomes PASS when Sean accepts the F6 assignment to Step 2 and S2 at M2.
