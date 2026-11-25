@@ -310,3 +310,56 @@ NOT SIGNED. FIX 1 to 5 open. Re-check on `step1.1_engineer_spec_fixes.md`: hand 
 Screw-length ruling: **L_min = lift stroke + anchor_allowance + guide_allowance + max(nut_length, ring.nut_housing_height) + 2 g_min** = 885.00 (stand-in), 1135.00 (plus 1 m); 885.84 / 1135.84 at the drawn anchor 265; buy 900 / 900 / 1140.
 
 The Loftsman, 2026-11-25.
+
+## Re-check after fix pass
+
+Read: research/sean/cr_scratch/step1.1_engineer_spec_fixes.md and the revised s1_spec.yaml, proposed_params.yaml, check_stack.py, checks_s1.py, sketch_common.py (k7), fixtures/builders.py and manifest.yaml.
+
+Runs (MEASURED, scratch, 2026-11-25):
+- check_stack.py exit 0, with park 959.84 and stroke 775.00.
+- New controls called directly on the builders.
+- Pair distances read off the S1-FULL live drawing (`builders.s1_live`).
+
+### Per finding
+
+| ID | Hand | Measured | State |
+|---|---|---|---|
+| FIX 1 collar row | collar 159.84 - 6.75 = 153.09 to 159.84 z_A (213.09 to 219.84 z_S). S1-5b: 301.84 - 159.84 = 142.00. drill_head\|collar 184.84 - 159.84 = 25.00 = g_stop | collar z_S 213.09 to 219.84. S1-5b Z: "77 pairs, least certified clearance 142.00". S1-5b-B1 fires "bearing\|collar ... gap - g_min -1.000". head\|collar 25.000. entry_plane {collar_top, collar, z_max, 0}; K6-Z3 clean | **closed** |
+| FIX 2 S1-4 and L | Band: 295 + 10 + 15 = 320 to 1135 - 10 - 15 = 1110. Margins: capture_end low 0.84, load and park high 14.16. L_min 775 + 30 + 30 + 30 + 20 = 885.00; 1 m 1135.00; at anchor 885.84 / 1135.84 | S1-4-Z "least margin 0.84". S1-4-B1 (guides 20 low: high 1115 - 10 - 15 = 1090; 1090 - 1095.84 = -5.84) fires 4, "high margin -5.84". check_stack L_min 885.0 / 885.0 / 1135.0, at anchor_z 885.84 / 885.84 / 1135.84. g_min read from spec neighbours (`screw_block_g_min`) | **closed** |
+| FIX 3 pose-restricted N | core_750\|drill_head: start 834.84 - 792.50 = 42.34; load 959.84 - 851.17 = 108.67 | k7 builds `declared` per pose (l.940-948). Live pair_measure: start 42.340 (area 0); load 108.670 (area 0); core\|drill_tube at start 148.709. K7 live 0 issues. K7-B12 fires "start/core_750\|drill_head undeclared (F) ... overlap 1766.000" | **closed** |
+| FIX 4a pinion footprint | see ruling below: 96.54 - 4.1665 x 0.31623 = 95.222 | place r_in 95.2224 | **closed** |
+| FIX 4b lift motor | 21 sqrt 2 = 29.698 | half_width 29.6985 | **closed** |
+| FIX 4c header | | `k7_tolerance` carries the plan-separated clause and the pose rule | **closed** (gameplan l.140 to the orchestrator) |
+| NOTE 1 | | K6-B6 fires "LF-16 entry_plane: term collar_top 159.84 z_A vs core_seat.z_max + offset 42.50 z_A, 117.34 apart" | **closed** |
+| NOTE 6 | | `screw_length` reads `g_min_screw_block`; no literal 10 | **closed** |
+| FIX 5 1 m start | 917.50 - 1042.50 = -125.00 | check_stack `start_minus_core_top` 1 m -125.00 (0.5 m +292.34, 0.75 m +42.34) | **open, Sean at STOP S-1** (orchestrator ruling) |
+
+### Pinion toe-tip ruling (95.22 against 95.29)
+
+95.22 is right. The FIX 4a text formula in section 8 was wrong.
+- The tooth tip sits one addendum m = 4.1667 from the toe pitch point, along the back cone.
+- The back cone is perpendicular to the pitch-cone element, which is inclined at delta = 18.435 deg to the pinion axis.
+- The tip's radial (drill-axis) displacement is therefore m sin delta = 1.318.
+- (OD - PD) / 2 = m cos delta = 3.953 is the addendum's projection perpendicular to the pinion axis. Multiplying that by sin delta gives m cos delta sin delta = 1.250, which has no geometric meaning here.
+- The spec expression `pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)` is m sin delta with m = 4.1665: 95.222.
+
+### Consequences of the Designer fixes, checked
+
+- **Descent pad** (stop_pad_r_in 200): nut_housing\|descent_stop 200 - 185 = 15.00 (MEASURED 14.993, 128-gon). NOTE 4 is closed by his value.
+- **Frame members on the plate top:**
+  - z_A 12 to 12 + 1213 = 1225, top 1285.00 z_S, unchanged.
+  - Rods 12 to 1212 against guide.length 1200.
+  - frame_upper\|base_frame is now undeclared F at 12.00.
+  - New NOTE R1: gameplan l.280 S3-3 lists the chain "... base plate, base frame, anchor frame member ...", which needs base_frame\|frame_upper C. The axial loop now runs frame member to plate (C) and plate to frame (C). The l.280 chain order goes to the orchestrator as "... receiver, base plate, anchor frame member ...", with the base frame as the plate's support. That is the Designer's F4 call. S3-3 does not run before 1.3.
+- **Pose-restricted declarations elsewhere:** the s1_5b_base G pairs, ring\|descent_stop C and drill_head\|collar G now take the undeclared-F test outside capture_end. K7 live is clean at 0 issues (MEASURED).
+
+### FIX 5 options for Sean (geometry only)
+
+- (a) Raise the 1 m stop to put the start at the core top: stop_1000 = core_stop + L + c - travel = 392.50 + c, start 1042.50 + c. Capture advance becomes 650 - c (>= 534.93 for c <= 115.07). Park 1209.84, stroke 1025.00 and L 1135.00 do not change.
+- (b) Keep stop 267.50 and lengthen travel for the 1 m class to 775.00 + c (beyond the DN23 650). Or (c) drop the 1 m class from the supported Q9 options, which leaves park, stroke and L at the stand-in values.
+
+### Verdict
+
+SPEC SIGNED (Loftsman), pending Sean at STOP S-1 on FIX 5. FIX 1 to 4, NOTE 1 and NOTE 6 are closed. NOTE R1 (gameplan l.280 chain) goes to the orchestrator.
+
+The Loftsman, 2026-11-25.

@@ -80,3 +80,45 @@ Expected effects after P2f, DERIVED and for the Engineer to confirm by run:
 ## Verdict
 
 FIX: 6 items, F1 to F6 in section 3. SPEC NOT SIGNED (Designer). A re-check after P2f covers F1 to F6 only. Every other part of the spec carries my signature as revised: shapes, pose table, rubric additions and ring_on_tube, R6 nests except E4, g_min, and S1-7.
+
+## Re-check after fix pass
+
+Sources: step1.1_engineer_spec_fixes.md, the revised s1_spec.yaml and proposed_params.yaml (read 2026-11-25). Values are MEASURED by the Engineer's S1-FULL run unless tagged DERIVED.
+
+| ID | Required (section 3) | Found | State |
+|---|---|---|---|
+| F1 | `ring.pinion_support` per E3; "pinion-shaft bushing blocks" removed from the ring shape | overlay l.36 carries the E3 text and source, ASSUMED. The ring shape string no longer names bushing blocks | closed |
+| F2 | motor_mount r_out `ring.od / 2`, ring.od in keys, shape text | both rows place r 142 to 210, half-width 28.5, ring.od in keys, shape as ruled. motor_mount\|pinion plan gap 2.000 | closed |
+| F3 | leaf `ring.guide_lug_half_width` 20; lugs read it | overlay l.40, ASSUMED. guide_lug_a/_b `half_width: ring.guide_lug_half_width`, key listed. Lug r 210 to 250 x 40 | closed |
+| F4 | no N on base_plate; members and rods on the plate top, C to base_plate; member_length 1213; shapes | base_plate neighbours: receiver C only. frame_upper_a/b z 12 to 1225, C to base_plate, member_length 1213 DERIVED, frame top 1285.00 z_S unchanged. Rods z 12 to 1212, C to base_plate. frame_upper\|base_frame undeclared F at 12.000. Control K7-B13 added | closed |
+| F5 | stop_pad_r_in 200, shape and sources | overlay 200 ASSUMED. Shape "r 200 to 215". nut_housing_a\|descent_stop 14.993 (true 15.00, DERIVED), ring\|descent_stop C 0.000, strip r 200 to 210 | closed |
+| F6 | rod shape text | both guide_member rows carry the F6 text | closed |
+
+Changes made for the Loftsman's findings, checked against my rulings:
+- **S1-4 now includes the G 10 to the screw blocks.** The least margin reads 0.84 at capture_end. This is the same geometry I set: nut-housing bottom 305.84 against anchor top 295 + 10 (DERIVED). The value changed because the gap moved inside the check, not because the geometry did. Accepted. The anchor has 0.84 of upward slack, so any later rise of anchor_z or the housing height lifts L.
+- **The collar row sets S1-5b to 142.00**, my hand value. Accepted. Its shape reads "from the wing-nut top (plate top)". The "(plate top)" gloss names collar.top_above_plate and will confuse a reader of the figure. Wording only: NOTE R2.
+- **Lift-motor footprint:** half-width 29.70, the circle round the 42 square, so the side view may draw the motor 59.4 wide. The shape string "square body 42 x 48" stays true for a square seen across its diagonal, and S3 sets the orientation. NOTE R1: at M1 the 59.4 width is the diagonal envelope, not a defect.
+- **Pose-restricted K7 declarations (Loftsman FIX 3):** the capture core now tests F against the drill at load (108.67) and start (42.34). This matches my pose table. Accepted.
+
+### FIX 5, design consequences for Sean (no ruling)
+
+Under option R the 1 m class starts with the tip at 917.50 against a core top at 1042.50 z_A. A drill cannot reach that start over an uncut core. If the 1 m class stays supported, the start must sit at or above core top + c, so stop_1000 >= 1042.50 + c - 650.
+
+Hand arithmetic at c = 25 (DERIVED):
+- Start 1067.50, stop 417.50.
+- Park stays max(1067.50, 159.84 + 1000) + 50 = 1209.84, governed by the entry plane. The lowest stop stays 184.84, so stroke 1025.00 and L 1135.00 / buy 1140 are unchanged.
+- At stop the core top is 625.00 above the tip, which clears the bore ceiling: 800 - 625 = 175 >= 25.
+
+The rule change touches no S1 hardware value: ring position, anchor and the 0.75 m figures are unchanged. The cost of the 1 m class is already in the report, and Sean should weigh these three items at S-1:
+1. **Height.** The top block at park is at 1209.84 + 800 + 150 = 2159.84 z_A, 2219.84 z_S: 219.84 over the 2000 soft target. It reopens G7, which option R closed.
+2. **Screw length.** L 1140 is outside the DN23 800-900 estimate, which reopens DN23-a/e.
+3. **Loading.** A 1 m core is about 20.8 kg (15.6 x 4/3). At entry its top is at 1219.84 z_S, and held 330 mm out it puts about 67 N m on the shoulder. The Step 2 loading aid then becomes a requirement.
+
+### NOTES (no action)
+
+- R1. Lift-motor side width is the 59.4 diagonal envelope (above).
+- R2. The collar shape gloss "(plate top)" should read "(collar.top_above_plate above the wing-nut top)" at the next spec touch. Wording only; no value changes.
+
+### Verdict after re-check
+
+F1 to F6 are closed and none is open. SPEC SIGNED (Designer), pending Sean's pose confirmation at STOP S-1 and his decision on FIX 5. The section 6 operator rows go to the orchestrator for G-edit.
