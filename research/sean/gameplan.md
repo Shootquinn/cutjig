@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.1 (in progress: (c) red-first, P4; S-1 confirmed 2026-11-25)
+**Current step:** 1.1 (in progress: S1 accepted at M2 2026-11-25; P10 move, then Manager close)
 **lit_review:** no
 
 ---
@@ -469,6 +469,7 @@ Human gate: Sean, then pushed for Quinn.
 | 1.0 | 2026-11-25 | Approved by Sean at the gate: G1 to G7 accepted as recommended (Design Notes 21); header Accumulator line updated (G6). Next: Step 1.1 (S1). |
 | 1.1 | 2026-11-25 | In progress; session paused. Done: Manager open (`research/sean/cr_scratch/step1.1_manager_open.md`); P1 Designer params review (`step1.1_designer_params_review.md`); Sean's (a) rulings, option R (Design Notes 22); P2 Engineer spec revision (`step1.1_engineer_spec_revision.md`; s1_spec.yaml status "revised, awaiting Designer and Loftsman signatures"; controls 76: Z 21/21, B 54/54, smoke 1/1; all poses pass S1-4). **Resume at P3a (Designer) and P3b (Loftsman) spec sign-offs in parallel**, per manager open sections P3a/P3b, with the P2 report's open items: Loftsman rules on the K7 plan-footprint bound and the screw-length expression (865 / 895 / 885 / 885.84), and on S1-5b reading the wing-nut top 148.75 against the Designer's 142.00; Designer rules on guide-lug width, motor-standoff footprint, base plate vs frame members/guide rods declared as nests (real 3D clash for S2), second guide rod row, and descent pad to nut housing at exactly 10.00. Then P2f if FIX, then STOP S-1 (Sean: pose table and lift values), then section 4 gameplan edits, then P4. |
 | 1.1 | 2026-11-25 | S1 pose table confirmed by Sean 2026-11-25 (STOP S-1; Design Notes 23). (b) done: P2 spec revision, P3a Designer and P3b Loftsman sign-offs (both NOT SIGNED, 6 + 5 FIX), P2f fix pass (`step1.1_engineer_spec_fixes.md`; controls 84: Z 24/24, B 59/59, smoke 1/1), re-checks: both SIGNED. Section 4 gameplan edits applied. Next: (c) P4 Engineer red-first. |
+| 1.1 | 2026-11-25 | M2: S1 r4 accepted by Sean with F6 assigned to Step 2 and S2 (Design Notes 24). r2 from (e) findings, r3 from Designer M1 on r2, r4 from r3 re-checks (LF1.1-8 = TP1.1-12, TP1.1-11). Next: P10 move to docs/sketches/, P11 Manager close. |
 
 ---
 
@@ -580,6 +581,8 @@ Human gate: Sean, then pushed for Quinn.
 - FIX 5 (1 m core class): keep the class and raise its stop. For the 1 m class, stop = 392.50 + c and start = 1042.50 + c z_A; capture = 650 − c; park 1209.84, stroke 1025 and L 1140 unchanged. The clearance c is owned by Sean; until set, it is reported as an expression. Cost of the class (Designer): highest point 2219.84 z_S (G7 reopens for the 1 m class only), L 1140 above the DN23 800-900 estimate, 20.8 kg core to load, so the loading aid is a requirement for that class. S1 draws the 0.75 m core only; the 1 m class is reported.
 - Frame members and guide rods stand on the base-plate top as contact pairs (Designer F4); member_length 1213; top height unchanged.
 - Accepted with the signed spec (ASSUMED): pinions ride on the NEMA 23 shafts with no separate bushing (no shaft rating on file; to Quinn via the next batch), stop_pad_r_in 200, ring.guide_lug_half_width 20, motor standoff out to the ring rim r 210. Tight spots reported: L 900 spare 15.00 of which 0.84 at the anchor; drill_head to collar exactly g_stop 25.000 at capture_end.
+
+**24. S1 accepted at M2 (Sean, 2026-11-25).** S1 revision 4 (`research/sean/cr_scratch/s1_pose_{load,start,capture_end,park}_r4.png`) passes Sean's correction pass with no corrections: orientation V1 to V5 confirmed, configuration accepted. F6 (the ring rim hides the end of the cut from a standing observer at capture_end) is accepted as assigned: Step 2 rules a sight window, camera or stop indicator; S2 draws the plan sightline. Gate state at acceptance: 17/17 S1 checks, 117 controls (Z 35, B 81, smoke 1), Loftsman and Topologist cross-reviews PASS (plan-contact rule signed with the K8 full-extent containment check), Designer M1 PASS on V1 to V9 and all rubric additions, V10 PASS at load and F6 accepted at capture_end; reviewer-model controls scored (ctrl_a FAIL V3, ctrl_b PASS, matching key.json).
 
 ---
 
