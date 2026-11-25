@@ -53,10 +53,16 @@ bearing:
 guide:
   type: {value: "round rod with linear bushing on the ring", unit: "", source: "N2; Sean picks at the S2 and S6 M2 passes", status: ASSUMED}
   count: {value: 2, unit: "", source: "no source", status: ASSUMED}
-  angle: {value: [0, 180], unit: deg, source: "between screws and pinions; no source; S2 places them", status: ASSUMED}
-  radius: {value: 230, unit: mm, source: "outside ring.od / 2 210 plus bushing; no source", status: ASSUMED}
+  angle: {value: [0, 180], unit: deg, source: "Designer 1.2 (a) section 4: S2 places the rods in the sectors centred 330 and 210; loading sector 90 clear; N2 option drawn, Sean picks at M2", status: ASSUMED}
+  radius: {value: 230, unit: mm, source: "outside ring.od / 2 210 plus bushing; confirmed Designer 1.2 (a) section 4", status: ASSUMED}
   rod_od: {value: 20, unit: mm, source: "no source", status: ASSUMED}
   length: {value: 1200, unit: mm, source: "no source; covers the lift stroke", status: ASSUMED}
+  bushing_type: {value: "LM20UU in a housing block under the lug", unit: "", source: "catalogue class; Designer 1.2 (a) section 4 (S2-d)", status: ASSUMED}
+  bushing_od: {value: 32, unit: mm, source: "LM20UU class; Designer 1.2 (a) section 9", status: ASSUMED}
+  bushing_length: {value: 42, unit: mm, source: "LM20UU class; Designer 1.2 (a) section 9", status: ASSUMED}
+  bushing_housing_od: {value: 40, unit: mm, source: "2 x ring.guide_lug_half_width 20; Designer 1.2 (a) section 9", status: DERIVED}
+  bushing_drop: {value: 30, unit: mm, source: "guide.bushing_length 42 - ring.thickness 12: housing hangs below the ring underside; Designer 1.2 (a) section 9", status: DERIVED}
+  top_support: {value: "tie from each rod top (z_A 1212) to the nearest screw frame member: rod at guide.angle[0] to the member at jackscrew.angle[0], rod at guide.angle[1] to the member at jackscrew.angle[1]; 30-6060 stand-in; Step 2 decides", unit: "", source: "Designer 1.2 (a) section 1 row 21", status: ASSUMED}
 
 gear:
   pitch_diameter: {value: 250, unit: mm, source: "bought bevel ring gear; no source; batch 1 DN23-d", status: ASSUMED}
@@ -72,7 +78,7 @@ gear:
 
 pinion:
   count: {value: 3, unit: "", source: "three pinions [DN23]", status: DECLARED}
-  angle: {value: [90, 210, 330], unit: deg, source: "120 deg spacing [DN23]; phase 60 deg from the screws ASSUMED, S2 states it", status: ASSUMED}
+  angle: {value: [90, 210, 330], unit: deg, source: "120 deg spacing [DN23]; phase 60 deg from the screws (pinion = screw + 60 mod 120), Designer 1.2 (a) section 4, Sean STOP S2-A (Design Notes 27, O1-B)", status: ASSUMED}
   tooth_count: {value: 20, unit: "", source: "no source", status: ASSUMED}
   pitch_angle: {value: 18.435, unit: deg, source: "90 - gear.pitch_angle 71.565", status: DERIVED}
   motor_class: {value: "NEMA 23", unit: "", source: "NEMA 23 on hand [DN23]", status: DECLARED}
@@ -114,7 +120,8 @@ liftmotor:
   holding_torque: {value: 0.45, unit: "N m", source: "no source", status: ASSUMED}
   body: {value: 42, unit: mm, source: "NEMA 17 frame square; no source", status: ASSUMED}
   length: {value: 48, unit: mm, source: "no source", status: ASSUMED}
-  position: {value: "below the bottom anchor, coupling up to the screw bottom (placeholder; S3 places it)", unit: "", source: "Designer 1.1 (a), R6: the ring sweep then passes no lift motor; S3 draws the option", status: ASSUMED}
+  position: {value: "coaxial under the anchor block at (jackscrew.pitch_radius, jackscrew.angle[k]), coupling up to the screw bottom", unit: "", source: "Designer 1.2 (a) section 4 (H4, replaces the 1.1 placeholder); S3 dimensions the mount", status: ASSUMED}
+  plan_rot: {value: 0, unit: deg, source: "Designer 1.2 (a) section 4: 42 square with faces radial and tangential about the screw azimuth; S3 confirms", status: ASSUMED}
   coupling_length: {value: 25, unit: mm, source: "Designer 1.1 (a); no source", status: ASSUMED}
 
 hold:
@@ -123,10 +130,24 @@ hold:
 frame_upper:
   member_profile: {value: "30-6060", unit: "", source: "params profile.series (DECLARED)", status: ASSUMED}
   members: {value: "one vertical member per jack screw, base frame to top guide; carries anchor and guide (S3-3 axial loop)", unit: "", source: "gameplan detail 1.3; no source", status: ASSUMED}
-  radius: {value: 300, unit: mm, source: "member centre radius, outside ring.od / 2 210 + 10 mm g_min + half profile; side-view depth-band box clearance; no source", status: ASSUMED}
-  member_length: {value: 1213, unit: mm, source: "Designer 1.1 (b) F4: jackscrew.top_guide_z 1165 + profile.height 60 - base.plate_thickness 12 (member foot on the plate top; top stays at 1225 z_A)", status: DERIVED}
+  radius: {value: 274, unit: mm, source: "Sean STOP S2-A, Design Notes 27 (option A, S2-c-1); Designer 1.2 (a) section 3: plate edge icd.footprint_y / 2 304 - profile.width / 2 30 (square member, one face toward the axis); member c centred on the rail centre line y -274 inside base.column_notch; bounds 250 (ring rim 210 + g_min 10 + 30) to 274; was 300 (S1 r4)", status: ASSUMED}
+  member_length: {value: 1213, unit: mm, source: "Designer 1.1 (b) F4: jackscrew.top_guide_z 1165 + profile.height 60 - base.plate_thickness 12 (member foot on the plate top; top stays at 1225 z_A); members a, b (theta 150, 30)", status: DERIVED}
+  member_length_rail: {value: 1225, unit: mm, source: "Sean STOP S2-A, Design Notes 27; Designer 1.2 (a) section 1 row 4: jackscrew.top_guide_z 1165 + profile.height 60; member c (theta 270) foot on the rail top (z_A 0) inside base.column_notch; top at 1225 z_A as members a, b", status: DERIVED}
+  foot: {value: "members a, b (theta 150, 30) on the plate top over the end members; member c (theta 270) on the rail top through base.column_notch, 5 clear of the notch each side and inboard", unit: "", source: "Designer 1.2 (a) section 1 row 4; Sean STOP S2-A, Design Notes 27", status: ASSUMED}
+  orientation: {value: "one 60 face toward the axis (square 30-6060 section, radial footprint, rot 0)", unit: "", source: "Designer M1 r2 F2; gameplan l.140; Designer 1.2 (a) section 1 row 5", status: ASSUMED}
+  stop_pad_count: {value: 1, unit: "", source: "Sean STOP S2-A, Design Notes 27: keep one descent-stop pad as drawn (at jackscrew.angle[1], on bracket arm bracket_anchor_a); the Designer's three-pad proposal (1.2 (a) Correction 6) declined", status: ASSUMED}
   stop_pad_r_in: {value: 200, unit: mm, source: "Designer 1.1 (b): 15 clear of the nut housing (r 185), 5 over G 10", status: ASSUMED}
   stop_pad_r_out: {value: 215, unit: mm, source: "Designer 1.1 (a), R6: ring.od / 2 210 + 5", status: ASSUMED}
+
+operator:
+  # S2 operator access (Designer 1.2 (a) sections 5, 6, 9; Sean STOP S2-A, Design Notes 27 O1-B). Not a params.yaml namespace.
+  sector_theta: {value: 90, unit: deg, source: "Designer 1.2 (a) section 5: the screw gap with no guide rod (+Y side, datum C rail); Sean STOP S2-A, Design Notes 27", status: ASSUMED}
+  sector_half_angle: {value: 45, unit: deg, source: "Designer 1.2 (a) section 5: 90 deg sector, 4.31 deg each side to the screw-azimuth parts; Sean STOP S2-A, Design Notes 27", status: ASSUMED}
+  sector_radius: {value: 400, unit: mm, source: "Designer 1.2 (a) section 5: stance radius, load and watch rows", status: ASSUMED}
+  hand_band: {value: [440, 940], unit: mm, source: "Designer 1.2 (a) section 5: z_A, 0.5 to 1.0 m z_S, load row; S2-5b premise", status: ASSUMED}
+  watch_r: {value: 400, unit: mm, source: "Designer 1.2 (a) section 6: watch row", status: ASSUMED}
+  watch_theta: {value: 60, unit: deg, source: "Designer 1.2 (a) section 6: between screw 30 and motor 90", status: ASSUMED}
+  eye_height: {value: 1540, unit: mm, source: "Designer 1.2 (a) section 6: z_A, 1.6 m z_S, standing adult", status: ASSUMED}
 
 collet:
   core_stop_z: {value: 42.5, unit: mm, source: "G4 (gameplan Design Notes 21), Designer 1.1 (a): z_A of the core-seat ledge top = receiver floor icd.floor_above_datum_a 40 (ASSEMBLY.md Coordinate frame) + collet.core_seat_height 2.5 (build_parts/collet_family.py dims()), collet foot ring on the receiver floor seat (ASSEMBLY.md Relations base|collet C; Load path); 4a promotion list", status: ASSUMED}

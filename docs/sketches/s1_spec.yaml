@@ -5,6 +5,13 @@ status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
 # bore_cone on holder (TP1.1-3), N -> C/F between section rows (TP1.1-3), gear face_rises (TP1.1-1), rubric line (TP1.1-2).
 # r4 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r4.md): frame_upper_a/_b plan footprint 60 x 60 square,
 # radial r 270 to 330 (LF1.1-8 = TP1.1-12); place field rot (deg, footprint turned about its centre) for controls.
+# r5 text edits (The Engineer, 1.2 (b), 2026-11-25, research/sean/cr_scratch/step1.2_engineer_spec.md): overlay
+# frame_upper.radius 300 -> 274 (Sean STOP S2-A, Design Notes 27, option A) opens S1 r5. No key, expression or class
+# changes here: the place expressions read the key. Text that quoted the old radius now reads r 244 (member inner face)
+# and r 244 to 304 (member square); bracket arms 63 long (were 89). The theta 270 screw set, third pinion and NEMA 23
+# are drawn in S2, not here (S2-f); member c stands on the rail top in base.column_notch (S2 frame_upper_c). The LM20UU
+# bushing housing under each guide lug (guide.bushing_*) is drawn in S2 (rows guide_bushing_a, _b) and not in S1 r5.
+# Shape text is not a comment or a source string: the Loftsman rules at P3b whether these shape edits stand.
 # r3 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r3.md, from sketches/s1_visual_gate_r2.md F1 to F5),
 # re-sign due (Designer; Loftsman for placement): rows bracket_anchor_a/_b, bracket_guide_a/_b (F2), descent_stop_post
 # (F3), motor_shaft_a/_b and pinion_axis_a/_b (F1), labels on anchor_b, guide_b, frame_upper_b, drill_head (tip z_edge),
@@ -896,7 +903,7 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
     z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
-    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 270 to 330, half-width 30
+    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 244 to 304 at frame_upper.radius 274 (r5; r 270 to 330 at r4), half-width 30
     place: {r_in: "frame_upper.radius - profile.width / 2", r_out: "frame_upper.radius + profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
@@ -912,7 +919,7 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
     z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
-    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 270 to 330, half-width 30
+    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 244 to 304 at frame_upper.radius 274 (r5; r 270 to 330 at r4), half-width 30
     place: {r_in: "frame_upper.radius - profile.width / 2", r_out: "frame_upper.radius + profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
     label: {text: "screw frame 30-6060 r", key: frame_upper.radius, fmt: ".0f"}   # r3 F4
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
@@ -937,72 +944,72 @@ features:
 
   - id: bracket_anchor_a
     name: anchor bracket arm
-    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 244), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
     kind: prism
     axis: null
     projection: rectangle
     keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 244 (r5; 270 at r4)
     place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours:
       - {id: anchor_a, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
-      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 244 (side view: plan-contact); axial loop to the plate"}
     sense: [{pred: below, of: nut_a}, {pred: outboard, of: anchor_a}]
     chain: [axial]
     moves: false
 
   - id: bracket_guide_a
     name: top-guide bracket arm
-    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 244), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
     kind: prism
     axis: null
     projection: rectangle
     keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.top_guide_z, jackscrew.guide_allowance]
     z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
-    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 244 (r5; 270 at r4)
     place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours:
       - {id: guide_a, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
-      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 244 (side view: plan-contact); axial loop to the plate"}
     sense: [{pred: above, of: nut_a}, {pred: outboard, of: guide_a}]
     chain: [axial]
     moves: false
 
   - id: bracket_anchor_b
     name: anchor bracket arm
-    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 244), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
     kind: prism
     axis: null
     projection: rectangle
     keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 244 (r5; 270 at r4)
     place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours:
       - {id: anchor_b, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
-      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 244 (side view: plan-contact); axial loop to the plate"}
     sense: [{pred: below, of: nut_b}, {pred: outboard, of: anchor_b}]
     chain: [axial]
     moves: false
 
   - id: bracket_guide_b
     name: top-guide bracket arm
-    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 244), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
     kind: prism
     axis: null
     projection: rectangle
     keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.top_guide_z, jackscrew.guide_allowance]
     z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
-    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 244 (r5; 270 at r4)
     place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours:
       - {id: guide_b, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
-      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 244 (side view: plan-contact); axial loop to the plate"}
     sense: [{pred: above, of: nut_b}, {pred: outboard, of: guide_b}]
     chain: [axial]
     moves: false

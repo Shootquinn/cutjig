@@ -466,6 +466,43 @@ def place_extents(r_in, r_out, theta, w, footprint, rot=0):
     return x, y, (r_in + r_out) / 2
 
 
+def strip_corners(a, b, w):
+    """Plan corners of a strip of half-width w from point a to point b (S2 guide ties: rod top to frame member)."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    L = math.hypot(dx, dy)
+    if L < EPS:
+        raise ValueError("plan strip of zero length")
+    nx, ny = -dy / L * w, dx / L * w
+    return [(a[0] - nx, a[1] - ny), (b[0] - nx, b[1] - ny), (b[0] + nx, b[1] + ny), (a[0] + nx, a[1] + ny)]
+
+
+def plan_poly_pieces(row, P, names):
+    """Spec field plan_poly (1.2 (b), plan rows with no radial or round footprint: base plate less the column notches,
+    base frame members, plate holes, slot lines, guide ties). A list of convex pieces; each piece is a list of [x, y]
+    expression pairs (two points: a segment) or {strip: {from: [x, y], to: [x, y], half_width: e}}. Returns the pieces
+    as lists of (x, y) in plan, mm."""
+    out = []
+    for pc in row.get("plan_poly") or []:
+        if isinstance(pc, dict) and "strip" in pc:
+            st = pc["strip"]
+            a = tuple(eval_expr(e, P, names) for e in st["from"])
+            b = tuple(eval_expr(e, P, names) for e in st["to"])
+            out.append(strip_corners(a, b, eval_expr(st["half_width"], P, names)))
+        else:
+            out.append([tuple(eval_expr(e, P, names) for e in pt) for pt in pc])
+    return out
+
+
+def sector_record(sec, P, names):
+    """Spec field sector (S2 operator sector): apex on the axis, theta and half_angle in deg, radius r. Returns the
+    values and the plan x, y extents of the wedge."""
+    th, ha, r = (eval_expr(sec[k], P, names) for k in ("theta", "half_angle", "r"))
+    angs = [th - ha, th + ha] + [a for a in range(-720, 721, 90) if th - ha < a < th + ha]
+    pts = [(0.0, 0.0)] + [(r * cosd(a), r * sind(a)) for a in angs]
+    return {"theta": th, "half_angle": ha, "r": r, "x": [min(p[0] for p in pts), max(p[0] for p in pts)],
+            "y": [min(p[1] for p in pts), max(p[1] for p in pts)]}
+
+
 def evaluate_spec(P, spec):
     """Per pose: tip, stack names (z_A), and per feature z_min/z_max in z_S, the placement and the depth band.
     depth: the spec band when given, hulled with the placed projection when the row also has `place`; else the placed
@@ -499,6 +536,13 @@ def evaluate_spec(P, spec):
                 rec["place"] = {"r_c": rc, "theta": th, "x": x, "y": y, "r_in": r_in, "r_out": r_out, "half_width": w,
                                 "footprint": pl.get("footprint", "round"), "rot": rot}
                 rec["depth_true"] = y
+            if row.get("plan_poly"):
+                pcs = plan_poly_pieces(row, P, names)
+                rec["plan_pieces"] = pcs
+                rec["plan_x"] = [min(p[0] for pc in pcs for p in pc), max(p[0] for pc in pcs for p in pc)]
+                rec["plan_y"] = [min(p[1] for pc in pcs for p in pc), max(p[1] for pc in pcs for p in pc)]
+            if row.get("sector"):
+                rec["sector"] = sector_record(row["sector"], P, names)
             if row.get("depth") is not None:
                 rec["depth"] = sorted(eval_expr(d, P, names) for d in row["depth"])
                 if pl:
