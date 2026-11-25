@@ -217,3 +217,92 @@ Re-check NOTE R2-1: the five C contacts are idealised zero-clearance fits (regis
 ### Verdict r2
 
 RE-CHECK PASS. LF1.1-1, LF1.1-2 and LF1.1-3 are closed. BLOCK 0, FIX 0 open, NOTE 4 carried plus R2-1.
+
+## Re-check r3
+
+Inputs: step1.1_engineer_revision_r3.md, s1_spec.yaml (r3 rows), sketch_common.py (`assess_pair` plan-contact branch, `plan_contact_fn`), s1_checks_r3.json. Plan footprints were re-evaluated in scratch from check_stack placements. That evaluation is MEASURED and writes no file. HAND values are DERIVED.
+
+### Plan-contact rule: ruling
+
+The code (sketch_common.py l.516-523, l.577-586) behaves as follows:
+- The relief runs only when the class is C, the side-view state is "overlap", and both rows carry `place`.
+- It passes when the plan distance is <= 0.05 and the plan overlap is <= 0.01 mm2.
+- G and F do not reach it; they keep the plan-separated relief. C pairs are not swept.
+
+1. **Soundness.** It holds when each plan footprint contains its part's plan projection at every z. The footprint is z-independent, so the part lies inside footprint x [z_min, z_max]. Two such cylinders with interior-disjoint footprints cannot interpenetrate, whatever the part's shape. A side-view overlap proves that the z ranges overlap, so the touching footprints mean contact on a vertical face. The premise is containment. Wherever containment holds, the rule cannot hide a 3D interference.
+2. **Tolerance.**
+   - Circle against line (arm on block, r 21): overlap area A ~ (4/3) sqrt(2 r d) d. A = 0.01 at d = 0.011 mm.
+   - Line against line with face length L: d = 0.01 / L. For the arm on a 60 face that is 0.00017 mm.
+   - The largest interference the area bound can hide is 0.011, below TOL_C 0.05.
+   - Live overlaps are 0.0014 (arm|block) and 0.003 (arm|member). These are circumscribed 128-gon artefacts: the polygon is r / cos(pi/128) = 1.0003 r and conservative.
+3. **Class scope.** C only, which is correct. Extending it to G would pass a zero gap. F already passes touching in side views (LF-9) and is relieved at a plan gap > 0.05, so it needs no plan-contact.
+4. **Where containment fails, the rule can hide interference.** That is the case for **frame_upper**, which is FIX LF1.1-8 below. The anchor and guide blocks are round r 21 by declaration only (sign-off NOTE 5). Their contact with the arm is a tangent line, not a face; NOTE LF1.1-9.
+
+**PLAN-CONTACT RULE SIGNED (Loftsman)** for C pairs between placed rows whose footprints contain their parts. The gameplan l.140 text should carry that containment condition.
+
+### Placement of the new rows (HAND against stack and JSON)
+
+| Row | HAND | Stack / JSON |
+|---|---|---|
+| bracket_anchor_a, bracket_guide_a | r_in 160 + 21 = 181 (block circle tangent); r_out 300 - 30 = 270 (member face); hw 30. x: 181 cos 150 = -156.75, 270 cos 150 = -233.83, +/- 30 sin 150 = 15, giving [-248.83, -141.75]. y: 90.50 to 135.00 +/- 30 x 0.866 = 25.98, giving [64.52, 160.98]. z_A 265 to 295 and 1165 - 30 = 1135 to 1165 | x [-248.83, -141.75], y [64.52, 160.98], z_A 265 to 295 and 1135 to 1165 |
+| descent_stop_post | r 200 to 215, hw 30. x: [215 x -0.866 - 15, 200 x -0.866 + 15] = [-201.20, -158.21]. z_A 265 + 30 = 295 to 314.84 - 12 = 302.84 (7.84). Plan: inside the arm (r 181 to 270, same hw), plan overlap 30 x 15 x 2 = 900 | x [-201.20, -158.21]; z_S 355.00 to 362.84; post\|arm plan overlap 900.0, side-view face contact at 295 (ordinary C) |
+| motor_shaft_a | r 142 - 21 = 121 to 142, hw 4. x: [142 x -0.866 - 2, 121 x -0.866 + 2] = [-124.98, -102.79]. z = ring top + 52 +/- 4: park 1101.84 + 52 = 1153.84 +/- 4 z_A; load 1213.84 +/- 4 z_S | x [-124.98, -102.79]; park z_A 1149.84 to 1157.84; load z_S 1209.84 to 1217.84 |
+| pinion_axis_a | 95.22 cos 210 = -82.46; 218 cos 210 = -188.79 | -82.47 to -188.79 |
+
+Contacts and clearances:
+
+| Pair | HAND | MEASURED |
+|---|---|---|
+| shaft\|motor23 | shaft r_out 142 = motor r_in 142, shared edge | plan distance 0.000, overlap 0.000 |
+| shaft in the pinion hub | r 121 to 140 inside the hub (pinion r_out 140); N | N |
+| nut_housing_a\|bracket_anchor_a | 305.84 - 295 = 10.84 | 10.840 |
+| ring\|bracket_anchor_a | 314.84 - 295 = 19.84 | 19.840 |
+| ring\|descent_stop_post | 314.84 - 302.84 = 12.00 | 12.000 |
+| nut_housing_a\|post | plan 200 - 185 = 15.00 | 14.993 |
+| nut_housing_a\|bracket_guide_a, park | 1135 - 1110.84 = 24.16 | 24.160 |
+| ring\|bracket_guide_a, park | 1135 - 1101.84 = 33.16 | 33.160 |
+| gear\|bracket_guide_a, park | plan 181 - 126.32 = 54.68 (gear bottom 1182.07 - arm top 1165 = 17.07 vertical) | plan 54.646, side 37.295 |
+| motor23_a\|bracket_guide_a, park | band 64.52 + 46.32 = 110.84 | band 110.838, plan 116.09 |
+| pinion_a\|bracket_guide_a, park | | plan 96.13 |
+
+The gear line corrects the Engineer's table: the true lower bound is max(plan 54.65, side 37.30) = 54.65. The "x gap 15.43" in that table is a projected separation, not a clearance.
+
+### Findings r3
+
+**FIX LF1.1-8. frame_upper footprint and drawing are a circle r 30; the part is a 30-6060, a 60 square with circumradius 42.43.**
+- The Designer's F2 places the arm "on the member face at r 270", so the square is face-on to the axis: r 270 to 330, half-width 30.
+- At theta 150 / 30 that square projects 60 (cos 30 + sin 30) = 81.96 wide: x [-300.79, -218.83] for _a. The drawing shows 60 ([-289.81, -229.81]).
+- Its depth band is [109.02, 190.98], against the drawn [120, 180].
+- The round footprint breaks the containment premise of the plan-contact rule and of plan-separated, by up to 12.43.
+
+Scratch evaluation of the square footprint against every placed row in all four poses (MEASURED):
+- Only the four arms come within 20 mm: distance 0.000, overlap 0.000.
+- Nothing is hidden today. Every side and depth value moves by 12 mm or less, and every relieved pair involving frame_upper keeps more than 84 mm.
+
+Fix (Engineer):
+- frame_upper_a/_b place: r_in "frame_upper.radius - profile.width / 2", r_out "frame_upper.radius + profile.width / 2", half_width "profile.width / 2", footprint radial.
+- The script draws the projected width from place.x.
+- The x centre stays at r cos theta = -259.81, so the TP-3 centre check is unchanged.
+- arm|member then shares an edge in plan: plan-contact distance 0, overlap 0.
+
+**NOTE LF1.1-9.** arm|block "C" is a tangent line in plan: the declared round block r 21 touches the arm's flat end at r 181. That is right for S1 placement. The block shape is Step 2's (ASSUMED).
+
+**NOTE LF1.1-10.** bracket_anchor_a and liftmotor_a overlap in plan by 251.86 mm2: the motor's circumscribed r 29.70 reaches r 189.70 under the arm's inner end. They are separated by 265 - 240 = 25 vertically (the coupling), and the undeclared F pair passes. The motor mount to the arm or block is Step 2's.
+
+**NOTE LF1.1-11 (post|block).** In the side view, block x [-159.56, -117.56] and post x [-201.20, -158.21] overlap by 1.35 in x and touch at z 295. As undeclared F this reads touching (LF-9). In plan they are 200 - 181 = 19 apart.
+
+### Spec placement re-signature (r3)
+
+**SPEC PLACEMENT SIGNED (Loftsman, r3)** for these rows:
+- bracket_anchor_a/_b and bracket_guide_a/_b
+- descent_stop_post
+- motor_shaft_a/_b
+- pinion_axis_a/_b
+
+The signature is subject to FIX LF1.1-8 on frame_upper_a/_b, which is open to the Engineer. LF1.1-8 changes no S1 check value, but containment is the premise of the signed plan-contact rule.
+
+### Verdict r3
+
+RE-CHECK PASS. BLOCK 0, FIX 1 open (LF1.1-8), NOTE 3 new (LF1.1-9 to -11). Carried: LF1.1-4 to -7 and R2-1.
+
+Gameplan l.140 plan-contact text: add "both footprints contain their parts".

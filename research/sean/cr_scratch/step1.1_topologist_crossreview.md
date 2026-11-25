@@ -184,3 +184,90 @@ collet|holder is class C, at distance 0.000 and overlap 0.000 in every pose. The
 No new finding.
 
 CROSS-REVIEW PASS (TP1.1-1, TP1.1-2, TP1.1-3 closed; TP1.1-7 closed; NOTEs carried to M1)
+
+## Re-check r3
+
+Inputs: `step1.1_engineer_revision_r3.md`; `sketch_common.py` `assess_pair` plan-contact branch, `plan_contact_fn`, `plan_footprint`, `_ngon`; `s1_spec.yaml` r3 rows bracket_anchor_a/_b, bracket_guide_a/_b, descent_stop_post, motor_shaft_a/_b, pinion_axis_a/_b; the r3 figures from `s1_side_poses.build`. All values MEASURED 2026-11-25, in-process. No harness file was written. Probe: scratchpad `tp11_r3_probe.py`.
+
+**Controls (manifest, in-process, matched on reason and planted count):** K5 Z 2/2, B 6/6; K7 Z 11/11, B 19/19; K8 Z 4/4, B 14/14; K9 Z 2/2, B 5/5. The new controls:
+- K7-Z11: clean, state plan-contact.
+- K7-B16: plan distance 0.994.
+- K7-B17: plan overlap 8.607.
+- K7-B18: post|pad distance 1.000 x 4.
+- K7-B19: arm|block plan distance 0.994 x 4.
+
+The live r3 figures pass K5 to K9 and S1-1 to S1-7.
+
+### 1. Plan-contact from the half-space view
+
+**Statement.** Let part A lie inside the prism P_A x [z_A0, z_A1], with P_A its plan footprint, and B likewise.
+- The interiors of A and B can meet only if int P_A ∩ int P_B ≠ ∅ and (z_A0, z_A1) ∩ (z_B0, z_B1) ≠ ∅.
+- With plan overlap ≤ 0.01 mm2, the first condition is false, so A and B cannot interpenetrate.
+- A side-view overlap of area > 0.01 implies the open z intervals meet. With plan distance ≤ 0.05, the closures meet on a vertical face of positive height. That is contact.
+
+**Two premises.**
+1. Interference exclusion needs footprint ⊇ part, the LF-8 containment premise.
+2. The contact claim is exact only when the footprint equals the part on the touching face.
+
+When premise 1 holds and premise 2 fails, the rule can label a small gap as C. That is the safe direction. When premise 1 fails, an interference passes. The rule is sound exactly where the premises hold, and it is not tied to "prisms". The code accepts any placed row (shafts and motors are horizontal cylinders), which is correct because each such part lies inside footprint x [z_min, z_max]. The docstring should state the premise in that form.
+
+**Hand values, live (capture_end):**
+
+| Pair | Plan distance | Plan overlap (mm2) | Side view | Reading |
+|---|---|---|---|---|
+| arm\|block | 0.0000 | 0.0014 | | 128-gon artefact; face r 181 on the circumscribed block disk, centre r 160 + 21 |
+| arm\|member | 0.0000 | 0.0030 | | r 270 = 300 - 30 |
+| shaft\|motor23 | 0.0000 | 0.0000 | | radial rectangles meeting at r 142 |
+| post\|arm | | 900 (post inside arm) | z abutting at 355.00 | ordinary C, not plan-contact; correct |
+
+**Can a real interference pass? Yes, by two routes.**
+- **TP1.1-11 FIX. Plan-contact certifies the spec footprints, not the drawing.**
+  - For a C pair that passes as plan-contact, the drawn side-view overlap is waived whatever its size. Only the x centre of a placed row is tied to the spec (TP-3).
+  - Probe: bracket_anchor_a drawn 20 wider at each end, centre kept. The drawing then runs 20 into the block and the member. Result: all of K5 to K9 and S1-x pass.
+  - Same probe on motor_shaft_a, 15 wider each end, 15 into the motor: all pass.
+  - Before r3, a drawn overlap on any C pair fired K7.
+  - Fix: K8 projected_x goes from centre to extent. For every placed row, the drawn x extent equals the projected footprint [min(r_in c, r_out c) - w|s|, max(r_in c, r_out c) + w|s|] (radial) or r_c c ± w (round), within 0.05. Add a B fixture with the widened arm.
+  - Hand against drawn:
+
+    | Row | Hand | Drawn |
+    |---|---|---|
+    | Arm | 181 cos 150 = -156.751, 270 cos 150 = -233.827, ± 30 x 0.5 gives [-248.827, -141.751] | [-248.827, -141.751] |
+    | Anchor block | 160 cos 150 ± 21 = [-159.564, -117.564] | equal |
+    | Shaft | 121 cos 210, 142 cos 210 ± 4 x 0.5 = [-124.976, -102.789] | equal |
+    | Post | 200 cos 150, 215 cos 150 ± 15 = [-201.195, -158.205] | equal |
+
+    The live drawing satisfies the rule today.
+- **TP1.1-12 FIX. The frame_upper footprint does not contain the member.**
+  - The shape is "vertical 30-6060, 60 wide", but `place` gives a round footprint of radius profile.width / 2 = 30. That is the inscribed circle of the 60 x 60 section, whose circumradius is 42.43.
+  - The member's orientation is not declared. With the member turned 45 deg, its corner sits at r 300 - 42.43 = 257.57, which is 12.43 inside the arm end at r 270.
+  - Plan overlap with the arm footprint is 154.415 mm2 (MEASURED). The spec footprints still read distance 0.000 and overlap 0.003, so plan-contact passes a real interference.
+  - With one face normal radial (rot 0), the face contact at r 270 is exact: overlap 0.000.
+  - Fix: a `square` footprint for frame_upper_a/_b with that orientation stated, the face normal radial. Alternatively, the circumscribed r 42.43 (the liftmotor FIX 4b precedent), but then the arm r_out becomes 257.57 and the contact is a corner.
+  - No other frame_upper pair changes state at r 42.43. The least G margin is ring|frame_upper, 59.96 → 47.53 against g_min 10 (MEASURED).
+
+### 2. New rows: orientation and mating faces (capture_end; hand = code)
+
+| Row | Drawn x, z_S | Sense and mating face |
+|---|---|---|
+| bracket_anchor_a | x [-248.827, -141.751], z 325 to 355 | Outboard of anchor_a: (-195.289 + 138.564)(cos 150) = +49.125. Below nut_a: 340 < 380.84. Inner end on the block at r 181, outer end on the member face at r 270. Top flush with the block top 355 |
+| bracket_guide_a | z 1195 to 1225 | Above nut_a: 1210 > 1155.84 at load and park. Outboard of guide_a, +49.125 |
+| descent_stop_post | x [-201.195, -158.205], z 355.00 to 362.84 | Foot on the arm top (355.00 = arm z_max). Top under the pad (362.84 = pad z_min). Pad top 374.84 = ring bottom at capture_end. Below descent_stop: 358.92 < 368.84 |
+| motor_shaft_a | x [-124.976, -102.789], z 434.84 to 442.84 | On the pinion axis 386.84 + 52 = 438.84 ± 4. Outer end on the motor flange r 142. Inner r 121 to 140 nested in the pinion hub (N). Side -1: -113.882. Outboard of pinion_a: (-113.882 + 103.661)(-0.866) = +8.851 |
+| pinion_axis_a | x [-188.794, -82.465] at z 438.84 | Line, half-width 0. 95.22 cos 210 to 218 cos 210. Side -1 |
+
+Every new row is on the correct side of its mating face. The arm has no `inboard of the member` predicate. TP-3 and the C pair carry it, and TP1.1-11 makes that binding on the drawing.
+
+### 3. K5, K8 and K9 coverage of the new rows
+
+- K5: 82 + 82 + 82 + 81 = 327 artists, 0 untagged, one Axes per figure. Arms, post and shafts are Rectangles on prism or cylinder-axis-X rows, so they classify rectangle. The pinion axes are Line2D on `projection: line`.
+- K8: projected_x on all nine placed rows, plus the sense rows above.
+- K9: 54 rows. There are 54 gids at load, start and capture_end, and 53 at park (core_750 absent).
+
+| ID | Status |
+|---|---|
+| TP1.1-11 | FIX, open |
+| TP1.1-12 | FIX, open |
+| NOTE (new) | `assess_pair` docstring: state the premise as "part inside footprint x [z_min, z_max]; contact exact where footprint = part". The anchor and guide block footprints are round r 21, borrowed from nut_flange_od, and the block's plan shape is undeclared. Same premise; Step 2 / S3 rule the block. |
+| TP1.1-1, -2, -3, -7 | remain closed (controls re-run above) |
+
+CROSS-REVIEW FAIL (TP1.1-11, TP1.1-12 FIX; 0 BLOCK). The plan-contact rule is sound under its premises. As implemented, it passes an interference drawn wider than the spec footprint, and an interference hidden by the inscribed frame_upper footprint.
