@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T12:01:31",
+ "timestamp": "2026-11-25T12:10:54",
  "summary": {
   "z_clean": 30,
   "z_total": 30,
-  "b_fired": 67,
-  "b_total": 67,
+  "b_fired": 68,
+  "b_total": 68,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -977,6 +977,17 @@
    "match": "yes",
    "gameplan_line": 229,
    "finding": "H6; SW-10 (replacement, Design Notes 22)"
+  },
+  {
+   "id": "S1-2-B2",
+   "check": "S1-2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load: drawn tip 894.84 not above the highest class start 894.84 z_S",
+   "match": "yes",
+   "gameplan_line": 229,
+   "finding": "H6; SW 1.1 (c) FIX 1"
   },
   {
    "id": "S1-3-Z",

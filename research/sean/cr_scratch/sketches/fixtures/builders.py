@@ -1017,6 +1017,12 @@ def s1_2_b1():
     return _s1_ctx(spec_mut=_pose_tip("park", "start_tip_max"))
 
 
+def s1_2_b2():
+    """SW 1.1 (c) FIX 1: load branch of S1-2. Load tip_z set to start_tip_max (894.84 z_S), not above the highest
+    class start. Margin 0.00."""
+    return _s1_ctx(spec_mut=_pose_tip("load", "start_tip_max"))
+
+
 def s1_3_b1():
     """SW-10 as revised at 1.1 (b) (correction 3): park tip_z = core_stop + core.length_install + upper.load_clearance
     - 1 (the SW-10 form park_tip - load_clearance - 1 leaves 66.34 under the collar-top park). Margin -1.00."""
