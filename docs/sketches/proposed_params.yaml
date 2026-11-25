@@ -1,0 +1,132 @@
+# proposed_params.yaml - proposed-keys overlay for the Step 1 sketches (contributor gameplan (sean) detail 1.0, Design Notes 6).
+# Leaf schema as params.yaml: value, unit, source, status in {VERIFIED, DECLARED, ASSUMED, DERIVED}.
+# No leaf here may shadow a params.yaml leaf (check K2). Promotion into params.yaml at Step 4c only.
+# Stand-ins equal sean scratch step1_quinn_batch1.md (batch 1) and step1.0_engineer_batch_notes.md.
+# Heights: z_A (datum A, base-plate underside) unless stated; sketches plot z_S = z_A + jig.datum_a_above_floor (Design Notes 17).
+
+jig:
+  datum_a_above_floor: {value: 60, unit: mm, source: "params profile.height; base frame on the shop floor, no feet; batch 1 N10; gameplan Design Notes 17", status: ASSUMED}
+
+drill:
+  length: {value: 800, unit: mm, source: "cutter tip to top end of the drill; [CP §3.2, 18:20]; batch 1 Q2a", status: ASSUMED}
+  mass: {value: 8, unit: kg, source: "batch 1 Q2b; no source; the 800 mm tube alone is 3.215 kg DERIVED from drill.tube_od, drill.tube_id, aluminium 2700 kg/m3 ASSUMED [CP §12, 09:05]", status: ASSUMED}
+  head_od: {value: 177.8, unit: mm, source: "cutter OD ASSUMED; params drill.cutter_od_7in (7 in generation) as upper bound; 152.4 is the tube OD, not a cutter OD; batch 1 Q2d", status: ASSUMED}
+  head_length: {value: 106.369, unit: mm, source: "cutter and iris head length = params drill.kerf_standoff (ASSUMED); batch 1 Q2d", status: ASSUMED}
+  top_block_length: {value: 150, unit: mm, source: "top-end hardware block on the drill top end; no source; batch 1 Q2c", status: ASSUMED}
+  top_block_od: {value: 152.4, unit: mm, source: "= params drill.tube_od (ASSUMED); batch 1 Q2c", status: ASSUMED}
+  top_block_mass: {value: 2, unit: kg, source: "no source; batch 1 Q2c", status: ASSUMED}
+  bore_ceiling_above_tip: {value: 800, unit: mm, source: "lowest bore-closing part above the cutter tip; open bore to the tube top, = drill.length; gameplan Design Notes 19; batch 1 Q2e; check_stack.py computes the ceiling z per pose", status: ASSUMED}
+  rpm: {value: 60, unit: rpm, source: "no source; batch 1 DN23-c", status: ASSUMED}
+  torque_target: {value: 10, unit: "N m", source: "cap at params loads.torque_design (DECLARED, core holding torque); batch 1 DN23-c", status: ASSUMED}
+
+ring:
+  material_form: {value: "plate (options: plate, printed, 30-6060 triangle)", unit: "", source: "gameplan detail 1.0 ring.* seed; Sean owns the pick", status: ASSUMED}
+  od: {value: 420, unit: mm, source: "plate OD: covers nut housings at jackscrew.pitch_radius 160 plus housing radius; no source", status: ASSUMED}
+  thickness: {value: 12, unit: mm, source: "plate thickness; no source", status: ASSUMED}
+  position_above_tip: {value: 130, unit: mm, source: "Designer 1.1 (a), G3: ring underside above the cutter tip (N1); bearing bottom (ring underside - 13) 10.63 above the head top (tip + drill.head_length 106.369); N1 lower bound 129.37 DERIVED; S1-5b bound -2.0, not binding; Design Notes 22", status: ASSUMED}
+  nut_housing_count: {value: 3, unit: "", source: "one per jack screw; jackscrew.count [DN23]", status: DERIVED}
+  nut_housing_placement: {value: "on jackscrew.pitch_radius at each jackscrew.angle", unit: "", source: "gameplan detail 1.0 ring.* seed", status: ASSUMED}
+  nut_housing_od: {value: 50, unit: mm, source: "around jackscrew.nut_flange_od 42; no source", status: ASSUMED}
+  nut_housing_height: {value: 30, unit: mm, source: "= jackscrew.nut_length; no source", status: ASSUMED}
+  nut_mounting: {value: "rigid (S3-2 K = 1.0); floating option gives K = 2.0", unit: "", source: "gameplan detail 1.3; Sean picks at the S3 M2 pass (N2)", status: ASSUMED}
+  motor_mount_count: {value: 3, unit: "", source: "one per pinion; pinion.count [DN23]", status: DERIVED}
+  motor_mount_placement: {value: "at each pinion.angle, phase to the screws per S2", unit: "", source: "gameplan detail 1.0 ring.* seed", status: ASSUMED}
+  clearance_bore: {value: 200, unit: mm, source: "Designer 1.1 (a): = bearing.od 200 (bearing seat ID); 13.8 over icd.keepout_radius 86.2 per side", status: DERIVED}
+  gear_seat: {value: "none: the gear turns with the drill on gear.hub; the ring carries ring.pinion_support", unit: "", source: "Designer 1.1 (a); gameplan Design Notes 1 (the ring does not turn, the gear does)", status: ASSUMED}
+  pinion_support: {value: "none separate at S1: each pinion is carried on its NEMA 23 shaft and motor bearings; the motor mount (ring.motor_mount_*) is the support; an outboard bushing is an S6 option if the mesh or drill-weight load exceeds the motor shaft rating", unit: "", source: "Designer 1.1 (b): pinion on the NEMA 23 shaft; 2 mm between pinion back r 140 and flange r 142", status: ASSUMED}
+  bearing_seat: {value: "outer race in the clearance bore (ID bearing.od), bearing top flush with the ring top, hanging bearing.height - ring.thickness below the underside", unit: "", source: "Designer 1.1 (a); flush bottom would put the bearing top 3.8 mm under the pinion toe; N4", status: ASSUMED}
+  motor_mount_height: {value: 23.5, unit: mm, source: "Designer 1.1 (a): NEMA 23 standoff = pinion.axis_above_ring_top 52 - pinion.motor_body / 2 28.5", status: DERIVED}
+  guide_lug_r_out: {value: 250, unit: mm, source: "Designer 1.1 (a): guide.radius 230 + bushing 20 at guide.angle; no source", status: ASSUMED}
+  guide_lug_half_width: {value: 20, unit: mm, source: "Designer 1.1 (b): LM20UU OD 32 + 2 x 4 wall; no source", status: ASSUMED}
+  guide_interface: {value: "two linear bushings on the guide.* rods: anti-rotation and lateral guide (N2)", unit: "", source: "gameplan detail 1.0 ring.* seed; Design Notes 11", status: ASSUMED}
+  mass: {value: 6, unit: kg, source: "aluminium plate with housings; no source", status: ASSUMED}
+
+bearing:
+  type: {value: "tube collar bearing on the ring (thrust pair); options slewing ring, thrust pair, tube collar", unit: "", source: "N4; Sean picks at the S6 M2 pass", status: ASSUMED}
+  bore: {value: 152.4, unit: mm, source: "= params drill.tube_od (ASSUMED)", status: ASSUMED}
+  od: {value: 200, unit: mm, source: "no source", status: ASSUMED}
+  height: {value: 25, unit: mm, source: "no source", status: ASSUMED}
+  axial_rating_up: {value: 2000, unit: N, source: "no source; cut case load 1000 N up (loads.axial_design)", status: ASSUMED}
+  axial_rating_down: {value: 2000, unit: N, source: "no source", status: ASSUMED}
+  radial_rating: {value: 1000, unit: N, source: "no source", status: ASSUMED}
+
+guide:
+  type: {value: "round rod with linear bushing on the ring", unit: "", source: "N2; Sean picks at the S2 and S6 M2 passes", status: ASSUMED}
+  count: {value: 2, unit: "", source: "no source", status: ASSUMED}
+  angle: {value: [0, 180], unit: deg, source: "between screws and pinions; no source; S2 places them", status: ASSUMED}
+  radius: {value: 230, unit: mm, source: "outside ring.od / 2 210 plus bushing; no source", status: ASSUMED}
+  rod_od: {value: 20, unit: mm, source: "no source", status: ASSUMED}
+  length: {value: 1200, unit: mm, source: "no source; covers the lift stroke", status: ASSUMED}
+
+gear:
+  pitch_diameter: {value: 250, unit: mm, source: "bought bevel ring gear; no source; batch 1 DN23-d", status: ASSUMED}
+  face_width: {value: 30, unit: mm, source: "no source", status: ASSUMED}
+  tooth_count: {value: 60, unit: "", source: "no source", status: ASSUMED}
+  pitch_angle: {value: 71.565, unit: deg, source: "atan(gear.tooth_count 60 / pinion.tooth_count 20), 90 deg shaft angle", status: DERIVED}
+  bore: {value: 180, unit: mm, source: "above 2 x icd.keepout_radius = 172.4 mm DERIVED; batch 1 DN23-d", status: ASSUMED}
+  mass: {value: 3, unit: kg, source: "no source", status: ASSUMED}
+  od: {value: 252.64, unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter + 2 m cos(gear.pitch_angle), m = 4.1667", status: DERIVED}
+  toe_tip_above_pinion_axis: {value: 28.23, unit: mm, source: "Designer 1.1 (a): toe pitch point z 32.18 (pinion.r_toe 96.54 / 3) minus addendum normal 3.95; teeth face down onto the pinions (Design Notes 1, 22)", status: DERIVED}
+  back_face_above_pinion_axis: {value: 62, unit: mm, source: "Designer 1.1 (a): heel pitch point 41.67 + rim 20.33; no source", status: ASSUMED}
+  hub: {value: "clamp hub on the tube, bore drill.tube_od, OD gear.bore, height = gear section height 33.77", unit: "", source: "Designer 1.1 (a)", status: ASSUMED}
+
+pinion:
+  count: {value: 3, unit: "", source: "three pinions [DN23]", status: DECLARED}
+  angle: {value: [90, 210, 330], unit: deg, source: "120 deg spacing [DN23]; phase 60 deg from the screws ASSUMED, S2 states it", status: ASSUMED}
+  tooth_count: {value: 20, unit: "", source: "no source", status: ASSUMED}
+  pitch_angle: {value: 18.435, unit: deg, source: "90 - gear.pitch_angle 71.565", status: DERIVED}
+  motor_class: {value: "NEMA 23", unit: "", source: "NEMA 23 on hand [DN23]", status: DECLARED}
+  gearbox_ratio: {value: 1, unit: "", source: "direct drive; batch 1 DN23-b [DN23]", status: ASSUMED}
+  motor_body: {value: 57, unit: mm, source: "NEMA 23 frame square; no source", status: ASSUMED}
+  motor_length: {value: 76, unit: mm, source: "no source", status: ASSUMED}
+  motor_mass: {value: 1.0, unit: kg, source: "each; no source", status: ASSUMED}
+  pitch_diameter: {value: 83.33, unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter / gear.tooth_count x pinion.tooth_count (module 4.1667)", status: DERIVED}
+  outer_diameter: {value: 91.24, unit: mm, source: "Designer 1.1 (a): pinion.pitch_diameter + 2 m cos(pinion.pitch_angle)", status: DERIVED}
+  face_width: {value: 30, unit: mm, source: "Designer 1.1 (a): = gear.face_width", status: DERIVED}
+  r_toe: {value: 96.54, unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter / 2 - pinion.face_width sin(gear.pitch_angle)", status: DERIVED}
+  r_heel: {value: 125, unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter / 2", status: DERIVED}
+  hub_length: {value: 15, unit: mm, source: "Designer 1.1 (a): pinion back face at r 140; no source", status: ASSUMED}
+  axis_above_ring_top: {value: 52, unit: mm, source: "Designer 1.1 (a): heel tip radius 45.62 + 6.38 clear of the ring top", status: ASSUMED}
+  motor_r_in: {value: 142, unit: mm, source: "Designer 1.1 (a): NEMA 23 flange face 2 mm outboard of the pinion back (r 140); motor outer end 218", status: ASSUMED}
+  motor_shaft_od: {value: 8, unit: mm, source: "Designer 1.1 (a): NEMA 23 common shaft; no source", status: ASSUMED}
+  motor_shaft_length: {value: 21, unit: mm, source: "Designer 1.1 (a): NEMA 23 common shaft; no source", status: ASSUMED}
+
+jackscrew:
+  count: {value: 3, unit: "", source: "three jack screws at 120 deg [DN23]", status: DECLARED}
+  angle: {value: [30, 150, 270], unit: deg, source: "120 deg spacing [DN23]; phase ASSUMED; theta counter-clockwise from +X seen from +Z (ASSEMBLY.md Coordinate frame)", status: ASSUMED}
+  pitch_radius: {value: 160, unit: mm, source: "outside icd.keepout_radius 86.2 + nut flange 21 + 10 mm (S2-2 g_min ASSUMED); no source", status: ASSUMED}
+  nominal: {value: 8, unit: mm, source: "T8 lead screw [DN23]", status: DECLARED}
+  length: {value: 900, unit: mm, source: "800 to 900 mm estimate built on travel 650 [DN23]; upper end used; Designer 1.1 (a) option R (Sean, gameplan Design Notes 22): lift stroke 775, L_min 885.84 at anchor_z 265, so 900 fits; reported, never asserted", status: DECLARED}
+  root_diameter: {value: 6.2, unit: mm, source: "T8 root, until vendor data (Sean); no source", status: ASSUMED}
+  lead: {value: 8, unit: mm, source: "common T8 brass-nut lead; back-drives (gameplan detail 1.0)", status: ASSUMED}
+  efficiency: {value: 0.6, unit: "", source: "no source", status: ASSUMED}
+  anchor_z: {value: 265, unit: mm, source: "Designer 1.1 (a), G3: z_A of the anchor block bottom (block 265 to 295) on the frame-member bracket, 253 above the plate top (12); nut-housing bottom at capture_end 305.84, gap 10.84 >= g_min 10; Design Notes 22", status: ASSUMED}
+  top_guide_z: {value: 1165, unit: mm, source: "jackscrew.anchor_z 265 + jackscrew.length 900", status: DERIVED}
+  anchor_allowance: {value: 30, unit: mm, source: "thrust bearing and anchor height; no source", status: ASSUMED}
+  guide_allowance: {value: 30, unit: mm, source: "top guide height; no source", status: ASSUMED}
+  nut_length: {value: 30, unit: mm, source: "brass T8 flange nut; no source", status: ASSUMED}
+  nut_flange_od: {value: 42, unit: mm, source: "no source", status: ASSUMED}
+  nut_mass: {value: 0.05, unit: kg, source: "each; no source", status: ASSUMED}
+
+liftmotor:
+  class: {value: "NEMA 17", unit: "", source: "probably NEMA 17 [DN23]", status: ASSUMED}
+  count: {value: 3, unit: "", source: "one per jack screw; batch 1 DN23-a [DN23]", status: ASSUMED}
+  holding_torque: {value: 0.45, unit: "N m", source: "no source", status: ASSUMED}
+  body: {value: 42, unit: mm, source: "NEMA 17 frame square; no source", status: ASSUMED}
+  length: {value: 48, unit: mm, source: "no source", status: ASSUMED}
+  position: {value: "below the bottom anchor, coupling up to the screw bottom (placeholder; S3 places it)", unit: "", source: "Designer 1.1 (a), R6: the ring sweep then passes no lift motor; S3 draws the option", status: ASSUMED}
+  coupling_length: {value: 25, unit: mm, source: "Designer 1.1 (a); no source", status: ASSUMED}
+
+hold:
+  device: {value: "open: non-back-driving lead, brake, or park pin with visible state", unit: "", source: "gameplan detail 2 power-off hold row; Step 2 decides", status: ASSUMED}
+
+frame_upper:
+  member_profile: {value: "30-6060", unit: "", source: "params profile.series (DECLARED)", status: ASSUMED}
+  members: {value: "one vertical member per jack screw, base frame to top guide; carries anchor and guide (S3-3 axial loop)", unit: "", source: "gameplan detail 1.3; no source", status: ASSUMED}
+  radius: {value: 300, unit: mm, source: "member centre radius, outside ring.od / 2 210 + 10 mm g_min + half profile; side-view depth-band box clearance; no source", status: ASSUMED}
+  member_length: {value: 1213, unit: mm, source: "Designer 1.1 (b) F4: jackscrew.top_guide_z 1165 + profile.height 60 - base.plate_thickness 12 (member foot on the plate top; top stays at 1225 z_A)", status: DERIVED}
+  stop_pad_r_in: {value: 200, unit: mm, source: "Designer 1.1 (b): 15 clear of the nut housing (r 185), 5 over G 10", status: ASSUMED}
+  stop_pad_r_out: {value: 215, unit: mm, source: "Designer 1.1 (a), R6: ring.od / 2 210 + 5", status: ASSUMED}
+
+collet:
+  core_stop_z: {value: 42.5, unit: mm, source: "G4 (gameplan Design Notes 21), Designer 1.1 (a): z_A of the core-seat ledge top = receiver floor icd.floor_above_datum_a 40 (ASSEMBLY.md Coordinate frame) + collet.core_seat_height 2.5 (build_parts/collet_family.py dims()), collet foot ring on the receiver floor seat (ASSEMBLY.md Relations base|collet C; Load path); 4a promotion list", status: ASSUMED}

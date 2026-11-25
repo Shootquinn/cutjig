@@ -1,0 +1,5 @@
+# K2 B3 fixture overlay: planted DECLARED leaf whose source cites neither [CP §n, mm:ss] nor [DN23].
+fx:
+  drill_length: {value: 800, unit: mm, source: "[CP §3.2, 18:20]", status: ASSUMED}
+  ring_thickness: {value: 12, unit: mm, source: "no source", status: ASSUMED}
+  ring_od: {value: 420, unit: mm, source: "Quinn said so in the meeting", status: DECLARED}
