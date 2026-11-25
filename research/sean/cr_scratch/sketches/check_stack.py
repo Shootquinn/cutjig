@@ -156,7 +156,6 @@ def global_vars(P, spec):
         "collar_top": collar_top_z_A(P),
         "holder_bottom": receiver_floor + g("seat.holder_bottom_R") - drop,
         "core_stop": core_stop_z_A(P),
-        "start_tip_max": max(g("stop.start_z")),
         "capture_end_tip": g("stop.height_z"),
         "lowest_tip": lowest,
         "ring_bottom_low": lowest + g("ring.position_above_tip"),
@@ -339,7 +338,12 @@ def reported(P, spec, stack):
     ck = spec.get("capture_core_length", "core.length_capture")
     core_top = glob["core_stop"] + P.get(ck)
     rep["capture_core_length_key"] = ck
-    rep["start_tip_minus_core_top_mm"] = P.get("stop.start_z")[0] - core_top
+    # LF1.1-3 (r2): the capture class start from the park rule, not params stop.start_z (which Step 4 rewrites)
+    start_ck = class_starts_z_A(P, spec, [ck], glob).get(ck, max(class_starts_z_A(P, spec, [ck], glob).values()))
+    rep["start_tip_minus_core_top_mm"] = start_ck - core_top
+    # LF1.1-2 (r2): the governing park term, reported with no threshold: park - load_clearance - (entry plane + max L)
+    lengths_park = park_lengths(P, spec, spec.get("q9_length_keys", DEFAULT_Q9))
+    rep["entry_plane_margin_mm"] = glob["park_tip"] - P.get("upper.load_clearance") - (glob["entry_plane"] + max(P.get(k) for k in lengths_park))
     rep["end_tip_plus_advance_z_A"] = glob["capture_end_tip"] + P.get("upper.drill_advance_500core")
     rep["core_top_on_core_stop_z_A"] = core_top
     ref = [r["id"] for r in spec.get("features", []) if r.get("reference")]

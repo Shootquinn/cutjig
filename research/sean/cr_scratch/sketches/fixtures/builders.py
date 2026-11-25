@@ -882,6 +882,50 @@ def k9_b4():
 
 # ---------------------------------------------------------------- SW-8 smoke: every S1 spec row drawn
 
+def _section_pieces(P, stack, pid, row, z0, z1):
+    """Spec field section (r2): [r_in, r_out] or a list of [r_in, r_out, z_lo, z_hi] (z_A stack names) -> z_S pieces."""
+    sec = row["section"]
+    pieces = sec if isinstance(sec[0], (list, tuple)) else [sec]
+    pr = stack["poses"][pid]
+    names, shift = pr["vars_z_A"], pr["tip_z_S"] - pr["tip_z_A"]
+    out = []
+    for p in pieces:
+        r0, r1 = (check_stack.eval_expr(e, P, names) for e in p[:2])
+        lo, hi = ((check_stack.eval_expr(e, P, names) + shift for e in p[2:4]) if len(p) > 2 else (z0, z1))
+        out.append((r0, r1, lo, hi))
+    return out
+
+
+def _draw_section(ax, P, spec, stack, pid, row, z0, z1):
+    """Section row, one piece per side. A cone row narrows by (z1 - z0) tan(cone.alpha) on its outer face per its taper
+    sense. A bore_cone row follows the mate's outer cone over the mate's z extent (TP1.1-3)."""
+    fid = row["id"]
+    tan_a = math.tan(math.radians(P.get("cone.alpha")))
+    rows = {r["id"]: r for r in spec["features"]}
+    for r0, r1, lo, hi in _section_pieces(P, stack, pid, row, z0, z1):
+        if row["kind"] == "cone":
+            narrows = next((s["narrows"] for s in row.get("sense", []) if s.get("pred") == "taper"), "up")
+            t = (hi - lo) * tan_a
+            pts = [(r0, lo), (r1, lo), (r1 - t, hi), (r0, hi)] if narrows == "up" else [(r0, lo), (r1 - t, lo), (r1, hi), (r0, hi)]
+            for s in (-1, 1):
+                sc.draw(fid, Polygon([(s * x, z) for x, z in pts], closed=True, fill=False), ax)
+            continue
+        mate = row.get("bore_cone")
+        if mate:
+            mf = stack["poses"][pid]["features"][mate]
+            mr0, mr1 = (check_stack.eval_expr(e, P, {}) for e in rows[mate]["section"])
+            zk = min(mf["z_max"], hi)
+            if lo < zk:
+                rc = lambda z: mr1 - (z - mf["z_min"]) * tan_a  # noqa: E731
+                for s in (-1, 1):
+                    sc.draw(fid, Polygon([(s * rc(lo), lo), (s * r1, lo), (s * r1, zk), (s * rc(zk), zk)], closed=True, fill=False), ax)
+                lo = zk
+            if lo >= hi:
+                continue
+        for s in (-1, 1):
+            sc.draw_rect(ax, fid, s * r0, s * r1, lo, hi)
+
+
 def _s1_draw_pose(P, spec, stack, pid):
     fig, ax = sc.setup_figure(spec["view"], title=f"S1 full draw, pose {pid}")
     feats = stack["poses"][pid]["features"]
@@ -906,10 +950,7 @@ def _s1_draw_pose(P, spec, stack, pid):
             sc.draw_gear_section(ax, fid, P.get("gear.bore") / 2, r_out, z0, z1)
             continue
         if row.get("section"):
-            # annulus in section: one piece per side from r_in to r_out (spec field section)
-            r0, r1 = (check_stack.eval_expr(e, P, {}) for e in row["section"])
-            for s in (-1, 1):
-                sc.draw_rect(ax, fid, s * r0, s * r1, z0, z1)
+            _draw_section(ax, P, spec, stack, pid, row, z0, z1)
             continue
         x0, x1 = f["place"]["x"] if f.get("place") else f["depth"]
         if row["kind"] == "gear":
@@ -1062,6 +1103,80 @@ def s1_7_b1():
         row["z_rule"] = dict(row["z_rule"], z_max="capture_core_bottom + core.length_capture")
         s["capture_core_length"] = "core.length_capture"
     return _s1_ctx(spec_mut=mut)
+
+
+# ---------------------------------------------------------------- r2: (e) cross-review findings (LF1.1-1, TP1.1-1 to -3)
+
+def k6_b7():
+    """LF1.1-1: holder z_max at the r1 rule (holder_bottom + holder.length, no flange). stack_tie holder_flange reads
+    137.09 + 8.00 + 6.75 = 151.84 against collar_top 159.84 z_A, 8.00 apart."""
+    def mut(s):
+        row = next(r for r in s["features"] if r["id"] == "holder")
+        row["z_rule"] = dict(row["z_rule"], z_max="holder_bottom + holder.length")
+    P = Params()
+    spec = load_spec(HERE.parent / "s1_spec.yaml")
+    mut(spec)
+    stack = check_stack.evaluate_spec(P, spec)
+    return sc.Ctx(P=P, spec=spec, figs={}, stack=stack, view=spec["view"], check_stack_path=CHECK_STACK_PATH)
+
+
+def _face_spec():
+    spec = mini_side_spec()
+    g = next(r for r in spec["features"] if r["id"] == "gear")
+    g["sense"] = g["sense"] + [{"pred": "face_rises", "toward": "outward"}]
+    return spec
+
+
+def k8_z4():
+    """TP1.1-1 Z: mini figure, gear drawn by draw_gear_section (tooth face rising outward)."""
+    return mini_ctx(spec=_face_spec())
+
+
+def k8_b14():
+    """TP1.1-1 B (Topologist probe): gear pieces with the heel low and the face falling outward,
+    (r_in, z0 + rise), (r_out, z0), (r_out, z1), (r_in, z1). The width taper (narrows down) passes it."""
+    def gear(ax, fid, r_in, r_out, z0, z1):
+        rise = (z1 - z0) / 2
+        right = [(r_in, z0 + rise), (r_out, z0), (r_out, z1), (r_in, z1)]
+        sc.draw(fid, Polygon(right, closed=True, fill=False), ax)
+        sc.draw(fid, Polygon([(-x, z) for x, z in right], closed=True, fill=False), ax)
+    return mini_ctx(spec=_face_spec(), gear=gear)
+
+
+def k9_b5():
+    """TP1.1-2: core_750 (poses load, start, capture_end) drawn seated at park, at its start-pose z."""
+    c = _s1_ctx()
+    f = c.stack["poses"]["start"]["features"]["core_750"]
+    r = c.P.get("core.diameter_nominal") / 2
+    sc.draw_rect(c.figs["park"].axes[0], "core_750", -r, r, f["z_min"], f["z_max"])
+    return c
+
+
+def k7_b14():
+    """TP1.1-3 lint: collet|holder declared N again (the r1 declaration) between two section rows."""
+    def mut(s):
+        row = next(r for r in s["features"] if r["id"] == "collet")
+        for nb in row["neighbours"]:
+            if nb["id"] == "holder":
+                nb["class"] = "N"
+    return _s1_ctx(spec_mut=mut)
+
+
+def k7_b15():
+    """TP1.1-3 drawing: the r1 holder (bore at the core OD down to the holder bottom, no bore_cone) against the C
+    declaration: 313.12 mm2 per side inside the collet cone, every pose."""
+    return _s1_ctx(spec_mut=lambda s: next(r for r in s["features"] if r["id"] == "holder").pop("bore_cone"))
+
+
+def k5_b6():
+    """TP1.1-3 K5 guard: a holder bore_cone trapezoid drawn above the collet top (outside the mate's z extent)."""
+    c = _s1_ctx()
+    ax = c.figs["capture_end"].axes[0]
+    f = c.stack["poses"]["capture_end"]["features"]
+    z0 = f["collet"]["z_max"]
+    r = c.P.get("receiver.register_bore_radius")
+    sc.draw("holder", Polygon([(r - 2, z0 + 5), (r, z0 + 5), (r, z0 + 10), (r - 3, z0 + 10)], closed=True, fill=False), ax)
+    return c
 
 
 def s1_full_draw():

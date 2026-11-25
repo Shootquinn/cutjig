@@ -1,5 +1,8 @@
 # S1 spec, side XZ, whole jig, four poses (research/sean/gameplan.md detail 1.1, lines 207-239).
 status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
+# r2 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r2.md), re-sign due (Designer; Loftsman for placement):
+# stack_ties (LF1.1-1), holder z_max + flange (LF1.1-1), section on receiver, collet, core_seat, holder, collar and
+# bore_cone on holder (TP1.1-3), N -> C/F between section rows (TP1.1-3), gear face_rises (TP1.1-1), rubric line (TP1.1-2).
 # Revision 1.1 (b), The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.1_designer_params_review.md and
 # Sean's rulings (gameplan Design Notes 21 G1-G7, Design Notes 22 option R). No drawing before the signed spec.
 sketch: s1
@@ -42,6 +45,11 @@ capture_core_length: core.length_install
 # (Design Notes 22: collar top 159.84 z_A). K6 lints each field: term and feature edge + offset agree within 0.05.
 load_plane: {term: core_stop, feature: core_seat, edge: z_max, offset: 0}
 entry_plane: {term: collar_top, feature: collar, edge: z_max, offset: 0}     # FIX 1: the collar row carries the plane
+# LF1.1-1 (r2): stack ties, linted by K6 like the plane fields. The holder z_max (flange top) plus the nut plate
+# (nut.plate_thickness + washer proud) plus collar.top_above_plate is the test_P18 collar top. The r1 rule
+# (holder_bottom + holder.length, no flange) reads 8.00 apart (K6-B7).
+stack_ties:
+  - {id: holder_flange, term: collar_top, feature: holder, edge: z_max, offset: "nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate", source: "Loftsman 1.1 (e) LF1.1-1; check_stack.collar_top_z_A (test_P18)"}
 
 # Park rule, option R (Design Notes 22). Per supported core class of length L:
 #   stop_k  = max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip)
@@ -74,7 +82,13 @@ undeclared_pairs: F
 # place: plan position of a part: r_in, r_out (default r_in), theta (deg, counter-clockwise from +X seen from +Z),
 # half_width, footprint round (axis-Z part) or radial (radial-axis part). check_stack derives the depth band and the
 # projected x from it (LF-5, TP-4); K8 asserts the drawn x centre = r_c cos(theta) (TP-3).
-# section: [r_in, r_out] of an axis-Z annulus drawn in section as one piece per side (mirrored about x = 0).
+# section: [r_in, r_out] of an axis-Z annulus drawn in section as one piece per side (mirrored about x = 0), or a list
+#   of such pieces [r_in, r_out, z_lo, z_hi] (z in z_A stack names; omitted z = the row's z_rule).
+# Drawing convention (TP1.1-8): rows with `section` are true half-sections; every other round row is a silhouette drawn
+#   over them. Two section rows intersect in 3D exactly when their half-sections overlap, so K7 refuses class N between
+#   two section rows (TP1.1-3). Silhouette rows keep N where they nest.
+# bore_cone: <row id> (TP1.1-3): over the mate's z extent the row's bore follows the mate's outer cone; K5 admits the
+#   four-vertex piece there, and the pair is declared C.
 
 poses:
   - id: load
@@ -100,7 +114,7 @@ poses:
 rubric_additions:
   - "the ring assembly is on the drill tube between the head and the top-end block in every pose (K8 ring_on_tube: bearing clears_above drill_head, gear top_within drill_tube)"
   - "the motors sit on the same side of the gear in every pose, outboard of the pinions, below the gear back face (K8: motor23 side, outboard, top_within gear)"
-  - "the 0.75 m core is drawn solid at load (mid-insertion), start and capture_end and is absent at park; no 0.5 m core is drawn (K9 by row poses; solid line visual only)"
+  - "the 0.75 m core is drawn solid at load (mid-insertion), start and capture_end and is absent at park; no 0.5 m core is drawn (K9 by row poses, both half-spaces: drawn where it applies, no artist at a pose outside row.poses (TP1.1-2, K9-B5); solid line visual only)"
   - "the drill head is at the bottom and the top-end block at the top (K8: drill_head below gear, below drill_top_block)"
 reported:
   - highest point at each pose and its margin to the 2000 mm soft target (jig.height_target, never asserted)
@@ -184,14 +198,18 @@ features:
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od]
+    keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius]
     z_rule: {z_min: "base.plate_thickness", z_max: "receiver_floor + receiver.rim_above_floor"}
+    # cup in section (TP1.1-3): floor either side of the debris hole up to the receiver floor; wall register bore to spigot OD
+    section:
+      - ["receiver.floor_hole_dia / 2", "receiver.register_bore_radius", "base.plate_thickness", receiver_floor]
+      - ["receiver.register_bore_radius", "receiver.spigot_od / 2"]
     depth: ["-receiver.spigot_od / 2", "receiver.spigot_od / 2"]
     label: null
     neighbours:
-      - {id: collet, class: N, source: "R6: collet in the receiver register bore, foot on the receiver floor"}
-      - {id: core_seat, class: N, source: "R6: core-seat ledge inside the collet bore, inside the receiver"}
-      - {id: holder, class: N, source: "R6: holder tube in the receiver bore, flange above the rim"}
+      - {id: collet, class: C, g_min: 0, source: "R6: collet foot on the receiver floor, outer edge at the register bore (TP1.1-3: section rows, N refused)"}
+      - {id: core_seat, class: C, g_min: 0, source: "R6: core-seat ledge on the receiver floor top (TP1.1-3: section rows, N refused)"}
+      - {id: holder, class: C, g_min: 0, source: "R6: holder tube in the register bore (S1 draws holder OD = register bore; build_parts/holder.py has g_reg 0.25), flange above the rim (TP1.1-3)"}
       - {id: wingnut, class: N, source: "R6: wing nut threaded on the receiver"}
       - {id: core_750, class: N, source: "R6: core inside the receiver bore"}
     sense: []
@@ -206,11 +224,12 @@ features:
     projection: trapezoid
     keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha]
     z_rule: {z_min: receiver_floor, z_max: "receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2"}
+    section: ["core.diameter_nominal / 2", "receiver.register_bore_radius"]
     depth: ["-receiver.register_bore_radius", "receiver.register_bore_radius"]
     label: null
     neighbours:
-      - {id: core_seat, class: N, source: "R6: core-seat ledge at the collet bore bottom"}
-      - {id: holder, class: N, source: "R6: holder clamps the collet cone"}
+      - {id: core_seat, class: C, g_min: 0, source: "R6: core-seat ledge at the collet bore bottom, outer edge on the bore (TP1.1-3: section rows, N refused)"}
+      - {id: holder, class: C, g_min: 0, source: "R6: holder clamps the collet cone; contact on the cone face (TP1.1-3: r1 drew 313.12 mm2 per side of interference under N)"}
       - {id: core_750, class: N, source: "R6: core in the collet bore"}
     sense: [{pred: taper, narrows: up, source: "TP-2 ruling (Design Notes 22): build_parts/collet_family.py dims() r(z) = r0 - (z - z_cone) tan(cone.alpha)"}]
     chain: [axial]
@@ -225,6 +244,7 @@ features:
     keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z]
     # z_max is the geometric expression; LF-16 compares it with the stack term core_stop (= collet.core_stop_z)
     z_rule: {z_min: receiver_floor, z_max: "receiver_floor + collet.core_seat_height"}
+    section: ["core.diameter_nominal / 2 - collet.core_seat_width", "core.diameter_nominal / 2"]
     depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
     label: null
     neighbours: []
@@ -238,8 +258,14 @@ features:
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od]
-    z_rule: {z_min: holder_bottom, z_max: "holder_bottom + holder.length"}
+    keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate]
+    # LF1.1-1 (r2): holder.length excludes the flange (test_P18; build_parts/holder.py flange at L to L + t_f). Flange
+    # underside 137.09 z_A, 8.59 above the rim (= witness.zone_high, pose K d+1). stack_ties.holder_flange lints this edge.
+    z_rule: {z_min: holder_bottom, z_max: "holder_bottom + holder.length + holder.flange_thickness"}
+    section:
+      - ["core.diameter_nominal / 2", "receiver.register_bore_radius", holder_bottom, "holder_bottom + holder.length"]
+      - ["core.diameter_nominal / 2", "holder.flange_od / 2", "holder_bottom + holder.length", "holder_bottom + holder.length + holder.flange_thickness"]
+    bore_cone: collet     # TP1.1-3: over the collet height the holder bore follows the collet outer cone (Designer confirms, M1)
     depth: ["-holder.flange_od / 2", "holder.flange_od / 2"]
     label: null
     neighbours:
@@ -271,13 +297,14 @@ features:
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [collar.od, collar.top_above_plate, stop.collar_top_z]
+    keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z]
     # Loftsman 1.1 (b) FIX 1: z_max = collar_top (test_P18 recompute, 159.84 z_A); entry_plane reads this edge
     z_rule: {z_min: "collar_top - collar.top_above_plate", z_max: collar_top}
+    section: ["collar.id / 2", "collar.od / 2"]
     depth: ["-collar.od / 2", "collar.od / 2"]
     label: null
     neighbours:
-      - {id: holder, class: N, source: "collar ring on the holder (collar.thickness on the holder tube top)"}
+      - {id: holder, class: F, source: "TP1.1-3: section rows, N refused. S1 draws the holder to its flange top (145.09 z_A) and the collar from the plate top (153.09): the nut plate lies between, 8.00. build_parts/holder.py runs the tube up to the collar underside; the Designer rules the tube above the flange at M1"}
       - {id: wingnut, class: N, source: "wing nut under the collar ring, over the holder flange"}
       - {id: core_750, class: N, source: "core through the collar bore (collar.id)"}
     sense: []
@@ -557,7 +584,7 @@ features:
       - {id: pinion_b, class: N, source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
     # TP-2 ruling (Design Notes 22): teeth face down onto pinions below; each half-section narrows downward.
     # TP-9 ring_on_tube (b): gear top below the tube top (hand value 544.00 in every pose)
-    sense: [{pred: mirror_about_axis, axis: drill_tube}, {pred: taper, narrows: down, source: "TP-2 ruling, Design Notes 22: back face on top, tooth face below rising outward"}, {pred: top_within, of: drill_tube}]
+    sense: [{pred: mirror_about_axis, axis: drill_tube}, {pred: taper, narrows: down, source: "TP-2 ruling, Design Notes 22: back face on top, tooth face below rising outward"}, {pred: face_rises, toward: outward, source: "Designer TP-2 sign check (b), 1.1 (a) section 6: tooth-face edge dz/dr > 0, cone apex below the gear (TP1.1-1)"}, {pred: top_within, of: drill_tube}]
     chain: []
     moves: true
 

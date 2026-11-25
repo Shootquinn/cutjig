@@ -532,7 +532,7 @@ def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 # ======================================================================== spec lint (SW-1, TP-6, TP-8)
 
 PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
-               "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows"}
+               "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward"}
 
 
 def sense_lint(rows):
@@ -750,6 +750,15 @@ def k5(ctx):
             want = expected_projection(row.get("kind"), row.get("axis"), normal)
             got = classify(a)
             spec_proj = row.get("projection")
+            mate = row.get("bore_cone")
+            if mate and got == "trapezoid" and want == "rectangle":
+                # TP1.1-3: a section row whose bore follows a mating cone (holder over the collet) draws that zone as a
+                # four-vertex piece; it is admitted only inside the mate's drawn z extent
+                ez, mz = extent_z(artist_polys(a)), extent_z(pieces(fig.axes[0], mate))
+                if mz is None or ez[0] < mz[0] - TOL_Z or ez[1] > mz[1] + TOL_Z:
+                    issues.append(f"{pose}/{gid}: bore_cone trapezoid z [{ez[0]:.2f}, {ez[1]:.2f}] outside mate {mate} z "
+                                  + (f"[{mz[0]:.2f}, {mz[1]:.2f}]" if mz else "(not drawn)"))
+                continue
             if want:
                 if got != want:
                     issues.append(f"{pose}/{gid}: {row.get('kind')} axis {row.get('axis')} in {ctx.view} drawn as {got}, needs {want}")
@@ -838,8 +847,11 @@ def plane_agreement_issues(ctx):
         return issues
     import check_stack as cs  # stdlib + sketch_loader only; no cycle
     glob = ctx.stack.get("global_z_A", {})
-    for field in PLANE_FIELDS:
-        lp = ctx.spec.get(field)
+    # LF1.1-1: stack_ties are the same agreement for a feature edge that the params stack reaches by a chain of terms
+    # (holder z_max + nut plate + collar.top_above_plate = collar_top, test_P18). Each entry: {id, term, feature, edge, offset}.
+    fields = [(f, ctx.spec.get(f)) for f in PLANE_FIELDS]
+    fields += [(f"stack_tie {t.get('id', i)}", t) for i, t in enumerate(ctx.spec.get("stack_ties") or [])]
+    for field, lp in fields:
         if not lp:
             continue
         term, feat, edge = lp.get("term"), lp.get("feature"), lp.get("edge", "z_max")
@@ -934,6 +946,14 @@ def k7(ctx):
             (lo, hi), (tlo, thi) = rec["depth_spec"], rec["depth_true"]
             if lo > tlo + TOL_C or hi < thi - TOL_C:
                 issues.append(f"{fid}: spec depth band [{lo:.2f}, {hi:.2f}] does not contain the placed projection [{tlo:.2f}, {thi:.2f}]")
+                failing += 1
+    # TP1.1-3: two coaxial rows drawn in true section intersect in 3D exactly when their half-sections overlap, so a
+    # nest between them is no nest; class N is refused between two `section` rows (declare C, G or F)
+    for a, row in rows.items():
+        for nb in row.get("neighbours") or []:
+            b = nb["id"]
+            if nb["class"] == "N" and row.get("section") and rows.get(b, {}).get("section"):
+                issues.append(f"spec error: {a}|{b} class N between two section rows (declare C, G or F)")
                 failing += 1
     for pose, fig in ctx.figs.items():
         ax = fig.axes[0]
@@ -1065,6 +1085,25 @@ def taper_issue(polys, narrows):
     return None
 
 
+def face_rises_issue(polys, toward):
+    """TP1.1-1 (Designer TP-2 sign check (b)): per piece, the face edge leaves the lowest vertex a along the adjacent
+    edge with the larger radial change, to b; outward requires (z_b - z_a)(|x_b| - |x_a|) > 0 (the tooth face rises
+    with r, cone apex below), inward requires < 0."""
+    for k, poly in enumerate(polys):
+        n = len(poly)
+        i = min(range(n), key=lambda j: (poly[j][1], -abs(poly[j][0])))
+        a = poly[i]
+        b = max((poly[(i - 1) % n], poly[(i + 1) % n]), key=lambda q: abs(abs(q[0]) - abs(a[0])))
+        s = (b[1] - a[1]) * (abs(b[0]) - abs(a[0]))
+        ok = s > 0 if toward == "outward" else s < 0 if toward == "inward" else None
+        if ok is None:
+            return f"unknown face_rises {toward!r}"
+        if not ok:
+            return (f"piece {k}: face from ({a[0]:.2f}, {a[1]:.2f}) to ({b[0]:.2f}, {b[1]:.2f}), "
+                    f"dz {b[1] - a[1]:+.2f} over d|x| {abs(b[0]) - abs(a[0]):+.2f}")
+    return None
+
+
 def k8(ctx):
     rows_list = ctx.spec.get("features", [])
     rows = {r["id"]: r for r in rows_list}
@@ -1157,6 +1196,10 @@ def k8(ctx):
                     t = taper_issue(me, pr["narrows"])
                     if t:
                         issues.append(f"{pose}/{fid} taper narrows {pr['narrows']}: {t}")
+                elif kind == "face_rises":
+                    t = face_rises_issue(me, pr["toward"])
+                    if t:
+                        issues.append(f"{pose}/{fid} face_rises {pr['toward']}: {t}")
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
                   n_issues=len(issues), cause=_cause(absent, len(issues)))
 
@@ -1183,6 +1226,9 @@ def k9(ctx):
         for r in rows:
             if applies(r, pose) and r["id"] not in gids:
                 issues.append(f"{pose}: spec row {r['id']} has no patch" + (" (a Text carries its gid)" if r["id"] in text_gids else ""))
+            # TP1.1-2: the half-space of the pose set; a row with `poses` has no artist at a pose outside it
+            if not applies(r, pose) and (r["id"] in gids or r["id"] in text_gids):
+                issues.append(f"{pose}: {r['id']} drawn at a pose outside its poses {r.get('poses')}")
         for g in sorted((gids | text_gids) - ids):
             issues.append(f"{pose}: tagged artist {g} has no spec row")
     return result("K9", not issues, _summ(issues) if issues else f"every spec row drawn, every tagged artist in the spec ({len(ids)} rows)",

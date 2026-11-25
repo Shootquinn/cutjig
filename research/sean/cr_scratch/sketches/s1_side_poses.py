@@ -82,6 +82,9 @@ def draw_pose(P, spec, stack, pose):
     z0, _ = z("floor")
     sc.draw_hline(ax, "floor", -half_fp, half_fp, z0, linewidth=2)
     _note(ax, -half_fp, z0, "shop floor z_S 0", ha="left", va="top")
+    # TP1.1-7: parts at x = 0 behind or in front of the drill axis are not drawn in the side view
+    _note(ax, half_fp, z0, f"  not drawn (project onto x = 0):\n  third screw set, theta {g('jackscrew.angle')[-1]:g}\n"
+          f"  third pinion and NEMA 23, theta {g('pinion.angle')[0]:g}\n  see S2 plan", ha="left", va="bottom")
     z0, _ = z("height_target")
     sc.draw_hline(ax, "height_target", -half_fp, half_fp, z0, linestyle="--", color=DARK)
 
@@ -110,10 +113,20 @@ def draw_pose(P, spec, stack, pose):
     z0, z1 = z("core_seat")
     _sides(ax, "core_seat", r_bore - g("collet.core_seat_width"), r_bore, z0, z1, fill=True, facecolor=DARK)
 
-    # holder tube (bore at the core OD, wall to the register bore) with the flange on top
+    # holder tube (wall to the register bore) with the flange on top of holder.length (LF1.1-1). Over the collet height
+    # the bore follows the collet outer cone (spec bore_cone, TP1.1-3: contact on the cone face, class C); above the
+    # collet top the bore is at the core OD.
+    zc0, zc1 = z("collet")
+    tan_a = math.tan(math.radians(g("cone.alpha")))
     z0, z1 = z("holder")
     zfl = z1 - g("holder.flange_thickness")
-    _sides(ax, "holder", r_bore, r_reg, z0, zfl)
+    zk = min(zc1, zfl)
+    if z0 < zk:
+        r_c0, r_c1 = r_reg - (z0 - zc0) * tan_a, r_reg - (zk - zc0) * tan_a
+        for s in (-1, 1):
+            pts = [(s * r_c0, z0), (s * r_reg, z0), (s * r_reg, zk), (s * r_c1, zk)]
+            sc.draw("holder", Polygon(pts, closed=True, fill=False), ax)
+    _sides(ax, "holder", r_bore, r_reg, max(z0, zk), zfl)
     _sides(ax, "holder", r_bore, g("holder.flange_od") / 2, zfl, z1)
 
     # wing nut: body, two wings at the bottom to the span, sweep radius as a dashed envelope
