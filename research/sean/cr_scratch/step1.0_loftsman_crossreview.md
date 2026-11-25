@@ -93,3 +93,29 @@ Sutherland-Hodgman (l.250-281): both windings normalised CCW; points on a clip e
 - S1-5a hand 984.84 - 542.5 = 442.34 (code 442.34); S1-5b least clearance hand 384.84 - 153.09 = 231.75 z_A (code 231.75).
 
 CROSS-REVIEW FAIL (LF-1; LF-2, LF-3, LF-4, LF-5, LF-6, LF-7)
+
+## Re-check after revision
+
+Inputs: step1.0_engineer_revision_notes.md; the revised sketch_common.py (`band_gap`, `assess_pair` l.426-468, `stack_anchor_issues` l.739-765, `k7` l.826-924), check_stack.py (`from_shop_floor`, `load_plane`, `park_tip_z_A`, `place_extents` l.180-194), checks_s1.py (`s1_3`, `s1_5b`), s1_spec.yaml, and gameplan l.140. Probe script: scratchpad `lf_recheck.py`. `check_sketch.py --controls` re-run: Z clean 17/17, B fired 50/50, smoke 1/1, exit 0 (MEASURED 2026-11-24).
+
+Hand cases re-run: collar top 159.84 z_A and 219.84 z_S; tips 894.84, 244.84 and 1075.0 z_S; stroke 830.16; screw_a x band [-142.564, -134.564], centre -138.564, depth [76, 84]; kernels 25.0, 3.0, and 0.0 / 4.0 on the cross case. All unchanged and equal to the hand values.
+
+| ID | Status | Evidence (probe hand vs code) |
+|---|---|---|
+| LF-1 | CLOSED | `assess_pair` with band gap d > 0: F passes; C fails when d > 0.05; G passes when max(d, XZ distance) >= g_min - 0.05. Probes: C with bands 490 apart fails ("depth-separated by 490.000"); G10 with d 1 fails (lower bound 1.000); G10 with d 15 passes on the bands; G10 with d 5 and XZ distance 12 passes (lower bound 12); with XZ distance 3 it fails (lower bound 5); C with d 0.03 passes when touching in XZ and fails when the XZ gap is 1. Every case matches the hand rule. K7-B5 and K7-B6 fire in the controls. Gameplan l.140 now states the rule and adds B5 and B6. The same function serves K7 static, swept, undeclared pairs and S1-5b |
+| LF-2 | CLOSED | `stack_anchor_issues` in K6. Live: no issues. z_S sign flipped: five issues (to_shop_floor(0) -60, datum A -60 against 60, receiver floor -20 against 100, collar top 99.84 against 219.84). z_R sign flipped: receiver_to_datum_a(0) -40 and receiver floor 20 against 100. K6-Z2 is clean and K6-B4 fires |
+| LF-3 | CLOSED | Hulls are built per piece, paired by index (l.915-920), and a mismatch in piece count is an issue. Two-piece ring with a post in the bore and 80 mm static clearance: pass, swept:F (Wave 1b gave a false 20800 mm² fire). Post moved to x 95 to 135 across the right half's sweep: fires, overlap 700 = 35 x 20 per pose (hand 35 x 20 = 700). K7-Z6 is clean |
+| LF-4 | CLOSED | The convexity guard sits inside `assess_pair`, so it covers the static, swept and S1-5b paths. L-shaped member in the swept path: fires "non-convex piece in ['L']". Direct `assess_pair` call on an L against a square: (False, non-convex). K7-B9 fires |
+| LF-5 | CLOSED (with TP-4) | `place_extents`, radial footprint: y = [min(r_in s, r_out s) - w abs(c), max + w abs(c)]; this is the Minkowski bound of the radial rectangle, and the round case is a segment swept by a disc. pinion_a at 210 deg, r 110 to 140, w 41.67: [-106.08, -18.92], centre -62.5, half 43.58 (hand 43.58). motor23_a at r 125 to 201, w 28.5: [-125.18, -37.82] (hand: centre -100.5, half 43.68). Gear ±140. A spec band given beside a place is hulled with the true band and linted. K7-B7 fires |
+| LF-6 | CLOSED (harness); value to Sean's gate | One spec field, `load_plane`. The park rule reads its `term`; S1-3 reads its `feature`, `edge` and `offset`. Probe: term collar_top with Q9 extended to 1 m gives park 1209.84 (params U13 1209.84); term core_stop gives 1092.5. Both equal the hand values. The draft keeps core_stop per gameplan l.227. The plane choice is listed for the gate (revision notes section 6, item 1) |
+| LF-7 | CLOSED (harness); value to Sean's gate | Core stop comes from one function, `core_stop_z_A` (42.5 z_A). 292.34 and 719.77 against 542.5 are reported and carried to the gate with the three candidate causes (section 6, item 2). Revision correction 3 is right: `stop.start_z` is travel-derived (params l.179), so the contradiction is between the pose-table wording and the params. A design value is not the harness's to choose |
+
+New, from the re-check:
+
+**LF-16 NOTE. `load_plane` describes one plane twice.** check_stack.py l.108 takes the park rule from `term` (a stack name). checks_s1.py l.89-90 takes S1-3's plane from the drawn `feature` edge plus `offset`. No lint makes the two agree, so `{term: collar_top, feature: core_seat}` would put the park rule and S1-3 on planes 117.34 mm apart while both read green. Draft values agree: core_stop 42.5 z_A = core_seat z_max 102.5 z_S. Fix at 1.1 (b): K6 or a spec lint asserting that to_shop_floor(term) equals the stack z of feature.edge + offset within 0.05.
+
+**LF-17 NOTE. Gameplan l.140 still says "the convex hull of its outline" for the swept case.** The code builds one hull per piece (LF-3). The line should read "per convex piece, the hull of that piece at the lowest and highest pose". This is the orchestrator's file.
+
+Open NOTEs carried as dispositioned: LF-8 (frame_upper.radius 300, to 1.1 a or S2), LF-9, LF-10, LF-11, LF-13 (4a), LF-14. LF-12 and LF-15 are closed (`from_shop_floor`; TP-1 transforms).
+
+CROSS-REVIEW PASS (LF-1 to LF-7 closed; LF-6 and LF-7 design values at Sean's gate; LF-16, LF-17 NOTE)

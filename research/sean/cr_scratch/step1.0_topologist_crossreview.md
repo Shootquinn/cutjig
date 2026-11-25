@@ -93,3 +93,35 @@ Read as images. ctrl_a (K8-B1) and ctrl_b (K8-Z) differ only in the drill_head, 
 **TP-14 NOTE.** The side_xz viewing direction is not stated. With +X right and +Z up, the right-handed reading looks along +Y, and the spec depth sign (`sind(θ)`, +Y far) agrees. State it in `setup_figure` or the spec header so near and far, and hidden lines, are read one way.
 
 CROSS-REVIEW FAIL (TP-1; TP-2, TP-3, TP-4, TP-5, TP-6, TP-7, TP-8, TP-9)
+
+## Re-check after revision
+
+Inputs: step1.0_engineer_revision_notes.md; sketch_common.py (`_to_data` 184-194, `artist_polys` 204-232, k3 588, k5 671-703, k7 826-923, `taper_issue` 945-964, k8 967-1050, k9 1055-1078); check_stack.py `place_extents` 180; s1_spec.yaml `place` and `sense` rows. All results MEASURED 2026-11-24, in-process; no harness file written. Probes: scratchpad `topo_probe.py` (Wave 2 probes against revised code) and `topo_probe2.py` (G, H, J, K re-run on the new builders, plus a 180 deg rotation).
+
+Controls K5, K7, K8, K9 from manifest.yaml: 41/41 as expected, each B carrying its manifest reason substrings (K5 Z, B1-B5; K7 Z1-Z7, B1-B10; K8 Z, Z2, B1-B11; K9 Z, B1-B4).
+
+Tip-up probes:
+- Reflection `Affine2D().scale(1, -1).translate(0, lo + hi)` on the three drill rows: measured head z [1088.47, 1194.84], equal to the rendered extent (hand value lo + hi - z: [1088.47, 1194.84]). K6 fails, off 843.63; K8 fails, head centroid 1141.7 against gear 471.0 and top block 319.8.
+- Rotation `rotate_deg_around(0, mid, 180)`: K6 and K8 fail on the same values.
+- Plan y-mirror by transform (C2): K8 fails, azimuths 330, 210, 90 against 30, 150, 270.
+
+| ID | Status | Evidence |
+|---|---|---|
+| TP-1 | CLOSED | Pieces are now measured through the artist's full transform, `T - transData` (184-194). Tip-up probes above; K8-B8 fires. |
+| TP-2 | CLOSED | Predicate `taper` (945-964) is on collet (down), gear (up), pinion_a/b (inward). K8-B10 and K8-B11 fire. Probe K (gear flipped by transform): K8 fails, width at bottom 35.00, at top 50.00. K6 stays clean, so K8 alone carries taper. The collet direction is ASSUMED and goes to the Designer at 1.1 (a). |
+| TP-3 | CLOSED | `place` sits on every placed row: drill rows at r 0, pinions, motors, screws, nuts, anchors, guides, lift motors, guide member, frame members, descent stop. K8 asserts x centre = r_c cos θ (989-999). Motor side is now `side` sign and `outboard` (1026-1037). Probe J (motor23_a mirrored by transform): projected_x fails, 141.16 against -141.16, and `side` fails. K8-B7 fires. |
+| TP-4 | CLOSED | check_stack `place_extents` derives the band from (r_in, r_out, θ, w); an explicit band is linted against it (k7 831-841). motor23_a band [-125.18, -37.82] against hand [-125.2, -37.8]. Gear ±140 against hand 140. K7-B7 fires on the Wave 2 spec band [-129, -72]. |
+| TP-5 | CLOSED | Undeclared drawn pairs default to F (871-885); class N declares nesting; s1_spec `undeclared_pairs: F`. K7-Z7 is clean and K7-B10 fires. On the draft, S1-FULL shows 58 undeclared pairs, mostly nests; declaring them N is 1.1 (b) spec content. |
+| TP-6 | CLOSED | k5 compares the drawn class with `projection` on every row (697-699) and requires an axis on round kinds (675-677). k9 accepts a Text only for kind callout (1068). Probe G (nut as 64-gon): K5 fails. Probe D: K9 fails "(a Text carries its gid)". K5-B4, K5-B5 and K9-B3 fire. |
+| TP-7 | CLOSED for 1.0 | K3 fails a figure with more than one Axes unless the spec declares `insets` (588). Probe H: K3 fails. Residual: a spec that declares insets suppresses the lint, and K5 to K9 still read `axes[0]` only. Per-Axes iteration is needed when S3 declares its plan inset (detail 1.3 l.258). Carried to S3. |
+| TP-8 | CLOSED | `duplicate_ids` in K9 (1059). Probe E: K9 fails "id anchor_a appears on more than one row". K8 alone still passes that probe; K9 is the guard. K9-B4 fires. |
+| TP-9 | CLOSED for 1.0 | Predicates accept `poses` (1001), and K8-Z2 is clean. The core_750 load z_rule and the rubric line "ring above the core" are Designer content at 1.1 (a)/(b), with a comment at s1_spec 198. My finding allowed carrying them to 1.1 (b). |
+| TP-11 | CLOSED | G failures print "gap - g_min" signed (K7-B3: -1.000). |
+| TP-14 | CLOSED | The `setup_figure` docstring states side views are seen from -Y. |
+| TP-10, TP-12, TP-13 | NOTE, carried | No change needed at 1.0 (TP-12 to the 1.1 M1 gate, TP-13 to S2). |
+
+New observations (NOTE, no finding raised):
+- K6 does not see taper; K8 carries it alone. This is adequate because the taper predicate is in the spec.
+- In the draft spec, the motor radial span (125 to 201) overlaps the pinion span (110 to 140). The Engineer already lists this for the Designer (revision notes section 6 item 5).
+
+CROSS-REVIEW PASS (TP-1 to TP-9 closed for Step 1.0; TP-7 inset iteration carried to S3, TP-9 spec content carried to 1.1 (b))
