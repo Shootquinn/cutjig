@@ -1,6 +1,6 @@
 # S1 checks, revision r0
 
-2026-11-24T22:54:15. Spec s1_spec.yaml (draft, unsigned); script stubs\s1_stub.py. Frame z_S = z_A + jig.datum_a_above_floor.
+2026-11-24T22:57:07. Spec s1_spec.yaml (draft, unsigned); script stubs\s1_stub.py. Frame z_S = z_A + jig.datum_a_above_floor.
 
 | Check | Result | Measured | Threshold | Z | B | Reason |
 |---|---|---|---|---|---|---|
