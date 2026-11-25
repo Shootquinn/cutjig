@@ -564,6 +564,13 @@ Human gate: Sean, then pushed for Quinn.
 - G6: the header Accumulator line is updated to point to `research/sean/accumulator.md`.
 - G7: the -25 mm height margin (2025 mm against the 2000 mm soft target) takes no action until Quinn answers Q2.
 
+**22. Step 1.1 (a) rulings (Sean, 2026-11-25, on `research/sean/cr_scratch/step1.1_designer_params_review.md`).**
+- Option R adopted: `stop.height_range[1]` is re-derived from 315 to 184.84, so the 0.75 m capture ends at `stop.height_z`. Park becomes 959.84 (= params `upper.park_z`), stroke 775, L_min 885.84, so the DN23 900 mm screw fits. Screw length L per Q9 option: 900 / 900 / 1140. The highest point is 1969.84 z_S (+30.16 under the 2000 soft target), which closes G7. S1-2's known-bad control based on 959.84 < 965 is retired.
+- Core loading clearance follows the collar-top plane (159.84 z_A), because the core enters over the collar. The G1 core-stop plane (42.5 z_A) still governs S1-3, where the core rests.
+- Taper senses (TP-2) flipped: the collet narrows upward; the gear teeth face down onto pinions mounted below the gear.
+- The pose table draws only the 0.75 m core, solid at load, start and capture_end; row core_500 is deleted.
+- Designer values (all ASSUMED): ring.position_above_tip 130, jackscrew.anchor_z 265, allowances 30/30/30, collet.core_stop_z 42.5.
+
 ---
 
 ## Echo Site Registry
