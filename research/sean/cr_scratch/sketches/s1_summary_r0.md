@@ -1,6 +1,6 @@
 # S1 checks, revision r0
 
-2026-11-25T11:58:51. Spec s1_spec.yaml (signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)); script stubs\s1_stub.py. Frame z_S = z_A + jig.datum_a_above_floor.
+2026-11-25T12:01:46. Spec s1_spec.yaml (signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)); script stubs\s1_stub.py. Frame z_S = z_A + jig.datum_a_above_floor.
 
 | Check | Result | Measured | Threshold | Z | B | Reason |
 |---|---|---|---|---|---|---|

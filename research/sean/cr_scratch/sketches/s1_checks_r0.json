@@ -1,7 +1,7 @@
 {
  "sketch": "s1",
  "rev": 0,
- "timestamp": "2026-11-25T11:58:51",
+ "timestamp": "2026-11-25T12:01:46",
  "spec": "s1_spec.yaml",
  "spec_status": "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)",
  "script": "stubs\\s1_stub.py",
