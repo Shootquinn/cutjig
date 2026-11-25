@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 0 (drafted, awaiting approval)
+**Current step:** 0 (closed by Manager; awaiting Sean's approval at the gate)
 **lit_review:** no
 
 ---
@@ -61,7 +61,7 @@ These Objectives govern. In "Start here", the line "Lift options are open: arbor
 
 ## Document Structure
 
-Steps 1 to 4 produce sketches, scripts, check records and decision tables; none is a prose document (the Step 1.0 question batch to Quinn is a question list, checked by Q3-1). The one prose document this phase is the week-close configuration record for Quinn (Step 5), and it runs the TDD stages as ordered sub-steps 5.1 to 5.4. Sean confirms at the Step 0 gate that it is prose (Design Notes 9); if he rules it a table-only record, Steps 5.1 to 5.4 collapse into one table step with its own checks.
+Steps 1 to 4 produce sketches, scripts, check records and decision tables; none is a prose document (the Step 1.0 question batch to Quinn is a question list, checked by Q3-0). The one prose document this phase is the week-close configuration record for Quinn (Step 5), and it runs the TDD stages as ordered sub-steps 5.1 to 5.4. Sean confirms at the Step 0 gate that it is prose (Design Notes 9); if he rules it a table-only record, Steps 5.1 to 5.4 collapse into one table step with its own checks.
 
 **The point, in one sentence:** [Filled at Step 5.1 from the accepted sketches. Pattern: "The cut jig is a ring structure carrying the drill, bevel ring gear and three NEMA 23 pinions, lifted 650 mm on three bottom-anchored jack screws at 120 deg over the kept collet base and a frame of [stock], and these params keys and tests change to match."]
 
@@ -86,9 +86,9 @@ Steps 1 to 4 produce sketches, scripts, check records and decision tables; none 
 
 | # | Step | Assigned To | TDD stage | Status |
 |---|------|-------------|-----------|--------|
-| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | Acceptance list: step0_manager_open.md section 1 | In progress (drafted; Software Engineer revision, Wave 2 review and Engineer revision done; Manager close and Sean's gate to follow) |
+| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | Acceptance list: step0_manager_open.md section 1 | Closed by Manager 2026-11-24 (`research/sean/cr_scratch/step0_manager_close.md`); awaiting Sean's approval at the gate |
 | 1 | Sketch set S1 to S6, one sub-step per sketch, each with its own human correction pass before the next is drawn. See detail 1. | The Engineer (spec, scripts, checks), The Designer (params review, spec sign-off, visual gate on an image-capable model), The Loftsman and The Topologist (geometry cross-review on 1.1 (S1), 1.2 (S2), 1.3 (S3), 1.5 (S6)), The Software Engineer (harness at 1.0), Sean (human correction pass) | Per sub-step: spec (outline), red on stub, draw, checks green, orientation preview, cross-review, M1 visual gate, M2 human pass | Not started |
-| 1.0 | Sketch harness: proposed-keys overlay, spec format, shared plot and check library K1 to K9, fixtures, red-first baseline; question batch 1 to Quinn pushed first (detail 1.0, last paragraph) | The Engineer (write harness and batch), The Software Engineer (review, signs harness), Sean (approves and pushes the batch) | Test suite before any sketch geometry; Z and B fixture run; stub run; Q3-1 run on the batch | Not started |
+| 1.0 | Sketch harness: proposed-keys overlay, spec format, shared plot and check library K1 to K9, fixtures, red-first baseline; question batch 1 to Quinn pushed first (detail 1.0, last paragraph) | The Engineer (write harness and batch), The Software Engineer (review, signs harness), Sean (approves and pushes the batch) | Test suite before any sketch geometry; Z and B fixture run; stub run; Q3-0 run on the batch | Not started |
 | 1.1 (S1) | S1 side XZ, whole jig, four poses: is it tall enough, where does the ring sit on the drill, what is the park rule and the lift stroke, does the axial loop close through the base | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S1-1 to S1-6 | Not started |
 | 1.2 (S2) | S2 plan XY: footprint, three screws and three pinions at 120 deg, ring guide members, drill and keep-out, collet axis, operator side | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S2-1 to S2-5 | Not started |
 | 1.3 (S3) | S3 (redefined) side section through one jack screw plus plan inset of all three: bottom anchor, screw and lead, nut mounting, top guide, motor, sync loop, hold device, load arrows, axial loop | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S3-1 to S3-3 | Not started |
@@ -155,7 +155,7 @@ Visual gate: none (no figure of record).
 Human gate: none; The Software Engineer signs the harness, the fixture run and the S1 stub run.
 Run with `C:\Users\UR\AppData\Local\Programs\Python\Python312\python.exe` (matplotlib 3.11.2, PyYAML 6.0.4; shapely absent).
 
-Question batch 1 to Quinn (Start here "ask Quinn early"; critical-path 13.3). File `research/sean/cr_scratch/step1_quinn_batch1.md`, written first at 1.0 open, approved by Sean and pushed as its own save point before the harness work, so Quinn has it before S1 is final. One row per question: ID, question, which sketch or record it feeds, the value used until answered (ASSUMED), answer and date (blank). Contents: Q2 (drill length, mass, top-end hardware, cutter OD); Q9 (core lengths to support; sets the lift stroke, SE-3 via detail 1.1); DN23-a to DN23-e; N5 (the kept base parts carry the cut reaction under the screw lift, Design Notes 16: accept, or name the rating check); N6 (removing the captured 500 mm core from the raised drill); N7 (descent end: is the gate B5 metal stop kept); N8 (ASSEMBLY.md authority, detail 4a); N9 (test_P10_every_key_in_concept_icd_table_exists reads Quinn's cr_scratch file, detail 4a). Q3-1 runs on the batch file (every row has a feed and an ASSUMED stand-in). Step 3 records the answers.
+Question batch 1 to Quinn (Start here "ask Quinn early"; critical-path 13.3). File `research/sean/cr_scratch/step1_quinn_batch1.md`, written first at 1.0 open, approved by Sean and pushed as its own save point before the harness work, so Quinn has it before S1 is final. One row per question: ID, question, which sketch or record it feeds, the value used until answered (ASSUMED), answer and date (blank). Contents: Q2 (drill length, mass, top-end hardware, cutter OD); Q9 (core lengths to support; sets the lift stroke, SE-3 via detail 1.1); DN23-a to DN23-e; N5 (the kept base parts carry the cut reaction under the screw lift, Design Notes 16: accept, or name the rating check); N6 (removing the captured 500 mm core from the raised drill); N7 (descent end: is the gate B5 metal stop kept); N8 (ASSEMBLY.md authority, detail 4a); N9 (test_P10_every_key_in_concept_icd_table_exists reads Quinn's cr_scratch file, detail 4a). `research/sean/cr_scratch/step3_check.py` is written here, before the batch; its batch mode, check Q3-0, runs on the batch file: every row has a feed and an ASSUMED stand-in. Z: a complete fixture batch passes. B: a row with a blank stand-in fires. Red-first: Q3-0 on an empty batch file fails. Q3-1 (detail 3) is added to the same script at Step 3, which records the answers.
 
 **Detail 1, common to 1.1 to 1.6.**
 Each sketch sub-step runs in this order:
@@ -446,6 +446,7 @@ Human gate: Sean, then pushed for Quinn.
 | 5.2 | The Engineer, The Software Engineer | step5_suite.md, Document Structure, step5_matrix.py |
 | 5.3 | The Engineer | step5_outline.md, step5_suite.md, supplements/writing-guides/reporting-copy.md, accepted sketches, Step 2, 3 and 4a outputs |
 | 5.4 | The Designer | step5_configuration_record.md, step5_suite.md, Echo Site Registry, accepted sketch PNGs, step5_matrix.py output |
+| 5.4 | The Engineer (fix) | step5_configuration_record.md, the Designer's 5.4 review, step5_suite.md, step5_matrix.py output, Echo Site Registry |
 | 6 | The Manager | this gameplan, all Step 1 to 5 outputs and check scripts, research/sean/accumulator.md (persona sections) |
 
 ---
@@ -455,6 +456,7 @@ Human gate: Sean, then pushed for Quinn.
 | Step | Date | Notes |
 |------|------|-------|
 | 0 | 2026-11-24 | Drafting variant (A.6.4). Done: Engineer draft; Software Engineer TDD revision; Wave 2 review (Systems Engineer: 2 BLOCKS, 13 FIX, 3 NOTE; Designer: 10 FIX, 5 NOTE); Engineer revision (dispositions in `research/sean/cr_scratch/step0_engineer_revision_notes.md`; both BLOCKS owned by S3-3, S6-5, N4, N5 and Step 2 rows). Pending: Manager close, Sean's gate (decision list in the revision notes: lit_review, Design Notes 4 to 9, 15, 16). Baseline pytest 672 collected, 620 pass, 52 fail (Quinn's header; measured at 4a). |
+| 0 | 2026-11-24 | Closed pending Sean approval. Manager close (`research/sean/cr_scratch/step0_manager_close.md`): READY FOR SEAN; acceptance list 9 of 9, Designer close checklist 12 of 12; header, Start here and Repository Sync byte-identical to commit 4bfad31 except Current step. Manager edits: Current step, Steps row 0, check Q3-0 (batch mode of step3_check.py, written at 1.0), Context Recipe 5.4 Engineer. Accumulator created (`research/sean/accumulator.md`). Gate brief: 13 decisions in the close file. |
 
 ---
 
