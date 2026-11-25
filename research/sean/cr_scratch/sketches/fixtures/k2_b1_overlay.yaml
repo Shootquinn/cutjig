@@ -1,0 +1,7 @@
+# K2 B1 fixture overlay: planted drill.tube_od, which params.yaml already holds (shadow).
+fx:
+  drill_length: {value: 800, unit: mm, source: "[CP §3.2, 18:20]", status: ASSUMED}
+  ring_thickness: {value: 12, unit: mm, source: "no source", status: ASSUMED}
+  ring_od: {value: 420, unit: mm, source: "three screws at 120 deg [DN23]", status: DECLARED}
+drill:
+  tube_od: {value: 152.4, unit: mm, source: "copied from workorder", status: ASSUMED}

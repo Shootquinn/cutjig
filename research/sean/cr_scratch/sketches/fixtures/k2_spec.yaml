@@ -1,0 +1,7 @@
+# K2 fixture spec: keys from params.yaml and from the fixture overlay.
+sketch: k2
+view: side_xz
+poses: [{id: start, tip_z: "stop.start_z[0]"}]
+features:
+  - {id: drill_tube, name: drill tube, kind: cylinder, axis: Z, projection: rectangle, keys: [drill.tube_od, fx.drill_length]}
+  - {id: ring, name: ring, kind: plate, projection: rectangle, keys: [fx.ring_thickness, fx.ring_od], label: {text: ring OD, key: fx.ring_od, fmt: ".0f"}}

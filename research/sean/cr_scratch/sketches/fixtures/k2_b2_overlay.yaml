@@ -1,0 +1,5 @@
+# K2 B2 fixture overlay: planted leaf with an empty source.
+fx:
+  drill_length: {value: 800, unit: mm, source: "[CP §3.2, 18:20]", status: ASSUMED}
+  ring_thickness: {value: 12, unit: mm, source: "", status: ASSUMED}
+  ring_od: {value: 420, unit: mm, source: "three screws at 120 deg [DN23]", status: DECLARED}

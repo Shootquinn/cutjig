@@ -1,0 +1,611 @@
+# S1 spec, side XZ, whole jig, four poses (research/sean/gameplan.md detail 1.1, lines 205-236).
+status: draft, unsigned
+# DRAFT for the Step 1.0 red-first stub run. Step 1.1 (a) Designer params review and shape notes, (b) Engineer revision,
+# Designer and Loftsman signatures, (c) red-first re-run supersede it. No drawing before the signed spec.
+sketch: s1
+script: s1_side_poses.py
+view: side_xz
+z_rule_frame: z_A          # check_stack.py evaluates z_rule and tip_z in z_A and converts to z_S (shop floor) once
+plot_frame: z_S            # z_S = z_A + jig.datum_a_above_floor (Design Notes 17)
+question: >-
+  Is the jig tall enough, where along the drill does the ring sit, where are the screw anchors and top guides,
+  what are the park rule and the lift stroke, and which frame and base members carry the axial loop?
+closes:
+  R: [R1, R2, R3, R4, R5, R6, R7, R8, R17]
+  Q: [Q1, Q9]
+  carries_assumed: [Q2]
+  re_derives: ["U13 park rule (upper.park_z 959.84 below stop.start_z 965)", "stop.height_range[1] 315 (not re-derived in params)"]
+q9_length_keys: [core.length_capture, core.length_install]   # batch 1 Q9 stand-in: 500 and 750 drawn, 1000 not drawn
+park_rule_draft: "park tip z_A = max(max(stop.start_z), core_stop + max(Q9 lengths)) + upper.load_clearance (check_stack.park_tip_z_A); ASSUMED, signed at 1.1"
+poses:
+  - {id: load,        tip_z: park_tip,         cores: "0.75 m mid-insertion dashed; 0.5 m solid", purpose: "operator loads a core under the held ring"}
+  - {id: start,       tip_z: "stop.start_z[0]", cores: "0.5 m in the collet (stop.start_z[1] for 0.75 m, dashed)", purpose: "cutter at first contact"}
+  - {id: capture_end, tip_z: "stop.height_z",   cores: "0.5 m inside the drill bore", purpose: "lowest ring position; S1-5a, S1-5b"}
+  - {id: park,        tip_z: park_tip,         cores: "none required", purpose: "top of the lift stroke, held by the Step 2 hold device"}
+rubric_additions:
+  - the ring is on the drill above the core in every pose
+  - the motors sit on the same side of the gear in every pose
+  - the 0.75 m core is dashed in the load and park poses only
+  - the drill head is at the bottom and the top-end block at the top
+reported:
+  - highest point at each pose and its margin to the 2000 mm soft target (jig.height_target, never asserted)
+  - ring position along the drill (N1) and the anchor and guide heights it sets
+  - re-derived park rule as an expression for Step 4
+  - lift stroke and screw length L (detail 1.3 formula) for each Q9 option (0.5 m; 0.5 and 0.75 m; plus 1 m)
+  - centre-of-mass height per pose and unbolted tip force at the frame top (overlay masses ASSUMED; icd.tipover_statement is the old reference)
+descent_stop: "drawn: row descent_stop, metal stop kept (N7 stand-in, upper.metal_stop DECLARED gate B5); Step 2 rules"
+
+# Row fields per gameplan l.130. shape: draft note, The Designer replaces it at 1.1 (a). z_rule in z_A.
+features:
+  - id: floor
+    name: shop floor
+    shape: "line, full footprint width"
+    kind: line
+    axis: null
+    projection: line
+    keys: [jig.datum_a_above_floor, icd.footprint_x]
+    z_rule: {z_min: shop_floor, z_max: shop_floor}
+    depth: null
+    label: null
+    neighbours: []
+    sense: []
+    chain: []
+    moves: false
+
+  - id: base_frame
+    name: base frame
+    shape: "30-6060 rails in section along X, end members behind (Designer 1.1 a)"
+    kind: prism
+    axis: X
+    projection: rectangle
+    keys: [profile.height, profile.width, icd.footprint_x, icd.footprint_y]
+    z_rule: {z_min: shop_floor, z_max: 0}
+    depth: ["-icd.footprint_y / 2", "icd.footprint_y / 2"]
+    label: null
+    neighbours: [{id: base_plate, class: C, g_min: 0, source: "icd.datum_a (frame top plane = plate underside)"}]
+    sense: [{pred: below, of: base_plate}]
+    chain: [axial]
+    moves: false
+
+  - id: base_plate
+    name: base plate
+    shape: "plate in section, receiver spigot hole"
+    kind: plate
+    axis: null
+    projection: rectangle
+    keys: [base.plate_thickness, icd.footprint_x, icd.footprint_y]
+    z_rule: {z_min: 0, z_max: "base.plate_thickness"}
+    depth: ["-icd.footprint_y / 2", "icd.footprint_y / 2"]
+    label: null
+    neighbours: [{id: receiver, class: C, g_min: 0, source: "receiver.spigot_od in base.spigot_hole_dia"}]
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: receiver
+    name: receiver
+    shape: "cup in section: register bore, floor with debris hole, thread"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od]
+    z_rule: {z_min: "base.plate_thickness", z_max: "receiver_floor + receiver.rim_above_floor"}
+    depth: ["-receiver.spigot_od / 2", "receiver.spigot_od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: collet
+    name: collet
+    shape: "cone section, narrow end per cone.alpha as ASSEMBLY.md; S4 details it"
+    kind: cone
+    axis: Z
+    projection: trapezoid
+    keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha]
+    z_rule: {z_min: receiver_floor, z_max: "receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2"}
+    depth: ["-receiver.register_bore_radius", "receiver.register_bore_radius"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: core_seat
+    name: collet core seat
+    shape: "ledge in section at the collet bottom"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal]
+    z_rule: {z_min: receiver_floor, z_max: core_stop}
+    depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: holder
+    name: holder
+    shape: "tube with flange in section, pose K at core d + 1.0"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od]
+    z_rule: {z_min: holder_bottom, z_max: "holder_bottom + holder.length"}
+    depth: ["-holder.flange_od / 2", "holder.flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: wingnut
+    name: wing nut
+    shape: "nut body with two wings, sweep radius shown"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span]
+    z_rule: {z_min: "collar_top - collar.top_above_plate - nut.overall_height", z_max: "collar_top - collar.top_above_plate"}
+    depth: ["-wingnut.sweep_clear_radius", "wingnut.sweep_clear_radius"]
+    label: {text: "wing nut sweep r", key: wingnut.sweep_clear_radius, fmt: ".0f"}
+    neighbours: []
+    sense: [{pred: below, of: drill_head}]
+    chain: []
+    moves: false
+
+  - id: core_500
+    name: capture core
+    shape: "upright cylinder, solid outline"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [core.length_capture, core.diameter_nominal]
+    z_rule: {z_min: core_stop, z_max: "core_stop + core.length_capture"}
+    depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
+    label: {text: "core", key: core.length_capture, fmt: ".0f"}
+    neighbours:
+      - {id: bore_ceiling, class: G, g_min: 25, poses: [capture_end], source: "stop.g_stop DECLARED as cutter gap; reuse ASSUMED (S1-5a)"}
+    sense: [{pred: rests_on, on: core_seat, tol: 0.05}]
+    chain: [axial]
+    moves: false
+    poses: [load, start, capture_end]
+
+  - id: core_750
+    name: install core
+    shape: "upright cylinder, dashed outline"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [core.length_install, core.diameter_nominal]
+    z_rule: {z_min: core_stop, z_max: "core_stop + core.length_install"}
+    depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
+    label: {text: "core", key: core.length_install, fmt: ".0f"}
+    neighbours: []
+    sense: [{pred: rests_on, on: core_seat, tol: 0.05}]
+    chain: []
+    moves: false
+    poses: [load, park]
+
+  - id: drill_head
+    name: drill head
+    shape: "cutters and iris, wider than the tube; distinct from the top-end block (D4)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [drill.head_od, drill.head_length]
+    z_rule: {z_min: tip, z_max: head_top}
+    depth: ["-drill.head_od / 2", "drill.head_od / 2"]
+    label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
+    neighbours: []
+    sense: [{pred: below, of: gear}, {pred: below, of: drill_top_block}]
+    chain: [axial]
+    moves: true
+
+  - id: drill_tube
+    name: drill tube
+    shape: "rectangle, tube OD"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [drill.tube_od, drill.length, drill.head_length]
+    z_rule: {z_min: head_top, z_max: drill_top}
+    depth: ["-drill.tube_od / 2", "drill.tube_od / 2"]
+    label: {text: "tube OD", key: drill.tube_od, fmt: ".1f", suffix: "(keep-out basis)"}
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: true
+
+  - id: drill_top_block
+    name: top-end block
+    shape: "block on the drill top end (Q2c)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [drill.top_block_od, drill.top_block_length]
+    z_rule: {z_min: drill_top, z_max: top_block_top}
+    depth: ["-drill.top_block_od / 2", "drill.top_block_od / 2"]
+    label: {text: "top block", key: drill.top_block_length, fmt: ".0f"}
+    neighbours: []
+    sense: []
+    chain: []
+    moves: true
+
+  - id: bore_ceiling
+    name: drill bore ceiling
+    shape: "dashed line across the bore at the lowest bore-closing part"
+    kind: line
+    axis: null
+    projection: line
+    keys: [drill.bore_ceiling_above_tip, drill.tube_id]
+    z_rule: {z_min: bore_ceiling, z_max: bore_ceiling}
+    depth: ["-drill.tube_id / 2", "drill.tube_id / 2"]
+    label: {text: "bore ceiling above tip", key: drill.bore_ceiling_above_tip, fmt: ".0f"}
+    neighbours: []
+    sense: []
+    chain: []
+    moves: true
+
+  - id: keepout
+    name: keep-out
+    shape: "two dashed vertical lines at +/- icd.keepout_radius"
+    kind: line
+    axis: null
+    projection: line
+    keys: [icd.keepout_radius]
+    z_rule: {z_min: receiver_floor, z_max: top_block_top}
+    depth: null
+    label: {text: "keep-out r", key: icd.keepout_radius, fmt: ".1f"}
+    neighbours: []
+    sense: []
+    chain: []
+    moves: true
+
+  - id: ring
+    name: ring structure
+    shape: "plate with three nut housings and three motor mounts, central bore; reads as a structure (8.4b)"
+    kind: plate
+    axis: null
+    projection: rectangle
+    keys: [ring.od, ring.thickness, ring.position_above_tip, ring.clearance_bore, ring.nut_housing_od, ring.nut_housing_height]
+    z_rule: {z_min: ring_bottom, z_max: ring_top}
+    depth: ["-ring.od / 2", "ring.od / 2"]
+    label: {text: "ring above tip", key: ring.position_above_tip, fmt: ".0f"}
+    neighbours:
+      - {id: wingnut, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
+      - {id: holder, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
+      - {id: receiver, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
+      - {id: frame_upper_a, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
+      - {id: frame_upper_b, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
+      - {id: liftmotor_a, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
+      - {id: liftmotor_b, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
+      - {id: descent_stop, class: C, g_min: 0, poses: [capture_end], source: "N7 stand-in: ring lands on the metal stop"}
+    sense: [{pred: above, of: core_seat}]
+    chain: [axial]
+    moves: true
+
+  - id: bearing
+    name: drill-to-ring bearing
+    shape: "nested rectangles, outer and inner race (8.4.1)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [bearing.bore, bearing.od, bearing.height]
+    z_rule: {z_min: ring_bottom, z_max: "ring_bottom + bearing.height"}
+    depth: ["-bearing.od / 2", "bearing.od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: true
+
+  - id: gear
+    name: ring gear
+    shape: "bevel ring gear section, two trapezoids mirrored about the drill axis, teeth facing the pinions"
+    kind: gear
+    axis: Z
+    projection: trapezoid
+    keys: [gear.pitch_diameter, gear.bore, gear.face_width, gear.pitch_angle]
+    z_rule: {z_min: ring_top, z_max: gear_top}
+    depth: ["-gear.pitch_diameter / 2", "gear.pitch_diameter / 2"]
+    label: {text: "gear PD", key: gear.pitch_diameter, fmt: ".0f"}
+    neighbours: []
+    sense: [{pred: mirror_about_axis, axis: drill_tube}]
+    chain: []
+    moves: true
+
+  - id: pinion_a
+    name: bevel pinion
+    shape: "trapezoid at azimuth pinion.angle[1] as projected"
+    kind: gear
+    axis: X
+    projection: trapezoid
+    keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, gear.pitch_diameter, gear.face_width]
+    z_rule: {z_min: ring_top, z_max: gear_top}
+    depth: ["gear.pitch_diameter / 2 * sind(pinion.angle[1]) - gear.face_width / 2", "gear.pitch_diameter / 2 * sind(pinion.angle[1]) + gear.face_width / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: []
+    moves: true
+    azimuth: "pinion.angle[1]"
+
+  - id: pinion_b
+    name: bevel pinion
+    shape: "trapezoid at azimuth pinion.angle[2] as projected"
+    kind: gear
+    axis: X
+    projection: trapezoid
+    keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, gear.pitch_diameter, gear.face_width]
+    z_rule: {z_min: ring_top, z_max: gear_top}
+    depth: ["gear.pitch_diameter / 2 * sind(pinion.angle[2]) - gear.face_width / 2", "gear.pitch_diameter / 2 * sind(pinion.angle[2]) + gear.face_width / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: []
+    moves: true
+    azimuth: "pinion.angle[2]"
+
+  - id: motor23_a
+    name: NEMA 23
+    shape: "body and shaft, radial axis, outboard of pinion_a"
+    kind: cylinder
+    axis: X
+    projection: rectangle
+    keys: [pinion.motor_body, pinion.motor_length, pinion.angle, pinion.motor_class]
+    z_rule: {z_min: ring_top, z_max: "ring_top + pinion.motor_body"}
+    depth: ["(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[1]) - pinion.motor_body / 2", "(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[1]) + pinion.motor_body / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: above, of: ring}]
+    chain: []
+    moves: true
+    azimuth: "pinion.angle[1]"
+
+  - id: motor23_b
+    name: NEMA 23
+    shape: "body and shaft, radial axis, outboard of pinion_b"
+    kind: cylinder
+    axis: X
+    projection: rectangle
+    keys: [pinion.motor_body, pinion.motor_length, pinion.angle, pinion.motor_class]
+    z_rule: {z_min: ring_top, z_max: "ring_top + pinion.motor_body"}
+    depth: ["(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[2]) - pinion.motor_body / 2", "(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[2]) + pinion.motor_body / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: above, of: ring}]
+    chain: []
+    moves: true
+    azimuth: "pinion.angle[2]"
+
+  - id: screw_a
+    name: T8 jack screw
+    shape: "rectangle 8 mm wide, anchor to guide, lead labelled"
+    kind: screw
+    axis: Z
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, jackscrew.length]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.top_guide_z"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nominal / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nominal / 2"]
+    label: {text: "T8 screw L", key: jackscrew.length, fmt: ".0f"}
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+    azimuth: "jackscrew.angle[1]"
+
+  - id: screw_b
+    name: T8 jack screw
+    shape: "rectangle 8 mm wide, anchor to guide"
+    kind: screw
+    axis: Z
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.top_guide_z"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nominal / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nominal / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+    azimuth: "jackscrew.angle[0]"
+
+  - id: nut_a
+    name: lead-screw nut
+    shape: "flange nut in the ring housing"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.nut_length, jackscrew.nut_flange_od, ring.thickness]
+    z_rule: {z_min: "nut_z - jackscrew.nut_length / 2", z_max: "nut_z + jackscrew.nut_length / 2"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: below, of: guide_a}]
+    chain: [axial]
+    moves: true
+
+  - id: nut_b
+    name: lead-screw nut
+    shape: "flange nut in the ring housing"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.nut_length, jackscrew.nut_flange_od, ring.thickness]
+    z_rule: {z_min: "nut_z - jackscrew.nut_length / 2", z_max: "nut_z + jackscrew.nut_length / 2"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: below, of: guide_b}]
+    chain: [axial]
+    moves: true
+
+  - id: anchor_a
+    name: bottom anchor
+    shape: "thrust bearing block on the frame member"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: below, of: nut_a}]
+    chain: [axial]
+    moves: false
+
+  - id: anchor_b
+    name: bottom anchor
+    shape: "thrust bearing block on the frame member"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: below, of: nut_b}]
+    chain: [axial]
+    moves: false
+
+  - id: guide_a
+    name: top guide
+    shape: "radial support block at the screw top"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.top_guide_z, jackscrew.guide_allowance]
+    z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: []
+    moves: false
+
+  - id: guide_b
+    name: top guide
+    shape: "radial support block at the screw top"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.top_guide_z, jackscrew.guide_allowance]
+    z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: []
+    moves: false
+
+  - id: liftmotor_a
+    name: NEMA 17 lift motor
+    shape: "body and shaft above the top guide (option; S3 draws the choice)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [liftmotor.body, liftmotor.length, jackscrew.top_guide_z]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + liftmotor.length"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - liftmotor.body / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + liftmotor.body / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: above, of: guide_a}]
+    chain: []
+    moves: false
+
+  - id: liftmotor_b
+    name: NEMA 17 lift motor
+    shape: "body and shaft above the top guide (option; S3 draws the choice)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [liftmotor.body, liftmotor.length, jackscrew.top_guide_z]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + liftmotor.length"}
+    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - liftmotor.body / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + liftmotor.body / 2"]
+    label: null
+    neighbours: []
+    sense: [{pred: above, of: guide_b}]
+    chain: []
+    moves: false
+
+  - id: guide_member
+    name: ring guide rod
+    shape: "round rod with the ring bushing; anti-rotation and lateral guide (N2); position until S2 places it"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [guide.length, guide.rod_od, guide.radius, guide.angle]
+    z_rule: {z_min: 0, z_max: "guide.length"}
+    depth: ["guide.radius * sind(guide.angle[0]) - guide.rod_od / 2", "guide.radius * sind(guide.angle[0]) + guide.rod_od / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [torque]
+    moves: false
+
+  - id: frame_upper_a
+    name: screw frame member
+    shape: "vertical 30-6060 from base frame to top guide, carries anchor and guide"
+    kind: prism
+    axis: Z
+    projection: rectangle
+    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
+    z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
+    depth: ["frame_upper.radius * sind(jackscrew.angle[1]) - profile.width / 2", "frame_upper.radius * sind(jackscrew.angle[1]) + profile.width / 2"]
+    label: null
+    neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: frame_upper_b
+    name: screw frame member
+    shape: "vertical 30-6060 from base frame to top guide, carries anchor and guide"
+    kind: prism
+    axis: Z
+    projection: rectangle
+    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
+    z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
+    depth: ["frame_upper.radius * sind(jackscrew.angle[0]) - profile.width / 2", "frame_upper.radius * sind(jackscrew.angle[0]) + profile.width / 2"]
+    label: null
+    neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: descent_stop
+    name: descent stop
+    shape: "metal pad under the ring at the lowest pose (N7 stand-in: kept)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [stop.pad_thickness, stop.pad_width, ring.position_above_tip, upper.metal_stop]
+    z_rule: {z_min: "ring_bottom_low - stop.pad_thickness", z_max: ring_bottom_low}
+    depth: ["frame_upper.radius * sind(jackscrew.angle[1]) - stop.pad_width / 2", "frame_upper.radius * sind(jackscrew.angle[1]) + stop.pad_width / 2"]
+    label: null
+    neighbours: []
+    sense: []
+    chain: [axial]
+    moves: false
+
+  - id: height_target
+    name: soft height target
+    shape: "dashed reference line, never a limit"
+    kind: line
+    axis: null
+    projection: line
+    keys: [jig.height_target]
+    z_rule: {z_min: height_target_z_A, z_max: height_target_z_A}
+    depth: null
+    label: {text: "soft target", key: jig.height_target, fmt: ".0f"}
+    neighbours: []
+    sense: []
+    chain: []
+    moves: false
+    reference: true
