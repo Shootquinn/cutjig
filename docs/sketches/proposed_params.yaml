@@ -30,7 +30,7 @@ ring:
   nut_housing_height: {value: 30, unit: mm, source: "= jackscrew.nut_length; no source", status: ASSUMED}
   nut_mounting: {value: "rigid (S3-2 K = 1.0); floating option gives K = 2.0", unit: "", source: "gameplan detail 1.3; Sean picks at the S3 M2 pass (N2)", status: ASSUMED}
   motor_mount_count: {value: 3, unit: "", source: "one per pinion; pinion.count [DN23]", status: DERIVED}
-  motor_mount_placement: {value: "at each pinion.angle, phase to the screws per S2", unit: "", source: "gameplan detail 1.0 ring.* seed", status: ASSUMED}
+  motor_mount_placement: {value: "at each pinion.angle; pinion azimuths = screw azimuths + 60 deg (pinion.angle), S2; Designer 1.2 (a), Sean STOP S2-A O1-B", unit: "", source: "gameplan detail 1.0 ring.* seed; Designer 1.2 (b) sign-off FIX 4", status: ASSUMED}
   clearance_bore: {value: 200, unit: mm, source: "Designer 1.1 (a): = bearing.od 200 (bearing seat ID); 13.8 over icd.keepout_radius 86.2 per side", status: DERIVED}
   gear_seat: {value: "none: the gear turns with the drill on gear.hub; the ring carries ring.pinion_support", unit: "", source: "Designer 1.1 (a); gameplan Design Notes 1 (the ring does not turn, the gear does)", status: ASSUMED}
   pinion_support: {value: "none separate at S1: each pinion is carried on its NEMA 23 shaft and motor bearings; the motor mount (ring.motor_mount_*) is the support; an outboard bushing is an S6 option if the mesh or drill-weight load exceeds the motor shaft rating", unit: "", source: "Designer 1.1 (b): pinion on the NEMA 23 shaft; 2 mm between pinion back r 140 and flange r 142", status: ASSUMED}
@@ -62,7 +62,7 @@ guide:
   bushing_length: {value: 42, unit: mm, source: "LM20UU class; Designer 1.2 (a) section 9", status: ASSUMED}
   bushing_housing_od: {value: 40, unit: mm, source: "2 x ring.guide_lug_half_width 20; Designer 1.2 (a) section 9", status: DERIVED}
   bushing_drop: {value: 30, unit: mm, source: "guide.bushing_length 42 - ring.thickness 12: housing hangs below the ring underside; Designer 1.2 (a) section 9", status: DERIVED}
-  top_support: {value: "tie from each rod top (z_A 1212) to the nearest screw frame member: rod at guide.angle[0] to the member at jackscrew.angle[0], rod at guide.angle[1] to the member at jackscrew.angle[1]; 30-6060 stand-in; Step 2 decides", unit: "", source: "Designer 1.2 (a) section 1 row 21", status: ASSUMED}
+  top_support: {value: "30-6060 tie on each top-guide bracket arm at jackscrew.angle[0] and [1], z_A 1165 to 1225, rod top (1212) in a bore in the tie, tie end at the member's near corner; rod at guide.angle[0] to member at jackscrew.angle[0], rod at guide.angle[1] to member at jackscrew.angle[1]; Step 2 decides", unit: "", source: "Designer 1.2 (b) sign-off FIX 1", status: ASSUMED}
 
 gear:
   pitch_diameter: {value: 250, unit: mm, source: "bought bevel ring gear; no source; batch 1 DN23-d", status: ASSUMED}

@@ -479,14 +479,29 @@ def strip_corners(a, b, w):
 def plan_poly_pieces(row, P, names):
     """Spec field plan_poly (1.2 (b), plan rows with no radial or round footprint: base plate less the column notches,
     base frame members, plate holes, slot lines, guide ties). A list of convex pieces; each piece is a list of [x, y]
-    expression pairs (two points: a segment) or {strip: {from: [x, y], to: [x, y], half_width: e}}. Returns the pieces
-    as lists of (x, y) in plan, mm."""
+    expression pairs (two points: a segment) or {strip: {from: [x, y], to: [x, y], half_width: e}}. A strip may also
+    carry `back: e` (start e behind `from` along the axis u = unit(to - from)) and `stop_at: [x, y]` (end at the station
+    of that point on the axis, u . (point - from); `to` then sets the direction only). 1.2 (b) Designer FIX 1: the guide
+    tie runs 30 past the rod centre and ends at the member's near corner. Returns the pieces as lists of (x, y) in plan,
+    mm."""
     out = []
     for pc in row.get("plan_poly") or []:
         if isinstance(pc, dict) and "strip" in pc:
             st = pc["strip"]
             a = tuple(eval_expr(e, P, names) for e in st["from"])
             b = tuple(eval_expr(e, P, names) for e in st["to"])
+            if "back" in st or "stop_at" in st:
+                L = math.hypot(b[0] - a[0], b[1] - a[1])
+                if L < EPS:
+                    raise ValueError("plan strip direction of zero length")
+                u = ((b[0] - a[0]) / L, (b[1] - a[1]) / L)
+                s0 = -eval_expr(st.get("back", 0), P, names)
+                if "stop_at" in st:
+                    k = tuple(eval_expr(e, P, names) for e in st["stop_at"])
+                    s1 = u[0] * (k[0] - a[0]) + u[1] * (k[1] - a[1])
+                else:
+                    s1 = L
+                a, b = (a[0] + s0 * u[0], a[1] + s0 * u[1]), (a[0] + s1 * u[0], a[1] + s1 * u[1])
             out.append(strip_corners(a, b, eval_expr(st["half_width"], P, names)))
         else:
             out.append([tuple(eval_expr(e, P, names) for e in pt) for pt in pc])
@@ -550,6 +565,8 @@ def evaluate_spec(P, spec):
                     rec["depth"] = [min(rec["depth"][0], y[0]), max(rec["depth"][1], y[1])]
             elif pl:
                 rec["depth"] = list(y)
+            elif row.get("plan_poly"):   # 1.2 (b): side-view depth band of a plan_poly row (S1 r5 guide ties) = its plan y extent
+                rec["depth"] = list(rec["plan_y"])
             feats[row["id"]] = rec
         out["poses"][pid] = {"tip_z_A": tip, "tip_z_S": to_shop_floor(tip, P), "vars_z_A": names, "features": feats}
     return out

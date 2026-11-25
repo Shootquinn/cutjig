@@ -9,9 +9,13 @@ status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
 # frame_upper.radius 300 -> 274 (Sean STOP S2-A, Design Notes 27, option A) opens S1 r5. No key, expression or class
 # changes here: the place expressions read the key. Text that quoted the old radius now reads r 244 (member inner face)
 # and r 244 to 304 (member square); bracket arms 63 long (were 89). The theta 270 screw set, third pinion and NEMA 23
-# are drawn in S2, not here (S2-f); member c stands on the rail top in base.column_notch (S2 frame_upper_c). The LM20UU
-# bushing housing under each guide lug (guide.bushing_*) is drawn in S2 (rows guide_bushing_a, _b) and not in S1 r5.
-# Shape text is not a comment or a source string: the Loftsman rules at P3b whether these shape edits stand.
+# are drawn in S2, not here (S2-f); member c stands on the rail top in base.column_notch (S2 frame_upper_c).
+# Shape text is not a comment or a source string: the Loftsman rules at P3b whether these shape edits stand (ruled: they
+# stand, step1.2_loftsman_spec_signoff.md section 3).
+# r5 row edits (The Engineer, 1.2 (b) fix pass, step1.2_engineer_spec_fixes.md; Loftsman FIX 1, Sean option A, gameplan
+# Design Notes 28): rows guide_bushing_a/_b (LM20UU housings under the lugs) and guide_tie_a/_b (rod top ties on the
+# top-guide arms, Designer 1.2 (b) FIX 1) added with the S2 place, plan_poly and z_rule expressions; guide_lug_a/_b shape
+# text as S2 and lug|housing C; not_drawn field (LM20UU bushing inside the housing). S1-5b gains the housings.
 # r3 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r3.md, from sketches/s1_visual_gate_r2.md F1 to F5),
 # re-sign due (Designer; Loftsman for placement): rows bracket_anchor_a/_b, bracket_guide_a/_b (F2), descent_stop_post
 # (F3), motor_shaft_a/_b and pinion_axis_a/_b (F1), labels on anchor_b, guide_b, frame_upper_b, drill_head (tip z_edge),
@@ -149,6 +153,9 @@ reported:
   - lift stroke and screw length L (screw_length expressions) for each Q9 option (q9_options)
   - centre-of-mass height per pose and unbolted tip force at the frame top (overlay masses ASSUMED; icd.tipover_statement is the old reference)
 descent_stop: "drawn: row descent_stop, metal pad on post descent_stop_post on bracket arm bracket_anchor_a at jackscrew.angle[1], under the ring rim (N7 stand-in, upper.metal_stop DECLARED gate B5); Step 2 rules"
+# r5 (detail 1 common (b)): parts a shape string names that have no row.
+not_drawn:
+  - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2, as S2)"}
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups): {use: <group>} in a row's neighbours expands to these.
 neighbour_groups:
@@ -511,7 +518,7 @@ features:
 
   - id: guide_lug_a
     name: guide lug
-    shape: "ring guide lug with linear bushing at guide.angle[0], ring rim to ring.guide_lug_r_out, ring thickness (part of the ring structure)"
+    shape: "guide lug at guide.angle[0], ring rim to r 250 (ring.guide_lug_r_out), 40 wide, ring thickness, with the LM20UU housing d 40 below it (row guide_bushing_a) round the rod (row guide_member) (part of the ring structure)"
     kind: prism
     axis: null
     projection: rectangle
@@ -522,13 +529,14 @@ features:
     neighbours:
       - {use: fixed_g10}
       - {id: guide_member, class: N, source: "R6: guide rod through the lug bushing (N2)"}
+      - {id: guide_bushing_a, class: C, g_min: 0, source: "housing under the lug, top on the ring underside (Designer 1.2 (a) S2-d; as S2)"}
     sense: []
     chain: [torque]
     moves: true
 
   - id: guide_lug_b
     name: guide lug
-    shape: "ring guide lug with linear bushing at guide.angle[1], ring rim to ring.guide_lug_r_out, ring thickness (part of the ring structure)"
+    shape: "guide lug at guide.angle[1], ring rim to r 250 (ring.guide_lug_r_out), 40 wide, ring thickness, with the LM20UU housing d 40 below it (row guide_bushing_b) round the rod (row guide_member_b) (part of the ring structure)"
     kind: prism
     axis: null
     projection: rectangle
@@ -539,6 +547,44 @@ features:
     neighbours:
       - {use: fixed_g10}
       - {id: guide_member_b, class: N, source: "R6: guide rod through the lug bushing (N2)"}
+      - {id: guide_bushing_b, class: C, g_min: 0, source: "housing under the lug, top on the ring underside (Designer 1.2 (a) S2-d; as S2)"}
+    sense: []
+    chain: [torque]
+    moves: true
+
+  # r5 (Loftsman 1.2 (b) FIX 1, option A): LM20UU housings, place and z_rule as s2_spec.yaml guide_bushing_a/_b
+  - id: guide_bushing_a
+    name: guide bushing housing
+    shape: "LM20UU bushing housing block d 40 under the lug (row guide_lug_a), concentric with the rod (row guide_member), hanging 30 below the ring underside; the bushing (OD 32 x 42) inside is not drawn (not_drawn)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [guide.bushing_type, guide.bushing_od, guide.bushing_length, guide.bushing_housing_od, guide.bushing_drop, guide.radius, guide.angle, ring.thickness]
+    z_rule: {z_min: "ring_bottom - guide.bushing_drop", z_max: ring_bottom}
+    place: {r_in: guide.radius, theta: "guide.angle[0]", half_width: "guide.bushing_housing_od / 2", footprint: round}
+    label: null
+    neighbours:
+      - {use: s1_5b_base}
+      - {use: fixed_g10}
+      - {id: guide_member, class: N, source: "rod in the bushing (Designer 1.2 (a) section 10, declared N; as S2)"}
+    sense: []
+    chain: [torque]
+    moves: true
+
+  - id: guide_bushing_b
+    name: guide bushing housing
+    shape: "LM20UU bushing housing block d 40 under the lug (row guide_lug_b), concentric with the rod (row guide_member_b), hanging 30 below the ring underside; the bushing (OD 32 x 42) inside is not drawn (not_drawn)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [guide.bushing_type, guide.bushing_od, guide.bushing_length, guide.bushing_housing_od, guide.bushing_drop, guide.radius, guide.angle, ring.thickness]
+    z_rule: {z_min: "ring_bottom - guide.bushing_drop", z_max: ring_bottom}
+    place: {r_in: guide.radius, theta: "guide.angle[1]", half_width: "guide.bushing_housing_od / 2", footprint: round}
+    label: null
+    neighbours:
+      - {use: s1_5b_base}
+      - {use: fixed_g10}
+      - {id: guide_member_b, class: N, source: "rod in the bushing (Designer 1.2 (a) section 10, declared N; as S2)"}
     sense: []
     chain: [torque]
     moves: true
@@ -891,6 +937,46 @@ features:
     place: {r_in: guide.radius, theta: "guide.angle[1]", half_width: "guide.rod_od / 2", footprint: round}
     label: null
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "rod in a shaft support on the plate top (Designer 1.1 (b) F4)"}]
+    sense: []
+    chain: [torque]
+    moves: false
+
+  # r5 (Loftsman 1.2 (b) FIX 1, option A; Designer 1.2 (b) FIX 1): rod top ties, z_rule and plan_poly as s2_spec.yaml
+  # guide_tie_a/_b. Side view: x from the plan_poly extent, depth band = plan y extent (check_stack).
+  - id: guide_tie_a
+    name: guide rod top tie
+    shape: "rod top tie, 30-6060 stand-in on the top-guide bracket arm (row bracket_guide_b), from 30 past the rod centre to the near corner of screw frame member b (row frame_upper_b), rod top (row guide_member) in a bore in the tie, dashed (Step 2 stand-in)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, jackscrew.top_guide_z, jackscrew.pitch_radius, jackscrew.nut_flange_od, profile.width, profile.height]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + profile.height"}
+    plan_poly:
+      - {strip: {from: ["guide.radius * cosd(guide.angle[0])", "guide.radius * sind(guide.angle[0])"], to: ["frame_upper.radius * cosd(jackscrew.angle[0])", "frame_upper.radius * sind(jackscrew.angle[0])"], back: "profile.width / 2", stop_at: ["(frame_upper.radius - profile.width / 2) * cosd(jackscrew.angle[0]) + profile.width / 2 * sind(jackscrew.angle[0])", "(frame_upper.radius - profile.width / 2) * sind(jackscrew.angle[0]) - profile.width / 2 * cosd(jackscrew.angle[0])"], half_width: "profile.width / 2"}}
+    label: null
+    neighbours:
+      - {id: guide_member, class: N, source: "rod top in a bore in the tie, 1165 to 1212 (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: bracket_guide_b, class: C, g_min: 0, source: "tie bottom on the arm top at 1165, bolted (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "tie end at the member corner K (point contact; side view: plan-contact; Designer 1.2 (b) FIX 1)"}
+    sense: []
+    chain: [torque]
+    moves: false
+
+  - id: guide_tie_b
+    name: guide rod top tie
+    shape: "rod top tie, 30-6060 stand-in on the top-guide bracket arm (row bracket_guide_a), from 30 past the rod centre to the near corner of screw frame member a (row frame_upper_a), rod top (row guide_member_b) in a bore in the tie, dashed (Step 2 stand-in)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, jackscrew.top_guide_z, jackscrew.pitch_radius, jackscrew.nut_flange_od, profile.width, profile.height]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + profile.height"}
+    plan_poly:
+      - {strip: {from: ["guide.radius * cosd(guide.angle[1])", "guide.radius * sind(guide.angle[1])"], to: ["frame_upper.radius * cosd(jackscrew.angle[1])", "frame_upper.radius * sind(jackscrew.angle[1])"], back: "profile.width / 2", stop_at: ["(frame_upper.radius - profile.width / 2) * cosd(jackscrew.angle[1]) - profile.width / 2 * sind(jackscrew.angle[1])", "(frame_upper.radius - profile.width / 2) * sind(jackscrew.angle[1]) + profile.width / 2 * cosd(jackscrew.angle[1])"], half_width: "profile.width / 2"}}
+    label: null
+    neighbours:
+      - {id: guide_member_b, class: N, source: "rod top in a bore in the tie, 1165 to 1212 (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: bracket_guide_a, class: C, g_min: 0, source: "tie bottom on the arm top at 1165, bolted (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "tie end at the member corner K (point contact; side view: plan-contact; Designer 1.2 (b) FIX 1)"}
     sense: []
     chain: [torque]
     moves: false

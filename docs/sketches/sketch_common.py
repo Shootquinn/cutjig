@@ -556,6 +556,9 @@ def plan_footprint(row, rec):
             return cs.radial_corners(r0, r1, pl["theta"], w, pl.get("rot", 0))
         pts = _ngon(r0 * c, r0 * s, w) + (_ngon(r1 * c, r1 * s, w) if abs(r1 - r0) > 1e-9 else [])
         return convex_hull(pts)
+    pcs = (rec or {}).get("plan_pieces")
+    if pcs:   # 1.2 (b): plan_poly row (guide tie strip); one piece is its true section, several give their hull
+        return list(pcs[0]) if len(pcs) == 1 else convex_hull([p for pc in pcs for p in pc])
     dep = (rec or {}).get("depth")
     round_z = row.get("kind") in ROUND_KINDS and row.get("axis") == "Z"
     if dep and (round_z or row.get("section")) and abs(dep[0] + dep[1]) < 1e-9:
@@ -576,10 +579,15 @@ def plan_gap_fn(ctx, rows, pose, a, b):
 
 def plan_contact_fn(ctx, rows, pose, a, b):
     """Callable for assess_pair: (plan distance, plan overlap area) of rows a and b at pose from their `place`
-    footprints, or None unless both rows are placed (a depth-band disk is a containment bound, no contact proof)."""
+    footprints, or None unless both rows are placed (a depth-band disk is a containment bound, no contact proof).
+    1.2 (b): a plan_poly row of exactly one convex piece (guide tie strip) counts as placed; its containment premise is
+    K8 projected_extent on plan_x (K8-B17)."""
+    def placed(r):
+        return bool(r.get("place")) or len(r.get("plan_pieces") or []) == 1
+
     def f():
         ra, rb = _feat(ctx, pose, a), _feat(ctx, pose, b)
-        if not (ra.get("place") and rb.get("place")):
+        if not (placed(ra) and placed(rb)):
             return None
         fa, fb = plan_footprint(rows.get(a, {}), ra), plan_footprint(rows.get(b, {}), rb)
         return min_distance(fa, fb), overlap_area(fa, fb)
@@ -1237,6 +1245,21 @@ def k8(ctx):
                         fy0, fy1 = pl["y"]
                         if ey[0] < fy0 - TOL_Z or ey[1] > fy1 + TOL_Z:
                             issues.append(f"{pose}/{fid} projected_extent_y: drawn y [{ey[0]:.2f}, {ey[1]:.2f}] outside the spec footprint y [{fy0:.2f}, {fy1:.2f}]")
+            # 1.2 (b): a plan_poly row with no place (guide tie) lies inside its plan pieces' extent: the premise of its
+            # plan-separated and plan-contact relief in K7 (detail 1 common (h); K8-B17)
+            pf = _feat(ctx, pose, fid)
+            if not pl and pf.get("plan_x") and (side or plan) and me:
+                n += 1
+                ex = extent_x(me)
+                fx0, fx1 = pf["plan_x"]
+                if ex[0] < fx0 - TOL_Z or ex[1] > fx1 + TOL_Z:
+                    issues.append(f"{pose}/{fid} projected_extent: drawn x [{ex[0]:.2f}, {ex[1]:.2f}] outside the plan_poly x "
+                                  f"[{fx0:.2f}, {fx1:.2f}] (by {max(fx0 - ex[0], ex[1] - fx1):.2f})")
+                if plan:
+                    ey = extent_z(me)
+                    fy0, fy1 = pf["plan_y"]
+                    if ey[0] < fy0 - TOL_Z or ey[1] > fy1 + TOL_Z:
+                        issues.append(f"{pose}/{fid} projected_extent_y: drawn y [{ey[0]:.2f}, {ey[1]:.2f}] outside the plan_poly y [{fy0:.2f}, {fy1:.2f}]")
             for pr in row.get("sense") or []:
                 if id(pr) in bad or (pr.get("poses") and pose not in pr["poses"]):
                     continue

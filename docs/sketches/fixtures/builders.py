@@ -953,7 +953,8 @@ def _s1_draw_pose(P, spec, stack, pid):
         if row.get("section"):
             _draw_section(ax, P, spec, stack, pid, row, z0, z1)
             continue
-        x0, x1 = f["place"]["x"] if f.get("place") else f["depth"]
+        # 1.2 (b): a plan_poly row with no place (S1 r5 guide ties) spans its plan x extent
+        x0, x1 = f["place"]["x"] if f.get("place") else (f["plan_x"] if f.get("plan_x") else f["depth"])
         if row["kind"] == "gear":
             inner, outer = (x0, x1) if abs(x0) < abs(x1) else (x1, x0)
             h = z1 - z0
@@ -1270,6 +1271,22 @@ def k8_b15():
 def k8_b16():
     """r4 B (TP1.1-11): motor_shaft_a drawn 15 wider at each end; centre and spec footprint unchanged."""
     return _widen("motor_shaft_a", 15)
+
+
+def k8_b17():
+    """1.2 (b) B (detail 1 common (h)): guide_tie_a (plan_poly row, no place) drawn 10 wider at each end in x; the
+    plan_poly extent is unchanged. Premise check of the plan_poly footprint in K7 plan-contact and plan-separated."""
+    return _widen("guide_tie_a", 10)
+
+
+def k7_b21():
+    """1.2 (b) B (Designer 1.2 (b) Correction 1): guide_tie_a strip run to the member centre (stop_at removed), drawn
+    faithfully. The tie end lies inside the 60 x 60 member square, so tie|frame_upper_b C overlaps in plan at every pose."""
+    def mut(r):
+        st = dict(r["plan_poly"][0]["strip"])
+        st.pop("stop_at")
+        r["plan_poly"] = [{"strip": st}]
+    return _s1_ctx(spec_mut=_mut_row("guide_tie_a", mut))
 
 
 def s1_full_draw():

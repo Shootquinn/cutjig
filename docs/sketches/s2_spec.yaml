@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "draft for signature (Designer with the shape-text part list, detail 1 common (b); Loftsman on arithmetic and placement)"
+status: "fixes applied, awaiting re-check (Designer 1.2 (b) FIX 1 to 4, Loftsman FIX 1 option A; research/sean/cr_scratch/step1.2_engineer_spec_fixes.md)"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -18,7 +18,9 @@ script: s2_plan.py
 view: plan_xy
 z_rule_frame: z_A
 plot_frame: z_S
-plan_figure: {name: s2_plan, pose: load, note: "one plan figure (PNG s2_plan_r<k>.png); z bands per pose for the plan K7 and the swept case; the moving parts' plan positions do not change with pose"}
+plan_figure: {name: s2_plan, pose: load, note: "one plan figure (PNG s2_plan_r<k>.png); z bands per pose for the plan K7 and the swept case; the moving parts' plan positions do not change with pose", figure_note: "Not drawn: wing nut, collet, holder (below the drill path, S1); power-off hold device (Step 2); LM20UU bushing (inside housing and lug); descent-stop pads at 30 and 270 (one pad, Design Notes 27)"}
+# figure_note (detail 1 common (b), second clause; Designer 1.2 (b) FIX 3): s2_plan.py prints it on the figure; it names
+# every not_drawn part. At 1.2 (c) K4 (or a label check) verifies the drawn text against not_drawn, with Z and B.
 question: >-
   Does it fit, stay coaxial, and leave the operator a side to load the core and change collets?
 closes:
@@ -77,7 +79,7 @@ rubric_additions:
   - "plan handedness: +X along slot line C (y +259, +Y rail), theta counter-clockwise from +X seen from +Z; screws at 30, 150, 270 and pinions at 90, 210, 330 (K8 axes not inverted, azimuth predicates; S2-1)"
   - "all three screw sets, pinions, NEMA 23s, lift motors and frame members drawn (S2-f; K9)"
   - "on every pinion axis the motor is outboard and the pinion inboard, narrowing toward the axis (K8 outboard radial, taper inward)"
-  - "the ring reads as a structure with housings, mounts and lugs, not a washer (V7)"
+  - "the ring reads as a structure with housings, mounts and lugs, not a washer (visual only, V7)"
   - "member c stands on the rail top inside the column notch with the notch outline visible round it (S2-6)"
 reported:
   - "outline extents (every drawn part, all poses) against the 644 x 608 footprint (open, not asserted)"
@@ -95,6 +97,7 @@ not_drawn:
   - {part: "holder", reason: "below the drill path, drawn in S1 (Designer 1.2 (a) section 8)"}
   - {part: "power-off hold device", reason: "Step 2 decides (N7, T2-c); none drawn in S1 either"}
   - {part: "descent-stop pads at jackscrew.angle[0] and [2]", reason: "declined by Sean (STOP S2-A, Design Notes 27): one pad"}
+  - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; concealed in plan by both; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2)"}
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups).
 neighbour_groups:
@@ -170,6 +173,7 @@ part_list:
   - {part: "F6 sightline and observer point", row: sightline_f6}
   - {part: "wing nut, collet, holder", row: not_drawn}
   - {part: "hold device", row: not_drawn}
+  - {part: "LM20UU bushing (OD 32 x 42) inside the housing", row: not_drawn}
 
 # Row fields per gameplan l.130-131. z_rule in z_A (check_stack converts to z_S once).
 features:
@@ -1188,23 +1192,27 @@ features:
 
   - id: guide_tie_a
     name: "guide rod top tie"
-    shape: "rod top tie, 30-6060 stand-in from the rod top to the nearest screw frame member (frame_upper_b), dashed, labelled Step 2"
+    shape: "rod top tie, 30-6060 stand-in on the top-guide bracket arm (row bracket_guide_b), from 30 past the rod centre to the near corner of screw frame member b, rod top in a bore in the tie, dashed, labelled Step 2"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, profile.width, profile.height, base.plate_thickness]
-    z_rule: {z_min: "base.plate_thickness + guide.length - profile.height", z_max: "base.plate_thickness + guide.length"}
+    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, jackscrew.top_guide_z, jackscrew.pitch_radius, jackscrew.nut_flange_od, profile.width, profile.height]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + profile.height"}
+    # Designer 1.2 (b) FIX 1: axis u = unit(member centre - rod centre); start 30 behind the rod centre; end at the station
+    # of the member's near corner K = member centre - (w/2) r_hat - (w/2) t_hat at jackscrew.angle[0] = (226.31, 96.02),
+    # station 95.69; strip 125.69 x 60, corners (198.45, -28.36), (258.36, -31.55), (265.04, 93.96), (205.13, 97.15)
     plan_poly:
-      - {strip: {from: ["guide.radius * cosd(guide.angle[0])", "guide.radius * sind(guide.angle[0])"], to: ["frame_upper.radius * cosd(jackscrew.angle[0])", "frame_upper.radius * sind(jackscrew.angle[0])"], half_width: "profile.width / 2"}}
+      - {strip: {from: ["guide.radius * cosd(guide.angle[0])", "guide.radius * sind(guide.angle[0])"], to: ["frame_upper.radius * cosd(jackscrew.angle[0])", "frame_upper.radius * sind(jackscrew.angle[0])"], back: "profile.width / 2", stop_at: ["(frame_upper.radius - profile.width / 2) * cosd(jackscrew.angle[0]) + profile.width / 2 * sind(jackscrew.angle[0])", "(frame_upper.radius - profile.width / 2) * sind(jackscrew.angle[0]) - profile.width / 2 * cosd(jackscrew.angle[0])"], half_width: "profile.width / 2"}}
     label: {text: "rod top tie (Step 2), 30-6060 w", key: profile.width, fmt: ".0f"}
     neighbours:
-      - {id: guide_member, class: C, g_min: 0, source: "tie on the rod top (guide.top_support, Designer 1.2 (a) row 21)"}
-      - {id: frame_upper_b, class: C, g_min: 0, source: "tie bolted to the member (guide.top_support)"}
+      - {id: guide_member, class: "N", source: "rod top in a bore in the tie, 1165 to 1212 (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: bracket_guide_b, class: C, g_min: 0, source: "tie bottom on the arm top at 1165, bolted (guide.top_support; Designer 1.2 (b) FIX 1); plan overlap with z contact, plan C rule at 1.2 (c)"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "tie end at the member corner K (point contact, plan distance 0.00, overlap 0; Designer 1.2 (b) FIX 1)"}
     sense: []
     chain: [torque]
     moves: false
     notes:
-      - "z: the 60 below the rod top (1152 to 1212 z_A); plan strip from the rod centre to the member centre, half-width 30; Step 2 decides the tie (guide.top_support ASSUMED)"
+      - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 
   - id: guide_member_b
     name: "ring guide rod"
@@ -1223,22 +1231,25 @@ features:
 
   - id: guide_tie_b
     name: "guide rod top tie"
-    shape: "rod top tie, 30-6060 stand-in from the rod top to the nearest screw frame member (frame_upper_a), dashed, labelled Step 2"
+    shape: "rod top tie, 30-6060 stand-in on the top-guide bracket arm (row bracket_guide_a), from 30 past the rod centre to the near corner of screw frame member a, rod top in a bore in the tie, dashed, labelled Step 2"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, profile.width, profile.height, base.plate_thickness]
-    z_rule: {z_min: "base.plate_thickness + guide.length - profile.height", z_max: "base.plate_thickness + guide.length"}
+    keys: [guide.top_support, guide.radius, guide.angle, guide.length, frame_upper.radius, jackscrew.angle, jackscrew.top_guide_z, jackscrew.pitch_radius, jackscrew.nut_flange_od, profile.width, profile.height]
+    z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + profile.height"}
+    # Designer 1.2 (b) FIX 1, mirror of tie a in x: K = member centre - (w/2) r_hat + (w/2) t_hat at jackscrew.angle[1]
+    # = (-226.31, 96.02), station 95.69
     plan_poly:
-      - {strip: {from: ["guide.radius * cosd(guide.angle[1])", "guide.radius * sind(guide.angle[1])"], to: ["frame_upper.radius * cosd(jackscrew.angle[1])", "frame_upper.radius * sind(jackscrew.angle[1])"], half_width: "profile.width / 2"}}
+      - {strip: {from: ["guide.radius * cosd(guide.angle[1])", "guide.radius * sind(guide.angle[1])"], to: ["frame_upper.radius * cosd(jackscrew.angle[1])", "frame_upper.radius * sind(jackscrew.angle[1])"], back: "profile.width / 2", stop_at: ["(frame_upper.radius - profile.width / 2) * cosd(jackscrew.angle[1]) - profile.width / 2 * sind(jackscrew.angle[1])", "(frame_upper.radius - profile.width / 2) * sind(jackscrew.angle[1]) + profile.width / 2 * cosd(jackscrew.angle[1])"], half_width: "profile.width / 2"}}
     neighbours:
-      - {id: guide_member_b, class: C, g_min: 0, source: "tie on the rod top (guide.top_support, Designer 1.2 (a) row 21)"}
-      - {id: frame_upper_a, class: C, g_min: 0, source: "tie bolted to the member (guide.top_support)"}
+      - {id: guide_member_b, class: "N", source: "rod top in a bore in the tie, 1165 to 1212 (guide.top_support; Designer 1.2 (b) FIX 1)"}
+      - {id: bracket_guide_a, class: C, g_min: 0, source: "tie bottom on the arm top at 1165, bolted (guide.top_support; Designer 1.2 (b) FIX 1); plan overlap with z contact, plan C rule at 1.2 (c)"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "tie end at the member corner K (point contact, plan distance 0.00, overlap 0; Designer 1.2 (b) FIX 1)"}
     sense: []
     chain: [torque]
     moves: false
     notes:
-      - "z: the 60 below the rod top (1152 to 1212 z_A); plan strip from the rod centre to the member centre, half-width 30; Step 2 decides the tie (guide.top_support ASSUMED)"
+      - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 
   - id: drill_tube
     name: "drill tube"
@@ -1293,6 +1304,8 @@ features:
       - {id: frame_upper_a, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
       - {id: frame_upper_b, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
       - {id: frame_upper_c, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
+      - {id: guide_tie_a, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (Designer 1.2 (b) sign-off NOTE 1; 113.47 DERIVED)"}
+      - {id: guide_tie_b, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (Designer 1.2 (b) sign-off NOTE 1; 113.47 DERIVED)"}
       - {id: drill_tube, class: "N", source: "tube inside the keep-out (icd.keepout_radius = drill.tube_od / 2 + drill.r_face_margin)"}
       - {id: drill_head, class: "N", source: "S2-a: cutter r 88.90 is 2.70 outside the keep-out (tube basis); reported, never asserted (Step 4 ICD row icd.keepout_radius)"}
       - {id: bearing, class: "N", source: "bearing inner race on the tube, inside the keep-out; moves with the drill (Designer 1.2 (a) section 7)"}

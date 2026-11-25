@@ -180,7 +180,9 @@ def draw_pose(P, spec, stack, pose):
     # ring structure: plate in section either side of the clearance bore, bosses, lugs, standoffs, bearing
     z0, z1 = z("ring")
     _sides(ax, "ring", g("ring.clearance_bore") / 2, g("ring.od") / 2, z0, z1, hatch="//")
-    for fid in ("nut_housing_a", "nut_housing_b", "guide_lug_a", "guide_lug_b", "motor_mount_a", "motor_mount_b"):
+    # r5: LM20UU housings under the lugs (rows guide_bushing_a, _b; Loftsman 1.2 (b) FIX 1)
+    for fid in ("nut_housing_a", "nut_housing_b", "guide_lug_a", "guide_lug_b", "guide_bushing_a", "guide_bushing_b",
+                "motor_mount_a", "motor_mount_b"):
         z0, z1 = z(fid)
         x0, x1 = px(fid)
         sc.draw_rect(ax, fid, x0, x1, z0, z1)
@@ -244,6 +246,11 @@ def draw_pose(P, spec, stack, pose):
         z0, z1 = z(fid)
         x0, x1 = px(fid)
         sc.draw_rect(ax, fid, x0, x1, z0, z1)
+    # r5: rod top ties on the top-guide arms (Designer 1.2 (b) FIX 1), x over the plan_poly extent, dashed (Step 2 stand-in)
+    for fid in ("guide_tie_a", "guide_tie_b"):
+        z0, z1 = z(fid)
+        x0, x1 = feats[fid]["plan_x"]
+        sc.draw_rect(ax, fid, x0, x1, z0, z1, linestyle="--")
 
     # descent stop pad (metal hatch)
     z0, z1 = z("descent_stop")
