@@ -1,4 +1,5 @@
-"""S1 checks S1-1 to S1-6 (research/sean/gameplan.md detail 1.1, lines 223-231).
+"""S1 checks S1-1 to S1-7 (research/sean/gameplan.md detail 1.1, lines 226-234; S1-7 from Design Notes 21 G2).
+S1-5a and S1-7 read the spec field capture_core (the 0.75 m install core under G2), never a fixed row id.
 
 Each check measures drawn patch coordinates per pose, located by gid, and compares them with check_stack.py values.
 A check that read params alone would be green on the floor-only stub (Manager open F3). Heights in z_S.
@@ -69,27 +70,33 @@ def s1_1(ctx):
 
 
 def s1_2(ctx):
-    need = check_stack.to_shop_floor(max(ctx.P.get("stop.start_z")), ctx.P)
+    """Park above the working range: drawn park and load tips above the highest start tip of the supported classes.
+    Start per class from the spec park_rule (option R, gameplan Design Notes 22: stop_k, start_k = stop_k + travel);
+    without park_rule, params max(stop.start_z). "Above" means by more than TOL, so a park drawn at the top of
+    travel (stroke conflated with travel, SE-3) fires."""
+    q9 = ctx.spec.get("q9_length_keys", check_stack.DEFAULT_Q9)
+    starts = check_stack.class_starts_z_A(ctx.P, ctx.spec, q9, ctx.stack.get("global_z_A"))
+    need = check_stack.to_shop_floor(max(starts.values()), ctx.P)
     issues, worst = [], None
     for pose in ("park", "load"):
         tip = _tip(ctx, pose)
         worst = tip - need if worst is None else min(worst, tip - need)
-        if tip <= need:
-            issues.append(f"{pose}: drawn tip {tip:.2f} not above max(stop.start_z) {need:.2f} z_S")
-    return sc.result("S1-2", not issues, "; ".join(issues) or f"park tip above max(stop.start_z) by {worst:.2f} mm",
-                     measured=round(worst, 3), threshold="> 0")
+        if tip - need <= TOL:
+            issues.append(f"{pose}: drawn tip {tip:.2f} not above the highest class start {need:.2f} z_S")
+    return sc.result("S1-2", not issues, "; ".join(issues) or f"park tip above the highest class start by {worst:.2f} mm",
+                     measured=round(worst, 3), threshold="> 0", n_issues=len(issues))
 
 
 def s1_3(ctx):
-    """Park clears each Q9 core standing on the load plane; the plane is the spec's load_plane (LF-6), the same
-    field check_stack's park rule reads."""
+    """Park clears each loaded core standing on the load plane: spec load_plane, the core stop (G1). The park rule
+    reads entry_plane, the collar top (gameplan Design Notes 22). LF-16 (K6) lints each field's two descriptions."""
     g = ctx.P.get
     lp = check_stack.load_plane(ctx.spec)
     tip = _tip(ctx, "park")
     ext = sc.extent_z(_pieces(ctx, "park", lp["feature"]))
     plane = (ext[1] if lp["edge"] == "z_max" else ext[0]) + check_stack.eval_expr(lp.get("offset", 0), ctx.P, {})
     issues, margins = [], {}
-    for k in ctx.spec.get("q9_length_keys", check_stack.DEFAULT_Q9):
+    for k in check_stack.park_lengths(ctx.P, ctx.spec, ctx.spec.get("q9_length_keys", check_stack.DEFAULT_Q9)):
         m = tip - g("upper.load_clearance") - (plane + g(k))
         margins[k] = round(m, 3)
         if m < -TOL:
@@ -116,13 +123,35 @@ def s1_4(ctx):
                      measured=round(worst, 3), threshold=">= 0")
 
 
+def _capture_core(ctx):
+    """Spec field capture_core (G2: the 0.75 m install core, row core_750)."""
+    cid = ctx.spec.get("capture_core")
+    if not cid:
+        raise Content("spec names no capture_core")
+    return cid
+
+
 def s1_5a(ctx):
+    """Capture-core top below the drill bore ceiling at end of capture (G 25)."""
+    cid = _capture_core(ctx)
     ceiling = _zmin(ctx, "capture_end", "bore_ceiling")
-    top = _zmax(ctx, "capture_end", "core_500")
+    top = _zmax(ctx, "capture_end", cid)
     gap = ceiling - top
     need = ctx.P.get("stop.g_stop")
-    return sc.result("S1-5a", gap >= need - TOL, f"bore ceiling minus 0.5 m core top at end of capture {gap:.2f} mm, need {need}",
+    return sc.result("S1-5a", gap >= need - TOL, f"bore ceiling minus capture-core ({cid}) top at end of capture {gap:.2f} mm, need {need}",
                      measured=round(gap, 3), threshold=need)
+
+
+def s1_7(ctx):
+    """Capture reach from the drawn core top (G2, gameplan Design Notes 21): drawn capture-core top in the start figure
+    minus the drawn end-of-capture tip is at least upper.drill_advance_500core."""
+    cid = _capture_core(ctx)
+    top = _zmax(ctx, "start", cid)
+    reach = top - _tip(ctx, "capture_end")
+    need = ctx.P.get("upper.drill_advance_500core")
+    ok = reach >= need - TOL
+    return sc.result("S1-7", ok, f"capture-core ({cid}) top at start minus end-of-capture tip {reach:.2f} mm, need {need} "
+                     f"({'spare' if ok else 'short'} {abs(reach - need):.2f})", measured=round(reach, 3), threshold=need)
 
 
 def s1_5b(ctx):
@@ -168,7 +197,8 @@ def s1_6(ctx):
                      measured=len(issues), threshold=0, n_issues=len(issues))
 
 
-CHECKS = [("S1-1", s1_1), ("S1-2", s1_2), ("S1-3", s1_3), ("S1-4", s1_4), ("S1-5a", s1_5a), ("S1-5b", s1_5b), ("S1-6", s1_6)]
+CHECKS = [("S1-1", s1_1), ("S1-2", s1_2), ("S1-3", s1_3), ("S1-4", s1_4), ("S1-5a", s1_5a), ("S1-5b", s1_5b), ("S1-6", s1_6),
+          ("S1-7", s1_7)]
 
 
 def run(ctx):

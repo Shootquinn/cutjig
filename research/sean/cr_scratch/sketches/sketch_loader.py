@@ -39,6 +39,7 @@ def load_spec(path):
     """A sketch spec. Rejects non-string keys in feature rows and their sense and neighbour entries (SW-1: YAML 1.1
     reads an unquoted on/off/yes/no key as a boolean, so `on: core_seat` arrives as {True: 'core_seat'})."""
     spec = load_yaml(path)
+    expand_neighbour_groups(spec)
     bad = []
     for row in spec.get("features") or []:
         rid = row.get("id", "?") if isinstance(row, dict) else "?"
@@ -50,6 +51,27 @@ def load_spec(path):
                     bad += [f"row {rid} {fld}: key {k!r}" for k in item if not isinstance(k, str)]
     if bad:
         raise ValueError(f"spec {Path(path).name}: non-string keys (quote on/off/yes/no or rename): " + "; ".join(bad))
+    return spec
+
+
+def expand_neighbour_groups(spec):
+    """Spec-level neighbour_groups: a row's neighbours entry {use: <group>} is replaced by the group's entries, minus
+    any entry whose id equals the row id or an id the row lists explicitly (explicit entries win). Unknown group:
+    ValueError."""
+    groups = spec.get("neighbour_groups") or {}
+    for row in spec.get("features") or []:
+        if not isinstance(row, dict) or not row.get("neighbours"):
+            continue
+        explicit = {nb.get("id") for nb in row["neighbours"] if isinstance(nb, dict) and "use" not in nb}
+        out = []
+        for nb in row["neighbours"]:
+            if isinstance(nb, dict) and "use" in nb:
+                if nb["use"] not in groups:
+                    raise ValueError(f"row {row.get('id')}: unknown neighbour group {nb['use']!r}")
+                out += [dict(g) for g in groups[nb["use"]] if g.get("id") != row.get("id") and g.get("id") not in explicit]
+            else:
+                out.append(nb)
+        row["neighbours"] = out
     return spec
 
 

@@ -65,32 +65,77 @@ def collar_top_z_A(P):
 
 
 def core_stop_z_A(P):
-    """Collet core seat top. ASSUMED: collet foot on the receiver floor, seat at collet.core_seat_height above it."""
+    """Collet core stop: overlay leaf collet.core_stop_z (G4, ASSUMED). Without the leaf (older overlays), the receiver
+    floor plus collet.core_seat_height. LF-16 lints it against the drawn core_seat edge."""
+    if P.has("collet.core_stop_z"):
+        return P.get("collet.core_stop_z")
     return receiver_to_datum_a(P.get("collet.core_seat_height"), P)
 
 
 DEFAULT_LOAD_PLANE = {"term": "core_stop", "feature": "core_seat", "edge": "z_max", "offset": 0}
+PLANE_FIELDS = ("load_plane", "entry_plane")
 
 
-def load_plane(spec):
-    """The plane the core bottom crosses during loading (LF-6). One spec field read by the park rule and by S1-3.
-    Draft: core_stop (gameplan S1-3 text, l.227). params upper.park_z (U13) uses collar_top; Sean or the Designer rules."""
+def load_plane(spec, field="load_plane"):
+    """A named plane of the spec (LF-6). load_plane: the plane the core stands on, read by S1-3 (G1, core stop).
+    entry_plane: the plane the core bottom passes over while it enters the holder, read by the park rule
+    (gameplan Design Notes 22, collar top). Without entry_plane the park rule reads load_plane (1.0 behaviour)."""
     lp = dict(DEFAULT_LOAD_PLANE)
-    lp.update(spec.get("load_plane") or {})
+    src = spec.get(field) or (spec.get("load_plane") if field == "entry_plane" else None) or {}
+    lp.update(src)
     return lp
 
 
-def park_tip_z_A(P, q9_keys, plane_z_A):
-    """DRAFT re-derived park rule (S1-2, S1-3; 1.1 signs it): the cutter tip clears the highest start pose and the
-    tallest supported core standing on the load plane by upper.load_clearance."""
-    tallest = plane_z_A + max(P.get(k) for k in q9_keys)
-    return max(max(P.get("stop.start_z")), tallest) + P.get("upper.load_clearance")
+def park_lengths(P, spec, q9_keys):
+    """Core lengths the park must clear: the Q9 list plus spec always_loaded (G2: the 0.75 m install core is the
+    capture core, so it is loaded under every Q9 option)."""
+    keys = list(q9_keys) + [k for k in spec.get("always_loaded", []) if k not in q9_keys]
+    return keys
+
+
+def class_starts_z_A(P, spec, q9_keys, names=None):
+    """Start tip per supported core class. spec park_rule.stop_k and start_k are expressions in L (core length) and
+    stop_k (option R, gameplan Design Notes 22); without park_rule, params stop.start_z (1.0 behaviour)."""
+    pr = spec.get("park_rule")
+    if not pr:
+        return {"params stop.start_z": max(P.get("stop.start_z"))}
+    out = {}
+    for k in park_lengths(P, spec, q9_keys):
+        nm = dict(names or {})
+        nm["L"] = P.get(k)
+        nm["stop_k"] = eval_expr(pr["stop_k"], P, nm)
+        out[k] = eval_expr(pr["start_k"], P, nm)
+    return out
+
+
+def class_stops_z_A(P, spec, q9_keys, names=None):
+    pr = spec.get("park_rule")
+    if not pr:
+        return {"params stop.height_range": max(P.get("stop.height_range"))}
+    out = {}
+    for k in park_lengths(P, spec, q9_keys):
+        nm = dict(names or {})
+        nm["L"] = P.get(k)
+        out[k] = eval_expr(pr["stop_k"], P, nm)
+    return out
+
+
+def park_tip_z_A(P, q9_keys, plane_z_A, spec=None, names=None):
+    """Park rule (S1-2, S1-3): the cutter tip clears the highest start pose of the supported classes and the tallest
+    loaded core standing on the plane by upper.load_clearance. spec None: 1.0 draft (max params stop.start_z)."""
+    spec = spec or {}
+    lengths = park_lengths(P, spec, q9_keys)
+    tallest = plane_z_A + max(P.get(k) for k in lengths)
+    start = max(class_starts_z_A(P, spec, q9_keys, names).values())
+    return max(start, tallest) + P.get("upper.load_clearance")
 
 
 def global_vars(P, spec):
     g = P.get
     q9 = spec.get("q9_length_keys", DEFAULT_Q9)
     lowest = min(g("stop.height_z"), min(g("stop.height_range")))
+    if spec.get("park_rule"):
+        lowest = min(class_stops_z_A(P, spec, q9, {}).values())
     receiver_floor = receiver_to_datum_a(0, P)
     drop = g("holder.stroke_gap_R") - g("witness.zone_high")
     out = {
@@ -106,7 +151,9 @@ def global_vars(P, spec):
         "height_target_z_A": from_shop_floor(g("jig.height_target"), P),
     }
     out["load_plane"] = out[load_plane(spec)["term"]]
-    out["park_tip"] = park_tip_z_A(P, q9, out["load_plane"])
+    out["entry_plane"] = out[load_plane(spec, "entry_plane")["term"]]
+    out["park_tip"] = park_tip_z_A(P, q9, out["entry_plane"], spec, out)
+    out["start_tip_max"] = max(class_starts_z_A(P, spec, q9, out).values())
     out["lift_stroke"] = out["park_tip"] - lowest
     return out
 
@@ -205,6 +252,8 @@ def evaluate_spec(P, spec):
         tip = eval_expr(pose.get("tip_z", 0), P, glob)
         names = dict(glob)
         names.update(pose_vars(P, tip))
+        for k, v in (pose.get("vars") or {}).items():   # per-pose stack names (TP-9: core position per pose)
+            names[k] = eval_expr(v, P, names)
         feats = {}
         for row in spec.get("features", []):
             if not applies(row, pid):
@@ -219,8 +268,10 @@ def evaluate_spec(P, spec):
                 r_in = eval_expr(pl["r_in"], P, names)
                 r_out = eval_expr(pl.get("r_out", pl["r_in"]), P, names)
                 th = eval_expr(pl["theta"], P, names)
-                x, y, rc = place_extents(r_in, r_out, th, eval_expr(pl["half_width"], P, names), pl.get("footprint", "round"))
-                rec["place"] = {"r_c": rc, "theta": th, "x": x, "y": y}
+                w = eval_expr(pl["half_width"], P, names)
+                x, y, rc = place_extents(r_in, r_out, th, w, pl.get("footprint", "round"))
+                rec["place"] = {"r_c": rc, "theta": th, "x": x, "y": y, "r_in": r_in, "r_out": r_out, "half_width": w,
+                                "footprint": pl.get("footprint", "round")}
                 rec["depth_true"] = y
             if row.get("depth") is not None:
                 rec["depth"] = sorted(eval_expr(d, P, names) for d in row["depth"])
@@ -239,14 +290,29 @@ def reported(P, spec, stack):
     glob = stack["global_z_A"]
     lp = load_plane(spec)
     rep = {"lift_stroke_mm": glob["lift_stroke"],
+           "park_tip_z_A": glob["park_tip"], "start_tip_max_z_A": glob["start_tip_max"],
            "collar_top_recomputed_z_A": glob["collar_top"],
            "collar_top_params_z_A": P.get("stop.collar_top_z"),
-           "load_plane": lp["term"], "poses": {}}
-    # LF-6: park tip per load plane and per core length (no threshold; the plane is Sean's or the Designer's ruling)
+           "load_plane": lp["term"], "entry_plane": load_plane(spec, "entry_plane")["term"], "poses": {}}
+    # LF-6: park tip per plane and per core length (no threshold)
     lengths = [k for k in ("core.length_capture", "core.length_install", "core.length_optional") if P.has(k)]
-    rep["park_tip_by_plane_z_A"] = {term: {k: park_tip_z_A(P, [k], glob[term]) for k in lengths} for term in ("core_stop", "collar_top")}
-    # LF-7: start pose against the core on the core stop (no threshold)
-    core_top = glob["core_stop"] + P.get("core.length_capture")
+    rep["park_tip_by_plane_z_A"] = {term: {k: park_tip_z_A(P, [k], glob[term], spec, glob) for k in lengths} for term in ("core_stop", "collar_top")}
+    # Q9 options (gameplan detail 1.1 Reported): park, stroke and screw length per option; no threshold
+    opts = {}
+    for name, keys in (spec.get("q9_options") or {}).items():
+        keys = [k for k in keys if P.has(k)]
+        park = park_tip_z_A(P, keys, glob["entry_plane"], spec, glob)
+        low = min(class_stops_z_A(P, spec, keys, glob).values()) if spec.get("park_rule") else glob["lowest_tip"]
+        nm = dict(glob)
+        nm.update({"park": park, "stroke": park - low})
+        Ls = {lk: eval_expr(ex, P, nm) for lk, ex in (spec.get("screw_length") or {}).items()}
+        opts[name] = {"lengths": keys, "starts_z_A": class_starts_z_A(P, spec, keys, glob), "park_tip_z_A": park,
+                      "lowest_stop_z_A": low, "lift_stroke": park - low, "L": Ls}
+    rep["q9_options"] = opts
+    # LF-7 / G2: start pose against the capture core on the core stop (no threshold)
+    ck = spec.get("capture_core_length", "core.length_capture")
+    core_top = glob["core_stop"] + P.get(ck)
+    rep["capture_core_length_key"] = ck
     rep["start_tip_minus_core_top_mm"] = P.get("stop.start_z")[0] - core_top
     rep["end_tip_plus_advance_z_A"] = glob["capture_end_tip"] + P.get("upper.drill_advance_500core")
     rep["core_top_on_core_stop_z_A"] = core_top

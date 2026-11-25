@@ -64,7 +64,7 @@ def mini_side_spec(pose="capture_end", tip="stop.height_z"):
              "keys": ["ring.od", "ring.thickness", "ring.position_above_tip"], "z_rule": zr("ring_bottom", "ring_top")},
             {"id": "gear", "name": "ring gear", "kind": "gear", "axis": "Z", "projection": "trapezoid",
              "keys": ["gear.pitch_diameter", "gear.bore", "gear.face_width"], "z_rule": zr("ring_top", "gear_top"),
-             "sense": [{"pred": "mirror_about_axis", "axis": "drill_tube"}, {"pred": "taper", "narrows": "up"}]},
+             "sense": [{"pred": "mirror_about_axis", "axis": "drill_tube"}, {"pred": "taper", "narrows": "down"}]},
             {"id": "motor23_a", "name": "NEMA 23", "kind": "cylinder", "axis": "X", "projection": "rectangle",
              "keys": ["pinion.motor_body", "pinion.motor_length", "gear.pitch_diameter", "pinion.angle"],
              "z_rule": zr("ring_top", "ring_top + pinion.motor_body"),
@@ -398,6 +398,27 @@ def k6_b4():
     return c
 
 
+def _lf16(load_plane=None):
+    """LF-16: the live S1 spec and its stack, no figures (the lint reads spec rows' stack z, so it holds on the stub)."""
+    P = Params()
+    spec = load_spec(HERE.parent / "s1_spec.yaml")
+    if load_plane is not None:
+        spec["load_plane"] = load_plane
+    stack = check_stack.evaluate_spec(P, spec)
+    return sc.Ctx(P=P, spec=spec, figs={}, stack=stack, view=spec["view"], check_stack_path=CHECK_STACK_PATH)
+
+
+def k6_z3():
+    """LF-16 Z: live spec; load_plane (core stop) and entry_plane (collar top) each agree with their feature edge."""
+    return _lf16()
+
+
+def k6_b5():
+    """LF-16 B: load_plane term core_stop (42.5 z_A) with feature wingnut, edge z_max, offset collar.top_above_plate,
+    the collar-top plane (159.84 z_A), 117.34 apart."""
+    return _lf16({"term": "core_stop", "feature": "wingnut", "edge": "z_max", "offset": "collar.top_above_plate"})
+
+
 # ---------------------------------------------------------------- K7
 
 def _k7(rows, poses, draw_fn, view="side_xz", **spec_extra):
@@ -566,6 +587,42 @@ def k7_b9():
     return _k7(rows, TWO, draw)
 
 
+def _plan_pair(cls, g_min, w_b):
+    """LF-8 at 1.1 (b): a round part on the axis (radius 126.32, gear-like) and a round part at r 160, theta 150
+    (radius w_b, guide-block-like). Both drawn as boxes from their placed x extents over one z band, so they overlap
+    in XZ and their depth bands overlap; only the plan footprints separate them (plan gap 160 - 126.32 - w_b)."""
+    rows = [{"id": "a", "name": "a", "kind": "cylinder", "axis": "Z", "projection": "rectangle",
+             "place": {"r_in": 0, "theta": 0, "half_width": 126.32, "footprint": "round"},
+             "neighbours": [{"id": "b", "class": cls, "g_min": g_min, "source": "fixture"}] if cls else []},
+            {"id": "b", "name": "b", "kind": "cylinder", "axis": "Z", "projection": "rectangle",
+             "place": {"r_in": 160, "theta": 150, "half_width": w_b, "footprint": "round"}}]
+    P = Params()
+    spec = {"sketch": "k7", "view": "side_xz", "poses": ONE, "features": rows}
+    stack = check_stack.evaluate_spec(P, spec)
+    f = stack["poses"]["fixture"]["features"]
+    fig, ax = sc.setup_figure("side_xz", title="k7 fixture plan pair")
+    for fid in ("a", "b"):
+        x0, x1 = f[fid]["place"]["x"]
+        sc.draw_rect(ax, fid, x0, x1, 0, 100)
+    sc.finish_axes(ax)
+    return _ctx(P, spec, {"fixture": fig})
+
+
+def k7_z8():
+    """Declared G 10 pair, plan footprints 11 mm apart, overlapping in XZ and in depth: plan-separated."""
+    return _plan_pair("G", 10, 160 - 126.32 - 11)
+
+
+def k7_z9():
+    """Undeclared pair (F), plan footprints 11 mm apart, overlapping in XZ and in depth: plan-separated."""
+    return _plan_pair(None, 0, 160 - 126.32 - 11)
+
+
+def k7_b11():
+    """Declared G 10 pair, plan footprints 9 mm apart (g_min - 1), overlapping in XZ and in depth."""
+    return _plan_pair("G", 10, 160 - 126.32 - 9)
+
+
 def k7_b10():
     """TP-5: two parts with no declared relation overlap."""
     rows = [{"id": "a", "name": "a", "kind": "prism", "projection": "rectangle", "depth": [0, 10]},
@@ -612,9 +669,10 @@ def plan_ctx(invert_y=False, angle_index=None):
 
 
 def _taper_spec():
+    """TP-2 ruling (gameplan Design Notes 22): the collet outer cone narrows upward."""
     return {"sketch": "taper", "view": "side_xz", "poses": [{"id": "fixture", "tip_z": 0}],
             "features": [{"id": "collet", "name": "collet", "kind": "cone", "axis": "Z", "projection": "trapezoid",
-                          "keys": ["cone.alpha"], "sense": [{"pred": "taper", "narrows": "down"}]}]}
+                          "keys": ["cone.alpha"], "sense": [{"pred": "taper", "narrows": "up"}]}]}
 
 
 def taper_ctx(invert=False):
@@ -622,7 +680,7 @@ def taper_ctx(invert=False):
     fig, ax = sc.setup_figure("side_xz", title="taper fixture")
     R, h = P.get("receiver.register_bore_radius"), P.get("collet.slit_length")
     t = h * math.tan(math.radians(P.get("cone.alpha")))
-    z_narrow, z_wide = (h, 0) if invert else (0, h)
+    z_narrow, z_wide = (0, h) if invert else (h, 0)
     sc.draw("collet", Polygon([(-R + t, z_narrow), (R - t, z_narrow), (R, z_wide), (-R, z_wide)], closed=True, fill=False), ax)
     sc.finish_axes(ax)
     return _ctx(P, _taper_spec(), {"fixture": fig})
@@ -713,10 +771,10 @@ def k8_b9():
 
 
 def k8_b10():
-    """TP-2: gear section flipped, wide face at the top."""
+    """TP-2: gear section drawn teeth-up (the Step 1.0 draft sense): wide face at the bottom, narrowing upward."""
     def gear(ax, fid, r_in, r_pitch, z0, z1):
         h = z1 - z0
-        right = [(r_in, z0), (r_pitch, z0), (r_pitch + h / 2, z1), (r_in, z1)]
+        right = [(r_in, z0), (r_pitch + h / 2, z0), (r_pitch, z1), (r_in, z1)]
         sc.draw(fid, Polygon(right, closed=True, fill=False), ax)
         sc.draw(fid, Polygon([(-x, z) for x, z in right], closed=True, fill=False), ax)
     return mini_ctx(gear=gear)
@@ -725,6 +783,63 @@ def k8_b10():
 def k8_b11():
     """TP-2: collet cone inverted."""
     return taper_ctx(invert=True)
+
+
+def _ring_on_tube(shift=None):
+    """TP-9 ring_on_tube (Designer 1.1 (a) section 6): bearing clears_above drill_head, gear top_within drill_tube.
+    shift: {fid: dz} moves one drawn row (the planted defect); the stack is unchanged."""
+    P = Params()
+    on_axis = lambda w: {"r_in": 0, "theta": 0, "half_width": w, "footprint": "round"}  # noqa: E731
+    zr = lambda a, b: {"z_min": a, "z_max": b}  # noqa: E731
+    rows = [
+        {"id": "drill_head", "name": "drill head", "kind": "cylinder", "axis": "Z", "projection": "rectangle",
+         "keys": ["drill.head_od", "drill.head_length"], "z_rule": zr("tip", "head_top"), "place": on_axis("drill.head_od / 2")},
+        {"id": "drill_tube", "name": "drill tube", "kind": "cylinder", "axis": "Z", "projection": "rectangle",
+         "keys": ["drill.tube_od"], "z_rule": zr("head_top", "drill_top"), "place": on_axis("drill.tube_od / 2")},
+        {"id": "bearing", "name": "bearing", "kind": "cylinder", "axis": "Z", "projection": "rectangle",
+         "keys": ["bearing.height", "bearing.od"], "z_rule": zr("ring_top - bearing.height", "ring_top"),
+         "sense": [{"pred": "clears_above", "of": "drill_head"}]},
+        {"id": "gear", "name": "ring gear", "kind": "gear", "axis": "Z", "projection": "trapezoid",
+         "keys": ["gear.bore", "gear.pitch_diameter"], "z_rule": zr("ring_top", "gear_top"),
+         "sense": [{"pred": "top_within", "of": "drill_tube"}]},
+    ]
+    spec = {"sketch": "ring_on_tube", "view": "side_xz", "poses": [{"id": "capture_end", "tip_z": "stop.height_z"}], "features": rows}
+    stack = check_stack.evaluate_spec(P, spec)
+    f = stack["poses"]["capture_end"]["features"]
+    fig, ax = sc.setup_figure("side_xz", title="ring on tube fixture")
+    for row in rows:
+        fid = row["id"]
+        dz = (shift or {}).get(fid, 0)
+        z0, z1 = f[fid]["z_min"] + dz, f[fid]["z_max"] + dz
+        if fid == "gear":
+            sc.draw_gear_section(ax, fid, P.get("gear.bore") / 2, P.get("gear.pitch_diameter") / 2, z0, z1)
+        elif fid == "bearing":
+            for s in (-1, 1):
+                sc.draw_rect(ax, fid, s * P.get("bearing.bore") / 2, s * P.get("bearing.od") / 2, z0, z1)
+        else:
+            x0, x1 = f[fid]["place"]["x"]
+            sc.draw_rect(ax, fid, x0, x1, z0, z1)
+    sc.finish_axes(ax)
+    return _ctx(P, spec, {"capture_end": fig})
+
+
+def k8_z3():
+    return _ring_on_tube()
+
+
+def k8_b12():
+    """Bearing (ring assembly) slid down onto the drill head: its bottom 5 mm below the head top."""
+    P = Params()
+    drop = P.get("ring.position_above_tip") - (P.get("bearing.height") - P.get("ring.thickness")) - P.get("drill.head_length") + 5
+    return _ring_on_tube({"bearing": -drop})
+
+
+def k8_b13():
+    """Gear drawn 5 mm above the tube top (ring assembly off the drill end)."""
+    P = Params()
+    s = check_stack.evaluate_spec(P, {"poses": [{"id": "x", "tip_z": "stop.height_z"}], "features": [], "view": "side_xz"})
+    v = s["poses"]["x"]["vars_z_A"]
+    return _ring_on_tube({"gear": v["drill_top"] - v["gear_top"] + 5})
 
 
 # ---------------------------------------------------------------- K9
@@ -780,15 +895,29 @@ def _s1_draw_pose(P, spec, stack, pid):
             sc.draw_hline(ax, fid, x0, x1, z0)
             continue
         if row["kind"] == "gear" and row.get("axis") == "Z":
-            sc.draw_gear_section(ax, fid, P.get("gear.bore") / 2, P.get("gear.pitch_diameter") / 2, z0, z1)
+            r_out = P.get("gear.od") / 2 if P.has("gear.od") else P.get("gear.pitch_diameter") / 2
+            sc.draw_gear_section(ax, fid, P.get("gear.bore") / 2, r_out, z0, z1)
+            continue
+        if row.get("section"):
+            # annulus in section: one piece per side from r_in to r_out (spec field section)
+            r0, r1 = (check_stack.eval_expr(e, P, {}) for e in row["section"])
+            for s in (-1, 1):
+                sc.draw_rect(ax, fid, s * r0, s * r1, z0, z1)
             continue
         x0, x1 = f["place"]["x"] if f.get("place") else f["depth"]
         if row["kind"] == "gear":
             inner, outer = (x0, x1) if abs(x0) < abs(x1) else (x1, x0)
-            sc.draw_trap(ax, fid, inner, outer, (z1 - z0) / 2, z1 - z0, z0)
+            h = z1 - z0
+            # bevel pinion: toe height at the inner end, full height at the outer end, centred on its axis
+            sc.draw(fid, Polygon([(inner, z0 + h / 4), (outer, z0), (outer, z1), (inner, z1 - h / 4)], closed=True, fill=False), ax)
         elif row["kind"] == "cone":
             t = (z1 - z0) * math.tan(math.radians(P.get("cone.alpha")))
-            sc.draw(fid, Polygon([(x0 + t, z0), (x1 - t, z0), (x1, z1), (x0, z1)], closed=True, fill=False), ax)
+            narrows = next((s["narrows"] for s in row.get("sense", []) if s.get("pred") == "taper"), "up")
+            if narrows == "up":
+                pts = [(x0, z0), (x1, z0), (x1 - t, z1), (x0 + t, z1)]
+            else:
+                pts = [(x0 + t, z0), (x1 - t, z0), (x1, z1), (x0, z1)]
+            sc.draw(fid, Polygon(pts, closed=True, fill=False), ax)
         else:
             sc.draw_rect(ax, fid, x0, x1, z0, z1)
     sc.place_labels(ax, spec, P, pid)

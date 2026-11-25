@@ -125,12 +125,14 @@ def draw_trap(ax, fid, x0, x1, h0, h1, z0, **kw):
     return draw(fid, Polygon([(x0, z0), (x1, z0), (x1, z0 + h1), (x0, z0 + h0)], closed=True, **kw), ax)
 
 
-def draw_gear_section(ax, fid, r_in, r_pitch, z0, z1, **kw):
-    """Bevel ring gear in side section: two trapezoids mirrored about x = 0, bore edge vertical, outer edge slanted
-    (outer edge at r_pitch + h / 2 at z0 and r_pitch at z1: the section narrows upward)."""
+def draw_gear_section(ax, fid, r_in, r_out, z0, z1, rise=None, **kw):
+    """Bevel ring gear in side section, teeth facing down onto pinions below (TP-2 ruling, gameplan Design Notes 22):
+    two four-vertex pieces mirrored about x = 0; flat back face on top (z1) from r_in to r_out; bore edge vertical;
+    tooth face underneath rising outward from (r_in, z0) to (r_out, z0 + rise). Each piece narrows downward."""
     kw.setdefault("fill", False)
     h = z1 - z0
-    right = [(r_in, z0), (r_pitch + h / 2, z0), (r_pitch, z1), (r_in, z1)]
+    rise = h / 2 if rise is None else rise
+    right = [(r_in, z0), (r_out, z0 + rise), (r_out, z1), (r_in, z1)]
     left = [(-x, z) for x, z in right]
     return [draw(fid, Polygon(right, closed=True, **kw), ax), draw(fid, Polygon(left, closed=True, **kw), ax)]
 
@@ -430,12 +432,71 @@ def band_gap(da, db):
     return max(db[0] - da[1], da[0] - db[1])
 
 
-def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
+def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b"), plan_gap=None):
     """One judgement for K7 static, K7 swept and S1-5b (LF-1, LF-4, TP-11).
     gap: band gap along the view direction (side: depth bands; plan: z bands); disjoint bands settle F only.
     C: fails when the bands are more than TOL_C apart. G: the 3D distance is at least max(gap, projected distance),
     so it passes when that lower bound reaches g_min. N: nested, declared, not measured.
+    plan_gap (side views; a number or a callable, evaluated only when the side-view test fails): distance between
+    the two parts' plan footprints from the spec placement (LF-8 at 1.1 (b)). The plan view is a projection too, so
+    the 3D distance is at least max(plan_gap, projected distance): an F pair passes when plan_gap > TOL_C, a G pair
+    when that lower bound reaches g_min - TOL_C. State "plan-separated". C pairs are not relieved.
     Returns (ok, state, text, lower_bound)."""
+    ok, st, txt, lb = _assess_pair(cls, g_min, PA, PB, gap, names)
+    if ok or plan_gap is None or cls not in ("F", "G") or st in ("non-convex", "error"):
+        return ok, st, txt, lb
+    pg = plan_gap() if callable(plan_gap) else plan_gap
+    if pg is None:
+        return ok, st, txt, lb
+    g = g_min or 0
+    proj = lb if (lb is not None and lb > 0) else 0.0
+    lb2 = max(pg, proj)
+    if (cls == "F" and pg > TOL_C) or (cls == "G" and lb2 >= g - TOL_C):
+        return True, "plan-separated", f"plan footprints {pg:.3f} mm apart (side view: {txt}); lower bound {lb2:.3f}", lb2
+    return False, st, f"{txt}; plan footprints {pg:.3f} mm apart, lower bound {lb2:.3f}" + (f", gap - g_min {lb2 - g:+.3f}" if cls == "G" else ""), lb
+
+
+PLAN_NGON = 128
+
+
+def _ngon(cx, cy, r, n=PLAN_NGON):
+    """Regular n-gon circumscribing the circle (cx, cy, r): contains the circle, so distances are lower bounds."""
+    R = r / math.cos(math.pi / n)
+    return [(cx + R * math.cos(2 * math.pi * (i + 0.5) / n), cy + R * math.sin(2 * math.pi * (i + 0.5) / n)) for i in range(n)]
+
+
+def plan_footprint(row, rec):
+    """Convex plan polygon containing the part, from check_stack's placement record or, for an axis-Z round part or
+    a section row without placement, the disk of its depth half-band. None when the spec gives no plan basis."""
+    pl = (rec or {}).get("place")
+    if pl and "r_in" in pl:
+        t = math.radians(pl["theta"])
+        c, s = math.cos(t), math.sin(t)
+        r0, r1, w = pl["r_in"], pl["r_out"], pl["half_width"]
+        if pl.get("footprint") == "radial":
+            return [(r0 * c + w * s, r0 * s - w * c), (r1 * c + w * s, r1 * s - w * c),
+                    (r1 * c - w * s, r1 * s + w * c), (r0 * c - w * s, r0 * s + w * c)]
+        pts = _ngon(r0 * c, r0 * s, w) + (_ngon(r1 * c, r1 * s, w) if abs(r1 - r0) > 1e-9 else [])
+        return convex_hull(pts)
+    dep = (rec or {}).get("depth")
+    round_z = row.get("kind") in ROUND_KINDS and row.get("axis") == "Z"
+    if dep and (round_z or row.get("section")) and abs(dep[0] + dep[1]) < 1e-9:
+        return _ngon(0.0, 0.0, dep[1])
+    return None
+
+
+def plan_gap_fn(ctx, rows, pose, a, b):
+    """Callable for assess_pair: plan distance between rows a and b at pose, or None."""
+    def f():
+        fa = plan_footprint(rows.get(a, {}), _feat(ctx, pose, a))
+        fb = plan_footprint(rows.get(b, {}), _feat(ctx, pose, b))
+        if fa is None or fb is None:
+            return None
+        return min_distance(fa, fb)
+    return f
+
+
+def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
     g = g_min or 0
     if cls == "N":
         return True, "N", "nested (declared)", None
@@ -470,7 +531,7 @@ def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 
 # ======================================================================== spec lint (SW-1, TP-6, TP-8)
 
-PRED_TARGET = {"below": "of", "above": "of", "side": "of", "outboard": "of", "rests_on": "seat",
+PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
                "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows"}
 
 
@@ -765,8 +826,43 @@ def stack_anchor_issues(mod, P, hand=None):
     return bad
 
 
+PLANE_FIELDS = ("load_plane", "entry_plane")
+
+
+def plane_agreement_issues(ctx):
+    """LF-16: a spec plane field names one plane twice, as a stack term (read by the park rule) and as a feature edge
+    plus offset (read by S1-3). Both must resolve to the same z_A within TOL_Z. Reads the spec rows' stack z, not the
+    drawing, so it holds on the stub. Only fields the spec states are linted."""
+    issues = []
+    if not ctx.stack or not ctx.spec:
+        return issues
+    import check_stack as cs  # stdlib + sketch_loader only; no cycle
+    glob = ctx.stack.get("global_z_A", {})
+    for field in PLANE_FIELDS:
+        lp = ctx.spec.get(field)
+        if not lp:
+            continue
+        term, feat, edge = lp.get("term"), lp.get("feature"), lp.get("edge", "z_max")
+        if term not in glob:
+            issues.append(f"LF-16 {field}: term {term!r} is not a stack name")
+            continue
+        rec = next(((p, pr["features"][feat]) for p, pr in ctx.stack["poses"].items()
+                    if feat in pr["features"] and "z_min" in pr["features"][feat]), None)
+        if rec is None:
+            issues.append(f"LF-16 {field}: feature {feat!r} has no z_rule in any pose")
+            continue
+        pose, f = rec
+        shift = ctx.stack["poses"][pose]["tip_z_S"] - ctx.stack["poses"][pose]["tip_z_A"]
+        fz = (f["z_max"] if edge == "z_max" else f["z_min"]) - shift + cs.eval_expr(lp.get("offset", 0), ctx.P, {})
+        d = abs(glob[term] - fz)
+        if d > TOL_Z:
+            issues.append(f"LF-16 {field}: term {term} {glob[term]:.2f} z_A vs {feat}.{edge} + offset {fz:.2f} z_A, {d:.2f} apart")
+    return issues
+
+
 def k6(ctx):
     issues, worst, n, absent = [], 0.0, 0, 0
+    issues += plane_agreement_issues(ctx)
     if ctx.check_stack_path:
         imp = [f"import guard: {b}" for b in import_violations(ctx.check_stack_path)]
         issues += imp
@@ -862,7 +958,8 @@ def k7(ctx):
                     failing += 1
                     absent += 1
                     continue
-                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), PA, PB, gap, (a, b))
+                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), PA, PB, gap, (a, b),
+                                             plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None)
                 tested += st not in ("depth-separated",)
                 states.append(st)
                 if not ok:
@@ -878,7 +975,8 @@ def k7(ctx):
                     if frozenset((a, b)) in declared or a == b or not drawn[a] or not drawn[b]:
                         continue
                     gap = band_gap(_sep_band(ctx, pose, a), _sep_band(ctx, pose, b))
-                    ok, st, txt, _ = assess_pair("F", 0, drawn[a], drawn[b], gap, (a, b))
+                    ok, st, txt, _ = assess_pair("F", 0, drawn[a], drawn[b], gap, (a, b),
+                                                 plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None)
                     states.append(f"undeclared:{st}")
                     if not ok:
                         failing += 1
@@ -917,7 +1015,8 @@ def k7(ctx):
                     failing += 1
                     continue
                 hulls = [convex_hull(list(p) + list(q)) for p, q in zip(PL, PH)]
-                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), hulls, PB, gap, (f"{a} swept", b))
+                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), hulls, PB, gap, (f"{a} swept", b),
+                                             plan_gap=plan_gap_fn(ctx, rows, lo, a, b) if side else None)
                 tested += st not in ("depth-separated",)
                 states.append(f"swept:{st}")
                 if not ok:
@@ -1013,6 +1112,16 @@ def k8(ctx):
                     ok = za < zb if kind == "below" else za > zb
                     if not ok:
                         issues.append(f"{pose}/{fid} {kind} {other_id}: centroid z {za:.1f} vs {zb:.1f}")
+                elif kind == "clears_above":
+                    # TP-9 ring_on_tube (a): z_min(me) - z_max(of) > 0, me wholly above of
+                    d = extent_z(me)[0] - extent_z(other)[1]
+                    if d <= 0:
+                        issues.append(f"{pose}/{fid} clears_above {other_id}: z_min minus {other_id} z_max {d:.2f}, needs > 0")
+                elif kind == "top_within":
+                    # TP-9 ring_on_tube (b), motor below the gear back face: z_max(of) - z_max(me) > 0
+                    d = extent_z(other)[1] - extent_z(me)[1]
+                    if d <= 0:
+                        issues.append(f"{pose}/{fid} top_within {other_id}: {other_id} z_max minus z_max {d:.2f}, needs > 0")
                 elif kind == "rests_on":
                     d = extent_z(me)[0] - extent_z(other)[1]
                     if abs(d) > pr.get("tol", TOL_Z):

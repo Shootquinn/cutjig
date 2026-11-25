@@ -28,17 +28,18 @@ from sketch_loader import Params, load_spec, load_yaml  # noqa: E402
 K_ALL = ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9"]
 K_BY_SKETCH = {"s5": ["K1", "K2", "K3", "K4", "K9"]}
 STUB_EXPECT = {"s1": {"guard": ["K1", "K2", "K3", "K5"],
-                      "red": ["K4", "K6", "K7", "K8", "K9", "S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6"]}}
+                      "red": ["K4", "K6", "K7", "K8", "K9", "S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7"]}}
 _ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
 _ABS_S = ("absent", "red (absent, fail-closed; content at 1.1 c)")
-STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, **{k: _ABS_S for k in ("S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6")}}
+STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, **{k: _ABS_S for k in ("S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7")}}
 SOURCES = {
     "K1": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)", "K2": "gameplan l.135; Design Notes 6",
     "K3": "gameplan l.136; LLM-PLM 8.4.2", "K4": "gameplan l.137; LLM-PLM 8.4.2",
     "K5": "gameplan l.138; LLM-PLM 8.4.1", "K6": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)",
     "K7": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED", "K8": "gameplan l.141; ASSEMBLY.md Coordinate frame",
     "K9": "gameplan l.142",
-    "S1-1": "travel DECLARED [CP §15], [DN23]; advance DERIVED", "S1-2": "[DN23] (U13 re-derive); park ASSUMED",
+    "S1-1": "travel DECLARED [CP §15], [DN23]; advance DERIVED", "S1-2": "[DN23] (U13 re-derive, option R, Design Notes 22); park ASSUMED",
+    "S1-7": "G2 (Design Notes 21); advance DERIVED; collet.core_stop_z ASSUMED",
     "S1-3": "core.length_install DECLARED; clearance ASSUMED", "S1-4": "overlay jackscrew.* ASSUMED",
     "S1-5a": "stop.g_stop reuse ASSUMED; bore ceiling ASSUMED (Q2e, Design Notes 19)",
     "S1-5b": "10 mm ASSUMED; wingnut.sweep_clear_radius DERIVED", "S1-6": "overlay jackscrew.angle, spacing DECLARED [DN23]",
@@ -216,11 +217,17 @@ def write_summary(rec, path):
         lines.append(f"| {r['id']} | {r['result']} | {r['measured']} | {r['threshold']} | {r['z_result']} | {r['b_result']} | {reason} |")
     rep = rec["reported"]
     lines += ["", "| Check | Cause of red |", "|---|---|"] + [f"| {r['id']} | {r.get('cause')} |" for r in rec["checks"] if r["result"] != "pass"]
-    lines += ["", "Reported (no threshold):", f"- Lift stroke (draft park rule, load plane {rep['load_plane']}): {rep['lift_stroke_mm']:.2f} mm",
+    lines += ["", "Reported (no threshold):",
+              f"- Park tip {rep['park_tip_z_A']:.2f} z_A (entry plane {rep['entry_plane']}); highest class start {rep['start_tip_max_z_A']:.2f} z_A; "
+              f"lift stroke {rep['lift_stroke_mm']:.2f} mm; S1-3 load plane {rep['load_plane']}"]
+    for name, o in (rep.get("q9_options") or {}).items():
+        lines.append(f"- Q9 {name}: park {o['park_tip_z_A']:.2f} z_A, stroke {o['lift_stroke']:.2f} mm, L " +
+                     ", ".join(f"{k} {v:.2f}" for k, v in o["L"].items()))
+    lines += [
               f"- Collar top recomputed {rep['collar_top_recomputed_z_A']:.2f} z_A against params stop.collar_top_z {rep['collar_top_params_z_A']}",
-              "- Park tip z_A by load plane and core length: " + "; ".join(
+              "- Park tip z_A by plane and core length: " + "; ".join(
                   f"{t}: " + ", ".join(f"{k.split('.')[-1]} {v:.2f}" for k, v in d.items()) for t, d in rep["park_tip_by_plane_z_A"].items()),
-              f"- Start tip minus 0.5 m core top on the core stop: {rep['start_tip_minus_core_top_mm']:.2f} mm "
+              f"- Start tip minus capture-core top ({rep['capture_core_length_key']}) on the core stop: {rep['start_tip_minus_core_top_mm']:.2f} mm "
               f"(end tip + drill_advance_500core = {rep['end_tip_plus_advance_z_A']:.2f} z_A; core top {rep['core_top_on_core_stop_z_A']:.2f} z_A)"]
     for pid, v in rep["poses"].items():
         if v["highest_z_S"] is not None:
