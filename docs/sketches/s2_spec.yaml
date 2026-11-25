@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "fixes applied, awaiting re-check (Designer 1.2 (b) FIX 1 to 4, Loftsman FIX 1 option A; research/sean/cr_scratch/step1.2_engineer_spec_fixes.md)"
+status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (awaiting the Loftsman and Designer at (c)/(e))"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -960,6 +960,10 @@ features:
     projection: circle
     keys: [gear.pitch_diameter, gear.bore, gear.od, gear.tooth_count, gear.toe_tip_above_pinion_axis, gear.back_face_above_pinion_axis, pinion.axis_above_ring_top]
     z_rule: {z_min: "ring_top + pinion.axis_above_ring_top + gear.toe_tip_above_pinion_axis", z_max: "ring_top + pinion.axis_above_ring_top + gear.back_face_above_pinion_axis"}
+    # 1.2 (c): true plan section for the K7 plan annulus (gear bore r 90 to OD r 126.32; keys already on the row).
+    # Without it the plan outline is the depth-band disk (containment bound), and gear|gear_hub C and gear|drill_tube F
+    # cannot be judged on a true section.
+    section: ["gear.bore / 2", "gear.od / 2"]
     depth: ["-gear.od / 2", "gear.od / 2"]
     label: {text: "gear PD", key: gear.pitch_diameter, fmt: ".0f"}
     neighbours:

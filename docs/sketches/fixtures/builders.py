@@ -17,10 +17,11 @@ sys.path.insert(0, str(HERE.parent))
 
 import check_stack  # noqa: E402
 import checks_s1  # noqa: E402
+import checks_s2  # noqa: E402
 import sketch_common as sc  # noqa: E402
 from sketch_loader import Params, load_spec  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Circle, Polygon, Rectangle  # noqa: E402
+from matplotlib.patches import Annulus, Circle, Polygon, Rectangle  # noqa: E402
 from matplotlib.transforms import Affine2D  # noqa: E402
 
 CHECK_STACK_PATH = HERE.parent / "check_stack.py"
@@ -1294,10 +1295,500 @@ def s1_full_draw():
     return s1_full_ctx(), checks_s1.run
 
 
+# ---------------------------------------------------------------- 1.2 (c): S2 plan drawing from the signed spec
+
+S2_SPEC = HERE.parent / "s2_spec.yaml"
+
+
+def _s2_pose(spec):
+    return (spec.get("plan_figure") or {}).get("pose") or spec["poses"][0]["id"]
+
+
+def _radial_poly(r0, r1, th, w0, w1=None):
+    """Four-vertex piece along the radial direction at th: half-width w0 at r0, w1 at r1 (w1 = w0: rectangle)."""
+    w1 = w0 if w1 is None else w1
+    c, s = check_stack.cosd(th), check_stack.sind(th)
+    return [(u * c - v * s, u * s + v * c) for u, v in ((r0, -w0), (r1, -w1), (r1, w1), (r0, w0))]
+
+
+def _s2_draw_row(ax, P, spec, stack, pid, row):
+    """One S2 row drawn faithfully from the check_stack record in plan (the drawing s2_plan.py makes at (d), as a
+    fixture): sector as a wedge polygon; section rows as an Annulus; plan_poly pieces as polygons (two-point pieces as
+    lines); placed radial rows as rectangles (bevel pinion: toothed trapezoid toe to pinion.r_heel, apex-consistent
+    toe width, plus a hub rectangle to r_out); zero-width radial rows as lines (draw.solid / draw.dashed spans); placed
+    round rows as circles (projection rectangle: the inscribed square, faces radial and tangential); collet_axis as the
+    datum B cross with +X / +Y arrowheads and a counter-clockwise theta arc."""
+    fid = row["id"]
+    f = stack["poses"][pid]["features"].get(fid, {})
+    names = stack["poses"][pid]["vars_z_A"]
+    ev = lambda e: check_stack.eval_expr(e, P, names)  # noqa: E731
+    if f.get("sector"):
+        sc.draw(fid, Polygon(sc.sector_boundary(f["sector"])[:-6], closed=True, fill=False), ax)
+        return
+    if fid == "collet_axis":
+        L = P.get("drill.tube_od") / 4
+        hd = L / 6
+        for xs, ys in (([-L, L], [0, 0]), ([0, 0], [-L, L]), ([L - hd, L, L - hd], [hd / 2, 0, -hd / 2]),
+                       ([hd / 2, 0, -hd / 2], [L - hd, L, L - hd])):
+            sc.draw(fid, Line2D(xs, ys), ax)
+        arc = [(0.6 * L * check_stack.cosd(a), 0.6 * L * check_stack.sind(a)) for a in range(0, 61, 5)]
+        sc.draw(fid, Line2D([p[0] for p in arc], [p[1] for p in arc]), ax)
+        return
+    if row.get("section") and not f.get("place"):
+        a, b = sorted(ev(e) for e in row["section"])
+        sc.draw(fid, Annulus((0, 0), b, b - a, fill=False) if a > 0 else Circle((0, 0), b, fill=False), ax)
+        return
+    if f.get("plan_pieces"):
+        for pc in f["plan_pieces"]:
+            if len(pc) == 2:
+                sc.draw(fid, Line2D([pc[0][0], pc[1][0]], [pc[0][1], pc[1][1]]), ax)
+            else:
+                sc.draw(fid, Polygon(pc, closed=True, fill=False), ax)
+        return
+    pl = f.get("place")
+    if not pl:
+        return
+    th, r0, r1, w = pl["theta"], pl["r_in"], pl["r_out"], pl["half_width"]
+    c, s = check_stack.cosd(th), check_stack.sind(th)
+    if pl["footprint"] == "radial":
+        if w == 0:
+            spans = [[ev(x) for x in row["draw"][k]] for k in ("solid", "dashed")] if row.get("draw") else [[r0, r1]]
+            for u0, u1 in spans:
+                sc.draw(fid, Line2D([u0 * c, u1 * c], [u0 * s, u1 * s]), ax)
+        elif row["kind"] == "gear":
+            heel = P.get("pinion.r_heel")
+            w_toe = w * r0 / heel
+            sc.draw(fid, Polygon(_radial_poly(r0, heel, th, w_toe, w), closed=True, fill=False), ax)
+            sc.draw(fid, Polygon(_radial_poly(heel, r1, th, w / 2), closed=True, fill=False), ax)
+        else:
+            sc.draw(fid, Polygon(check_stack.radial_corners(r0, r1, th, w, pl.get("rot", 0)), closed=True, fill=False), ax)
+        return
+    cx, cy = pl["r_c"] * c, pl["r_c"] * s
+    if row.get("projection") == "rectangle":
+        h = w / math.sqrt(2)
+        sq = [(cx + u * c - v * s, cy + u * s + v * c) for u, v in ((-h, -h), (h, -h), (h, h), (-h, h))]
+        sc.draw(fid, Polygon(sq, closed=True, fill=False), ax)
+    else:
+        sc.draw(fid, Circle((cx, cy), w, fill=False), ax)
+
+
+def _s2_draw(P, spec, stack, skip=(), note=None):
+    pid = _s2_pose(spec)
+    fig, ax = sc.setup_figure(spec["view"], title=f"S2 plan fixture, pose {pid}")
+    for row in spec["features"]:
+        if row["id"] in skip or not sc.applies(row, pid):
+            continue
+        _s2_draw_row(ax, P, spec, stack, pid, row)
+    sc.finish_axes(ax)
+    sc.place_labels(ax, spec, P, pid)
+    txt = (spec.get("plan_figure") or {}).get("figure_note") if note is None else note
+    if txt:
+        t = ax.text(0, -0.06, txt, transform=ax.transAxes, fontsize=6)
+        t.set_gid(sc.NOTE_GID)
+    return {pid: fig}
+
+
+_S2_LIVE = {}
+
+
+def _s2_ctx(spec_mut=None, values=None, skip=(), note=None, cache=False):
+    """Live S2 spec drawn faithfully (one plan figure at plan_figure.pose). spec_mut and values as _s1_ctx (a B planted
+    that way is a spec or params decision drawn faithfully). cache=True shares one read-only context among Z controls."""
+    if cache and "ctx" in _S2_LIVE:
+        return _S2_LIVE["ctx"]
+    P = Params()
+    for k, v in (values or {}).items():
+        P.leaves[k] = dict(P.leaves[k], value=v)
+    spec = load_spec(S2_SPEC)
+    if spec_mut:
+        spec_mut(spec)
+    stack = check_stack.evaluate_spec(P, spec)
+    figs = _s2_draw(P, spec, stack, skip=skip, note=note)
+    ctx = sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[], check_stack_path=CHECK_STACK_PATH)
+    if cache:
+        _S2_LIVE["ctx"] = ctx
+    return ctx
+
+
+def s2_live():
+    """Z for K4 to K9 in plan and S2-1 to S2-6: the signed S2 spec drawn faithfully."""
+    return _s2_ctx(cache=True)
+
+
+def _s2_ax(c):
+    return next(iter(c.figs.values())).axes[0]
+
+
+def _s2_replace(c, fid, artists_fn):
+    """Remove every artist of row fid from the S2 plan figure and draw artists_fn(ctx) in its place (drawing-only B)."""
+    ax = _s2_ax(c)
+    for a in sc.tagged(ax).get(fid, []):
+        a.remove()
+    for a in artists_fn(c):
+        sc.draw(fid, a, ax)
+    return c
+
+
+def _s2_place(c, fid):
+    return c.stack["poses"][_s2_pose(c.spec)]["features"][fid]["place"]
+
+
+def _shift(c, fid, dx, dy):
+    T = Affine2D().translate(dx, dy)
+    ax = _s2_ax(c)
+    for a in sc.tagged(ax).get(fid, []):   # artist transform transData (patch transform, where any, applies first)
+        a.set_transform(T + ax.transData)
+    return c
+
+
+# K4 (figure note, detail 1 common (b) second clause; Designer 1.2 (b) FIX 3)
+
+def k4_b4():
+    """Figure note drawn without the LM20UU bushing (the spec figure_note and not_drawn unchanged)."""
+    note = load_spec(S2_SPEC)["plan_figure"]["figure_note"].replace("; LM20UU bushing (inside housing and lug)", "")
+    return _s2_ctx(note=note)
+
+
+def k4_b5():
+    """Spec not_drawn gains a part the spec figure_note and the drawn note do not name (power-off brake)."""
+    return _s2_ctx(spec_mut=lambda s: s["not_drawn"].append({"part": "power-off brake (Step 2)", "reason": "fixture"}))
+
+
+# K5 plan (SW-17, TP-13)
+
+def k5_b7():
+    """SW-17: drill tube (cylinder, axis Z) drawn as a rectangle in plan."""
+    def fn(c):
+        r = c.P.get("drill.tube_od") / 2
+        return [Rectangle((-r, -r), 2 * r, 2 * r, fill=False)]
+    return _s2_replace(_s2_ctx(), "drill_tube", fn)
+
+
+def k5_b8():
+    """TP-13: radial-axis NEMA 23 (motor23_a, theta 210) drawn as a circle in plan."""
+    def fn(c):
+        pl = _s2_place(c, "motor23_a")
+        return [Circle((pl["r_c"] * check_stack.cosd(pl["theta"]), pl["r_c"] * check_stack.sind(pl["theta"])), pl["half_width"], fill=False)]
+    return _s2_replace(_s2_ctx(), "motor23_a", fn)
+
+
+def k5_b9():
+    """TP-13: motor23_a drawn as its rectangle turned 10 deg about its centre (axis off radial)."""
+    def fn(c):
+        pl = _s2_place(c, "motor23_a")
+        return [Polygon(check_stack.radial_corners(pl["r_in"], pl["r_out"], pl["theta"], pl["half_width"], 10), closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "motor23_a", fn)
+
+
+def k5_b10():
+    """TP-13 premise: radial-axis motor23_a with a round place footprint (axis X needs a radial footprint)."""
+    return _s2_ctx(spec_mut=_mut_row("motor23_a", lambda r: r.__setitem__("place", dict(r["place"], footprint="round"))))
+
+
+def k5_b11():
+    """Hub admission premise: pinion_a hub rectangle drawn 5 mm outboard of the heel (gap between teeth and hub)."""
+    def fn(c):
+        pl = _s2_place(c, "pinion_a")
+        heel, w = c.P.get("pinion.r_heel"), pl["half_width"]
+        return [Polygon(_radial_poly(pl["r_in"], heel, pl["theta"], w * pl["r_in"] / heel, w), closed=True, fill=False),
+                Polygon(_radial_poly(heel + 5, pl["r_out"] + 5, pl["theta"], w / 2), closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "pinion_a", fn)
+
+
+# K6 plan
+
+def k6_b8():
+    """K6 plan B: member c (frame_upper_c) drawn 6.75 off its spec centre in x (6.75 = collar.top_above_plate, the K6-B1
+    offset)."""
+    return _shift(_s2_ctx(), "frame_upper_c", Params().get("collar.top_above_plate"), 0)
+
+
+def k6_b9():
+    """K6 plan premise B (LF-16 owner rule, 1.2 (c)): S2 load_plane offset 1 (differs from S1's); core_seat is an S1 row
+    only, so no spec with that row carries an equal load_plane. Stack lint only (no figure)."""
+    P = Params()
+    spec = load_spec(S2_SPEC)
+    spec["load_plane"] = dict(spec["load_plane"], offset=1)
+    return sc.Ctx(P=P, spec=spec, figs={}, stack=check_stack.evaluate_spec(P, spec), view=spec["view"], check_stack_path=CHECK_STACK_PATH)
+
+
+# K7 plan (LF-8)
+
+def _plan_rows(specs):
+    """Plan fixture rows from (id, place, z band (z_A), neighbours [(id, class, g_min)], extra)."""
+    rows = []
+    for fid, place, z, nb, extra in specs:
+        r = {"id": fid, "name": fid, "kind": extra.get("kind", "prism"), "axis": extra.get("axis", "Z"),
+             "projection": extra.get("projection", "rectangle"), "z_rule": {"z_min": z[0], "z_max": z[1]}, "moves": extra.get("moves", False)}
+        if place:
+            r["place"] = place
+        if extra.get("section"):
+            r["section"] = extra["section"]
+            r["depth"] = [-extra["section"][1], extra["section"][1]]
+        r["neighbours"] = [{"id": b, "class": cls, "g_min": g, "source": "fixture"} for b, cls, g in (nb or [])]
+        rows.append(r)
+    return rows
+
+
+def _k7_plan(specs, poses=None, plan_pose=None):
+    """Plan K7 fixture: rows from _plan_rows, drawn faithfully by _s2_draw_row in one figure (one-figure mode: the
+    figure serves every stack pose)."""
+    P = Params()
+    poses = poses or ONE
+    spec = {"sketch": "k7plan", "view": "plan_xy", "poses": poses, "features": _plan_rows(specs),
+            "plan_figure": {"pose": plan_pose or poses[0]["id"]}}
+    stack = check_stack.evaluate_spec(P, spec)
+    pid = spec["plan_figure"]["pose"]
+    fig, ax = sc.setup_figure("plan_xy", title="k7 plan fixture")
+    for row in spec["features"]:
+        _s2_draw_row(ax, P, spec, stack, pid, row)
+    sc.finish_axes(ax)
+    return _ctx(P, spec, {pid: fig})
+
+
+def _rad(r_in, r_out, th, w):
+    return {"r_in": r_in, "r_out": r_out, "theta": th, "half_width": w, "footprint": "radial"}
+
+
+def k7_z12():
+    """Two 60 x 60 members at the same z, 100 apart in plan, declared F (states F)."""
+    return _k7_plan([("a", _rad(200, 260, 0, 30), (0, 100), [("b", "F", 0)], {}),
+                     ("b", _rad(360, 420, 0, 30), (0, 100), None, {})])
+
+
+def k7_b22():
+    """1 mm plan overlap on an F pair at the same z."""
+    return _k7_plan([("a", _rad(200, 260, 0, 30), (0, 100), [("b", "F", 0)], {}),
+                     ("b", _rad(259, 319, 0, 30), (0, 100), None, {})])
+
+
+def k7_b23():
+    """G pair (g_min 10) 9 apart in plan at the same z (g_min - 1)."""
+    return _k7_plan([("a", _rad(200, 260, 0, 30), (0, 100), [("b", "G", 10)], {}),
+                     ("b", _rad(269, 329, 0, 30), (0, 100), None, {})])
+
+
+def k7_b24():
+    """C pair touching in plan (faces at r 260) with z bands 100 apart (z-separated C)."""
+    return _k7_plan([("a", _rad(200, 260, 0, 30), (0, 100), [("b", "C", 0)], {}),
+                     ("b", _rad(260, 320, 0, 30), (200, 300), None, {})])
+
+
+def k7_z13():
+    """Plan C rule: a pad (r 200 to 215) standing on a post of the same footprint, z bands touching at 100, plan
+    outlines overlapping in full: z-contact."""
+    return _k7_plan([("pad", _rad(200, 215, 150, 30), (100, 110), [("post", "C", 0)], {}),
+                     ("post", _rad(200, 215, 150, 30), (0, 100), None, {})])
+
+
+def k7_b25():
+    """Plan C rule B: the pad's z band reaches 1 mm into the post (z bands overlap 1, plan overlap): interference."""
+    return _k7_plan([("pad", _rad(200, 215, 150, 30), (99, 110), [("post", "C", 0)], {}),
+                     ("post", _rad(200, 215, 150, 30), (0, 100), None, {})])
+
+
+def k7_b26():
+    """Plan C premise B: a lift-motor-like part (round footprint r 29.70, drawn as its inscribed 42 square: a
+    circumscribing outline) declared C on a plate below it, z touching, plan overlapping: z-contact refused."""
+    return _k7_plan([("motor", {"r_in": 160, "theta": 30, "half_width": 29.6985, "footprint": "round"}, (100, 148), [("plate", "C", 0)], {}),
+                     ("plate", _rad(120, 200, 30, 40), (88, 100), None, {})])
+
+
+def k7_z14():
+    """Plan annulus: ring annulus r 100 to 210 around a tube disk r 76.2 (undeclared F, z overlapping) with a bearing
+    annulus r 76.2 to 100 in the bore (C to both): clean."""
+    return _k7_plan([("ring", None, (0, 12), [("bearing", "C", 0)], {"kind": "plate", "projection": "circle", "section": [100, 210]}),
+                     ("bearing", None, (-13, 12), [("tube", "C", 0)], {"kind": "cylinder", "projection": "circle", "section": [76.2, 100]}),
+                     ("tube", {"r_in": 0, "theta": 0, "half_width": 76.2, "footprint": "round"}, (-200, 400), None,
+                      {"kind": "cylinder", "projection": "circle"})])
+
+
+def k7_b27():
+    """Plan annulus B: bearing OD 1 mm into the ring bore (bearing r 76.2 to 101; C to the ring): interference."""
+    return _k7_plan([("ring", None, (0, 12), [("bearing", "C", 0)], {"kind": "plate", "projection": "circle", "section": [100, 210]}),
+                     ("bearing", None, (-13, 12), [("tube", "C", 0)], {"kind": "cylinder", "projection": "circle", "section": [76.2, 101]}),
+                     ("tube", {"r_in": 0, "theta": 0, "half_width": 76.2, "footprint": "round"}, (-200, 400), None,
+                      {"kind": "cylinder", "projection": "circle"})])
+
+
+def k7_b28():
+    """One-figure premise B (4f): a moving arm whose place r_in reads the pose (r_in = 200 + tip / 10), drawn in the one
+    plan figure; its plan outline differs between the four poses."""
+    rows = [("arm", {"r_in": "200 + tip / 10", "r_out": "260 + tip / 10", "theta": 0, "half_width": 30, "footprint": "radial"},
+             ("tip", "tip + 20"), None, {"moves": True})]
+    return _k7_plan(rows, poses=FOUR)
+
+
+def k7_b29():
+    """Swept case in one-figure mode: a fixed bar inside the ring annulus outline (r 150 to 170 at theta 0, z 300 to
+    310) with its z band inside the ring's sweep (tip + 100 to tip + 120 over tips 0 to 500) and clear of every pose."""
+    rows = [("ring", None, ("tip + 100", "tip + 120"), [("bar", "G", 10)],
+             {"kind": "plate", "projection": "circle", "section": [100, 210], "moves": True}),
+            ("bar", _rad(150, 170, 0, 10), (300, 310), None, {})]
+    return _k7_plan(rows, poses=FOUR)
+
+
+# K8 plan
+
+def k8_b18():
+    """K8-B3 on the S2 axes: the live S2 plan with the y axis inverted."""
+    c = _s2_ctx()
+    _s2_ax(c).invert_yaxis()
+    return c
+
+
+def k8_b19():
+    """Plan handedness: the three screws drawn at -theta (azimuth order clockwise), everything else as the spec."""
+    def mirror(fid):
+        def fn(c):
+            pl = _s2_place(c, fid)
+            return [Circle((pl["r_c"] * check_stack.cosd(pl["theta"]), -pl["r_c"] * check_stack.sind(pl["theta"])), pl["half_width"], fill=False)]
+        return fn
+    c = _s2_ctx()
+    for fid in ("screw_a", "screw_b", "screw_c"):
+        _s2_replace(c, fid, mirror(fid))
+    return c
+
+
+def k8_b20():
+    """Plan containment (premise of the K7 plan test): motor23_a drawn 10 wider each side across its axis."""
+    def fn(c):
+        pl = _s2_place(c, "motor23_a")
+        return [Polygon(check_stack.radial_corners(pl["r_in"], pl["r_out"], pl["theta"], pl["half_width"] + 10), closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "motor23_a", fn)
+
+
+def k8_b21():
+    """Outboard (radial form): NEMA 23 c placed inboard of its pinion (motor23_c r 20 to 96, drawn faithfully)."""
+    return _s2_ctx(spec_mut=_mut_row("motor23_c", lambda r: r.__setitem__(
+        "place", dict(r["place"], r_in="pinion.motor_r_in - 122", r_out="pinion.motor_r_in - 122 + pinion.motor_length"))))
+
+
+def k8_b22():
+    """Taper (plan, radial frame): pinion_a toothed trapezoid drawn widening toward the axis (toe full width, heel
+    narrow); hub as drawn."""
+    def fn(c):
+        pl = _s2_place(c, "pinion_a")
+        heel, w = c.P.get("pinion.r_heel"), pl["half_width"]
+        return [Polygon(_radial_poly(pl["r_in"], heel, pl["theta"], w, w * pl["r_in"] / heel), closed=True, fill=False),
+                Polygon(_radial_poly(heel, pl["r_out"], pl["theta"], w * pl["r_in"] / heel / 2), closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "pinion_a", fn)
+
+
+def k8_b23():
+    """Sector premise (S2-5a reads the drawn sector): operator sector drawn with half-angle 40, spec 45."""
+    def fn(c):
+        sec = dict(c.stack["poses"][_s2_pose(c.spec)]["features"]["operator_sector"]["sector"], half_angle=40)
+        return [Polygon(sc.sector_boundary(sec)[:-6], closed=True, fill=False)]
+    return _s2_replace(_s2_ctx(), "operator_sector", fn)
+
+
+# X1 shared-row lint (Loftsman 1.2 (b) section 2)
+
+def _x1(mut=None):
+    import check_sketch
+    specs = {"s1": load_spec(HERE.parent / "s1_spec.yaml"), "s2": load_spec(S2_SPEC)}
+    if mut:
+        mut(specs["s2"])
+    return check_sketch.x1_lint(specs)
+
+
+def x1_z():
+    return _x1()
+
+
+def x1_b1():
+    """s2 frame_upper_b place r_in + 1."""
+    return _x1(_mut_row("frame_upper_b", lambda r: r.__setitem__("place", dict(r["place"], r_in="frame_upper.radius - profile.width / 2 + 1"))))
+
+
+def x1_b2():
+    """s2 nut_a z_rule z_max changed (nut length doubled upward)."""
+    return _x1(_mut_row("nut_a", lambda r: r.__setitem__("z_rule", dict(r["z_rule"], z_max="nut_z + jackscrew.nut_length"))))
+
+
+# S2-x fixtures from the signed spec (gameplan detail 1.2 table)
+
+def s2_1_b1():
+    """S2-1 B: screw_b (spec theta 30) drawn at 110 deg; nut, housing and blocks unchanged."""
+    def fn(c):
+        r, w = c.P.get("jackscrew.pitch_radius"), c.P.get("jackscrew.nominal") / 2
+        return [Circle((r * check_stack.cosd(110), r * check_stack.sind(110)), w, fill=False)]
+    return _s2_replace(_s2_ctx(), "screw_b", fn)
+
+
+def s2_2_b1():
+    """S2-2 B: screw pitch radius equal to the keep-out radius (jackscrew.pitch_radius = icd.keepout_radius), drawn
+    faithfully."""
+    return _s2_ctx(values={"jackscrew.pitch_radius": Params().get("icd.keepout_radius")})
+
+
+def s2_3_b1():
+    """S2-3 B: pinions placed on the gear OD (pinion.r_heel = gear.od / 2), drawn faithfully."""
+    return _s2_ctx(values={"pinion.r_heel": Params().get("gear.od") / 2})
+
+
+def s2_4_b1():
+    """S2-4 B: collet axis (datum B cross) drawn 2 mm off in x."""
+    return _shift(_s2_ctx(), "collet_axis", 2, 0)
+
+
+def s2_5a_b1():
+    """S2-5a B: sector widened to 130 deg (operator.sector_half_angle 65), wider than the 120 deg screw gap, drawn
+    faithfully."""
+    return _s2_ctx(values={"operator.sector_half_angle": 65})
+
+
+def s2_5b_b1():
+    """S2-5b B: NEMA 23 at theta 90 (motor23_c) with its bottom at 930 z_A at load (spec z_rule), 10 below the hand-band
+    top 940."""
+    return _s2_ctx(spec_mut=_mut_row("motor23_c", lambda r: r.__setitem__("z_rule", {"z_min": 930, "z_max": "930 + pinion.motor_body"})))
+
+
+def s2_6_b1():
+    """S2-6 B: member c at radius 300 (26 off the plate edge), drawn faithfully."""
+    return _s2_ctx(spec_mut=_mut_row("frame_upper_c", lambda r: r.__setitem__("place", dict(
+        r["place"], r_in="300 - profile.width / 2", r_out="300 + profile.width / 2"))))
+
+
+def s2_full_draw():
+    """Smoke: every S2 spec row drawn from check_stack values; K1 to K9 and S2-1 to S2-6 run."""
+    return _s2_ctx(), checks_s2.run
+
+
 # ---------------------------------------------------------------- M1 reviewer control figures (gameplan detail 1, M1 controls)
 
+def _plan_control(mirror=False, title="plan control figure"):
+    """O5 plan control: the mini plan spec (drill tube, three screws at jackscrew.angle), screw labels with their spec
+    azimuths, +X / +Y arrows and the theta arrow counter-clockwise. mirror: the same drawing reflected in y (screws at
+    -theta, theta arrow clockwise, +Y arrow pointing down the page), same labels and title."""
+    P = Params()
+    fig, ax = sc.setup_figure("plan_xy", title=title)
+    k = -1 if mirror else 1
+    sc.draw("drill_tube", Circle((0, 0), P.get("drill.tube_od") / 2, fill=False), ax)
+    r = P.get("jackscrew.pitch_radius")
+    for i, s in enumerate("abc"):
+        th = P.get("jackscrew.angle")[i]
+        x, y = r * check_stack.cosd(th), k * r * check_stack.sind(th)
+        sc.draw(f"screw_{s}", Circle((x, y), P.get("jackscrew.nut_flange_od") / 2, fill=False), ax)
+        ax.annotate(f"screw {s}, theta {th:g} deg", xy=(x, y), xytext=(x * 1.25, y * 1.25), fontsize=8)
+    L = r * 1.4
+    ax.annotate("", xy=(L, 0), xytext=(0, 0), arrowprops={"arrowstyle": "->"})
+    ax.annotate("+X", xy=(L, 0), fontsize=9)
+    ax.annotate("", xy=(0, k * L), xytext=(0, 0), arrowprops={"arrowstyle": "->"})
+    ax.annotate("+Y", xy=(0, k * L), fontsize=9)
+    arc = [(0.5 * r * check_stack.cosd(a), k * 0.5 * r * check_stack.sind(a)) for a in range(0, 91, 5)]
+    ax.add_line(Line2D([p[0] for p in arc], [p[1] for p in arc]))
+    ax.annotate("", xy=arc[-1], xytext=arc[-2], arrowprops={"arrowstyle": "->"})
+    ax.annotate("theta", xy=arc[9], fontsize=9)
+    ax.set_xlim(-1.6 * r, 1.6 * r)
+    ax.set_ylim(-1.6 * r, 1.6 * r)
+    return fig
+
+
 def control_figures(out_dir):
-    """K8 Z figure and K8 B1 (drill tip-up) figure, same title text. Returns the mapping written to key.json."""
+    """K8 Z figure and K8 B1 (drill tip-up) figure, same title text; plan controls ctrl_c (correct handedness) and ctrl_d
+    (mirrored), same title text (1.2 (c), O5). Returns the mapping written to key.json."""
     P = Params()
     spec = mini_side_spec()
     stack = check_stack.evaluate_spec(P, spec)
@@ -1306,7 +1797,11 @@ def control_figures(out_dir):
     b1 = draw_mini(P, spec, stack, mutate=_flip_drill(P, stack, spec["poses"][0]["id"]), title=title)
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    mapping = {"ctrl_a.png": "K8-B1 (drill flipped tip-up; must FAIL V3)", "ctrl_b.png": "K8-Z (correct sense; must PASS)"}
+    mapping = {"ctrl_a.png": "K8-B1 (drill flipped tip-up; must FAIL V3)", "ctrl_b.png": "K8-Z (correct sense; must PASS)",
+               "ctrl_c.png": "plan of the mini spec, screws counter-clockwise from +X at 30, 150, 270 (must PASS handedness)",
+               "ctrl_d.png": "the same plan mirrored in y, azimuths clockwise (must FAIL handedness)"}
     list(b1.values())[0].savefig(out_dir / "ctrl_a.png")
     list(z.values())[0].savefig(out_dir / "ctrl_b.png")
+    _plan_control().savefig(out_dir / "ctrl_c.png")
+    _plan_control(mirror=True).savefig(out_dir / "ctrl_d.png")
     return mapping

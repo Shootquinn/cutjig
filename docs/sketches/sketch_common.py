@@ -24,7 +24,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg  # noqa: E402
 from matplotlib.collections import Collection  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Circle, Ellipse, Patch, Polygon, Rectangle  # noqa: E402
+from matplotlib.patches import Annulus, Circle, Ellipse, Patch, Polygon, Rectangle  # noqa: E402
+from matplotlib.path import Path as MPath  # noqa: E402
 from matplotlib.text import Text  # noqa: E402,F401
 
 HERE = Path(__file__).resolve().parent
@@ -267,21 +268,58 @@ def _xy(T, pts):
     return [(float(x), float(y)) for x, y in arr]
 
 
+BEZIER_STEPS = 8   # samples per Bezier segment (1.2 (c)): curve points only, control points dropped
+
+
+def _bezier(ctrl, t):
+    pts = [np.asarray(p, dtype=float) for p in ctrl]
+    while len(pts) > 1:
+        pts = [(1 - t) * p + t * q for p, q in zip(pts[:-1], pts[1:])]
+    return pts[0]
+
+
+def flatten_path(path):
+    """Polygons of a path in its own coordinates. Line segments keep their vertices; each Bezier segment is sampled at
+    BEZIER_STEPS points on the curve (1.2 (c): a Circle path's control points lie up to 0.041 % outside the circle,
+    which false-fires plan containment and contact tests; matplotlib's 8-segment circle is within 4e-6 r on the curve)."""
+    polys, pts, cur, start = [], [], None, None
+    for verts, code in path.iter_segments(curves=True, simplify=False):
+        v = np.asarray(verts, dtype=float).reshape(-1, 2)
+        if code == MPath.MOVETO:
+            if len(pts) > 1:
+                polys.append(pts)
+            pts, cur, start = [(float(v[0][0]), float(v[0][1]))], v[0], v[0]
+        elif code == MPath.LINETO:
+            pts.append((float(v[0][0]), float(v[0][1])))
+            cur = v[0]
+        elif code in (MPath.CURVE3, MPath.CURVE4):
+            ctrl = [cur] + list(v)
+            for t in np.linspace(0, 1, BEZIER_STEPS + 1)[1:]:
+                q = _bezier(ctrl, t)
+                pts.append((float(q[0]), float(q[1])))
+            cur = v[-1]
+        elif code == MPath.CLOSEPOLY:
+            if len(pts) > 1:
+                polys.append(pts)
+            pts, cur = [], start
+    if len(pts) > 1:
+        polys.append(pts)
+    out = []
+    for p in polys:
+        if len(p) > 1 and abs(p[0][0] - p[-1][0]) < 1e-9 and abs(p[0][1] - p[-1][1]) < 1e-9:
+            p = p[:-1]
+        out.append(p)
+    return out or [[(float(x), float(y)) for x, y in path.vertices]]
+
+
 def artist_polys(a):
-    """Polygons in rendered data coordinates (closing vertex dropped)."""
+    """Polygons in rendered data coordinates (closing vertex dropped; curves sampled on the curve, 1.2 (c))."""
     T = _to_data(a)
     if isinstance(a, Line2D):
         return [_xy(T, list(zip(a.get_xdata(), a.get_ydata())))]
     if isinstance(a, Patch):
         path = a.get_path().transformed(T) if T is not None else a.get_path()
-        polys = path.to_polygons(closed_only=False) or [path.vertices]
-        out = []
-        for poly in polys:
-            pts = [(float(x), float(y)) for x, y in poly]
-            if len(pts) > 1 and abs(pts[0][0] - pts[-1][0]) < 1e-12 and abs(pts[0][1] - pts[-1][1]) < 1e-12:
-                pts = pts[:-1]
-            out.append(pts)
-        return out
+        return flatten_path(path)
     if isinstance(a, Collection):
         offs = np.asarray(a.get_offsets(), dtype=float).reshape(-1, 2)
         offT = a.get_offset_transform()
@@ -594,6 +632,208 @@ def plan_contact_fn(ctx, rows, pose, a, b):
     return f
 
 
+# ======================================================================== plan view (1.2 (c): SW-17, TP-13, LF-8, K6 plan)
+
+def to_ut(pts, theta):
+    """Radial frame at azimuth theta (deg): u along the radial direction, t across it (counter-clockwise positive)."""
+    c, s = math.cos(math.radians(theta)), math.sin(math.radians(theta))
+    return [(x * c + y * s, -x * s + y * c) for x, y in pts]
+
+
+def bbox(polys):
+    xs = [p[0] for poly in polys for p in poly]
+    ys = [p[1] for poly in polys for p in poly]
+    return (min(xs), max(xs), min(ys), max(ys)) if xs else None
+
+
+def _eval_section(ctx, row, pose):
+    """Plain section [r_in, r_out] (no z pieces) evaluated; None for a piecewise section or no section."""
+    sec = row.get("section")
+    if not sec or isinstance(sec[0], (list, tuple)):
+        return None
+    import check_stack as cs  # stdlib + sketch_loader only; no cycle
+    names = (ctx.stack or {}).get("poses", {}).get(pose, {}).get("vars_z_A", {})
+    a, b = (cs.eval_expr(e, ctx.P, names) for e in sec)
+    return float(min(a, b)), float(max(a, b))
+
+
+def plan_outline(ctx, row, pose):
+    """Plan outline of a row from the spec, the K7 plan test geometry (1.2 (c), LF-8: true XY outlines). Returns
+    (kind, data, true) or None. kind 'annulus': data (a, b), the radial interval about the drill axis (a section row:
+    ring, bearing, gear, gear hub; a round place centred on the axis: drill tube, cutter rim, keep-out). kind 'polys':
+    data a list of convex pieces (radial or round place footprint; plan_poly pieces, each its own piece). true: the
+    outline is the part's true plan section, the premise of a plan C pass (radial footprint drawn as a rectangle,
+    round footprint drawn as a circle, section annulus, plan_poly piece); a circumscribing footprint (lift motor 42
+    square in a circle, pinion trapezoid in its rectangle, depth-band disk) is a containment bound for F and G only."""
+    rec = _feat(ctx, pose, row["id"])
+    proj = row.get("projection")
+    sec = _eval_section(ctx, row, pose)
+    if sec is not None and not rec.get("place"):
+        return ("annulus", sec, True)
+    pl = rec.get("place")
+    if pl:
+        centred = abs(pl["r_in"]) < 1e-9 and abs(pl["r_out"]) < 1e-9
+        if pl["footprint"] == "round" and centred:
+            return ("annulus", (0.0, float(pl["half_width"])), proj == "circle")
+        true = (pl["footprint"] == "radial" and proj == "rectangle") or \
+               (pl["footprint"] == "round" and proj == "circle" and abs(pl["r_in"] - pl["r_out"]) < 1e-9)
+        return ("polys", [plan_footprint(row, rec)], bool(true))
+    if rec.get("plan_pieces"):
+        return ("polys", [list(p) for p in rec["plan_pieces"]], True)
+    dep = rec.get("depth")
+    if dep and row.get("kind") in ROUND_KINDS and row.get("axis") == "Z" and abs(dep[0] + dep[1]) < 1e-9:
+        return ("annulus", (0.0, float(dep[1])), False)
+    return None
+
+
+def _radius_range(poly):
+    """(least, greatest) distance from the drill axis (origin) to a convex piece (or segment, or point)."""
+    rmax = max(math.hypot(x, y) for x, y in poly)
+    if len(poly) >= 3 and _inside((0.0, 0.0), poly):
+        return 0.0, rmax
+    rmin = min(_pt_seg((0.0, 0.0), a, b) for a, b in _edges(poly))
+    return rmin, rmax
+
+
+def _annulus_vs_polys(ab, polys):
+    a, b = ab
+    dists, area = [], 0.0
+    for poly in polys:
+        rmin, rmax = _radius_range(poly)
+        if rmax <= a:
+            dists.append(a - rmax)
+        elif rmin >= b:
+            dists.append(rmin - b)
+        else:
+            dists.append(0.0)
+            if len(poly) >= 3:
+                area += overlap_area(poly, _ngon(0.0, 0.0, b)) - (overlap_area(poly, _ngon(0.0, 0.0, a)) if a > 1e-9 else 0.0)
+    return min(dists), max(area, 0.0)
+
+
+def _bbox_gap(A, B):
+    ba, bb = bbox(A), bbox(B)
+    return max(bb[0] - ba[1], ba[0] - bb[1], bb[2] - ba[3], ba[2] - bb[3], 0.0)
+
+
+def outline_measure(OA, OB, need=TOL_C):
+    """(distance, overlap area) between two plan outlines. Annulus pairs are exact (radial intervals about the axis);
+    annulus against a piece uses the piece's radius range (exact distance; area by the circumscribing 128-gons).
+    Pieces against pieces: when the bounding boxes are more than need + 1 apart the box gap is returned (a lower bound
+    on the distance, overlap 0), else the exact convex measure."""
+    ka, kb = OA[0], OB[0]
+    if ka == "annulus" and kb == "annulus":
+        (a1, b1), (a2, b2) = OA[1], OB[1]
+        lo, hi = max(a1, a2), min(b1, b2)
+        return max(a2 - b1, a1 - b2, 0.0), (math.pi * (hi * hi - lo * lo) if hi > lo else 0.0)
+    if ka == "annulus":
+        return _annulus_vs_polys(OA[1], OB[1])
+    if kb == "annulus":
+        return _annulus_vs_polys(OB[1], OA[1])
+    g = _bbox_gap(OA[1], OB[1])
+    if g > need + 1:
+        return g, 0.0
+    area = sum(overlap_area(p, q) for p in OA[1] for q in OB[1] if len(p) >= 3 and len(q) >= 3)
+    return min(min_distance(p, q) for p in OA[1] for q in OB[1]), area
+
+
+def outline_outside(O, p):
+    """Distance by which point p lies outside outline O (0 inside or on it)."""
+    if O[0] == "annulus":
+        a, b = O[1]
+        r = math.hypot(*p)
+        return max(a - r, r - b, 0.0)
+    best = None
+    for poly in O[1]:
+        d = 0.0 if (len(poly) >= 3 and _inside(p, poly)) else min(_pt_seg(p, q, r) for q, r in _edges(poly))
+        best = d if best is None else min(best, d)
+    return best
+
+
+def sector_outside(sec, p):
+    """Distance by which p lies outside the spec wedge (apex on the axis, theta +- half_angle, radius r), half-angle
+    <= 90 (convex wedge)."""
+    r = math.hypot(*p)
+    if r < 1e-12:
+        return 0.0
+    phi = math.degrees(math.atan2(p[1], p[0]))
+    d_ang = abs((phi - sec["theta"] + 180) % 360 - 180) - sec["half_angle"]
+    d_edge = r * math.sin(math.radians(d_ang)) if 0 < d_ang < 90 else (r if d_ang >= 90 else 0.0)
+    return max(r - sec["r"], d_edge, 0.0)
+
+
+def sector_boundary(sec, step=1.0):
+    th, ha, r = sec["theta"], sec["half_angle"], sec["r"]
+    n = max(2, int(math.ceil(2 * ha / step)) + 1)
+    arc = [(r * math.cos(math.radians(th - ha + 2 * ha * i / (n - 1))), r * math.sin(math.radians(th - ha + 2 * ha * i / (n - 1)))) for i in range(n)]
+    edges = [(f * x, f * y) for x, y in (arc[0], arc[-1]) for f in (0.25, 0.5, 0.75)]
+    return [(0.0, 0.0)] + arc + edges
+
+
+def _plan_judge(cls, g_min, OA, OB, gap, measure=None):
+    """One judgement for the K7 plan test (1.2 (c), LF-8 remainder). gap: z band gap (> TOL_C disjoint, |gap| <= TOL_C
+    touching, < -TOL_C overlapping; None unknown, read as overlapping). Disjoint or touching bands settle F (no common
+    volume, z-separated / z-touch); with overlapping bands F passes on plan overlap <= TOL_AREA; G on max(z gap, plan
+    distance) >= g_min - TOL_C; a C pair with disjoint bands fails (z-separated). Plan C rule: bands touching and plan
+    distance <= TOL_C (overlap allowed: one part stands on the other) is z-contact; bands overlapping, plan distance
+    <= TOL_C and plan overlap <= TOL_AREA (side by side on a vertical face) is plan-contact; bands overlapping with plan
+    overlap > TOL_AREA is interference. Premise of both C passes: both outlines are true plan sections (plan_outline
+    true). Returns (ok, state, text, lower_bound)."""
+    g = g_min or 0
+    if cls == "N":
+        return True, "N", "nested (declared)", None
+    if cls not in ("C", "G", "F"):
+        return False, "error", f"unknown class {cls}", None
+    if cls == "F" and gap is not None and gap >= -TOL_C:
+        # F forbids overlap only (gameplan K7 classes): z bands that touch leave no common volume whatever the plan
+        # overlap (a drill tube standing on its head; the side-view analogue is touching pieces, state C)
+        return True, ("z-separated" if gap > TOL_C else "z-touch"), f"z bands {gap:.3f} mm apart", max(gap, 0.0)
+    if gap is not None and gap > TOL_C:
+        if cls == "G" and gap >= g - TOL_C:
+            return True, "z-separated", f"z bands {gap:.3f} mm apart, g_min {g}", gap
+        if cls == "C":
+            return False, "z-separated", f"C pair z-separated by {gap:.3f} mm (contact needs z bands within {TOL_C})", gap
+    d, area = (measure or outline_measure)(OA, OB, g if cls == "G" else TOL_C)
+    touch = gap is not None and gap >= -TOL_C
+    if cls == "F":
+        st = pair_state(d, area)
+        return area <= TOL_AREA, st, f"plan distance {d:.3f} mm, overlap {area:.3f} mm2, z gap {_f3(gap)}, state {st}", d if area <= TOL_AREA else -area
+    if cls == "G":
+        zg = gap if (gap is not None and gap > 0) else 0.0
+        lb = max(zg, d if area <= TOL_AREA else 0.0)
+        ok = lb >= g - TOL_C
+        return ok, ("G" if ok else "short"), (f"z gap {_f3(gap)}, plan distance {d:.3f} mm, overlap {area:.3f} mm2, lower bound {lb:.3f}, "
+                                              f"g_min {g}, gap - g_min {lb - g:+.3f}"), lb
+    true = OA[2] and OB[2]
+    if touch:
+        if d > TOL_C:
+            return False, "open", f"z bands touch ({gap:.3f} mm), plan distance {d:.3f} mm (contact needs <= {TOL_C})", d
+        if not true:
+            return False, "z-contact", f"z-contact (plan overlap {area:.3f} mm2) needs true plan sections; a circumscribing outline certifies F and G only", 0.0
+        return True, "z-contact", f"z bands touch ({gap:.3f} mm), plan distance {d:.3f} mm, plan overlap {area:.3f} mm2", 0.0
+    if area > TOL_AREA:
+        return False, "interference", f"z bands overlap {-gap if gap is not None else float('nan'):.3f} mm, plan overlap {area:.3f} mm2 (interference)", -area
+    if d > TOL_C:
+        return False, "open", f"z bands overlap, plan distance {d:.3f} mm (contact needs <= {TOL_C})", d
+    if not true:
+        return False, "plan-contact", "plan-contact needs true plan sections; a circumscribing outline certifies F and G only", 0.0
+    return True, "plan-contact", f"z bands overlap, plan outlines touch (distance {d:.3f} mm, overlap {area:.3f} mm2)", 0.0
+
+
+def _f3(v):
+    return "none" if v is None else f"{v:.3f}"
+
+
+def plan_fig(ctx, pose):
+    """The figure that carries the plan drawing at pose: its own figure, else the one plan figure (spec plan_figure)."""
+    if pose in ctx.figs:
+        return ctx.figs[pose]
+    pf = (ctx.spec.get("plan_figure") or {}).get("pose")
+    if pf in ctx.figs:
+        return ctx.figs[pf]
+    return next(iter(ctx.figs.values())) if len(ctx.figs) == 1 else None
+
+
 def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
     g = g_min or 0
     if cls == "N":
@@ -795,14 +1035,61 @@ def k4(ctx):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} carries no number (want {want} from {lab['key']})")
             elif not any(abs(float(m) - float(want)) < 1e-9 for m in nums):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {lab['key']} = {want}")
-    return result("K4", not issues, _summ(issues) if issues else f"{n} label(s) carry their key value", measured=len(issues), threshold=0,
-                  n_issues=len(issues))
+    issues += figure_note_issues(ctx)
+    return result("K4", not issues, _summ(issues) if issues else f"{n} label(s) carry their key value; figure note names every not_drawn part",
+                  measured=len(issues), threshold=0, n_issues=len(issues))
+
+
+NOTE_GID = "note:figure_note"
+
+
+def part_head(part):
+    """Name head of a not_drawn part: the text before the first ' (' or ' at ' ('descent-stop pads at ...' -> 'descent-stop
+    pads', 'LM20UU bushing (OD 32 x 42)' -> 'LM20UU bushing')."""
+    return re.split(r" \(| at ", str(part), maxsplit=1)[0].strip()
+
+
+def figure_note_issues(ctx):
+    """Detail 1 common (b), from S2 on (1.2 (c), Designer 1.2 (b) FIX 3): the spec figure_note (plan_figure.figure_note
+    or a top-level figure_note) names the head of every not_drawn part, and each figure carries a Text with gid
+    note:figure_note whose text names every head. A spec with not_drawn and no figure_note fails, S1 excepted (accepted
+    before the rule)."""
+    spec = ctx.spec or {}
+    note = (spec.get("plan_figure") or {}).get("figure_note") or spec.get("figure_note")
+    nd = spec.get("not_drawn") or []
+    if note is None:
+        return [f"spec error: not_drawn ({len(nd)}) without figure_note"] if nd and spec.get("sketch") != "s1" else []
+    norm = lambda s: " ".join(str(s).split())  # noqa: E731
+    heads = [part_head(e.get("part") if isinstance(e, dict) else e) for e in nd]
+    out = [f"spec figure_note lacks not_drawn part {h!r}" for h in heads if norm(h) not in norm(note)]
+    for pose, fig in ctx.figs.items():
+        texts = [t.get_text() for t in fig.axes[0].texts if t.get_gid() == NOTE_GID]
+        if not texts:
+            out.append(f"{pose}: no figure note ({NOTE_GID})")
+            continue
+        drawn = norm(" ".join(texts))
+        out += [f"{pose}: drawn figure note lacks not_drawn part {h!r}" for h in heads if norm(h) not in drawn]
+    return out
 
 
 # ======================================================================== K5 projection
 
+def _is_rect(pts, rel=1e-7):
+    """Four vertices with four right angles (any orientation; TP-13 at 1.2 (c))."""
+    for i in range(4):
+        o, a, b = pts[i - 1], pts[i], pts[(i + 1) % 4]
+        e1, e2 = (a[0] - o[0], a[1] - o[1]), (b[0] - a[0], b[1] - a[1])
+        n1, n2 = math.hypot(*e1), math.hypot(*e2)
+        if n1 < 1e-12 or n2 < 1e-12 or abs(e1[0] * e2[0] + e1[1] * e2[1]) > rel * n1 * n2:
+            return False
+    return True
+
+
 def classify(a):
-    if isinstance(a, (Circle, Ellipse)):
+    """Projection class of an artist. 1.2 (c) TP-13: a four-vertex Polygon with four right angles is a rectangle at any
+    orientation (a radial rectangle at an oblique azimuth read as trapezoid before); an Annulus is the circle
+    projection of an axis-Z part with a bore."""
+    if isinstance(a, (Circle, Ellipse, Annulus)):
         return "circle"
     if isinstance(a, Rectangle):
         return "rectangle"
@@ -811,10 +1098,33 @@ def classify(a):
     if isinstance(a, Polygon):
         pts = artist_polys(a)[0]
         if len(pts) == 4:
-            axis_aligned = all(abs(pts[i][0] - pts[(i + 1) % 4][0]) < 1e-9 or abs(pts[i][1] - pts[(i + 1) % 4][1]) < 1e-9 for i in range(4))
-            return "rectangle" if axis_aligned else "trapezoid"
+            return "rectangle" if _is_rect(pts) else "trapezoid"
         return "polygon"
     return type(a).__name__
+
+
+RADIAL_TOL_DEG = 0.1
+
+
+def _tangential_edges(pts, theta):
+    """Edges of a piece that run across the radial direction at theta (within RADIAL_TOL_DEG), with their mean u."""
+    out = []
+    for p, q in _edges(pts):
+        (u0, t0), (u1, t1) = to_ut([p, q], theta)
+        L = math.hypot(u1 - u0, t1 - t0)
+        if L > 1e-9 and abs(u1 - u0) / L <= math.sin(math.radians(RADIAL_TOL_DEG)):
+            out.append(((u0 + u1) / 2, (p, q)))
+    return out
+
+
+def heel_point(pts, theta):
+    """Pitch point of a bevel pinion drawn in plan (S2-3, 1.2 (c)): midpoint of the outer of the toothed trapezoid's
+    two tangential edges (the heel). None when the piece has no tangential edge pair."""
+    te = _tangential_edges(pts, theta)
+    if len(te) < 2:
+        return None
+    _, (p, q) = max(te, key=lambda e: e[0])
+    return ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2)
 
 
 def expected_projection(kind, axis, normal):
@@ -828,14 +1138,24 @@ def expected_projection(kind, axis, normal):
 
 
 def k5(ctx):
+    """1.2 (c) plan rules (TP-13): in plan_xy a row with axis X or Y is a radial-axis part (the spec's X means radial,
+    as in S1). Premise: its place footprint is radial (spec lint). Its four-vertex pieces have a tangential edge pair at
+    the placed azimuth (radial axis, RADIAL_TOL_DEG). A gear row's rectangle piece is admitted as its hub when it starts
+    on the heel edge of the row's trapezoid piece and is no wider than the heel."""
     issues, n = [], 0
     rows_list = ctx.spec.get("features", [])
     rows = {r["id"]: r for r in rows_list}
+    plan = ctx.view == "plan_xy"
     for r in rows_list:
         if r.get("kind") in ROUND_KINDS and r.get("axis") not in ("X", "Y", "Z"):
             issues.append(f"{r['id']}: spec error, {r.get('kind')} row needs axis X, Y or Z (has {r.get('axis')!r})")
+        if plan and r.get("kind") in ROUND_KINDS and r.get("axis") in ("X", "Y"):
+            fp = (r.get("place") or {}).get("footprint")
+            if fp != "radial":
+                issues.append(f"{r['id']}: spec error, radial-axis {r.get('kind')} row in plan_xy needs a radial place footprint (TP-13; has {fp!r})")
     normal = VIEW_NORMAL.get(ctx.view)
     for pose, fig in ctx.figs.items():
+        drawn = tagged(fig.axes[0])
         for a in artists(fig.axes[0]):
             gid = a.get_gid()
             if not gid:
@@ -848,6 +1168,25 @@ def k5(ctx):
             want = expected_projection(row.get("kind"), row.get("axis"), normal)
             got = classify(a)
             spec_proj = row.get("projection")
+            pl = _feat(ctx, pose, gid).get("place") if plan else None
+            radial = plan and row.get("axis") in ("X", "Y") and pl is not None and pl.get("footprint") == "radial"
+            if radial and got in ("rectangle", "trapezoid"):
+                pts = artist_polys(a)[0]
+                if len(_tangential_edges(pts, pl["theta"])) < 2:
+                    issues.append(f"{pose}/{gid}: {got} not radial: no edge pair across the radial direction at theta {pl['theta']:g} (TP-13)")
+                    continue
+            if radial and got == "rectangle" and want == "trapezoid":
+                traps = [artist_polys(t)[0] for t in drawn.get(gid, []) if classify(t) == "trapezoid"]
+                if traps:
+                    th = pl["theta"]
+                    ru, tu = zip(*to_ut(artist_polys(a)[0], th))
+                    heel = max(max(u for u, _ in to_ut(tp, th)) for tp in traps)
+                    heel_w = max(max(abs(t) for u, t in to_ut(tp, th) if abs(u - heel) <= TOL_Z) for tp in traps)
+                    if abs(min(ru) - heel) <= TOL_Z and max(abs(t) for t in tu) <= heel_w + TOL_Z:
+                        continue
+                    issues.append(f"{pose}/{gid}: hub rectangle u [{min(ru):.2f}, {max(ru):.2f}], half-width {max(abs(t) for t in tu):.2f} "
+                                  f"not on the heel of the toothed piece (u {heel:.2f}, half-width {heel_w:.2f})")
+                    continue
             mate = row.get("bore_cone")
             if mate and got == "trapezoid" and want == "rectangle":
                 # TP1.1-3: a section row whose bore follows a mating cone (holder over the collet) draws that zone as a
@@ -936,6 +1275,20 @@ def stack_anchor_issues(mod, P, hand=None):
 PLANE_FIELDS = ("load_plane", "entry_plane")
 
 
+def _plane_owner(field, lp, feat, sketch):
+    """Name of another spec beside this file (s*_spec.yaml) that has row feat and carries field equal to lp after
+    whitespace normalisation, else None."""
+    norm = lambda d: {k: " ".join(str(v).split()) for k, v in (d or {}).items()}  # noqa: E731
+    for p in sorted(HERE.glob("s*_spec.yaml")):
+        name = p.stem.replace("_spec", "")
+        if name == sketch:
+            continue
+        other = load_spec(p)
+        if any(r["id"] == feat for r in other.get("features", [])) and norm(other.get(field)) == norm(lp):
+            return name
+    return None
+
+
 def plane_agreement_issues(ctx):
     """LF-16: a spec plane field names one plane twice, as a stack term (read by the park rule) and as a feature edge
     plus offset (read by S1-3). Both must resolve to the same z_A within TOL_Z. Reads the spec rows' stack z, not the
@@ -949,12 +1302,21 @@ def plane_agreement_issues(ctx):
     # (holder z_max + nut plate + collar.top_above_plate = collar_top, test_P18). Each entry: {id, term, feature, edge, offset}.
     fields = [(f, ctx.spec.get(f)) for f in PLANE_FIELDS]
     fields += [(f"stack_tie {t.get('id', i)}", t) for i, t in enumerate(ctx.spec.get("stack_ties") or [])]
+    row_ids = {r["id"] for r in ctx.spec.get("features", [])}
     for field, lp in fields:
         if not lp:
             continue
         term, feat, edge = lp.get("term"), lp.get("feature"), lp.get("edge", "z_max")
         if term not in glob:
             issues.append(f"LF-16 {field}: term {term!r} is not a stack name")
+            continue
+        if feat not in row_ids and field in PLANE_FIELDS:
+            # 1.2 (c): the field names a feature that is a row of another sketch (S2 carries the S1 park-rule planes for
+            # check_stack; core_seat and collar are S1 rows). The agreement is linted where the row is drawn; premise:
+            # a spec with that row carries the same field, equal after whitespace normalisation (K6-B9).
+            owner = _plane_owner(field, lp, feat, ctx.spec.get("sketch"))
+            if owner is None:
+                issues.append(f"LF-16 {field}: feature {feat!r} is not a row of this spec and no other spec with that row carries an equal {field}")
             continue
         rec = next(((p, pr["features"][feat]) for p, pr in ctx.stack["poses"].items()
                     if feat in pr["features"] and "z_min" in pr["features"][feat]), None)
@@ -980,6 +1342,8 @@ def k6(ctx):
             bad = stack_anchor_issues(load_stack_module(ctx.check_stack_path), ctx.P, ctx.anchors)
             if bad:
                 issues.append("stack anchors: " + "; ".join(bad))
+    if ctx.view == "plan_xy":
+        return _k6_plan(ctx, issues)
     for pose, fig in ctx.figs.items():
         feats = ctx.stack["poses"][pose]["features"]
         drawn = tagged(fig.axes[0])
@@ -997,6 +1361,65 @@ def k6(ctx):
             if d > TOL_Z:
                 issues.append(f"{pose}/{fid}: drawn z [{ez[0]:.2f}, {ez[1]:.2f}] vs stack [{rec['z_min']:.2f}, {rec['z_max']:.2f}] z_S, off {d:.2f}")
     return result("K6", not issues, _summ(issues) if issues else f"{n} z_rule(s) match drawn extents within {TOL_Z} mm; check_stack imports and anchors clean",
+                  measured=round(worst, 4), threshold=TOL_Z, n_issues=len(issues), cause=_cause(absent, len(issues)))
+
+
+def plan_centre(ctx, row, pose):
+    """K6 plan basis (1.2 (c)): ('ut', r_c, theta) for a placed row (centre compared in the radial frame: the drawn u
+    mid-extent equals r_c and the t mid-extent is 0, which holds for rectangles, trapezoids symmetric about their axis,
+    circles and footprints turned about their centre); ('xy', cx, cy) for a plan_poly row (mid-extent of its pieces), a
+    sector (mid-extent of the wedge) or an axis-Z section or depth-band row (the drill axis); None (no plan basis)."""
+    rec = _feat(ctx, pose, row["id"])
+    pl = rec.get("place")
+    if pl:
+        return ("ut", pl["r_c"], pl["theta"])
+    if rec.get("plan_pieces"):
+        b = bbox(rec["plan_pieces"])
+        return ("xy", (b[0] + b[1]) / 2, (b[2] + b[3]) / 2)
+    if rec.get("sector"):
+        s = rec["sector"]
+        return ("xy", (s["x"][0] + s["x"][1]) / 2, (s["y"][0] + s["y"][1]) / 2)
+    dep = rec.get("depth")
+    if row.get("section") or (dep and row.get("kind") in ROUND_KINDS and row.get("axis") == "Z" and abs(dep[0] + dep[1]) < 1e-9):
+        return ("xy", 0.0, 0.0)
+    return None
+
+
+def _k6_plan(ctx, issues):
+    """K6 in plan_xy (1.2 (c)): z bands are not drawn in plan, so K6 asserts the z stack only through its spec lints
+    (plane agreement, stack ties, check_stack anchors and import guard, above) and asserts placement in x and y: every
+    row with a plan basis (plan_centre) is drawn with its centre on the spec centre within TOL_Z. Extent containment is
+    K8 (plan outline containment)."""
+    worst, n, absent = 0.0, 0, 0
+    rows_list = ctx.spec.get("features", [])
+    for pose, fig in ctx.figs.items():
+        ax = fig.axes[0]
+        for row in rows_list:
+            if not applies(row, pose):
+                continue
+            basis = plan_centre(ctx, row, pose)
+            if basis is None:
+                continue
+            n += 1
+            me = pieces(ax, row["id"])
+            if not me:
+                issues.append(f"{pose}/{row['id']}: plan centre from the spec, nothing drawn")
+                absent += 1
+                continue
+            if basis[0] == "ut":
+                b = bbox([to_ut(p, basis[2]) for p in me])
+                du, dt = (b[0] + b[1]) / 2 - basis[1], (b[2] + b[3]) / 2
+                d = math.hypot(du, dt)
+                txt = f"drawn centre u {(b[0] + b[1]) / 2:.2f}, t {dt:.2f} vs r_c {basis[1]:.2f}, t 0 at theta {basis[2]:g}"
+            else:
+                b = bbox(me)
+                cx, cy = (b[0] + b[1]) / 2, (b[2] + b[3]) / 2
+                d = math.hypot(cx - basis[1], cy - basis[2])
+                txt = f"drawn centre ({cx:.2f}, {cy:.2f}) vs spec ({basis[1]:.2f}, {basis[2]:.2f})"
+            worst = max(worst, d)
+            if d > TOL_Z:
+                issues.append(f"{pose}/{row['id']}: {txt}, off {d:.2f}")
+    return result("K6", not issues, _summ(issues) if issues else f"{n} plan centre(s) on the spec within {TOL_Z} mm (z not drawn in plan); check_stack imports and anchors clean",
                   measured=round(worst, 4), threshold=TOL_Z, n_issues=len(issues), cause=_cause(absent, len(issues)))
 
 
@@ -1053,6 +1476,8 @@ def k7(ctx):
             if nb["class"] == "N" and row.get("section") and rows.get(b, {}).get("section"):
                 issues.append(f"spec error: {a}|{b} class N between two section rows (declare C, G or F)")
                 failing += 1
+    if ctx.view == "plan_xy":
+        return _k7_plan(ctx, rows_list, rows, issues, failing)
     for pose, fig in ctx.figs.items():
         ax = fig.axes[0]
         # FIX 3 (Loftsman 1.1 (b)): a neighbour with `poses` declares the pair at those poses only; at every other
@@ -1147,6 +1572,187 @@ def k7(ctx):
                   measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)))
 
 
+def _outline_diff(A, B):
+    if A[0] != B[0]:
+        return float("inf")
+    if A[0] == "annulus":
+        return max(abs(A[1][0] - B[1][0]), abs(A[1][1] - B[1][1]))
+    if len(A[1]) != len(B[1]) or any(len(p) != len(q) for p, q in zip(A[1], B[1])):
+        return float("inf")
+    return max((math.hypot(p[0] - q[0], p[1] - q[1]) for P, Q in zip(A[1], B[1]) for p, q in zip(P, Q)), default=0.0)
+
+
+def _k7_plan(ctx, rows_list, rows, issues, failing):
+    """K7 in plan_xy (1.2 (c), LF-8). Geometry: each row's true XY outline from the spec (plan_outline; a row with no
+    plan basis falls back to its drawn pieces). The drawing is held to the outline by K6 plan (centre) and K8 (every
+    drawn point inside the outline), so the outline is a containment bound of the drawn part. Pairs are judged per
+    stack pose with that pose's z bands (_plan_judge): disjoint z bands are listed z-separated (F; G when the z gap
+    reaches g_min); C pairs pass as z-contact or plan-contact on true sections only. Presence: a pair not settled by its
+    z bands is tested only when both rows are drawn (else untestable, absent). One plan figure (spec plan_figure): the
+    figure serves every stack pose; premise: every row's plan outline is the same at every pose (lint below, 4f).
+    Swept case: each moving row's outline against every fixed row (declared F or G without poses, or undeclared as F)
+    whose z band meets the sweep band (min to max of the moving row's z over the poses), Loftsman 1.2 (b) section 5."""
+    states, tested, absent = [], 0, 0
+    poses = list((ctx.stack or {}).get("poses", {})) or list(ctx.figs)
+    one_fig = len(ctx.figs) < len(poses)
+    out_cache, m_cache = {}, {}
+
+    def zb(fid, pose):
+        f = _feat(ctx, pose, fid)
+        return [f["z_min"], f["z_max"]] if "z_min" in f else None
+
+    def drawn(fid, pose):
+        fig = plan_fig(ctx, pose)
+        return fig is not None and bool(tagged(fig.axes[0]).get(fid))
+
+    def outline(fid, pose):
+        spec_o = plan_outline(ctx, rows[fid], pose) if ctx.stack else None
+        key = (fid, None) if (spec_o is not None and one_fig) else (fid, pose)
+        if key not in out_cache:
+            if spec_o is None:
+                fig = plan_fig(ctx, pose)
+                pcs = pieces(fig.axes[0], fid) if fig is not None else []
+                spec_o = ("polys", pcs, True) if pcs else None
+            out_cache[key] = spec_o
+        return out_cache[key]
+
+    def measure(OA, OB, need):
+        k = (id(OA), id(OB), need)
+        if k not in m_cache:
+            m_cache[k] = outline_measure(OA, OB, need)
+        return m_cache[k]
+
+    if one_fig and ctx.stack:   # 4f premise: one figure serves every pose only if plan outlines do not move
+        for fid, row in rows.items():
+            ref = None
+            for pose in poses:
+                if not applies(row, pose):
+                    continue
+                o = plan_outline(ctx, row, pose)
+                if o is None:
+                    break
+                if ref is None:
+                    ref = (pose, o)
+                    continue
+                d = _outline_diff(ref[1], o)
+                if d > TOL_Z:
+                    issues.append(f"{fid}: plan outline at {pose} differs from {ref[0]} by {d:.2f} mm; one plan figure needs pose-invariant plan positions")
+                    failing += 1
+                    break
+    all_decl = set()
+    for a, row in rows.items():
+        for nb in row.get("neighbours") or []:
+            all_decl.add(frozenset((a, nb["id"])))
+    for pose in poses:
+        declared = set()
+        for a, row in rows.items():
+            for nb in row.get("neighbours") or []:
+                b = nb["id"]
+                if nb.get("poses") and pose not in nb["poses"]:
+                    continue
+                declared.add(frozenset((a, b)))
+                if not applies(row, pose) or b not in rows or not applies(rows[b], pose):
+                    continue
+                tag = f"{pose}/{a}|{b} {nb['class']}"
+                if nb["class"] == "N":
+                    states.append("N")
+                    continue
+                gap = band_gap(zb(a, pose), zb(b, pose))
+                if gap is not None and gap > TOL_C and nb["class"] in ("F", "G") and gap >= (nb.get("g_min") or 0) - TOL_C:
+                    states.append("z-separated")
+                    continue
+                missing = [x for x in (a, b) if not drawn(x, pose)]
+                if missing:
+                    issues.append(f"{tag}: untestable, {'/'.join(missing)} not drawn")
+                    failing += 1
+                    absent += 1
+                    continue
+                OA, OB = outline(a, pose), outline(b, pose)
+                if OA is None or OB is None:
+                    issues.append(f"{tag}: no plan outline for {'/'.join(x for x, o in ((a, OA), (b, OB)) if o is None)}")
+                    failing += 1
+                    continue
+                ok, st, txt, _ = _plan_judge(nb["class"], nb.get("g_min"), OA, OB, gap, measure)
+                tested += st != "z-separated"
+                states.append(st)
+                if not ok:
+                    failing += 1
+                    issues.append(f"{tag}: {txt}")
+        if ctx.spec.get("undeclared_pairs", "F") == "F":
+            ids = [r["id"] for r in rows_list if _measurable(r) and applies(r, pose) and drawn(r["id"], pose)]
+            for i in range(len(ids)):
+                for j in range(i + 1, len(ids)):
+                    a, b = ids[i], ids[j]
+                    if frozenset((a, b)) in declared:
+                        continue
+                    gap = band_gap(zb(a, pose), zb(b, pose))
+                    if gap is not None and gap > TOL_C:
+                        states.append("undeclared:z-separated")
+                        continue
+                    OA, OB = outline(a, pose), outline(b, pose)
+                    ok, st, txt, _ = _plan_judge("F", 0, OA, OB, gap, measure)
+                    states.append(f"undeclared:{st}")
+                    if not ok:
+                        failing += 1
+                        issues.append(f"{pose}/{a}|{b} undeclared (F): {txt}")
+    if len(poses) > 1 and ctx.stack:
+        order = sorted(poses, key=lambda p: ctx.stack["poses"][p]["tip_z_S"])
+        lo, hi = order[0], order[-1]
+        for a, row in rows.items():
+            if not row.get("moves"):
+                continue
+            za = [zb(a, p) for p in poses if applies(row, p)]
+            if not za or not all(za):
+                continue
+            sweep = [min(z[0] for z in za), max(z[1] for z in za)]
+            rel = {}
+            for nb in row.get("neighbours") or []:
+                rel.setdefault(nb["id"], nb)
+            for b, rb in rows.items():
+                if b == a or rb.get("moves"):
+                    continue
+                for nb in rb.get("neighbours") or []:
+                    if nb["id"] == a:
+                        rel.setdefault(b, nb)
+                nb = rel.get(b)
+                if nb is not None:
+                    if nb["class"] in ("C", "N") or nb.get("poses"):
+                        continue
+                    cls, g = nb["class"], nb.get("g_min") or 0
+                else:
+                    if frozenset((a, b)) in all_decl or not (_measurable(row) and _measurable(rb)):
+                        continue
+                    cls, g = "F", 0
+                zbb = zb(b, lo)
+                gap = band_gap(sweep, zbb)
+                tag = f"swept {lo}..{hi}/{a}|{b} {cls}"
+                if gap is not None and gap > TOL_C and (cls == "F" or gap >= g - TOL_C):
+                    states.append("swept:z-separated")
+                    continue
+                if not (drawn(a, lo) and drawn(a, hi) and drawn(b, lo)):
+                    issues.append(f"{tag}: untestable, not drawn")
+                    failing += 1
+                    absent += 1
+                    continue
+                OA = outline(a, lo) if (ctx.stack and plan_outline(ctx, row, lo) is not None) else None
+                if OA is None:
+                    PL, PH = pieces(plan_fig(ctx, lo).axes[0], a), pieces(plan_fig(ctx, hi).axes[0], a)
+                    if len(PL) != len(PH):
+                        issues.append(f"{tag}: {len(PL)} pieces at {lo}, {len(PH)} at {hi}; swept hull needs matching pieces")
+                        failing += 1
+                        continue
+                    OA = ("polys", [convex_hull(list(p) + list(q)) for p, q in zip(PL, PH)], True)
+                OB = outline(b, lo)
+                ok, st, txt, _ = _plan_judge(cls, g, OA, OB, gap, measure)
+                tested += 1
+                states.append(f"swept:{st}")
+                if not ok:
+                    failing += 1
+                    issues.append(f"{tag}: swept outline {txt}")
+    return result("K7", not issues, _summ(issues) if issues else f"{tested} plan pair test(s) clean over {len(poses)} pose(s); states {sorted(set(states))}",
+                  measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)))
+
+
 # ======================================================================== K8 sense and orientation
 
 def _key_index(P, expr):
@@ -1220,7 +1826,30 @@ def k8(ctx):
             me = pieces(ax, fid)
             # TP-3: every placed row sits at its projected position (x = r_c cos theta in side views; x and y in plan)
             pl = _feat(ctx, pose, fid).get("place")
-            if pl and (side or plan):
+            # 1.2 (c) plan: every drawn point lies inside the row's plan outline (premise of the K7 plan test and of the
+            # plan_poly and annulus outlines, 4g); the drawn centre is K6 plan. A sector is drawn equal to its wedge.
+            if plan:
+                po = plan_outline(ctx, row, pose) if ctx.stack else None
+                sec = _feat(ctx, pose, fid).get("sector")
+                if (po or sec) and not me:
+                    issues.append(f"{pose}/{fid} plan_extent: untestable, {fid} not drawn")
+                    absent += 1
+                elif po:
+                    n += 1
+                    pts = [p for poly in me for p in poly]
+                    d, p = max(((outline_outside(po, q), q) for q in pts), key=lambda e: e[0])
+                    if d > TOL_Z:
+                        issues.append(f"{pose}/{fid} plan_extent: drawn point ({p[0]:.2f}, {p[1]:.2f}) outside its plan outline (by {d:.2f})")
+                elif sec:
+                    n += 1
+                    pts = [p for poly in me for p in poly]
+                    d_out = max(sector_outside(sec, q) for q in pts)
+                    d_in = max(min(min_distance([q], poly) if len(poly) >= 3 and not _inside(q, poly) else 0.0 for poly in me)
+                               for q in sector_boundary(sec))
+                    if d_out > TOL_Z or d_in > TOL_Z:
+                        issues.append(f"{pose}/{fid} sector: drawn wedge differs from the spec wedge (theta {sec['theta']:g}, half-angle "
+                                      f"{sec['half_angle']:g}, r {sec['r']:g}): {d_out:.2f} outside, spec boundary {d_in:.2f} outside the drawing")
+            if pl and side:
                 if not me:
                     issues.append(f"{pose}/{fid} projected_x: untestable, {fid} not drawn")
                     absent += 1
@@ -1248,7 +1877,7 @@ def k8(ctx):
             # 1.2 (b): a plan_poly row with no place (guide tie) lies inside its plan pieces' extent: the premise of its
             # plan-separated and plan-contact relief in K7 (detail 1 common (h); K8-B17)
             pf = _feat(ctx, pose, fid)
-            if not pl and pf.get("plan_x") and (side or plan) and me:
+            if not pl and pf.get("plan_x") and side and me:
                 n += 1
                 ex = extent_x(me)
                 fx0, fx1 = pf["plan_x"]
@@ -1300,6 +1929,12 @@ def k8(ctx):
                     d = centroid(me)[0] - centroid(other)[0]
                     if d * pr["sign"] <= 0:
                         issues.append(f"{pose}/{fid} side of {other_id}: centroid x minus {other_id} x {d:.2f}, spec sign {pr['sign']:+d}")
+                elif kind == "outboard" and (pr.get("frame") == "radial" or plan):
+                    # 1.2 (c): radial form, the centroid farther from the drill axis than the other's (S2 rows carry
+                    # frame: radial; at theta 90 the side form x cos(theta) reads 0)
+                    ra, rb = math.hypot(*centroid(me)), math.hypot(*centroid(other))
+                    if ra - rb <= 0:
+                        issues.append(f"{pose}/{fid} outboard of {other_id} (radial): centroid radius {ra:.2f} vs {rb:.2f}, needs greater")
                 elif kind == "outboard":
                     th = (pl or {}).get("theta")
                     if th is None or (side and abs(math.cos(math.radians(th))) < 1e-6):
@@ -1315,6 +1950,13 @@ def k8(ctx):
                     d = abs((got - want + 180) % 360 - 180)
                     if d > pr.get("tol_deg", 0.1):
                         issues.append(f"{pose}/{fid} azimuth {got:.2f} deg vs {pr['expr']} = {want:.2f}")
+                elif kind == "taper" and plan and pl:
+                    # 1.2 (c): plan form in the radial frame (u plays x, t plays z); the toothed trapezoid pieces only
+                    # (a hub rectangle carries no taper)
+                    tp = [to_ut(p, pl["theta"]) for p in me if len(p) == 4 and not _is_rect(p)]
+                    t = taper_issue(tp, pr["narrows"]) if tp else "no four-vertex tapered piece drawn"
+                    if t:
+                        issues.append(f"{pose}/{fid} taper narrows {pr['narrows']} (radial frame): {t}")
                 elif kind == "taper":
                     t = taper_issue(me, pr["narrows"])
                     if t:
@@ -1340,7 +1982,7 @@ def k9(ctx):
         text_gids = set()
         for t in ax.texts:
             g = t.get_gid()
-            if not g or g.startswith("label:"):
+            if not g or g.startswith("label:") or g.startswith("note:"):
                 continue
             if kinds.get(g) == "callout":
                 gids.add(g)

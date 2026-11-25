@@ -48,10 +48,11 @@ K_SOURCES = {
     "K5": "gameplan l.138; LLM-PLM 8.4.1", "K6": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)",
     "K7": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED", "K8": "gameplan l.141; ASSEMBLY.md Coordinate frame",
     "K9": "gameplan l.142",
+    "X1": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)",
 }
 SKETCH_TABLES = {
     "s1": {
-        "STUB_EXPECT": {"guard": ["K1", "K2", "K3", "K5"],
+        "STUB_EXPECT": {"guard": ["K1", "K2", "K3", "K5", "X1"],
                         "red": ["K4", "K6", "K7", "K8", "K9", "S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7"]},
         "STUB_CAUSE": {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K,
                        **{k: _ABS_S for k in ("S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7")}},
@@ -78,6 +79,64 @@ def sketch_table(s, name):
 
 def source_of(s, cid):
     return K_SOURCES.get(cid) or sketch_table(s, "SOURCES").get(cid, "")
+
+
+# ---------------------------------------------------------------- X1 shared-row lint (1.2 (c), Loftsman 1.2 (b))
+
+X1_FIELDS = ("place", "z_rule", "plan_poly")
+
+
+def _x1_norm(v):
+    if isinstance(v, str):
+        return " ".join(v.split())
+    if isinstance(v, dict):
+        return {str(k): _x1_norm(x) for k, x in v.items()}
+    if isinstance(v, (list, tuple)):
+        return [_x1_norm(x) for x in v]
+    return v
+
+
+def x1_lint(specs=None):
+    """Premise of the S1/S2 footprint identity (Loftsman 1.2 (b) section 2): for every row id present in two or more
+    specs, the place, z_rule and plan_poly expressions are equal after whitespace normalisation, so one check_stack
+    evaluation gives one footprint and one z band in every sketch. A field present in one spec only is skipped and
+    listed; a row carrying x1_exempt: {reason} in any spec passes and is listed. specs: {name: spec} (default: every
+    s*_spec.yaml beside this file)."""
+    if specs is None:
+        specs = {p.stem.replace("_spec", ""): load_spec(p) for p in sorted(HERE.glob("s*_spec.yaml"))}
+    by_id = {}
+    for name, spec in specs.items():
+        for row in spec.get("features", []):
+            by_id.setdefault(row["id"], []).append((name, row))
+    issues, skipped, exempt, n = [], [], [], 0
+    for fid, occ in sorted(by_id.items()):
+        if len(occ) < 2:
+            continue
+        n += 1
+        ex = next((r.get("x1_exempt") for _, r in occ if r.get("x1_exempt")), None)
+        if ex:
+            exempt.append(f"{fid} ({ex.get('reason') if isinstance(ex, dict) else ex})")
+            continue
+        for fld in X1_FIELDS:
+            have = [(nm, r[fld]) for nm, r in occ if r.get(fld) is not None]
+            if not have:
+                continue
+            if len(have) < len(occ):
+                skipped.append(f"{fid} {fld} (only in {', '.join(nm for nm, _ in have)})")
+                continue
+            ref_nm, ref = have[0][0], json.dumps(_x1_norm(have[0][1]), sort_keys=True)
+            for nm, v in have[1:]:
+                if json.dumps(_x1_norm(v), sort_keys=True) != ref:
+                    sub = ""
+                    if isinstance(have[0][1], dict) and isinstance(v, dict):
+                        keys = sorted(k for k in set(have[0][1]) | set(v) if _x1_norm(have[0][1].get(k)) != _x1_norm(v.get(k)))
+                        sub = "." + ",".join(keys)
+                    issues.append(f"{fid} {fld}{sub}: {ref_nm} and {nm} differ")
+    msg = f"{n} shared row(s) compared on {', '.join(X1_FIELDS)}; skipped {len(skipped)}: {', '.join(skipped) or 'none'}" + \
+          (f"; exempt: {', '.join(exempt)}" if exempt else "")
+    return {"id": "X1", "result": "pass" if not issues else "fail", "reason": (sc._summ(issues) + "; " + msg) if issues else msg,
+            "measured": len(issues), "threshold": 0, "n_issues": len(issues), "cause": None if not issues else "content",
+            "compared": n, "skipped": skipped}
 
 
 TIMESTAMP = lambda: datetime.datetime.now().isoformat(timespec="seconds")  # noqa: E731
@@ -125,8 +184,9 @@ def run_control(entry):
     for c in ctxs:
         if entry.get("anchors"):
             c.anchors = entry["anchors"]
-    if entry["check"].startswith("S1-"):   # sketch checks (1.1 (b) fix pass): checks_s1.py, judged as K checks
-        smod = load_module(HERE / "checks_s1.py", "checks_s1")
+    if entry["check"][:3] in ("S1-", "S2-"):   # sketch checks (1.1 (b), 1.2 (c)): checks_sN.py, judged as K checks
+        s = entry["check"][:2].lower()
+        smod = load_module(HERE / f"checks_{s}.py", f"checks_{s}")
         fn = dict(smod.CHECKS)[entry["check"]]
         res = [smod._run(entry["check"], fn, c) for c in ctxs]
     else:
@@ -234,6 +294,7 @@ def run_sketch(args):
     smod_path = HERE / f"checks_{s}.py"
     smod = load_module(smod_path, f"checks_{s}")
     results += smod.run(ctx)
+    results.append(safe(x1_lint, "X1"))
     tally = control_tally()
     for r in results:
         r["z_result"] = tally.get(r["id"], {}).get("Z", "not run at 1.0 (Z fixture from the signed spec, 1.1)")
@@ -354,7 +415,9 @@ def stale(args):
     for d in diffs:
         print("STALE", d)
     print(f"--stale: {len(recs)} record(s) checked, {len(diffs)} difference(s)")
-    return 1 if diffs else 0
+    x1 = x1_lint()   # 1.2 (c): the shared-row premise runs with every --stale
+    print(f"X1 {x1['result']}: {x1['reason']}")
+    return 1 if diffs or x1["result"] != "pass" else 0
 
 
 # ---------------------------------------------------------------- accept (H1)

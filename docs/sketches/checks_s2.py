@@ -3,7 +3,10 @@ Skeleton written at 1.2 (b) from the spec block s2_checks; fixtures (S2-x Z and 
 come at 1.2 (c). Each check reads drawn patches located by gid in the plan figure and fails closed (cause "absent")
 when a part it needs is not drawn, so it is red on the floor-only stub. Plan coordinates in mm; heights from check_stack
 in z_A (S2-5b is a z premise and has no drawn z in plan).
-S2-3 has no drawn quantity yet: the pitch point is not a drawn feature until (c) defines one; it fails closed (content).
+S2-3 (1.2 (c)): the drawn pitch point is the midpoint of the heel edge of each pinion's toothed trapezoid (the outer of its
+two edges across the radial direction; sketch_common.heel_point); the pinion is drawn as that trapezoid (toe to
+pinion.r_heel, narrowing inward) plus its hub rectangle to the place r_out (K5 hub admission).
+1.2 (c) tables: STUB_EXPECT, STUB_CAUSE and SOURCES for check_sketch.py (run_sketch, --baseline s2).
 """
 import math
 import sys
@@ -116,11 +119,33 @@ def s2_2(ctx):
 
 
 def s2_3(ctx):
-    """Pinion pitch point at the gear pitch radius (0.05). The pitch point is not a drawn feature at (b)."""
+    """Pinion mesh: each drawn pinion pitch point (heel-edge midpoint of its toothed trapezoid, at the placed azimuth) lies
+    at the gear pitch radius (spec expression pitch_r) within tol; the gear must be drawn."""
     c = _cfg(ctx, "S2-3")
-    for p in c["pinions"] + [c["gear"]]:
-        _pieces(ctx, p)
-    raise Content("S2-3: no drawn pitch point to measure; (c) defines the drawn quantity (pitch-point marker or heel edge) and its Z and B")
+    _pieces(ctx, c["gear"])
+    pose = _fig_pose(ctx)
+    want = check_stack.eval_expr(c["pitch_r"], ctx.P, {})
+    issues, worst, got = [], 0.0, {}
+    for p in c["pinions"]:
+        polys = _pieces(ctx, p)
+        pl = ctx.stack["poses"][pose]["features"][p].get("place")
+        if not pl:
+            raise Content(f"S2-3: {p} has no place (no azimuth for the radial frame)")
+        traps = [q for q in polys if len(q) == 4 and not sc._is_rect(q)]
+        if not traps:
+            issues.append(f"{p}: no toothed trapezoid drawn (no heel edge)")
+            continue
+        hp = sc.heel_point(traps[0], pl["theta"])
+        if hp is None:
+            issues.append(f"{p}: trapezoid has no edge pair across the radial direction (no heel edge)")
+            continue
+        r = math.hypot(*hp)
+        got[p] = round(r, 3)
+        worst = max(worst, abs(r - want))
+        if abs(r - want) > c["tol"]:
+            issues.append(f"{p}: pitch point r {r:.2f} vs gear pitch radius {want:.2f} (off {r - want:+.2f})")
+    return sc.result("S2-3", not issues, sc._summ(issues) if issues else f"pitch points {got} at the gear pitch radius {want:.2f} within {worst:.3f}",
+                     measured=round(worst, 4), threshold=c["tol"], n_issues=len(issues))
 
 
 def s2_4(ctx):
@@ -142,14 +167,23 @@ def s2_4(ctx):
                      measured=round(worst, 4), threshold=c["tol"], n_issues=len(issues))
 
 
+def _outline(ctx, fid):
+    """Plan outline of a drawn row (sketch_common.plan_outline: the spec footprint that contains the drawn part, K8);
+    the drawn pieces when the row has no plan basis. Absent when the row is not drawn."""
+    P = _pieces(ctx, fid)
+    o = sc.plan_outline(ctx, {r["id"]: r for r in ctx.spec["features"]}[fid], _fig_pose(ctx))
+    return o or ("polys", P, True)
+
+
 def s2_5a(ctx):
-    """Operator sector free in plan of every fixed part at all z (K7 F: overlap <= 0.01 mm2 and distance > 0.05)."""
+    """Operator sector free in plan of every fixed part at all z (K7 F: overlap <= 0.01 mm2 and distance > 0.05).
+    1.2 (c): the drawn sector (K8 holds it equal to the spec wedge) against each fixed part's plan outline (the spec
+    footprint containing the drawn part, K8 plan_extent), so a part drawn narrower than its footprint cannot pass."""
     c = _cfg(ctx, "S2-5a")
-    S = _pieces(ctx, c["sector"])
+    S = ("polys", _pieces(ctx, c["sector"]), True)
     issues, worst = [], None
     for f in c["fixed"]:
-        P = _pieces(ctx, f)
-        d, a = sc.pair_measure(S, P)
+        d, a = sc.outline_measure(S, _outline(ctx, f), sc.TOL_C)
         worst = d if worst is None else min(worst, d)
         if a > sc.TOL_AREA or d <= sc.TOL_C:
             issues.append(f"{c['sector']}|{f}: distance {d:.3f}, overlap {a:.3f} mm2")
@@ -158,16 +192,15 @@ def s2_5a(ctx):
 
 
 def s2_5b(ctx):
-    """Premise of the S2-5a relief: at the load pose every ring-mounted part whose drawn plan outline enters the drawn
+    """Premise of the S2-5a relief: at the load pose every ring-mounted part whose plan outline enters the drawn
     sector has its lowest z (check_stack, z_A) at least g_min above the top of operator.hand_band."""
     c = _cfg(ctx, "S2-5b")
-    S = _pieces(ctx, c["sector"])
+    S = ("polys", _pieces(ctx, c["sector"]), True)
     top = ctx.P.get(c["band"])[1]
     feats = ctx.stack["poses"][c["pose"]]["features"]
     issues, worst, n = [], None, 0
     for f in c["ring_parts"]:
-        P = _pieces(ctx, f)
-        if sc.pair_measure(S, P)[1] <= sc.TOL_AREA:
+        if sc.outline_measure(S, _outline(ctx, f), sc.TOL_C)[1] <= sc.TOL_AREA:
             continue
         n += 1
         z = check_stack.from_shop_floor(feats[f]["z_min"], ctx.P)
@@ -199,6 +232,25 @@ def s2_6(ctx):
                 issues.append(f"{m}: {d:.2f} from the plate edge in the notch, want {c['notch_clear']}")
     return sc.result("S2-6", not issues, sc._summ(issues) if issues else f"{len(c['seats'])} members seated",
                      measured=len(issues), threshold=0, n_issues=len(issues))
+
+
+# Per-sketch tables (1.2 (c); check_sketch.sketch_table reads them). Every S2 check reads drawn patches and fails closed
+# (absent) on the floor-only stub; the content evidence is the S2-x B fixtures in run 1 (fixtures/manifest.yaml).
+_ABS = ("absent", "red (absent, fail-closed; content evidence run 1, S2-x B fixtures 1.2 (c))")
+_ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
+STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1"],
+               "red": ["K4", "K6", "K7", "K8", "K9", "S2-1", "S2-2", "S2-3", "S2-4", "S2-5a", "S2-5b", "S2-6"]}
+STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K,
+              **{k: _ABS for k in ("S2-1", "S2-2", "S2-3", "S2-4", "S2-5a", "S2-5b", "S2-6")}}
+SOURCES = {
+    "S2-1": "[DN23], [CP §15]; phase 60 Designer 1.2 (a) section 4, Design Notes 27 (O1-B) ASSUMED",
+    "S2-2": "keep-out DERIVED; 10 mm ASSUMED",
+    "S2-3": "overlay gear.*, pinion.r_heel ASSUMED/DERIVED; drawn pitch point = heel-edge midpoint (1.2 (c))",
+    "S2-4": "R13 ASSUMED [CP §14]; nominal only",
+    "S2-5a": "sector ASSUMED (operator.*, Designer 1.2 (a) section 5; Design Notes 27 O1-B)",
+    "S2-5b": "hand band ASSUMED (operator.hand_band); premise of S2-5a (detail 1 common (h))",
+    "S2-6": "params base.*, overlay frame_upper.foot, frame_upper.radius 274 (Design Notes 27)",
+}
 
 
 CHECKS = [("S2-1", s2_1), ("S2-2", s2_2), ("S2-3", s2_3), ("S2-4", s2_4), ("S2-5a", s2_5a), ("S2-5b", s2_5b), ("S2-6", s2_6)]
