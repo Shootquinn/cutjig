@@ -105,22 +105,31 @@ def s1_3(ctx):
 
 
 def s1_4(ctx):
+    """Nut inside its travel (FIX 2, Loftsman 1.1 (b)): the moving body around the nut, nut and housing coaxial with
+    half-extent max(nut_length, ring.nut_housing_height) / 2, stays K7 g_min clear of the drawn anchor top and guide
+    bottom. g_min from the spec nut_housing|anchor and |guide neighbours. This band is the exact feasibility test for
+    L = stroke + anchor_allowance + guide_allowance + max(nut_length, nut_housing_height) + 2 g_min."""
     g = ctx.P.get
-    half = g("jackscrew.nut_length") / 2
+    half = max(g("jackscrew.nut_length"), g("ring.nut_housing_height")) / 2
     issues, worst = [], None
     for pose in [p["id"] for p in ctx.spec["poses"]]:
         for s in ("a", "b"):
-            anchor = _zmin(ctx, pose, f"anchor_{s}")
-            guide = _zmax(ctx, pose, f"guide_{s}")
+            try:
+                ga, gg = check_stack.screw_block_g_min(ctx.spec, s)
+            except KeyError as e:
+                raise Content(str(e))
+            anchor_top = _zmax(ctx, pose, f"anchor_{s}")
+            guide_bottom = _zmin(ctx, pose, f"guide_{s}")
             nut = sc.centroid(_pieces(ctx, pose, f"nut_{s}"))[1]
-            lo = anchor + g("jackscrew.anchor_allowance") + half
-            hi = guide - g("jackscrew.guide_allowance") - half
+            lo = anchor_top + ga + half
+            hi = guide_bottom - gg - half
             m = min(nut - lo, hi - nut)
             worst = m if worst is None else min(worst, m)
             if m < -TOL:
-                issues.append(f"{pose}/screw {s}: nut z {nut:.1f} outside [{lo:.1f}, {hi:.1f}]")
+                issues.append(f"{pose}/screw {s}: nut z {nut:.2f} outside [{lo:.2f}, {hi:.2f}] "
+                              f"(low margin {nut - lo:+.2f}, high margin {hi - nut:+.2f})")
     return sc.result("S1-4", not issues, sc._summ(issues) if issues else f"nut inside travel at every pose, least margin {worst:.2f} mm",
-                     measured=round(worst, 3), threshold=">= 0")
+                     measured=round(worst, 3), threshold=">= 0", n_issues=len(issues))
 
 
 def _capture_core(ctx):

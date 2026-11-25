@@ -4,6 +4,7 @@ Figures are drawn from check_stack.py values (z_S, shop-floor frame) so a Z fixt
 each B builder plants exactly one defect on top of the matching Z drawing. K6-Z2 and K6-B4 anchor check_stack itself
 to hand numbers written in manifest.yaml (LF-2). s1_full_draw draws every S1 spec row (SW-8 smoke control).
 """
+import copy
 import math
 import sys
 import tempfile
@@ -398,12 +399,12 @@ def k6_b4():
     return c
 
 
-def _lf16(load_plane=None):
+def _lf16(load_plane=None, field="load_plane"):
     """LF-16: the live S1 spec and its stack, no figures (the lint reads spec rows' stack z, so it holds on the stub)."""
     P = Params()
     spec = load_spec(HERE.parent / "s1_spec.yaml")
     if load_plane is not None:
-        spec["load_plane"] = load_plane
+        spec[field] = load_plane
     stack = check_stack.evaluate_spec(P, spec)
     return sc.Ctx(P=P, spec=spec, figs={}, stack=stack, view=spec["view"], check_stack_path=CHECK_STACK_PATH)
 
@@ -417,6 +418,12 @@ def k6_b5():
     """LF-16 B: load_plane term core_stop (42.5 z_A) with feature wingnut, edge z_max, offset collar.top_above_plate,
     the collar-top plane (159.84 z_A), 117.34 apart."""
     return _lf16({"term": "core_stop", "feature": "wingnut", "edge": "z_max", "offset": "collar.top_above_plate"})
+
+
+def k6_b6():
+    """LF-16 B on the second field (Loftsman NOTE 1): entry_plane term collar_top (159.84 z_A) with feature core_seat,
+    edge z_max, offset 0 (the core-stop plane, 42.50 z_A), 117.34 apart."""
+    return _lf16({"term": "collar_top", "feature": "core_seat", "edge": "z_max", "offset": 0}, field="entry_plane")
 
 
 # ---------------------------------------------------------------- K7
@@ -925,12 +932,53 @@ def _s1_draw_pose(P, spec, stack, pid):
     return fig
 
 
-def s1_full_ctx():
+def _s1_ctx(shift=None):
+    """Live S1 spec, every row drawn from check_stack values. shift {(pose or None, fid): (dz_min, dz_max)} moves the
+    drawn z of one row (None: every pose) in the drawing only; the context keeps the true stack, so a B planted this
+    way is a drawing that disagrees with the spec."""
     P = Params()
     spec = load_spec(HERE.parent / "s1_spec.yaml")
     stack = check_stack.evaluate_spec(P, spec)
-    figs = {p["id"]: _s1_draw_pose(P, spec, stack, p["id"]) for p in spec["poses"]}
+    drawn = copy.deepcopy(stack)
+    for (pose, fid), (d0, d1) in (shift or {}).items():
+        for pid, pr in drawn["poses"].items():
+            if pose in (None, pid) and fid in pr["features"]:
+                pr["features"][fid]["z_min"] += d0
+                pr["features"][fid]["z_max"] += d1
+    figs = {p["id"]: _s1_draw_pose(P, spec, drawn, p["id"]) for p in spec["poses"]}
     return sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[], check_stack_path=CHECK_STACK_PATH)
+
+
+def s1_full_ctx():
+    return _s1_ctx()
+
+
+def s1_live():
+    """Z for S1-4, S1-5b and K7 on the live spec (1.1 (b) fix pass): the S1-FULL drawing."""
+    return _s1_ctx()
+
+
+def s1_4_b1():
+    """FIX 2 (Loftsman): top guides drawn 20 low in every pose, i.e. L 880 against L_min 885. The 1.0 band
+    (guide z_max - guide_allowance - nut_length / 2) passes it with 4.16 to spare; the K7-consistent band fires at
+    load and park, both screws (high margin 14.16 - 20 = -5.84)."""
+    return _s1_ctx({(None, "guide_a"): (-20, -20), (None, "guide_b"): (-20, -20)})
+
+
+def s1_5b_b1():
+    """FIX 1 (Loftsman): collar ring drawn 133 high at capture_end, bearing bottom 9 above the collar top (g_min 10)."""
+    return _s1_ctx({("capture_end", "collar"): (133, 133)})
+
+
+def k7_b12():
+    """FIX 3 (Loftsman): capture core drawn 60 high at start, its top 17.66 into the drill head. core_750|drill_head is
+    declared N at capture_end only; at start the pair is undeclared and must be tested as F."""
+    return _s1_ctx({("start", "core_750"): (60, 60)})
+
+
+def k7_b13():
+    """F4 (Designer): screw frame member foot drawn 1 mm above the plate top at load (C pair open by 1)."""
+    return _s1_ctx({("load", "frame_upper_a"): (1, 0)})
 
 
 def s1_full_draw():

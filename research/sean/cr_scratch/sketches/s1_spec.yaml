@@ -1,5 +1,5 @@
 # S1 spec, side XZ, whole jig, four poses (research/sean/gameplan.md detail 1.1, lines 207-239).
-status: revised, awaiting Designer and Loftsman signatures
+status: "fix pass 1.1 (b) applied (step1.1_engineer_spec_fixes.md); awaiting Designer and Loftsman re-check, then signed pending Sean pose confirmation"
 # Revision 1.1 (b), The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.1_designer_params_review.md and
 # Sean's rulings (gameplan Design Notes 21 G1-G7, Design Notes 22 option R). No drawing before the signed spec.
 sketch: s1
@@ -19,7 +19,12 @@ closes:
 # LF-9: K7 tolerance, as sketch_common.judge() and assess_pair() apply it (TOL_C 0.05 mm, TOL_AREA 0.01 mm2):
 #   a G pair passes at distance >= g_min - 0.05; a C pair at distance <= 0.05 with overlap area <= 0.01 mm2;
 #   an F pair at overlap area <= 0.01 mm2 (touching reads F). Every g_min below is read with this tolerance.
-k7_tolerance: "G passes at distance >= g_min - 0.05 mm; C at distance <= 0.05 mm and overlap <= 0.01 mm2; F at overlap <= 0.01 mm2 (sketch_common TOL_C, TOL_AREA; LF-9)"
+# Side views, plan-footprint lower bound (LF-8, Loftsman 1.1 (b) KEEP ruling, FIX 4c): an F pair passes when its plan
+#   footprints are > 0.05 apart; a G pair when max(plan gap, projected distance) >= g_min - 0.05 (state plan-separated);
+#   every footprint contains its part's plan projection; C pairs are not relieved.
+# Pose-restricted declarations (FIX 3): a neighbour with `poses` declares the pair at those poses only; elsewhere the pair
+#   is tested as undeclared F.
+k7_tolerance: "G passes at distance >= g_min - 0.05 mm; C at distance <= 0.05 mm and overlap <= 0.01 mm2; F at overlap <= 0.01 mm2 (sketch_common TOL_C, TOL_AREA; LF-9). Side views: F passes when the plan footprints are > 0.05 apart; G when max(plan gap, projected distance) >= g_min - 0.05 (plan-separated); footprints contain the part; C pairs are not relieved (LF-8, FIX 4c). A neighbour with poses declares the pair at those poses only (FIX 3)."
 
 # Core lengths. q9_length_keys: batch 1 Q9 stand-in (0.5 and 0.75 m). always_loaded: G2, the 0.75 m install core is
 # the capture core, loaded under every Q9 option (so the 0.5 m only and 0.5 and 0.75 m options share one park).
@@ -36,7 +41,7 @@ capture_core_length: core.length_install
 # entry_plane: the plane the core bottom passes over while it enters the holder, read by the park rule
 # (Design Notes 22: collar top 159.84 z_A). K6 lints each field: term and feature edge + offset agree within 0.05.
 load_plane: {term: core_stop, feature: core_seat, edge: z_max, offset: 0}
-entry_plane: {term: collar_top, feature: wingnut, edge: z_max, offset: collar.top_above_plate}
+entry_plane: {term: collar_top, feature: collar, edge: z_max, offset: 0}     # FIX 1: the collar row carries the plane
 
 # Park rule, option R (Design Notes 22). Per supported core class of length L:
 #   stop_k  = max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip)
@@ -44,19 +49,25 @@ entry_plane: {term: collar_top, feature: wingnut, edge: z_max, offset: collar.to
 #   park    = max(max_k start_k, entry_plane + max L) + upper.load_clearance            (check_stack.park_tip_z_A)
 # Values (DERIVED): stop 184.84 / 184.84 / 267.5, start 834.84 / 834.84 / 917.5 for 0.5 / 0.75 / 1.0 m;
 # park 959.84 z_A (stand-in), 1209.84 with 1 m. Lift stroke = park - lowest stop_k = 775.00 (stand-in).
+# OPEN, decision for Sean (Loftsman FIX 5, 1.1 (b)): for the 1 m class this rule gives stop 267.5 and start 917.5, and
+# the 1 m core top on the core stop is 42.5 + 1000 = 1042.5 z_A, so the cutter starts 125.00 inside the uncut core
+# (check_stack reported q9_options.start_minus_core_top: 292.34 / 42.34 / -125.00 for 0.5 / 0.75 / 1 m). The rule has
+# no start-above-core term. The 1 m core is the third Q9 option and is not drawn in S1. No rule change at (b).
 park_rule:
   stop_k: "max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip)"
   start_k: "stop_k + upper.travel_max"
   park: "max(max_k start_k, entry_plane + max L) + upper.load_clearance"
   for_step4: "upper.park_z = max(max_k (max(stop.height_z, collet.core_stop_z + L_k + stop.g_stop - drill.bore_ceiling_above_tip) + upper.travel_max), stop.collar_top_z + max_k L_k) + upper.load_clearance"
 
-# Screw length per Q9 option (reported, never asserted). stroke and park from check_stack per option. The Loftsman
-# rules the expression at sign-off (B3). 10 = K7 g_min, nut housing to anchor and guide blocks (g_min seed l.148).
+# Screw length per Q9 option (reported, never asserted). stroke and park from check_stack per option.
+# Loftsman B3 ruling (1.1 (b) section 2): L_min is the governing expression. g_min_screw_block = the spec g_min of
+# nut_housing|anchor and nut_housing|guide (fixed_g10, g_min seed l.148), read by check_stack.screw_block_g_min; S1-4
+# tests the same band on the drawing. "at anchor_z" is reported: the same constraint with the anchor at the drawn
+# jackscrew.anchor_z. Superseded (Loftsman section 2.2): "stroke + a + g + nut_length" (omits 2 g_min) and
+# "stroke + nut_length + a + g + nut_housing_height" (counts the coaxial 30 twice, omits g_min).
 screw_length:
-  S1-4 band as coded: "stroke + jackscrew.anchor_allowance + jackscrew.guide_allowance + jackscrew.nut_length"
-  detail 1.3 formula: "stroke + jackscrew.nut_length + jackscrew.anchor_allowance + jackscrew.guide_allowance + ring.nut_housing_height"
-  Designer 1.1 (a): "stroke + jackscrew.anchor_allowance + jackscrew.guide_allowance + max(jackscrew.nut_length, ring.nut_housing_height) + 2 * 10"
-  Designer at anchor_z: "park + ring.position_above_tip + ring.thickness / 2 + max(jackscrew.nut_length, ring.nut_housing_height) / 2 + jackscrew.guide_allowance + 10 - jackscrew.anchor_z"
+  L_min: "stroke + jackscrew.anchor_allowance + jackscrew.guide_allowance + max(jackscrew.nut_length, ring.nut_housing_height) + 2 * g_min_screw_block"
+  at anchor_z: "park + ring.position_above_tip + ring.thickness / 2 + max(jackscrew.nut_length, ring.nut_housing_height) / 2 + jackscrew.guide_allowance + g_min_screw_block - jackscrew.anchor_z"
 
 # TP-5: K7 tests every undeclared pair of drawn parts as F. Nests are declared class N with the nesting stated.
 undeclared_pairs: F
@@ -108,6 +119,7 @@ neighbour_groups:
     - {id: receiver, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.150 ASSUMED"}
     - {id: base_plate, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.150 ASSUMED"}
     - {id: base_frame, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.150 ASSUMED"}
+    - {id: collar, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.150 ASSUMED; holder collar ring, highest clamped base feature (Loftsman 1.1 (b) FIX 1)"}
   fixed_g10:      # g_min seed l.148: moving parts against fixed frame members, screw blocks and lift motors (swept)
     - {id: frame_upper_a, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer 1.1 (a) section 7"}
     - {id: frame_upper_b, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer 1.1 (a) section 7"}
@@ -162,10 +174,6 @@ features:
     label: null
     neighbours:
       - {id: receiver, class: C, g_min: 0, source: "receiver.spigot_od in base.spigot_hole_dia"}
-      - {id: frame_upper_a, class: N, source: "R6: the screw frame member stands on the base frame inside the plate outline; plate notched at the member (S2 footprint, LF-8)"}
-      - {id: frame_upper_b, class: N, source: "R6: as frame_upper_a"}
-      - {id: guide_member, class: N, source: "R6: guide rod foot through the plate inside its outline (S2 places it)"}
-      - {id: guide_member_b, class: N, source: "R6: as guide_member"}
     sense: []
     chain: [axial]
     moves: false
@@ -257,6 +265,25 @@ features:
     chain: []
     moves: false
 
+  - id: collar
+    name: holder collar ring
+    shape: "holder collar ring in section, collar.od wide, from the wing-nut top (plate top) to stop.collar_top_z; the highest clamped base feature and the g_stop reference (collar top, wings included)"
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [collar.od, collar.top_above_plate, stop.collar_top_z]
+    # Loftsman 1.1 (b) FIX 1: z_max = collar_top (test_P18 recompute, 159.84 z_A); entry_plane reads this edge
+    z_rule: {z_min: "collar_top - collar.top_above_plate", z_max: collar_top}
+    depth: ["-collar.od / 2", "collar.od / 2"]
+    label: null
+    neighbours:
+      - {id: holder, class: N, source: "collar ring on the holder (collar.thickness on the holder tube top)"}
+      - {id: wingnut, class: N, source: "wing nut under the collar ring, over the holder flange"}
+      - {id: core_750, class: N, source: "core through the collar bore (collar.id)"}
+    sense: []
+    chain: [axial]
+    moves: false
+
   - id: core_750
     name: capture core (0.75 m install core)
     shape: "capture core (0.75 m install core): upright cylinder 100 OD, solid outline, chamfer mark at the top end; bottom on the core seat at start and capture_end, at mid-insertion at load; absent at park"
@@ -287,7 +314,8 @@ features:
     z_rule: {z_min: tip, z_max: head_top}
     place: {r_in: 0, theta: 0, half_width: "drill.head_od / 2", footprint: round}
     label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
-    neighbours: []
+    neighbours:
+      - {id: collar, class: G, g_min: 25, poses: [capture_end], source: "stop.g_stop 25: params stop.height_z = collar top + g_stop (Loftsman 1.1 (b) FIX 1)"}
     sense: [{pred: below, of: gear}, {pred: below, of: drill_top_block}]
     chain: [axial]
     moves: true
@@ -356,7 +384,7 @@ features:
 
   - id: ring
     name: ring structure
-    shape: "ring structure: plate section ring.od x ring.thickness with the clearance bore gap at the centre; nut-housing bosses (rows nut_housing_a, _b) at each projected screw; NEMA 23 mount standoffs (rows motor_mount_a, _b) on the top face; pinion-shaft bushing blocks; guide lugs (rows guide_lug_a, _b). Split into convex pieces. Reads as the structure that carries screws, motors and drill"
+    shape: "ring structure: plate section ring.od x ring.thickness with the clearance bore gap at the centre; nut-housing bosses (rows nut_housing_a, _b) at each projected screw; NEMA 23 mount standoffs (rows motor_mount_a, _b) on the top face; guide lugs (rows guide_lug_a, _b). Split into convex pieces. Reads as the structure that carries screws, motors and drill"
     kind: plate
     axis: null
     projection: rectangle
@@ -368,7 +396,7 @@ features:
     neighbours:
       - {use: s1_5b_base}
       - {use: fixed_g10}
-      - {id: descent_stop, class: C, g_min: 0, poses: [capture_end], source: "R6, Designer 1.1 (a): ring underside lands on the pad top at capture_end (contact strip r 195 to 210 x 60)"}
+      - {id: descent_stop, class: C, g_min: 0, poses: [capture_end], source: "R6, Designer 1.1 (b) F5: ring underside lands on the pad top at capture_end (contact strip r 200 to 210 x 60)"}
       - {id: bearing, class: C, g_min: 0, source: "bearing outer race in the clearance bore (ring.bearing_seat)"}
       - {id: nut_housing_a, class: N, source: "R6: nut-housing boss through the ring plate"}
       - {id: nut_housing_b, class: N, source: "R6: nut-housing boss through the ring plate"}
@@ -399,7 +427,7 @@ features:
       - {use: fixed_g10}
       - {id: nut_a, class: N, source: "R6: nut inside the housing"}
       - {id: screw_a, class: N, source: "R6: screw through the housing"}
-      - {id: descent_stop, class: G, g_min: 10, poses: [capture_end], source: "Designer 1.1 (a) section 7: 3D gap 10.0 (pad edge r 195, housing r 185); side-view box hit (LF-8)"}
+      - {id: descent_stop, class: G, g_min: 10, poses: [capture_end], source: "Designer 1.1 (b) F5: plan gap 15.0 (pad r 200, housing r 185); side-view box hit (LF-8)"}
     sense: [{pred: below, of: guide_a}]
     chain: [axial]
     moves: true
@@ -429,9 +457,9 @@ features:
     kind: prism
     axis: null
     projection: rectangle
-    keys: [ring.od, ring.guide_lug_r_out, guide.radius, guide.angle, ring.thickness]
+    keys: [ring.od, ring.guide_lug_r_out, ring.guide_lug_half_width, guide.radius, guide.angle, ring.thickness]
     z_rule: {z_min: ring_bottom, z_max: ring_top}
-    place: {r_in: "ring.od / 2", r_out: ring.guide_lug_r_out, theta: "guide.angle[0]", half_width: "ring.guide_lug_r_out - guide.radius", footprint: radial}
+    place: {r_in: "ring.od / 2", r_out: ring.guide_lug_r_out, theta: "guide.angle[0]", half_width: ring.guide_lug_half_width, footprint: radial}
     label: null
     neighbours:
       - {use: fixed_g10}
@@ -446,9 +474,9 @@ features:
     kind: prism
     axis: null
     projection: rectangle
-    keys: [ring.od, ring.guide_lug_r_out, guide.radius, guide.angle, ring.thickness]
+    keys: [ring.od, ring.guide_lug_r_out, ring.guide_lug_half_width, guide.radius, guide.angle, ring.thickness]
     z_rule: {z_min: ring_bottom, z_max: ring_top}
-    place: {r_in: "ring.od / 2", r_out: ring.guide_lug_r_out, theta: "guide.angle[1]", half_width: "ring.guide_lug_r_out - guide.radius", footprint: radial}
+    place: {r_in: "ring.od / 2", r_out: ring.guide_lug_r_out, theta: "guide.angle[1]", half_width: ring.guide_lug_half_width, footprint: radial}
     label: null
     neighbours:
       - {use: fixed_g10}
@@ -459,13 +487,13 @@ features:
 
   - id: motor_mount_a
     name: NEMA 23 standoff
-    shape: "NEMA 23 mount standoff, ring.motor_mount_height tall, from the ring top face to the motor body underside, under motor23_a (part of the ring structure)"
+    shape: "NEMA 23 mount standoff, ring.motor_mount_height tall, r pinion.motor_r_in to the ring rim, under motor23_a; the motor overhangs the rim by 8 (part of the ring structure)"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [ring.motor_mount_height, pinion.motor_r_in, pinion.motor_length, pinion.motor_body, pinion.angle]
+    keys: [ring.motor_mount_height, ring.od, pinion.motor_r_in, pinion.motor_body, pinion.angle]
     z_rule: {z_min: ring_top, z_max: "ring_top + ring.motor_mount_height"}
-    place: {r_in: pinion.motor_r_in, r_out: "pinion.motor_r_in + pinion.motor_length", theta: "pinion.angle[1]", half_width: "pinion.motor_body / 2", footprint: radial}
+    place: {r_in: pinion.motor_r_in, r_out: "ring.od / 2", theta: "pinion.angle[1]", half_width: "pinion.motor_body / 2", footprint: radial}
     label: null
     neighbours:
       - {use: s1_5b_base}
@@ -477,13 +505,13 @@ features:
 
   - id: motor_mount_b
     name: NEMA 23 standoff
-    shape: "NEMA 23 mount standoff, ring.motor_mount_height tall, from the ring top face to the motor body underside, under motor23_b (part of the ring structure)"
+    shape: "NEMA 23 mount standoff, ring.motor_mount_height tall, r pinion.motor_r_in to the ring rim, under motor23_b; the motor overhangs the rim by 8 (part of the ring structure)"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [ring.motor_mount_height, pinion.motor_r_in, pinion.motor_length, pinion.motor_body, pinion.angle]
+    keys: [ring.motor_mount_height, ring.od, pinion.motor_r_in, pinion.motor_body, pinion.angle]
     z_rule: {z_min: ring_top, z_max: "ring_top + ring.motor_mount_height"}
-    place: {r_in: pinion.motor_r_in, r_out: "pinion.motor_r_in + pinion.motor_length", theta: "pinion.angle[2]", half_width: "pinion.motor_body / 2", footprint: radial}
+    place: {r_in: pinion.motor_r_in, r_out: "ring.od / 2", theta: "pinion.angle[2]", half_width: "pinion.motor_body / 2", footprint: radial}
     label: null
     neighbours:
       - {use: s1_5b_base}
@@ -551,13 +579,14 @@ features:
 
   - id: pinion_a
     name: bevel pinion
-    shape: "bevel pinion as projected at its azimuth: four-vertex trapezoid with the narrow toe toward the axis (r 96.54), heel 91.24 OD at r 125, hub to r 140; tooth ticks on the upper face meshing under the gear; shaft line outward to the motor"
+    shape: "bevel pinion as projected at its azimuth: four-vertex trapezoid with the narrow toe toward the axis (toe pitch point r 96.54, toe tooth tip r 95.22), heel 91.24 OD at r 125, hub to r 140; tooth ticks on the upper face meshing under the gear; shaft line outward to the motor"
     kind: gear
     axis: X
     projection: trapezoid
     keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, pinion.pitch_diameter, pinion.outer_diameter, pinion.r_toe, pinion.r_heel, pinion.hub_length, pinion.axis_above_ring_top]
     z_rule: {z_min: "ring_top + pinion.axis_above_ring_top - pinion.outer_diameter / 2", z_max: "ring_top + pinion.axis_above_ring_top + pinion.outer_diameter / 2"}
-    place: {r_in: pinion.r_toe, r_out: "pinion.r_heel + pinion.hub_length", theta: "pinion.angle[1]", half_width: "pinion.outer_diameter / 2", footprint: radial}
+    # FIX 4a (Loftsman 1.1 (b)): footprint from the toe tooth tip, r_toe - m sin(pitch_angle), m = PD / z = 4.1667: 95.22
+    place: {r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "pinion.r_heel + pinion.hub_length", theta: "pinion.angle[1]", half_width: "pinion.outer_diameter / 2", footprint: radial}
     label: null
     neighbours:
       - {use: s1_5b_base}
@@ -569,13 +598,14 @@ features:
 
   - id: pinion_b
     name: bevel pinion
-    shape: "bevel pinion as projected at its azimuth: four-vertex trapezoid with the narrow toe toward the axis (r 96.54), heel 91.24 OD at r 125, hub to r 140; tooth ticks on the upper face meshing under the gear; shaft line outward to the motor"
+    shape: "bevel pinion as projected at its azimuth: four-vertex trapezoid with the narrow toe toward the axis (toe pitch point r 96.54, toe tooth tip r 95.22), heel 91.24 OD at r 125, hub to r 140; tooth ticks on the upper face meshing under the gear; shaft line outward to the motor"
     kind: gear
     axis: X
     projection: trapezoid
     keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, pinion.pitch_diameter, pinion.outer_diameter, pinion.r_toe, pinion.r_heel, pinion.hub_length, pinion.axis_above_ring_top]
     z_rule: {z_min: "ring_top + pinion.axis_above_ring_top - pinion.outer_diameter / 2", z_max: "ring_top + pinion.axis_above_ring_top + pinion.outer_diameter / 2"}
-    place: {r_in: pinion.r_toe, r_out: "pinion.r_heel + pinion.hub_length", theta: "pinion.angle[2]", half_width: "pinion.outer_diameter / 2", footprint: radial}
+    # FIX 4a (Loftsman 1.1 (b)): footprint from the toe tooth tip, r_toe - m sin(pitch_angle), m = PD / z = 4.1667: 95.22
+    place: {r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "pinion.r_heel + pinion.hub_length", theta: "pinion.angle[2]", half_width: "pinion.outer_diameter / 2", footprint: radial}
     label: null
     neighbours:
       - {use: s1_5b_base}
@@ -753,7 +783,7 @@ features:
     projection: rectangle
     keys: [liftmotor.body, liftmotor.length, liftmotor.coupling_length, jackscrew.anchor_z]
     z_rule: {z_min: "jackscrew.anchor_z - liftmotor.coupling_length - liftmotor.length", z_max: "jackscrew.anchor_z - liftmotor.coupling_length"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "liftmotor.body / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "liftmotor.body / 2 * sqrt(2)", footprint: round}   # FIX 4b: circle round the 42 square, r 29.70
     label: null
     neighbours: []
     sense: [{pred: below, of: anchor_a}]
@@ -768,7 +798,7 @@ features:
     projection: rectangle
     keys: [liftmotor.body, liftmotor.length, liftmotor.coupling_length, jackscrew.anchor_z]
     z_rule: {z_min: "jackscrew.anchor_z - liftmotor.coupling_length - liftmotor.length", z_max: "jackscrew.anchor_z - liftmotor.coupling_length"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "liftmotor.body / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "liftmotor.body / 2 * sqrt(2)", footprint: round}   # FIX 4b: circle round the 42 square, r 29.70
     label: null
     neighbours: []
     sense: [{pred: below, of: anchor_b}]
@@ -777,67 +807,67 @@ features:
 
   - id: guide_member
     name: ring guide rod
-    shape: "ring guide rod: round rod 20 OD from the base to guide.length at its projected azimuth, ring bushing lug as a short block at the ring height"
+    shape: "ring guide rod: round rod 20 OD in a shaft support on the plate top, guide.length tall at its projected azimuth; the bushing lug is row guide_lug_x"
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [guide.length, guide.rod_od, guide.radius, guide.angle]
-    z_rule: {z_min: 0, z_max: "guide.length"}
+    keys: [guide.length, guide.rod_od, guide.radius, guide.angle, base.plate_thickness]
+    z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + guide.length"}
     place: {r_in: guide.radius, theta: "guide.angle[0]", half_width: "guide.rod_od / 2", footprint: round}
     label: null
-    neighbours: []
+    neighbours: [{id: base_plate, class: C, g_min: 0, source: "rod in a shaft support on the plate top (Designer 1.1 (b) F4)"}]
     sense: []
     chain: [torque]
     moves: false
 
   - id: guide_member_b
     name: ring guide rod
-    shape: "ring guide rod: round rod 20 OD from the base to guide.length at its projected azimuth, ring bushing lug as a short block at the ring height"
+    shape: "ring guide rod: round rod 20 OD in a shaft support on the plate top, guide.length tall at its projected azimuth; the bushing lug is row guide_lug_x"
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [guide.length, guide.rod_od, guide.radius, guide.angle]
-    z_rule: {z_min: 0, z_max: "guide.length"}
+    keys: [guide.length, guide.rod_od, guide.radius, guide.angle, base.plate_thickness]
+    z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + guide.length"}
     place: {r_in: guide.radius, theta: "guide.angle[1]", half_width: "guide.rod_od / 2", footprint: round}
     label: null
-    neighbours: []
+    neighbours: [{id: base_plate, class: C, g_min: 0, source: "rod in a shaft support on the plate top (Designer 1.1 (b) F4)"}]
     sense: []
     chain: [torque]
     moves: false
 
   - id: frame_upper_a
     name: screw frame member
-    shape: "screw frame member: vertical 30-6060, 60 wide, from the base frame to top_guide_z + 60, with the anchor and guide bracket arms drawn to the screw"
+    shape: "screw frame member: vertical 30-6060, 60 wide, from the plate top to top_guide_z + 60, with the anchor and guide bracket arms drawn to the screw"
     kind: prism
     axis: Z
     projection: rectangle
-    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
-    z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
+    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
+    z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
     place: {r_in: frame_upper.radius, theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: round}
     label: null
-    neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
+    neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
     sense: []
     chain: [axial]
     moves: false
 
   - id: frame_upper_b
     name: screw frame member
-    shape: "screw frame member: vertical 30-6060, 60 wide, from the base frame to top_guide_z + 60, with the anchor and guide bracket arms drawn to the screw"
+    shape: "screw frame member: vertical 30-6060, 60 wide, from the plate top to top_guide_z + 60, with the anchor and guide bracket arms drawn to the screw"
     kind: prism
     axis: Z
     projection: rectangle
-    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
-    z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
+    keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
+    z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
     place: {r_in: frame_upper.radius, theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: round}
     label: null
-    neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
+    neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
     sense: []
     chain: [axial]
     moves: false
 
   - id: descent_stop
     name: descent stop
-    shape: "metal descent-stop pad, 12 thick, radial r 195 to 215 under the ring rim on the anchor bracket arm, metal hatch; the ring rim lands on it at capture_end"
+    shape: "metal descent-stop pad, 12 thick, radial r 200 to 215 under the ring rim on the anchor bracket arm, metal hatch; the ring rim lands on it at capture_end"
     kind: prism
     axis: null
     projection: rectangle

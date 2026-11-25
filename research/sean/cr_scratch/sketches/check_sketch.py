@@ -87,7 +87,12 @@ def run_control(entry):
     for c in ctxs:
         if entry.get("anchors"):
             c.anchors = entry["anchors"]
-    res = [sc.CHECKS[entry["check"]](c) for c in ctxs]
+    if entry["check"].startswith("S1-"):   # sketch checks (1.1 (b) fix pass): checks_s1.py, judged as K checks
+        smod = load_module(HERE / "checks_s1.py", "checks_s1")
+        fn = dict(smod.CHECKS)[entry["check"]]
+        res = [smod._run(entry["check"], fn, c) for c in ctxs]
+    else:
+        res = [sc.CHECKS[entry["check"]](c) for c in ctxs]
     out = {"id": entry["check"], "result": "fail" if any(r["result"] != "pass" for r in res) else "pass",
            "reason": " || ".join(r["reason"] for r in res), "measured": [r["measured"] for r in res],
            "threshold": res[0]["threshold"], "states": [s for r in res for s in r.get("states", [])],

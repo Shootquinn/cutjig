@@ -935,15 +935,17 @@ def k7(ctx):
             if lo > tlo + TOL_C or hi < thi - TOL_C:
                 issues.append(f"{fid}: spec depth band [{lo:.2f}, {hi:.2f}] does not contain the placed projection [{tlo:.2f}, {thi:.2f}]")
                 failing += 1
-    declared = set()
     for pose, fig in ctx.figs.items():
         ax = fig.axes[0]
+        # FIX 3 (Loftsman 1.1 (b)): a neighbour with `poses` declares the pair at those poses only; at every other
+        # pose the pair falls to the undeclared-F test below.
+        declared = set()
         for a, row in rows.items():
             for nb in row.get("neighbours") or []:
                 b = nb["id"]
-                declared.add(frozenset((a, b)))
                 if nb.get("poses") and pose not in nb["poses"]:
                     continue
+                declared.add(frozenset((a, b)))
                 if not applies(row, pose) or b not in rows or not applies(rows[b], pose):
                     continue
                 tag = f"{pose}/{a}|{b} {nb['class']}"

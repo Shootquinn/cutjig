@@ -32,7 +32,7 @@ def sind(t):
     return math.sin(math.radians(t))
 
 
-FUNCS = {"min": min, "max": max, "abs": abs, "sind": sind, "cosd": cosd}
+FUNCS = {"min": min, "max": max, "abs": abs, "sind": sind, "cosd": cosd, "sqrt": math.sqrt}
 
 
 # ---------------------------------------------------------------- frames
@@ -128,6 +128,18 @@ def park_tip_z_A(P, q9_keys, plane_z_A, spec=None, names=None):
     tallest = plane_z_A + max(P.get(k) for k in lengths)
     start = max(class_starts_z_A(P, spec, q9_keys, names).values())
     return max(start, tallest) + P.get("upper.load_clearance")
+
+
+def screw_block_g_min(spec, s):
+    """K7 g_min of the nut housing against the anchor and the guide block of screw s (spec neighbours of row
+    nut_housing_<s>, g_min seed l.148). Read by S1-4 and the screw_length expressions (FIX 2, Loftsman 1.1 (b)).
+    Returns (anchor g_min, guide g_min); KeyError when the spec declares neither pair."""
+    row = next((r for r in spec.get("features", []) if r.get("id") == f"nut_housing_{s}"), None)
+    nbs = {nb.get("id"): nb for nb in ((row or {}).get("neighbours") or [])}
+    try:
+        return nbs[f"anchor_{s}"]["g_min"], nbs[f"guide_{s}"]["g_min"]
+    except KeyError:
+        raise KeyError(f"spec declares no nut_housing_{s}|anchor_{s} and |guide_{s} g_min")
 
 
 def global_vars(P, spec):
@@ -285,6 +297,13 @@ def evaluate_spec(P, spec):
     return out
 
 
+def _try_block_g_min(spec, s):
+    try:
+        return list(screw_block_g_min(spec, s))
+    except KeyError:
+        return []
+
+
 def reported(P, spec, stack):
     """Reported values (no threshold, gameplan l.116): highest point and margin to the soft target per pose, lift stroke."""
     glob = stack["global_z_A"]
@@ -305,9 +324,16 @@ def reported(P, spec, stack):
         low = min(class_stops_z_A(P, spec, keys, glob).values()) if spec.get("park_rule") else glob["lowest_tip"]
         nm = dict(glob)
         nm.update({"park": park, "stroke": park - low})
+        gm = [g for s in ("a", "b") for g in _try_block_g_min(spec, s)]
+        if gm:
+            nm["g_min_screw_block"] = max(gm)
         Ls = {lk: eval_expr(ex, P, nm) for lk, ex in (spec.get("screw_length") or {}).items()}
-        opts[name] = {"lengths": keys, "starts_z_A": class_starts_z_A(P, spec, keys, glob), "park_tip_z_A": park,
-                      "lowest_stop_z_A": low, "lift_stroke": park - low, "L": Ls}
+        starts = class_starts_z_A(P, spec, keys, glob)
+        # FIX 5 (Loftsman 1.1 (b)), reported only: start tip minus the top of that class's core on the core stop.
+        # Negative = the cutter starts inside the uncut core.
+        over = {k: v - (glob["core_stop"] + P.get(k)) for k, v in starts.items() if P.has(k)}
+        opts[name] = {"lengths": keys, "starts_z_A": starts, "park_tip_z_A": park,
+                      "lowest_stop_z_A": low, "lift_stroke": park - low, "L": Ls, "start_minus_core_top": over}
     rep["q9_options"] = opts
     # LF-7 / G2: start pose against the capture core on the core stop (no threshold)
     ck = spec.get("capture_core_length", "core.length_capture")

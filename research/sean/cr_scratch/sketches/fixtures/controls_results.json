@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T00:57:35",
+ "timestamp": "2026-11-25T11:31:58",
  "summary": {
-  "z_clean": 21,
-  "z_total": 21,
-  "b_fired": 54,
-  "b_total": 54,
+  "z_clean": 24,
+  "z_total": 24,
+  "b_fired": 59,
+  "b_total": 59,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -836,6 +836,94 @@
    "finding": "TP-8"
   },
   {
+   "id": "S1-4-Z",
+   "check": "S1-4",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "nut inside travel at every pose, least margin 0.84 mm",
+   "match": "yes",
+   "gameplan_line": 231,
+   "finding": "Loftsman FIX 2"
+  },
+  {
+   "id": "S1-4-B1",
+   "check": "S1-4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/screw a: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); load/screw b: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); park/screw a: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); park/screw b: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84)",
+   "match": "yes",
+   "gameplan_line": 231,
+   "finding": "Loftsman FIX 2"
+  },
+  {
+   "id": "S1-5b-Z",
+   "check": "S1-5b",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "77 pairs, least certified clearance 142.00 mm",
+   "match": "yes",
+   "gameplan_line": 233,
+   "finding": "Loftsman FIX 1"
+  },
+  {
+   "id": "S1-5b-B1",
+   "check": "S1-5b",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "bearing|collar: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10, gap - g_min -1.000",
+   "match": "yes",
+   "gameplan_line": 233,
+   "finding": "Loftsman FIX 1"
+  },
+  {
+   "id": "K7-Z10",
+   "check": "K7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "285 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Loftsman FIX 3; Designer F4"
+  },
+  {
+   "id": "K7-B12",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "start/core_750|drill_head undeclared (F): distance 0.000 mm, overlap 1766.000 mm2, state overlap; plan footprints 0.000 mm apart, lower bound 0.000",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Loftsman FIX 3"
+  },
+  {
+   "id": "K7-B13",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/frame_upper_a|base_plate C: distance 1.000 mm, overlap 0.000 mm2, state F",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer F4"
+  },
+  {
+   "id": "K6-B6",
+   "check": "K6",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "LF-16 entry_plane: term collar_top 159.84 z_A vs core_seat.z_max + offset 42.50 z_A, 117.34 apart",
+   "match": "yes",
+   "gameplan_line": "139; Design Notes 20 LF-16",
+   "finding": "LF-16; Loftsman NOTE 1"
+  },
+  {
    "id": "S1-FULL",
    "check": "ALL",
    "control": "smoke",
@@ -858,7 +946,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "201 spec keys resolve; 102 overlay leaves sourced, legal status, no shadow"
+     "reason": "210 spec keys resolve; 103 overlay leaves sourced, legal status, no shadow"
     },
     {
      "id": "K3",
@@ -879,21 +967,21 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "195 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
+     "reason": "199 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
     },
     {
      "id": "K6",
      "result": "pass",
      "cause": null,
      "measured": 0.0,
-     "reason": "175 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean"
+     "reason": "179 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean"
     },
     {
      "id": "K7",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "265 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
+     "reason": "285 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
     },
     {
      "id": "K8",
@@ -907,7 +995,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "every spec row drawn, every tagged artist in the spec (44 rows)"
+     "reason": "every spec row drawn, every tagged artist in the spec (45 rows)"
     },
     {
      "id": "S1-1",
@@ -937,8 +1025,8 @@
      "id": "S1-4",
      "result": "pass",
      "cause": null,
-     "measured": 10.84,
-     "reason": "nut inside travel at every pose, least margin 10.84 mm"
+     "measured": 0.84,
+     "reason": "nut inside travel at every pose, least margin 0.84 mm"
     },
     {
      "id": "S1-5a",
@@ -951,8 +1039,8 @@
      "id": "S1-5b",
      "result": "pass",
      "cause": null,
-     "measured": 148.75,
-     "reason": "66 pairs, least certified clearance 148.75 mm"
+     "measured": 142.0,
+     "reason": "77 pairs, least certified clearance 142.00 mm"
     },
     {
      "id": "S1-6",
