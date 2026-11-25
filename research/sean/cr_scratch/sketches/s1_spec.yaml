@@ -3,6 +3,11 @@ status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
 # r2 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r2.md), re-sign due (Designer; Loftsman for placement):
 # stack_ties (LF1.1-1), holder z_max + flange (LF1.1-1), section on receiver, collet, core_seat, holder, collar and
 # bore_cone on holder (TP1.1-3), N -> C/F between section rows (TP1.1-3), gear face_rises (TP1.1-1), rubric line (TP1.1-2).
+# r3 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r3.md, from sketches/s1_visual_gate_r2.md F1 to F5),
+# re-sign due (Designer; Loftsman for placement): rows bracket_anchor_a/_b, bracket_guide_a/_b (F2), descent_stop_post
+# (F3), motor_shaft_a/_b and pinion_axis_a/_b (F1), labels on anchor_b, guide_b, frame_upper_b, drill_head (tip z_edge),
+# drill_top_block (F4), fixed_g10 group extended to the new fixed rows, notes (holder stand-in, C meaning). All new
+# dimensions are the Designer's ASSUMED values (M1 r2 section 6).
 # Revision 1.1 (b), The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.1_designer_params_review.md and
 # Sean's rulings (gameplan Design Notes 21 G1-G7, Design Notes 22 option R). No drawing before the signed spec.
 sketch: s1
@@ -10,6 +15,9 @@ script: s1_side_poses.py          # K1 scans this file at 1.1 (d) (check_sketch.
 view: side_xz
 z_rule_frame: z_A          # check_stack.py evaluates z_rule and tip_z in z_A and converts to z_S (shop floor) once
 plot_frame: z_S            # z_S = z_A + jig.datum_a_above_floor (Design Notes 17)
+notes:
+  - "Holder section is a stand-in; S4 governs (build_parts/holder.py: OD 67.04, inner cone 62.04 to 56.75 over chain.H 30, bore 56.75, tube through the nut plate to the collar). Designer M1 r2 section 7; no S1 check value moves."
+  - "Class C means 'located on that face'. Fit values (holder g_reg 0.25, spigot hole 0.10 per side, collar lift play) belong to S4 (base stack) and Step 4 tolerancing; no C pair states a clearance. Designer M1 r2 section 7 (Loftsman R2-1)."
 question: >-
   Is the jig tall enough, where along the drill does the ring sit, where are the screw anchors and top guides,
   what are the park rule and the lift stroke, and which frame and base members carry the axial loop?
@@ -122,7 +130,7 @@ reported:
   - re-derived park rule as an expression for Step 4 (park_rule.for_step4)
   - lift stroke and screw length L (screw_length expressions) for each Q9 option (q9_options)
   - centre-of-mass height per pose and unbolted tip force at the frame top (overlay masses ASSUMED; icd.tipover_statement is the old reference)
-descent_stop: "drawn: row descent_stop, metal pad on the anchor bracket arm at jackscrew.angle[1], under the ring rim (N7 stand-in, upper.metal_stop DECLARED gate B5); Step 2 rules"
+descent_stop: "drawn: row descent_stop, metal pad on post descent_stop_post on bracket arm bracket_anchor_a at jackscrew.angle[1], under the ring rim (N7 stand-in, upper.metal_stop DECLARED gate B5); Step 2 rules"
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups): {use: <group>} in a row's neighbours expands to these.
 neighbour_groups:
@@ -143,6 +151,11 @@ neighbour_groups:
     - {id: anchor_b, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; nut housing to anchor block 10.84 at capture_end"}
     - {id: guide_a, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; nut housing to guide block 24.16 at park"}
     - {id: guide_b, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; nut housing to guide block 24.16 at park"}
+    - {id: bracket_anchor_a, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer M1 r2 F2: arm z = block z, nut housing 10.84 at capture_end, ring rim 19.84"}
+    - {id: bracket_anchor_b, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer M1 r2 F2: arm z = block z"}
+    - {id: bracket_guide_a, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer M1 r2 F2: nut housing 24.16 at park"}
+    - {id: bracket_guide_b, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer M1 r2 F2: nut housing 24.16 at park"}
+    - {id: descent_stop_post, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED; Designer M1 r2 F3: ring rim 12.00 above the post top at capture_end; nut housing plan gap 15.0"}
 
 # Row fields per gameplan l.130. shape: The Designer's note (1.1 (a) section 2). z_rule in z_A.
 features:
@@ -340,7 +353,7 @@ features:
     keys: [drill.head_od, drill.head_length]
     z_rule: {z_min: tip, z_max: head_top}
     place: {r_in: 0, theta: 0, half_width: "drill.head_od / 2", footprint: round}
-    label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
+    label: {text: "HEAD (cutter, tip); cutter OD ASSUMED", key: drill.head_od, fmt: ".1f", z_edge: z_min, z_edge_text: tip}   # r3 F4
     neighbours:
       - {id: collar, class: G, g_min: 25, poses: [capture_end], source: "stop.g_stop 25: params stop.height_z = collar top + g_stop (Loftsman 1.1 (b) FIX 1)"}
     sense: [{pred: below, of: gear}, {pred: below, of: drill_top_block}]
@@ -373,7 +386,7 @@ features:
     keys: [drill.top_block_od, drill.top_block_length]
     z_rule: {z_min: drill_top, z_max: top_block_top}
     place: {r_in: 0, theta: 0, half_width: "drill.top_block_od / 2", footprint: round}
-    label: {text: "top block", key: drill.top_block_length, fmt: ".0f"}
+    label: {text: "TOP-END BLOCK (tail)", key: drill.top_block_length, fmt: ".0f"}   # r3 F4
     neighbours: []
     sense: []
     chain: []
@@ -619,6 +632,7 @@ features:
       - {use: s1_5b_base}
       - {use: fixed_g10}
       - {id: motor23_a, class: N, source: "R6: NEMA 23 shaft (pinion.motor_shaft_length 21) into the pinion hub"}
+      - {id: motor_shaft_a, class: N, source: "Designer M1 r2 F1 (a): shaft r 121 to 142 in the pinion hub (hub to r 140)"}
     sense: [{pred: taper, narrows: inward, source: "bevel pinion apex on the drill axis at pinion-axis height (Designer 1.1 (a) TP-2)"}]
     chain: []
     moves: true
@@ -638,6 +652,7 @@ features:
       - {use: s1_5b_base}
       - {use: fixed_g10}
       - {id: motor23_b, class: N, source: "R6: NEMA 23 shaft (pinion.motor_shaft_length 21) into the pinion hub"}
+      - {id: motor_shaft_b, class: N, source: "Designer M1 r2 F1 (a): shaft r 121 to 142 in the pinion hub (hub to r 140)"}
     sense: [{pred: taper, narrows: inward, source: "bevel pinion apex on the drill axis at pinion-axis height (Designer 1.1 (a) TP-2)"}]
     chain: []
     moves: true
@@ -766,7 +781,7 @@ features:
     keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
-    label: null
+    label: {text: "anchor", key: jackscrew.anchor_z, fmt: ".0f", z_S: true}   # r3 F4: dimensioned, right-hand instance
     neighbours: []
     sense: [{pred: below, of: nut_b}]
     chain: [axial]
@@ -796,7 +811,7 @@ features:
     keys: [jackscrew.top_guide_z, jackscrew.guide_allowance]
     z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
-    label: null
+    label: {text: "top guide", key: jackscrew.top_guide_z, fmt: ".0f", z_S: true}   # r3 F4
     neighbours: []
     sense: []
     chain: []
@@ -886,7 +901,7 @@ features:
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
     z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
     place: {r_in: frame_upper.radius, theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: round}
-    label: null
+    label: {text: "screw frame 30-6060 r", key: frame_upper.radius, fmt: ".0f"}   # r3 F4
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
     sense: []
     chain: [axial]
@@ -894,7 +909,7 @@ features:
 
   - id: descent_stop
     name: descent stop
-    shape: "metal descent-stop pad, 12 thick, radial r 200 to 215 under the ring rim on the anchor bracket arm, metal hatch; the ring rim lands on it at capture_end"
+    shape: "metal descent-stop pad, 12 thick, radial r 200 to 215 under the ring rim, on post descent_stop_post on the anchor bracket arm, metal hatch; the ring rim lands on it at capture_end"
     kind: prism
     axis: null
     projection: rectangle
@@ -906,6 +921,160 @@ features:
     sense: []
     chain: [axial]
     moves: false
+
+  - id: bracket_anchor_a
+    name: anchor bracket arm
+    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.anchor_z, jackscrew.anchor_allowance]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {id: anchor_a, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+    sense: [{pred: below, of: nut_a}, {pred: outboard, of: anchor_a}]
+    chain: [axial]
+    moves: false
+
+  - id: bracket_guide_a
+    name: top-guide bracket arm
+    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.top_guide_z, jackscrew.guide_allowance]
+    z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {id: guide_a, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
+      - {id: frame_upper_a, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+    sense: [{pred: above, of: nut_a}, {pred: outboard, of: guide_a}]
+    chain: [axial]
+    moves: false
+
+  - id: bracket_anchor_b
+    name: anchor bracket arm
+    shape: "anchor bracket arm: radial 30-6060 stub from the anchor block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (265 to 295 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.anchor_z, jackscrew.anchor_allowance]
+    z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {id: anchor_b, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+    sense: [{pred: below, of: nut_b}, {pred: outboard, of: anchor_b}]
+    chain: [axial]
+    moves: false
+
+  - id: bracket_guide_b
+    name: top-guide bracket arm
+    shape: "top-guide bracket arm: radial 30-6060 stub from the guide block face (r 181) to the screw frame member face (r 270), 60 wide, at the block height (1135 to 1165 z_A), top flush with the block top; dashed where a nearer part covers it (Designer M1 r2 F2)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.pitch_radius, jackscrew.nut_flange_od, frame_upper.radius, profile.width, jackscrew.angle, jackscrew.top_guide_z, jackscrew.guide_allowance]
+    z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
+    # Designer M1 r2 F2 (ASSUMED): r_in = pitch_radius + nut_flange_od / 2 = 181, r_out = frame_upper.radius - profile.width / 2 = 270
+    place: {r_in: "jackscrew.pitch_radius + jackscrew.nut_flange_od / 2", r_out: "frame_upper.radius - profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {id: guide_b, class: C, g_min: 0, source: "Designer M1 r2 F2: block on the arm end, plan faces touch at r 181 (side view: plan-contact)"}
+      - {id: frame_upper_b, class: C, g_min: 0, source: "Designer M1 r2 F2: arm on the member face at r 270 (side view: plan-contact); axial loop to the plate"}
+    sense: [{pred: above, of: nut_b}, {pred: outboard, of: guide_b}]
+    chain: [axial]
+    moves: false
+
+  - id: descent_stop_post
+    name: descent-stop post
+    shape: "descent-stop post: r 200 to 215, 60 wide, from the anchor arm top to the pad bottom (7.84 tall at the stand-ins); the pad visibly sits on the anchor arm (Designer M1 r2 F3)"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [frame_upper.stop_pad_r_in, frame_upper.stop_pad_r_out, stop.pad_width, stop.pad_thickness, jackscrew.anchor_z, jackscrew.anchor_allowance, ring.position_above_tip, jackscrew.angle]
+    # z_rule tracks anchor_z (Designer M1 r2 F3): 295.00 to 302.84 z_A at the stand-ins
+    z_rule: {z_min: "jackscrew.anchor_z + jackscrew.anchor_allowance", z_max: "ring_bottom_low - stop.pad_thickness"}
+    place: {r_in: frame_upper.stop_pad_r_in, r_out: frame_upper.stop_pad_r_out, theta: "jackscrew.angle[1]", half_width: "stop.pad_width / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {id: bracket_anchor_a, class: C, g_min: 0, source: "Designer M1 r2 F3: post foot on the anchor arm top (295 z_A)"}
+      - {id: descent_stop, class: C, g_min: 0, source: "Designer M1 r2 F3: pad on the post top (302.84 z_A)"}
+    sense: [{pred: below, of: descent_stop}]
+    chain: [axial]
+    moves: false
+
+  - id: motor_shaft_a
+    name: NEMA 23 shaft
+    shape: "NEMA 23 output shaft: radial rectangle r 121 to 142 (pinion.motor_r_in - pinion.motor_shaft_length to the flange face), pinion.motor_shaft_od 8 high, on the pinion axis; signifier of the radial pinion axis (Designer M1 r2 F1 (a))"
+    kind: cylinder
+    axis: X
+    projection: rectangle
+    keys: [pinion.motor_r_in, pinion.motor_shaft_length, pinion.motor_shaft_od, pinion.axis_above_ring_top, pinion.angle]
+    z_rule: {z_min: "ring_top + pinion.axis_above_ring_top - pinion.motor_shaft_od / 2", z_max: "ring_top + pinion.axis_above_ring_top + pinion.motor_shaft_od / 2"}
+    place: {r_in: "pinion.motor_r_in - pinion.motor_shaft_length", r_out: pinion.motor_r_in, theta: "pinion.angle[1]", half_width: "pinion.motor_shaft_od / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {use: fixed_g10}
+      - {id: motor23_a, class: C, g_min: 0, source: "Designer M1 r2 F1 (a): shaft from the motor flange face r 142 (side view: plan-contact)"}
+    sense: [{pred: side, of: drill_tube, sign: -1, source: "cos(pinion.angle[1] 210) < 0"}, {pred: outboard, of: pinion_a}]
+    chain: []
+    moves: true
+
+  - id: motor_shaft_b
+    name: NEMA 23 shaft
+    shape: "NEMA 23 output shaft: radial rectangle r 121 to 142 (pinion.motor_r_in - pinion.motor_shaft_length to the flange face), pinion.motor_shaft_od 8 high, on the pinion axis; signifier of the radial pinion axis (Designer M1 r2 F1 (a))"
+    kind: cylinder
+    axis: X
+    projection: rectangle
+    keys: [pinion.motor_r_in, pinion.motor_shaft_length, pinion.motor_shaft_od, pinion.axis_above_ring_top, pinion.angle]
+    z_rule: {z_min: "ring_top + pinion.axis_above_ring_top - pinion.motor_shaft_od / 2", z_max: "ring_top + pinion.axis_above_ring_top + pinion.motor_shaft_od / 2"}
+    place: {r_in: "pinion.motor_r_in - pinion.motor_shaft_length", r_out: pinion.motor_r_in, theta: "pinion.angle[2]", half_width: "pinion.motor_shaft_od / 2", footprint: radial}
+    label: null
+    neighbours:
+      - {use: fixed_g10}
+      - {id: motor23_b, class: C, g_min: 0, source: "Designer M1 r2 F1 (a): shaft from the motor flange face r 142 (side view: plan-contact)"}
+    sense: [{pred: side, of: drill_tube, sign: 1, source: "cos(pinion.angle[2] 330) > 0"}, {pred: outboard, of: pinion_b}]
+    chain: []
+    moves: true
+
+  - id: pinion_axis_a
+    name: pinion centreline
+    shape: "pinion axis: dash-dot centreline, radial, from the pinion toe tip r 95.22 to the NEMA 23 outer end r 218, at the pinion-axis height; horizontal in side view (Designer M1 r2 F1 (b))"
+    kind: line
+    axis: null
+    projection: line
+    keys: [pinion.r_toe, pinion.pitch_diameter, pinion.tooth_count, pinion.pitch_angle, pinion.motor_r_in, pinion.motor_length, pinion.axis_above_ring_top, pinion.angle]
+    z_rule: {z_min: "ring_top + pinion.axis_above_ring_top", z_max: "ring_top + pinion.axis_above_ring_top"}
+    place: {r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "pinion.motor_r_in + pinion.motor_length", theta: "pinion.angle[1]", half_width: 0, footprint: radial}
+    label: null
+    neighbours: []
+    sense: [{pred: side, of: drill_tube, sign: -1, source: "cos(pinion.angle[1] 210) < 0"}]
+    chain: []
+    moves: true
+
+  - id: pinion_axis_b
+    name: pinion centreline
+    shape: "pinion axis: dash-dot centreline, radial, from the pinion toe tip r 95.22 to the NEMA 23 outer end r 218, at the pinion-axis height; horizontal in side view (Designer M1 r2 F1 (b))"
+    kind: line
+    axis: null
+    projection: line
+    keys: [pinion.r_toe, pinion.pitch_diameter, pinion.tooth_count, pinion.pitch_angle, pinion.motor_r_in, pinion.motor_length, pinion.axis_above_ring_top, pinion.angle]
+    z_rule: {z_min: "ring_top + pinion.axis_above_ring_top", z_max: "ring_top + pinion.axis_above_ring_top"}
+    place: {r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "pinion.motor_r_in + pinion.motor_length", theta: "pinion.angle[2]", half_width: 0, footprint: radial}
+    label: null
+    neighbours: []
+    sense: [{pred: side, of: drill_tube, sign: 1, source: "cos(pinion.angle[2] 330) > 0"}]
+    chain: []
+    moves: true
 
   - id: height_target
     name: soft height target

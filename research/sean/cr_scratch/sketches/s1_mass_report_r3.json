@@ -1,0 +1,364 @@
+{
+ "load": {
+  "highest_drawn_z_S": 1969.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 30.159999999999854,
+  "mass_kg": 76.06716926004854,
+  "com_z_S": 664.8009347809789,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 176.5373967736087,
+  "tip_force_at_com_N": 341.23080005719896,
+  "ring_bottom_z_S": 1149.8400000000001,
+  "ring_top_z_S": 1161.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1419.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1894.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1155.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1258.96,
+    "overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1213.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1155.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    536.17,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "T8 screws x3",
+    1.065,
+    775.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    276.0,
+    "WORKING ASSUMED"
+   ]
+  ]
+ },
+ "start": {
+  "highest_drawn_z_S": 1844.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 155.15999999999985,
+  "mass_kg": 76.06716926004854,
+  "com_z_S": 616.370027783433,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 176.5373967736087,
+  "tip_force_at_com_N": 368.04280647759384,
+  "ring_bottom_z_S": 1024.8400000000001,
+  "ring_top_z_S": 1036.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1294.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1769.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1030.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1133.96,
+    "overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1088.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1030.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    477.5,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "T8 screws x3",
+    1.065,
+    775.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    276.0,
+    "WORKING ASSUMED"
+   ]
+  ]
+ },
+ "capture_end": {
+  "highest_drawn_z_S": 1285.0,
+  "highest_part": "frame_upper_a",
+  "margin": 715.0,
+  "mass_kg": 76.06716926004854,
+  "com_z_S": 427.0965193821974,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 176.5373967736087,
+  "tip_force_at_com_N": 531.1458758367557,
+  "ring_bottom_z_S": 374.84000000000003,
+  "ring_top_z_S": 386.84000000000003,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    644.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1119.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    380.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    483.96,
+    "overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    438.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    380.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    477.5,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "T8 screws x3",
+    1.065,
+    775.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    276.0,
+    "WORKING ASSUMED"
+   ]
+  ]
+ },
+ "park": {
+  "highest_drawn_z_S": 1969.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 30.159999999999854,
+  "mass_kg": 60.46716926004854,
+  "com_z_S": 697.9865891970703,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 140.33277109267485,
+  "tip_force_at_com_N": 258.3539764876102,
+  "ring_bottom_z_S": 1149.8400000000001,
+  "ring_top_z_S": 1161.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1419.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1894.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1155.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1258.96,
+    "overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1213.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1155.84,
+    "overlay ASSUMED"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "T8 screws x3",
+    1.065,
+    775.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    276.0,
+    "WORKING ASSUMED"
+   ]
+  ]
+ }
+}

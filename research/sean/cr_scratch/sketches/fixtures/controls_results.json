@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T12:35:43",
+ "timestamp": "2026-11-25T13:01:31",
  "summary": {
-  "z_clean": 33,
-  "z_total": 33,
-  "b_fired": 74,
-  "b_total": 74,
+  "z_clean": 34,
+  "z_total": 34,
+  "b_fired": 78,
+  "b_total": 78,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -489,7 +489,7 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (3 issue(s), planted 3)",
-   "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0, gap - g_min +0.000; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap",
+   "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap; no placed plan footprints for the plan-contact test; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0, gap - g_min +0.000; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap",
    "match": "yes",
    "gameplan_line": 140,
    "finding": null
@@ -885,7 +885,7 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "309 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
+   "reason": "457 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
    "match": "yes",
    "gameplan_line": 140,
    "finding": "Loftsman FIX 3; Designer F4"
@@ -1127,7 +1127,7 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "every spec row drawn, every tagged artist in the spec (45 rows)",
+   "reason": "every spec row drawn, every tagged artist in the spec (54 rows)",
    "match": "yes",
    "gameplan_line": "142; 237",
    "finding": "TP1.1-2"
@@ -1160,7 +1160,7 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (4 issue(s), planted 4)",
-   "reason": "load/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; start/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; capture_end/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; park/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap",
+   "reason": "load/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; start/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; capture_end/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; park/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test",
    "match": "yes",
    "gameplan_line": 140,
    "finding": "TP1.1-3"
@@ -1171,7 +1171,7 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "243 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
+   "reason": "279 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "TP1.1-3"
@@ -1186,6 +1186,61 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "TP1.1-3"
+  },
+  {
+   "id": "K7-Z11",
+   "check": "K7",
+   "control": "Z",
+   "expected": "plan-contact",
+   "observed": "clean, states ['plan-contact']",
+   "reason": "1 pair test(s) clean; states ['plan-contact']",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer M1 r2 F2"
+  },
+  {
+   "id": "K7-B16",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/arm|block C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer M1 r2 F2"
+  },
+  {
+   "id": "K7-B17",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/arm|block C: distance 0.000 mm, overlap 560.385 mm2, state overlap; plan footprints distance 0.000 mm, overlap 8.607 mm2 (plan-contact needs <= 0.05, <= 0.01)",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer M1 r2 F2"
+  },
+  {
+   "id": "K7-B18",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; start/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; capture_end/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; park/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer M1 r2 F3"
+  },
+  {
+   "id": "K7-B19",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); park/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Designer M1 r2 F2"
   },
   {
    "id": "S1-FULL",
@@ -1210,7 +1265,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "219 spec keys resolve; 103 overlay leaves sourced, legal status, no shadow"
+     "reason": "284 spec keys resolve; 103 overlay leaves sourced, legal status, no shadow"
     },
     {
      "id": "K3",
@@ -1224,42 +1279,42 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "43 label(s) carry their key value"
+     "reason": "55 label(s) carry their key value"
     },
     {
      "id": "K5",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "243 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
+     "reason": "279 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
     },
     {
      "id": "K6",
      "result": "pass",
      "cause": null,
      "measured": 0.0,
-     "reason": "179 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean"
+     "reason": "215 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean"
     },
     {
      "id": "K7",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "309 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
+     "reason": "457 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
     },
     {
      "id": "K8",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "234 predicate(s) hold, axes not inverted"
+     "reason": "330 predicate(s) hold, axes not inverted"
     },
     {
      "id": "K9",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "every spec row drawn, every tagged artist in the spec (45 rows)"
+     "reason": "every spec row drawn, every tagged artist in the spec (54 rows)"
     },
     {
      "id": "S1-1",

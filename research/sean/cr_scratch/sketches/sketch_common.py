@@ -141,27 +141,91 @@ def draw_hline(ax, fid, x0, x1, z, **kw):
     return draw(fid, Line2D([x0, x1], [z, z], **kw), ax)
 
 
-def label_text(row, P):
+def label_text(row, P, rec=None):
+    """Label text: text + key value [+ suffix]. Label field z_S: true (a z_A height key) writes
+    '<text> z_S <key + jig.datum_a_above_floor> (<key> <value> z_A)'. Field z_edge: z_min | z_max appends the row's
+    stack edge in z_S at this pose (rec = check_stack feature record), e.g. the cutter tip (r3, Designer M1 F4)."""
     lab = row["label"]
     if "label_text_override" in row:
         return row["label_text_override"]
-    txt = f"{lab['text']} {format(P.get(lab['key']), lab.get('fmt', '.1f'))}"
-    return txt + (f" {lab['suffix']}" if lab.get("suffix") else "")
+    fmt = lab.get("fmt", ".1f")
+    v = P.get(lab["key"])
+    if lab.get("z_S"):
+        txt = f"{lab['text']} z_S {format(v + P.get('jig.datum_a_above_floor'), fmt)} ({lab['key']} {format(v, fmt)} z_A)"
+    else:
+        txt = f"{lab['text']} {format(v, fmt)}"
+    txt += f" {lab['suffix']}" if lab.get("suffix") else ""
+    edge = lab.get("z_edge")
+    if edge and rec and edge in rec:
+        txt += f"; {lab.get('z_edge_text', edge)} z_S {rec[edge]:.2f}"
+    return txt
 
 
-def place_labels(ax, spec, P, pose=None):
-    """One annotation per spec row with a label, gid label:<id>, anchored at the right edge of the row's drawn pieces."""
+LABEL_FONTSIZE = 7
+LABEL_LINESPACING = 1.2
+LABEL_GAP_LINES = 0.5      # free space between stacked label boxes, in text lines (Designer M1 r2 F4)
+
+
+def _right_anchor(ax, fid):
+    pts = [p for poly in pieces(ax, fid) for p in poly]
+    if not pts:
+        return None
+    return max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
+
+
+def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()):
+    """One annotation per spec row with a label, gid label:<id>, anchored at the right edge of the row's drawn pieces.
+    margin=True (S1 r3, Designer M1 r2 F4): every label and every note goes into one column right of the axes, each
+    with a leader to its anchor, stacked in anchor-z order with LABEL_GAP_LINES of free space between text boxes.
+    Call after finish_axes (the column reads the final limits). notes: (anchor (x, z) or None, text) pairs, untagged."""
+    items = []
     for row in spec.get("features", []):
         if not row.get("label") or (pose and row.get("poses") and pose not in row["poses"]):
             continue
-        pts = [p for poly in pieces(ax, row["id"]) for p in poly]
-        if not pts:
+        anc = _right_anchor(ax, row["id"])
+        if anc is None:
             continue
-        x = max(p[0] for p in pts)
-        z = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
-        ann = ax.annotate(label_text(row, P), xy=(x, z), xytext=(x + 60, z + 20), fontsize=7,
-                          arrowprops={"arrowstyle": "-", "linewidth": 0.5})
-        ann.set_gid(f"label:{row['id']}")
+        rec = (stack_pose or {}).get(row["id"])
+        items.append((anc, label_text(row, P, rec), f"label:{row['id']}"))
+    if not margin:
+        for (x, z), txt, gid in items:
+            ann = ax.annotate(txt, xy=(x, z), xytext=(x + 60, z + 20), fontsize=LABEL_FONTSIZE,
+                              arrowprops={"arrowstyle": "-", "linewidth": 0.5})
+            ann.set_gid(gid)
+        return
+    items += [(anc, txt, None) for anc, txt in notes if anc]
+    free = [txt for anc, txt in notes if not anc]
+    ax.apply_aspect()
+    (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
+    line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)   # one text line in data z
+    gap = line * LABEL_GAP_LINES
+    zlo, zhi = ax.get_ylim()
+    x_col = ax.get_xlim()[1] + line
+    order = sorted(items, key=lambda it: -it[0][1])
+    hs = [line * (it[1].count("\n") + 1) for it in order]
+    zs = []
+    for i, (it, h) in enumerate(zip(order, hs)):
+        want = it[0][1]
+        z = min(want, zhi - h / 2) if i == 0 else min(want, zs[-1] - hs[i - 1] / 2 - gap - h / 2)
+        zs.append(z)
+    for i in range(len(zs) - 1, -1, -1):        # lift from the bottom if the stack runs below the axes
+        floor_z = zlo + hs[i] / 2 if i == len(zs) - 1 else zs[i + 1] + hs[i + 1] / 2 + gap + hs[i] / 2
+        zs[i] = max(zs[i], floor_z)
+    # notes without an anchor: same column, below the axes bottom, so no leader crosses them
+    z = zlo - gap
+    for txt in free:
+        h = line * (txt.count("\n") + 1)
+        order.append((None, txt, None))
+        zs.append(z - h / 2)
+        z -= h + gap
+    for (anc, txt, gid), z in zip(order, zs):
+        if anc:
+            ann = ax.annotate(txt, xy=anc, xytext=(x_col, z), fontsize=LABEL_FONTSIZE, ha="left", va="center",
+                              annotation_clip=False, arrowprops={"arrowstyle": "-", "linewidth": 0.4, "color": "0.35"})
+        else:
+            ann = ax.annotate(txt, xy=(x_col, z), fontsize=LABEL_FONTSIZE, ha="left", va="center", annotation_clip=False)
+        if gid:
+            ann.set_gid(gid)
 
 
 def finish_axes(ax):
@@ -432,7 +496,7 @@ def band_gap(da, db):
     return max(db[0] - da[1], da[0] - db[1])
 
 
-def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b"), plan_gap=None):
+def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b"), plan_gap=None, plan_contact=None):
     """One judgement for K7 static, K7 swept and S1-5b (LF-1, LF-4, TP-11).
     gap: band gap along the view direction (side: depth bands; plan: z bands); disjoint bands settle F only.
     C: fails when the bands are more than TOL_C apart. G: the 3D distance is at least max(gap, projected distance),
@@ -441,8 +505,22 @@ def assess_pair(cls, g_min, PA, PB, gap, names=("a", "b"), plan_gap=None):
     the two parts' plan footprints from the spec placement (LF-8 at 1.1 (b)). The plan view is a projection too, so
     the 3D distance is at least max(plan_gap, projected distance): an F pair passes when plan_gap > TOL_C, a G pair
     when that lower bound reaches g_min - TOL_C. State "plan-separated". C pairs are not relieved.
+    plan_contact (side views, C pairs; callable -> (plan distance, plan overlap area) or None; r3, Designer M1 r2 F1/F2):
+    a C pair whose side-view pieces overlap passes as "plan-contact" when both rows are placed prisms whose plan
+    footprints touch (distance <= TOL_C) without overlap (area <= TOL_AREA). Vertical prisms with disjoint plan
+    interiors cannot interpenetrate, and touching footprints with overlapping z extents (the side-view overlap
+    proves it) are in contact on a vertical face. A side-view overlap at an oblique azimuth is then a projection
+    artefact (bracket arm on its block and frame member at theta 150; motor shaft on its flange).
     Returns (ok, state, text, lower_bound)."""
     ok, st, txt, lb = _assess_pair(cls, g_min, PA, PB, gap, names)
+    if not ok and cls == "C" and st == "overlap" and plan_contact is not None:
+        pc = plan_contact() if callable(plan_contact) else plan_contact
+        if pc is None:
+            return ok, st, txt + "; no placed plan footprints for the plan-contact test", lb
+        pd, pa = pc
+        if pd <= TOL_C and pa <= TOL_AREA:
+            return True, "plan-contact", f"plan footprints touch (distance {pd:.3f} mm, overlap {pa:.3f} mm2); side view: {txt}", 0.0
+        return False, st, f"{txt}; plan footprints distance {pd:.3f} mm, overlap {pa:.3f} mm2 (plan-contact needs <= {TOL_C}, <= {TOL_AREA})", lb
     if ok or plan_gap is None or cls not in ("F", "G") or st in ("non-convex", "error"):
         return ok, st, txt, lb
     pg = plan_gap() if callable(plan_gap) else plan_gap
@@ -493,6 +571,18 @@ def plan_gap_fn(ctx, rows, pose, a, b):
         if fa is None or fb is None:
             return None
         return min_distance(fa, fb)
+    return f
+
+
+def plan_contact_fn(ctx, rows, pose, a, b):
+    """Callable for assess_pair: (plan distance, plan overlap area) of rows a and b at pose from their `place`
+    footprints, or None unless both rows are placed (a depth-band disk is a containment bound, no contact proof)."""
+    def f():
+        ra, rb = _feat(ctx, pose, a), _feat(ctx, pose, b)
+        if not (ra.get("place") and rb.get("place")):
+            return None
+        fa, fb = plan_footprint(rows.get(a, {}), ra), plan_footprint(rows.get(b, {}), rb)
+        return min_distance(fa, fb), overlap_area(fa, fb)
     return f
 
 
@@ -981,7 +1071,8 @@ def k7(ctx):
                     absent += 1
                     continue
                 ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), PA, PB, gap, (a, b),
-                                             plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None)
+                                             plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None,
+                                             plan_contact=plan_contact_fn(ctx, rows, pose, a, b) if side else None)
                 tested += st not in ("depth-separated",)
                 states.append(st)
                 if not ok:

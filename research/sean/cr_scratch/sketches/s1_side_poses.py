@@ -23,7 +23,7 @@ from matplotlib.patches import Polygon  # noqa: E402
 GREY = "0.8"
 DARK = "0.45"
 BRASS = "goldenrod"
-SMALL = "small"
+HATCH_GEAR, HATCH_PINION = "////", "\\\\\\\\"     # F1 (c): gear and pinions hatched in opposite directions
 
 
 # ---------------------------------------------------------------- shape helpers (x from params, z from check_stack)
@@ -43,18 +43,29 @@ def _cone_sides(ax, fid, r_in, r_out, z0, z1, alpha_deg):
         sc.draw(fid, Polygon(pts, closed=True, fill=False), ax)
 
 
-def _pinion(ax, fid, x0, x1, z0, z1, toe_over_heel):
+def _pinion(ax, fid, x0, x1, z0, z1, toe_over_heel, **kw):
     """Bevel pinion projected at its azimuth: full outer diameter at the outer (heel and hub) end, toe height scaled by
     r_toe / r_heel at the inner end (cone apex on the drill axis), centred on the pinion axis (TP-2: narrows inward)."""
     inner, outer = (x0, x1) if abs(x0) < abs(x1) else (x1, x0)
     zc, h = (z0 + z1) / 2, (z1 - z0) * toe_over_heel
     pts = [(inner, zc - h / 2), (outer, z0), (outer, z1), (inner, zc + h / 2)]
-    sc.draw(fid, Polygon(pts, closed=True, fill=False), ax)
+    sc.draw(fid, Polygon(pts, closed=True, fill=False, **kw), ax)
 
 
-def _note(ax, x, z, text, ha="center", va="bottom"):
-    """Untagged orientation note (Text; K5 and K9 read tagged patches, lines and collections only)."""
-    ax.text(x, z, text, ha=ha, va=va, fontsize=SMALL)
+def _hidden_by_nearer(feats, fid):
+    """True when a placed part wholly nearer the viewer (side view seen from -Y: depth band below this row's band)
+    overlaps this row in z and covers at least half its projected x length. Designer M1 r2 F2: such an arm is drawn
+    dashed (guide arm behind the NEMA 23 at load and park); a 20 mm guide rod in front of an arm leaves it solid."""
+    me = feats[fid]
+    mx0, mx1 = me["place"]["x"]
+    for oid, o in feats.items():
+        if oid == fid or "place" not in o or "z_min" not in o or "depth" not in o:
+            continue
+        x_ov = min(mx1, o["place"]["x"][1]) - max(mx0, o["place"]["x"][0])
+        z_ov = min(me["z_max"], o["z_max"]) > max(me["z_min"], o["z_min"])
+        if z_ov and x_ov >= (mx1 - mx0) * 0.5 and o["depth"][1] < me["depth"][0]:
+            return True
+    return False
 
 
 # ---------------------------------------------------------------- one pose
@@ -81,10 +92,11 @@ def draw_pose(P, spec, stack, pose):
     # floor and soft target: lines across the footprint
     z0, _ = z("floor")
     sc.draw_hline(ax, "floor", -half_fp, half_fp, z0, linewidth=2)
-    _note(ax, -half_fp, z0, "shop floor z_S 0", ha="left", va="top")
-    # TP1.1-7: parts at x = 0 behind or in front of the drill axis are not drawn in the side view
-    _note(ax, half_fp, z0, f"  not drawn (project onto x = 0):\n  third screw set, theta {g('jackscrew.angle')[-1]:g}\n"
-          f"  third pinion and NEMA 23, theta {g('pinion.angle')[0]:g}\n  see S2 plan", ha="left", va="bottom")
+    # margin notes, untagged Text (Designer M1 r2 F4: every label in the right margin, the drawing left clear)
+    notes = [((half_fp, z0), f"shop floor z_S {z0:g}"),
+             # TP1.1-7: parts at x = 0 behind or in front of the drill axis are not drawn in the side view
+             (None, f"not drawn (project onto x = 0): third screw set, theta {g('jackscrew.angle')[-1]:g};\n"
+                    f"third pinion and NEMA 23, theta {g('pinion.angle')[0]:g}; see S2 plan")]
     z0, _ = z("height_target")
     sc.draw_hline(ax, "height_target", -half_fp, half_fp, z0, linestyle="--", color=DARK)
 
@@ -152,7 +164,6 @@ def draw_pose(P, spec, stack, pose):
     teeth = (g("drill.head_od") - g("drill.tube_od")) / 2
     sc.draw_rect(ax, "drill_head", x0, x1, z0, z0 + teeth, hatch="||")
     sc.draw_rect(ax, "drill_head", -g("drill.tube_id") / 2, g("drill.tube_id") / 2, z0, z1, linestyle="--")
-    _note(ax, x0, z0, "HEAD (cutter, tip)", ha="right", va="bottom")
     z0, z1 = z("drill_tube")
     x0, x1 = px("drill_tube")
     sc.draw_rect(ax, "drill_tube", x0, x1, z0, z1)
@@ -160,7 +171,6 @@ def draw_pose(P, spec, stack, pose):
     z0, z1 = z("drill_top_block")
     x0, x1 = px("drill_top_block")
     sc.draw_rect(ax, "drill_top_block", x0, x1, z0, z1, fill=True, facecolor=DARK)
-    _note(ax, x0, z1, "TOP-END BLOCK (tail)", ha="right", va="top")
     z0, _ = z("bore_ceiling")
     sc.draw_hline(ax, "bore_ceiling", -g("drill.tube_id") / 2, g("drill.tube_id") / 2, z0, linestyle="--", color=DARK)
     z0, z1 = z("keepout")
@@ -182,17 +192,27 @@ def draw_pose(P, spec, stack, pose):
 
     # bevel ring gear (teeth down, TP-2) on its hub; pinions toe inward; NEMA 23 bodies outboard
     z0, z1 = z("gear")
-    sc.draw_gear_section(ax, "gear", g("gear.bore") / 2, g("gear.od") / 2, z0, z1)
+    sc.draw_gear_section(ax, "gear", g("gear.bore") / 2, g("gear.od") / 2, z0, z1, hatch=HATCH_GEAR)
     z0, z1 = z("gear_hub")
     _sides(ax, "gear_hub", g("drill.tube_od") / 2, g("gear.bore") / 2, z0, z1)
     for fid in ("pinion_a", "pinion_b"):
         z0, z1 = z(fid)
         x0, x1 = px(fid)
-        _pinion(ax, fid, x0, x1, z0, z1, g("pinion.r_toe") / g("pinion.r_heel"))
+        _pinion(ax, fid, x0, x1, z0, z1, g("pinion.r_toe") / g("pinion.r_heel"), hatch=HATCH_PINION)
     for fid in ("motor23_a", "motor23_b"):
         z0, z1 = z(fid)
         x0, x1 = px(fid)
         sc.draw_rect(ax, fid, x0, x1, z0, z1, fill=True, facecolor=GREY, edgecolor="k")
+    # F1 (a): NEMA 23 output shaft, radial, from motor_r_in - shaft_length to the flange face, on the pinion axis
+    for fid in ("motor_shaft_a", "motor_shaft_b"):
+        z0, z1 = z(fid)
+        x0, x1 = px(fid)
+        sc.draw_rect(ax, fid, x0, x1, z0, z1, fill=True, facecolor=DARK, edgecolor="k")
+    # F1 (b): pinion centreline, dash-dot, toe tip to the motor outer end
+    for fid in ("pinion_axis_a", "pinion_axis_b"):
+        z0, _ = z(fid)
+        x0, x1 = px(fid)
+        sc.draw(ax=ax, feature_id=fid, artist=sc.Line2D([x0, x1], [z0, z0], linestyle="-.", color="k"))
 
     # jack screws (lead hatch), nuts, anchors (thrust-bearing line), top guides, lift motors, guide rods, frame members
     for s in ("a", "b"):
@@ -206,11 +226,14 @@ def draw_pose(P, spec, stack, pose):
         x0, x1 = px(f"anchor_{s}")
         sc.draw_rect(ax, f"anchor_{s}", x0, x1, z0, z1, hatch="xx")
         sc.draw_rect(ax, f"anchor_{s}", x0, x1, (z0 + z1) / 2, (z0 + z1) / 2, linewidth=2)
-        _note(ax, (x0 + x1) / 2, z0, "anchor", va="top")
         z0, z1 = z(f"guide_{s}")
         x0, x1 = px(f"guide_{s}")
         sc.draw_rect(ax, f"guide_{s}", x0, x1, z0, z1, hatch="..")
-        _note(ax, (x0 + x1) / 2, z1, "top guide")
+        # F2: bracket arms, block face to the frame member face at the block height; dashed where a nearer part covers
+        for arm in (f"bracket_anchor_{s}", f"bracket_guide_{s}"):
+            z0, z1 = z(arm)
+            x0, x1 = px(arm)
+            sc.draw_rect(ax, arm, x0, x1, z0, z1, linestyle="--" if _hidden_by_nearer(feats, arm) else "-")
         z0, z1 = z(f"liftmotor_{s}")
         x0, x1 = px(f"liftmotor_{s}")
         sc.draw_rect(ax, f"liftmotor_{s}", x0, x1, z0, z1, fill=True, facecolor=GREY, edgecolor="k")
@@ -226,9 +249,26 @@ def draw_pose(P, spec, stack, pose):
     z0, z1 = z("descent_stop")
     x0, x1 = px("descent_stop")
     sc.draw_rect(ax, "descent_stop", x0, x1, z0, z1, hatch="////")
+    # F3: post from the anchor arm top to the pad bottom
+    z0, z1 = z("descent_stop_post")
+    x0, x1 = px("descent_stop_post")
+    sc.draw_rect(ax, "descent_stop_post", x0, x1, z0, z1, fill=True, facecolor=DARK)
 
-    sc.place_labels(ax, spec, P, pid)
+    # V9 (F2, F5): the axial loop, named along the drawn members (margin note under the axes)
+    notes.append((None, "axial loop: ring nut - T8 screw - anchor and guide blocks - bracket arms -\n"
+                        "screw frame 30-6060 - base plate - base frame - floor"))
+    # F4: on the park figure, the lift stroke and the park rule (spec park_rule.park)
+    if pid == "park":
+        glob = stack["global_z_A"]
+        low_id = min(stack["poses"], key=lambda k: stack["poses"][k]["tip_z_S"])
+        low = stack["poses"][low_id]["tip_z_S"]
+        notes.append(((px("drill_head")[1], pr["tip_z_S"]),
+                      f"lift stroke {glob['lift_stroke']:.0f} (park {pr['tip_z_S']:.2f} - {low_id} {low:.2f} z_S)"))
+        notes.append((None, f"park rule (option R, Design Notes 22):\npark = {spec['park_rule']['park']}\n"
+                            f"= {glob['park_tip']:.2f} z_A = {pr['tip_z_S']:.2f} z_S"))
+
     sc.finish_axes(ax)
+    sc.place_labels(ax, spec, P, pid, margin=True, stack_pose=feats, notes=notes)
     return fig
 
 

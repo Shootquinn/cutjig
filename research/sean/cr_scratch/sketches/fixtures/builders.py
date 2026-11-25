@@ -942,7 +942,8 @@ def _s1_draw_pose(P, spec, stack, pid):
                 sc.draw(fid, Line2D([x, x], [z0, z1]), ax)
             continue
         if row["kind"] == "line":
-            x0, x1 = f["depth"] if f.get("depth") else (-half_fp, half_fp)
+            # r3: a placed line (pinion centreline) runs over its projected x; else over its depth band or the footprint
+            x0, x1 = f["place"]["x"] if f.get("place") else (f["depth"] if f.get("depth") else (-half_fp, half_fp))
             sc.draw_hline(ax, fid, x0, x1, z0)
             continue
         if row["kind"] == "gear" and row.get("axis") == "Z":
@@ -1177,6 +1178,64 @@ def k5_b6():
     r = c.P.get("receiver.register_bore_radius")
     sc.draw("holder", Polygon([(r - 2, z0 + 5), (r, z0 + 5), (r, z0 + 10), (r - 3, z0 + 10)], closed=True, fill=False), ax)
     return c
+
+
+# ---------------------------------------------------------------- r3: Designer M1 r2 (F1, F2): C pairs at an oblique azimuth
+
+def _arm_block(r_in):
+    """r3 plan-contact: a round block (r 160, half-width 21, theta 150: anchor-block-like) and a radial arm from r_in to
+    270, half-width 30, same theta (bracket-arm-like), declared C, both drawn from their placed x extents over one z band.
+    In the side view the boxes overlap at any r_in near 181; the plan footprints decide."""
+    rows = [{"id": "arm", "name": "arm", "kind": "prism", "projection": "rectangle",
+             "place": {"r_in": r_in, "r_out": 270, "theta": 150, "half_width": 30, "footprint": "radial"},
+             "neighbours": [{"id": "block", "class": "C", "g_min": 0, "source": "fixture"}]},
+            {"id": "block", "name": "block", "kind": "prism", "projection": "rectangle",
+             "place": {"r_in": 160, "theta": 150, "half_width": 21, "footprint": "round"}}]
+    P = Params()
+    spec = {"sketch": "k7", "view": "side_xz", "poses": ONE, "features": rows, "undeclared_pairs": "F"}
+    stack = check_stack.evaluate_spec(P, spec)
+    f = stack["poses"]["fixture"]["features"]
+    fig, ax = sc.setup_figure("side_xz", title="k7 fixture arm on block")
+    for fid in ("arm", "block"):
+        x0, x1 = f[fid]["place"]["x"]
+        sc.draw_rect(ax, fid, x0, x1, 0, 30)
+    sc.finish_axes(ax)
+    return _ctx(P, spec, {"fixture": fig})
+
+
+def k7_z11():
+    """r3 Z: arm face at r 181 = block r 160 + 21, tangent in plan; side-view boxes overlap: plan-contact."""
+    return _arm_block(181)
+
+
+def k7_b16():
+    """r3 B: arm face at r 182, 1 mm off the block in plan (the arm floats); side-view boxes still overlap."""
+    return _arm_block(182)
+
+
+def k7_b17():
+    """r3 B: arm face at r 180, 1 mm into the block in plan (interference); side-view boxes overlap."""
+    return _arm_block(180)
+
+
+def _mut_row(fid, fn):
+    def mut(s):
+        fn(next(r for r in s["features"] if r["id"] == fid))
+    return mut
+
+
+def k7_b18():
+    """r3 B on the live spec (Designer M1 r2 F3, pad floating): descent_stop_post ends 1 mm under the pad, drawn
+    faithfully; descent_stop_post|descent_stop C opens by 1.000 in every pose."""
+    return _s1_ctx(spec_mut=_mut_row("descent_stop_post", lambda r: r.__setitem__(
+        "z_rule", dict(r["z_rule"], z_max="ring_bottom_low - stop.pad_thickness - 1"))))
+
+
+def k7_b19():
+    """r3 B on the live spec (Designer M1 r2 F2, block floating off its arm): bracket_anchor_a r_in 1 mm outboard of
+    the anchor block face (pitch_radius + nut_flange_od / 2 + 1), drawn faithfully; plan footprints 0.994 apart."""
+    return _s1_ctx(spec_mut=_mut_row("bracket_anchor_a", lambda r: r.__setitem__(
+        "place", dict(r["place"], r_in="jackscrew.pitch_radius + jackscrew.nut_flange_od / 2 + 1"))))
 
 
 def s1_full_draw():
