@@ -82,3 +82,29 @@ New:
 ```
 at load every ring-mounted part whose plan outline enters the drawn sector lies, by its lowest z, at least 10 above the top of operator.hand_band (940 z_A); no ring part in the sector is a content failure; least: bearing bottom 1076.84, margin 136.84 (1.2 (c))
 ```
+
+---
+
+# Re-sign after P5f
+
+Read 2026-11-25:
+- `research/sean/cr_scratch/step1.2_engineer_redfirst_fixes.md` (Corrections 4, section 1 row FIX R1, run table, section 6 l.138)
+- `docs/sketches/sketch_common.py` `figure_note_issues` (l.1053-1074)
+- `docs/sketches/s1_spec.yaml` l.157-161
+- `docs/sketches/s1_side_poses.py` l.277-282
+- `docs/sketches/fixtures/manifest.yaml` K4-B6
+
+**Rule 1, figure note check (K4-Z2, B4, B5, B6): SIGNED.** All five rules in this file are now signed. The gear `section` also needs the Loftsman's placement signature.
+
+| FIX R1 element | Found | Result |
+|---|---|---|
+| Exemption narrowed | The sketch-id test is deleted. `note is None` fails whenever `not_drawn` is non-empty, for any sketch. A spec with an empty `not_drawn` has nothing to name and passes. S1 r4 is that case, so the exemption I ruled (accepted before the rule, no not_drawn entry) holds without exemption code | CLOSED |
+| S1 r5 spec field | top-level `figure_note: "Not drawn: LM20UU bushing (inside the housing and lug)"`. Its head "LM20UU bushing" matches `part_head` of the one `not_drawn` entry | CLOSED |
+| Drawn on all four poses | `s1_side_poses.py` appends the note with gid `note:figure_note` outside the `park` branch, so every pose figure carries it. S1 r5 preview 18/18; K4 reads "figure note names every not_drawn part" (MEASURED, Engineer) | CLOSED |
+| New B | K4-B6: live S1 r5 with its figure_note removed. Fires 1, "spec error: not_drawn (1) without figure_note". Clean on the pre-fix code, where S1 was exempt (MEASURED, Engineer). Matches the reason I specified | CLOSED |
+
+The K4 test also covers a figure that lacks the drawn note ("no figure note"). K4-Z2 and B4/B5 cover that branch on S2, so no separate S1 B is needed.
+
+## Gameplan lines to change
+
+None new. The Engineer's P5f section 6 l.138 entry carries my FIX R1 wording, re-based on the current text. Apply it once.

@@ -107,3 +107,38 @@ New:
 ```
 B23 sector drawn at half-angle 40; B24 live S1 outboard with frame: radial in a side view (TP1.2-1) |
 ```
+
+## Re-sign after P5f
+
+Source: step1.2_engineer_redfirst_fixes.md. The code read is sketch_common.py `k8`, l.1842 to l.1849 (the TP1.2-1 gate). Run in memory on the current `docs/sketches/` code with the scratch script `tp13_resign.py`. Results MEASURED; hand values DERIVED.
+
+**Gate.** Outside plan_xy, an `outboard` predicate with `frame: radial` is reported once as a spec error and goes into `bad`, so the per-pose loop skips it. In plan_xy the radial form is unchanged.
+
+| Control | Result | Issues / planted | Reason (head) | Hand value |
+|---|---|---|---|---|
+| K8-B24 | match | 1/1 | "motor23_a outboard of pinion_a: spec error, frame radial needs plan_xy (view side_xz)" | |
+| K8-B28 | match | 8/8 | projected_x centre -121.38 vs -113.88; projected_extent x [-139.98, -102.79] outside [-124.98, -102.79] (by 15.00), at four poses | 131.50 cos 210 = -113.88; -113.88 - 15 / 2 = -121.38 |
+| K5-B12 | match | 1/1 | "capture_end/holder: bore_cone trapezoid z [90.00, 95.00] outside mate collet z [100.00, 132.00]" | |
+| K5-B13 | match | 1/1 | "load/pinion_a: hub rectangle u [125.00, 140.00], half-width 50.62 not on the heel ... half-width 45.62" | 45.62 + 5 = 50.62 |
+
+Unchanged controls re-run, all matching: K5-Z2, K5-Z3, K5-B6, K5-B11, K8-Z4, K8-Z5 (346 predicates), K8-Z6 (114), K8-B21.
+
+| Probe | Defect | Result |
+|---|---|---|
+| p19 | S1 side view, `frame: radial` on motor23_a outboard, motor drawn inboard of pinion_a and raised 10 | K8 fails with "spec error, frame radial needs plan_xy". It was silent before P5f. With `frame` removed, the side form reports -42.73 (p18b) |
+| p20 | the same defect with `frame: polar` (a value no rule defines) | side form fires, -42.73 at each pose |
+| p21 | `frame: polar`, no defect | K8 pass (NOTE 2) |
+| p22 | S2 live plan after the gate | K8 pass |
+
+| Rule | Controls | Signature |
+|---|---|---|
+| FIX TP1.2-1: radial outboard form only in plan_xy; `frame: radial` in a side view is a spec error | K8-B24; K8-Z4, Z5, Z6 clean | **SIGNED**. K8 outboard radial is now SIGNED without restriction |
+| TP-13 hub width (hub half-width no greater than the heel half-width) | K5-B13; K5-B11 unchanged | **SIGNED** |
+| TP1.1-3 bore_cone lower bound (piece inside the mate's z extent on the low side) | K5-B12; K5-B6 high side unchanged | **SIGNED** |
+| TP1.1-11 projected_extent low-x end | K8-B28 | **SIGNED** |
+
+**NOTE 2 (not blocking).** `sense_lint` does not check the value of `frame`. In a side view an unknown value falls through to the side form, which is correct there. In plan the radial form applies whatever the value. No predicate reads a wrong sense because of this. The value lint belongs in the S3 lint pass.
+
+### Gameplan lines to change (re-sign)
+
+none. The K5 B12 and B13 text and the K8 TP1.2-1 wording and B24 are already in the gameplan (fixes file, Corrections 5). The l.139 and l.142 Old/New above still apply, but only where their Old text is still present.

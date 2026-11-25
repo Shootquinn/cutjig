@@ -129,3 +129,44 @@ New:
 ```
 the raiser signs the rule before the revision goes to M1; before any sketch's second drawn revision, the K7 record carries the pair id beside each state (Loftsman 1.2 (b) NOTE 3)
 ```
+
+---
+
+## Re-sign after P5f
+
+Inputs: research/sean/cr_scratch/step1.2_engineer_redfirst_fixes.md; docs/sketches/sketch_common.py (side swept loop l.1537 to 1556; `_k7_plan` `all_decl` l.1658 and swept relation l.1728 to 1749); fixtures/manifest.yaml.
+
+### Corrections to the brief
+
+1. **My live-scope estimate for LF-c1 was low for S1.** I predicted two new swept tests per sketch. S1 gains **94**, MEASURED by my own count over s1_spec.yaml of moving-to-fixed pairs declared with poses only and not also declared without poses. The breakdown: collar 14, and 13 each for base_plate, receiver, base_frame, wingnut, collet and holder; these are the pose-restricted S1-5b base group at capture_end, one pair per ring-assembly row. descent_stop adds 2 more. 515 + 94 = 609, as the Engineer reports. S2 gains 2, as predicted: swept:z-touch 2 to 3 (ring|descent_stop) and swept:F 154 to 155 (nut_housing_a|descent_stop, plan 14.99).
+
+### Code check
+
+- **Plan.** `all_decl` now holds only declarations without poses. The swept relation reads only declarations without poses, and an N declaration of either kind is collected into `rel_n` and excepted. A pair declared with poses only falls to the undeclared branch as F, g_min 0. A pair that also has a declaration without poses keeps that class (C and N skipped, F and G at their g_min). This is the LF-c1 rule as written.
+- **Side.** A neighbour with poses becomes F, g_min 0, once per fixed row (`seen_pr`), unless the moving row also declares the pair without poses. N is excepted. A C declaration without poses is still skipped. The side loop reads only the moving row's own neighbour list. That scope comes from 1.1 and is unchanged. A pose-restricted declaration written only on the fixed row is not swept in the side view. Every S1 declaration of this kind sits on the moving row (count above), so nothing is lost today. NOTE 1.
+- **States.** S1's new `swept:C` (1) is ring|descent_stop swept as F. The ring hull meets the pad top at distance 0 with overlap 0, which reads state C and passes F. That is consistent with the side-view F rule.
+
+### Controls re-run (in-process, all MATCH, MEASURED)
+
+| Control | Result |
+|---|---|
+| K7-B30 (plan) | fires 1: "swept p1..p4/ring\|bar F: swept outline plan distance 0.000 mm, overlap 400.000 mm2" |
+| K7-B31 (side) | fires 1: "swept p1..p4/ring\|member F: swept hull distance 0.000 mm, overlap 2000.000 mm2" |
+| K7-B4, K7-B29 (unrestricted G versions) | fire 1 each, unchanged |
+| K7-Z10 (live S1) | clean, 609 tests (swept:F 139, swept:depth-separated 156, swept:plan-separated 6, swept:C 1) |
+| K7-Z15 (live S2) | clean, 1280 tests (swept:F 155, swept:G 243, swept:z-separated 425, swept:z-touch 3) |
+| K8-Z5 | clean, 346 predicates |
+
+Hand: the B30 bar of 20 x 20 lies inside the ring annulus, so the overlap is the bar's full 400 mm² of plan area. B31's 2000 mm² is the K7-B4 member's overlap with the ring hull, unchanged from K7-B4. A separate B per branch is required under detail 1 common (h), and the Engineer's mutation `pre_K7side` showed B30 alone leaves the side branch unguarded.
+
+### NOTE
+
+1. Side swept scope: only the moving row's neighbour list is read. A future spec that writes a pose-restricted declaration only on the fixed row would escape the side sweep, where the plan branch reads both lists. This dates from 1.1, with no live case. When the side branch is next touched, read the fixed row's list as the plan branch does. Not blocking.
+
+### Verdict
+
+**SIGNED.** FIX LF-c1 is closed, plan (K7-B30) and side (K7-B31). With this, the swept plan form is SIGNED. Every rule in this file is now signed.
+
+### Gameplan lines to change
+
+none. The gameplan K7 row (l.141) already carries B30 (plan) and B31 (side) in the Engineer's wording, and that wording is correct. My earlier B30 line in this file is superseded and is not to be applied.

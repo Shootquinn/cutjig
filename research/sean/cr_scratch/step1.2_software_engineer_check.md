@@ -226,3 +226,56 @@ New:
 ```
 | H6 | Harness delta since the Software Engineer's 1.1 (c) check: 18 controls (r2 to r4) and the plan-contact, projected_extent, section-N, pose-set, bore_cone, stack_ties and `place.rot` rules, reviewed so far by the Loftsman and The Topologist only | 1.2 (c), checked by the Software Engineer: 18 controls real; branch gaps projected_extent low-x end and bore_cone lower bound (FIX 5), pose-set Text branch (NOTE 1) | The Software Engineer |
 ```
+
+## Re-check after P5f
+
+Verdict: **PASS. SIGNED** (harness delta H6, step 0 code, P4 plan rules and S2-x fixtures; SW-17 stays signed). FIX 1 to FIX 5 are closed. The Engineer renumbered my K8-B24 to B27 as K8-B25 to B28 because the Topologist's K8-B24 came first.
+
+Tags: run results MEASURED 2026-11-25.
+
+### Each FIX, by branch deletion
+
+Method as in section 2: a fresh copy of the P5f tree for each mutation, the mutation applied, the named controls run. On the unmutated copy all 16 controls in the set matched (8 named Bs, the 6 H1 controls and 2 S2-6 controls).
+
+| FIX | Branch deleted in the copy | Control that now mismatches | Closed |
+|---|---|---|---|
+| 1 | `outline_outside` annulus returns 0 | K8-B25 (gear), K8-B26 (bearing) both go clean | yes |
+| 2 | K8 sector d_out off | K8-B27 goes clean (K8-B23 unaffected) | yes |
+| 3 | S2-6 notch-clearance branch off | S2-6-B2 goes clean | yes |
+| 4 | `accept` wip/ controls refusal off | H1-B6 goes clean (the record is flagged and copied) | yes |
+| 4 | harness copy-up loop off | H1-Z3 fires: "fixtures/controls_results.json not byte-equal in docs/; baseline_red.json not byte-equal in docs/" | yes |
+| 5 | K8 projected_extent low-x end off | K8-B28: 4 issues against planted 8, reason lacks "projected_extent" | yes |
+| 5 | K5 bore_cone lower bound off | K5-B12 goes clean | yes |
+| 5 | K5 hub-width test off | K5-B13 goes clean | yes |
+
+The refusal sits after the PNG check and before the flag is set, so a refused accept writes nothing; H1-B6 checks that.
+
+### Runs
+
+| Command | Mine (MEASURED) | Engineer | Same |
+|---|---|---|---|
+| `check_sketch.py --controls` | Z 56/56, B 133/133, smoke 2/2 (191/191), exit 0, 292 s; mutation copies shared the machine for part of it | 191/191, 295 s | yes. Every control id, match flag and observed string equals his results file |
+| `check_sketch.py s2 --rev 0` | exit 1. Green: K1, K2, K3, K5, X1. Red content: K4 (15), K9 (69). Red absent: K6 (68), K7 (1280), K8 (112), S2-1 to S2-6 (1 each). Run 2 against STUB_EXPECT / STUB_CAUSE: 17/17 | same; K7 1278 to 1280 from the two LF-c1 swept pairs | yes |
+| `check_sketch.py s1 --rev 5` (preview) | exit 0, 18/18 pass. K4 "figure note names every not_drawn part". K7 609 pair tests clean. K8 346 predicates. S1-1 to S1-7 unchanged (650.00, 125.00, 367.34 / 117.34, 0.84, 192.34, 142.00, 8 projections, 607.66) | 18/18 | yes. The result, cause and n_issues for each check equal his r5 record |
+| SHA-256 of the 40 committed files under `docs/sketches/` outside wip/, before and after my runs | 0 differences | | |
+
+### New NOTE
+
+**NOTE 7.** The mismatch guard in `harness_outputs` can no longer be reached from `accept`, because the new refusal returns first, and `accept` is its only caller. It is harmless. Delete it with NOTE 2's dead code.
+
+NOTEs 1 to 6 stay open as written; none blocks.
+
+### Gameplan lines to change
+
+The Engineer's P5f file carries the K table, l.124, l.146 and Progress Log lines. Mine:
+
+**l.618** (H6 row, status cell).
+
+Old:
+```
+| 1.2 (c), checked by the Software Engineer: 18 controls real; branch gaps projected_extent low-x end and bore_cone lower bound (FIX 5), pose-set Text branch (NOTE 1) |
+```
+New:
+```
+| 1.2 (c), checked by the Software Engineer: 18 controls real; branch gaps projected_extent low-x end and bore_cone lower bound closed at P5f (K8-B28, K5-B12), pose-set Text branch open (NOTE 1); re-check after P5f PASS, SIGNED (191/191) |
+```
