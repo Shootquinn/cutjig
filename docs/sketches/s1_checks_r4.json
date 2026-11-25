@@ -1,11 +1,11 @@
 {
  "sketch": "s1",
  "rev": 4,
- "timestamp": "2026-11-25T13:49:52",
+ "timestamp": "2026-11-25T15:36:23",
  "spec": "s1_spec.yaml",
  "spec_status": "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)",
  "script": "s1_side_poses.py",
- "accepted": false,
+ "accepted": true,
  "frame": "z_S = z_A + jig.datum_a_above_floor",
  "files_sha256": {
   "params.yaml": "9469288a75c2dc57536e2a37f4e18db32e5da2a10d3bf8139cedfe006811c7b7",
@@ -640,7 +640,7 @@
    "core_stop": {
     "core.length_capture": 884.84,
     "core.length_install": 884.84,
-    "core.length_optional": 1092.5
+    "core.length_optional": "1092.50 + c for c >= 0"
    },
    "collar_top": {
     "core.length_capture": 959.84,
@@ -653,6 +653,10 @@
     "lengths": [
      "core.length_capture"
     ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84
+    },
     "starts_z_A": {
      "core.length_capture": 834.84,
      "core.length_install": 834.84
@@ -667,6 +671,19 @@
     "start_minus_core_top": {
      "core.length_capture": 292.34000000000003,
      "core.length_install": 42.34000000000003
+    },
+    "symbol_terms": {
+     "park": "959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34",
+     "L L_min": "885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34",
+     "L at anchor_z": "885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34"
     }
    },
    "0.5 and 0.75 m": {
@@ -674,6 +691,10 @@
      "core.length_capture",
      "core.length_install"
     ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84
+    },
     "starts_z_A": {
      "core.length_capture": 834.84,
      "core.length_install": 834.84
@@ -688,6 +709,19 @@
     "start_minus_core_top": {
      "core.length_capture": 292.34000000000003,
      "core.length_install": 42.34000000000003
+    },
+    "symbol_terms": {
+     "park": "959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34",
+     "L L_min": "885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34",
+     "L at anchor_z": "885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34"
     }
    },
    "plus 1 m": {
@@ -696,10 +730,15 @@
      "core.length_install",
      "core.length_optional"
     ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84,
+     "core.length_optional": "392.50 + c for c >= 0"
+    },
     "starts_z_A": {
      "core.length_capture": 834.84,
      "core.length_install": 834.84,
-     "core.length_optional": 917.5
+     "core.length_optional": "1042.50 + c for c >= 0"
     },
     "park_tip_z_A": 1209.84,
     "lowest_stop_z_A": 184.84,
@@ -711,9 +750,30 @@
     "start_minus_core_top": {
      "core.length_capture": 292.34000000000003,
      "core.length_install": 42.34000000000003,
-     "core.length_optional": -125.0
+     "core.length_optional": "c for c >= 0"
+    },
+    "symbol_terms": {
+     "park": "1209.84 for 0 <= c <= 117.34; 1092.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "1025.00 for 0 <= c <= 117.34; 907.66 + c for 117.34 <= c <= 292.34; 1200.00 for c >= 292.34",
+     "L L_min": "1135.00 for 0 <= c <= 117.34; 1017.66 + c for 117.34 <= c <= 292.34; 1310.00 for c >= 292.34",
+     "L at anchor_z": "1135.84 for 0 <= c <= 117.34; 1018.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "stop core.length_optional": "392.50 + c for c >= 0",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start core.length_optional": "1042.50 + c for c >= 0",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34",
+     "start_minus_core_top core.length_optional": "c for c >= 0"
     }
    }
+  },
+  "drawn_symbol_validity": {
+   "lowest stop": 292.34000000000003,
+   "park": 117.34000000000003,
+   "start max": 42.34
   },
   "capture_core_length_key": "core.length_install",
   "start_tip_minus_core_top_mm": 42.34000000000003,
@@ -5583,5 +5643,7 @@
    "b_result": "fired 1/1",
    "source": "G2 (Design Notes 21); advance DERIVED; collet.core_stop_z ASSUMED"
   }
- ]
+ ],
+ "accepted_note": "Design Notes 24",
+ "accepted_at": "2026-11-25T15:43:58"
 }

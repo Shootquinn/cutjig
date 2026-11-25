@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T13:49:40",
+ "timestamp": "2026-11-25T15:36:11",
  "summary": {
-  "z_clean": 35,
-  "z_total": 35,
-  "b_fired": 81,
-  "b_total": 81,
+  "z_clean": 38,
+  "z_total": 38,
+  "b_fired": 87,
+  "b_total": 87,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -1420,6 +1420,105 @@
      "reason": "capture-core (core_750) top at start minus end-of-capture tip 607.66 mm, need 534.93 (spare 72.73)"
     }
    ]
+  },
+  {
+   "id": "H1-Z1",
+   "check": "H1",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "accepted; flag, note set; --stale 1 record, 0 differences; 4 message(s)",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-Z2",
+   "check": "H1",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "docs record keeps accepted after a re-run to wip/; --stale reads it",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-B1",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: s1_checks_r4.json has checks not pass: S1-4 fail",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-B2",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: empty note (--note \"<Design Notes ref>\")",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-B3",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "docs/s1_checks_r4.json: jackscrew.anchor_z recorded 265, live 266",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-B4",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "docs/s1_checks_r5.json: ring.thickness recorded 999, live 12",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H1-B5",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: s1_pose_load_r4.png differs in pixels from C:\\Users\\UR\\AppData\\Local\\Temp\\tmpv8vckfqa\\docs\\s1_pose_load_r4.png (drawn geometry moved: new revision)",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "DN25 H1"
+  },
+  {
+   "id": "H5-Z",
+   "check": "H5",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "1 m terms in c; 0.5/0.75 m and drawn values unchanged",
+   "match": "yes",
+   "gameplan_line": 650,
+   "finding": "DN25 H5"
+  },
+  {
+   "id": "H5-B",
+   "check": "H5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "start max depends on symbol c (1042.50 + c for c >= 0); a drawn value needs it constant",
+   "match": "yes",
+   "gameplan_line": 650,
+   "finding": "DN25 H5"
   }
  ]
 }

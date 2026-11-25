@@ -1,6 +1,6 @@
 # S1 checks, revision r4
 
-2026-11-25T13:49:52. Spec s1_spec.yaml (signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)); script s1_side_poses.py. Frame z_S = z_A + jig.datum_a_above_floor.
+2026-11-25T15:36:23. Spec s1_spec.yaml (signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)); script s1_side_poses.py. Frame z_S = z_A + jig.datum_a_above_floor.
 
 | Check | Result | Measured | Threshold | Z | B | Reason |
 |---|---|---|---|---|---|---|
@@ -28,10 +28,46 @@
 Reported (no threshold):
 - Park tip 959.84 z_A (entry plane collar_top); highest class start 834.84 z_A; lift stroke 775.00 mm; S1-3 load plane core_stop
 - Q9 0.5 m only: park 959.84 z_A, stroke 775.00 mm, L L_min 885.00, at anchor_z 885.84
+  - 0.5 m only, park: 959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34
+  - 0.5 m only, lowest stop: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - 0.5 m only, lift stroke: 775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34
+  - 0.5 m only, L L_min: 885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34
+  - 0.5 m only, L at anchor_z: 885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34
+  - 0.5 m only, stop core.length_capture: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - 0.5 m only, stop core.length_install: 184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34
+  - 0.5 m only, start core.length_capture: 834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34
+  - 0.5 m only, start core.length_install: 834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34
+  - 0.5 m only, start_minus_core_top core.length_capture: 292.34 for 0 <= c <= 292.34; c for c >= 292.34
+  - 0.5 m only, start_minus_core_top core.length_install: 42.34 for 0 <= c <= 42.34; c for c >= 42.34
 - Q9 0.5 and 0.75 m: park 959.84 z_A, stroke 775.00 mm, L L_min 885.00, at anchor_z 885.84
+  - 0.5 and 0.75 m, park: 959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34
+  - 0.5 and 0.75 m, lowest stop: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - 0.5 and 0.75 m, lift stroke: 775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34
+  - 0.5 and 0.75 m, L L_min: 885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34
+  - 0.5 and 0.75 m, L at anchor_z: 885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34
+  - 0.5 and 0.75 m, stop core.length_capture: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - 0.5 and 0.75 m, stop core.length_install: 184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34
+  - 0.5 and 0.75 m, start core.length_capture: 834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34
+  - 0.5 and 0.75 m, start core.length_install: 834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34
+  - 0.5 and 0.75 m, start_minus_core_top core.length_capture: 292.34 for 0 <= c <= 292.34; c for c >= 292.34
+  - 0.5 and 0.75 m, start_minus_core_top core.length_install: 42.34 for 0 <= c <= 42.34; c for c >= 42.34
 - Q9 plus 1 m: park 1209.84 z_A, stroke 1025.00 mm, L L_min 1135.00, at anchor_z 1135.84
+  - plus 1 m, park: 1209.84 for 0 <= c <= 117.34; 1092.50 + c for c >= 117.34
+  - plus 1 m, lowest stop: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - plus 1 m, lift stroke: 1025.00 for 0 <= c <= 117.34; 907.66 + c for 117.34 <= c <= 292.34; 1200.00 for c >= 292.34
+  - plus 1 m, L L_min: 1135.00 for 0 <= c <= 117.34; 1017.66 + c for 117.34 <= c <= 292.34; 1310.00 for c >= 292.34
+  - plus 1 m, L at anchor_z: 1135.84 for 0 <= c <= 117.34; 1018.50 + c for c >= 117.34
+  - plus 1 m, stop core.length_capture: 184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34
+  - plus 1 m, stop core.length_install: 184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34
+  - plus 1 m, stop core.length_optional: 392.50 + c for c >= 0
+  - plus 1 m, start core.length_capture: 834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34
+  - plus 1 m, start core.length_install: 834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34
+  - plus 1 m, start core.length_optional: 1042.50 + c for c >= 0
+  - plus 1 m, start_minus_core_top core.length_capture: 292.34 for 0 <= c <= 292.34; c for c >= 292.34
+  - plus 1 m, start_minus_core_top core.length_install: 42.34 for 0 <= c <= 42.34; c for c >= 42.34
+  - plus 1 m, start_minus_core_top core.length_optional: c for c >= 0
 - Collar top recomputed 159.84 z_A against params stop.collar_top_z 159.84
-- Park tip z_A by plane and core length: core_stop: length_capture 884.84, length_install 884.84, length_optional 1092.50; collar_top: length_capture 959.84, length_install 959.84, length_optional 1209.84
+- Park tip z_A by plane and core length: core_stop: length_capture 884.84, length_install 884.84, length_optional 1092.50 + c for c >= 0; collar_top: length_capture 959.84, length_install 959.84, length_optional 1209.84
 - Start tip minus capture-core top (core.length_install) on the core stop: 42.34 mm (end tip + drill_advance_500core = 719.77 z_A; core top 792.50 z_A)
 - load: highest point 1969.84 z_S, margin to the 2000 mm soft target 30.16 mm (spec values, not drawn)
 - start: highest point 1844.84 z_S, margin to the 2000 mm soft target 155.16 mm (spec values, not drawn)
@@ -51,6 +87,6 @@ Files: params.yaml 9469288a75c2, proposed_params.yaml bc68ca444fb8
 
 - Ring (N1): ring.position_above_tip 130 mm, bottom of ring plate above the tip; ring thickness 12.
 - Anchors: jackscrew.anchor_z 265 z_A, drawn 325.00 to 355.00 z_S; top guides: jackscrew.top_guide_z 1165 z_A, drawn 1195.00 to 1225.00 z_S; screw length jackscrew.length 900.
-- Park rule for Step 4: upper.park_z = max(max_k (max(stop.height_z, collet.core_stop_z + L_k + stop.g_stop - drill.bore_ceiling_above_tip) + upper.travel_max), stop.collar_top_z + max_k L_k) + upper.load_clearance
+- Park rule for Step 4: upper.park_z = max(max_k (max(stop.height_z, collet.core_stop_z + L_k + stop.g_stop - drill.bore_ceiling_above_tip, collet.core_stop_z + L_k + c - upper.travel_max) + upper.travel_max), stop.collar_top_z + max_k L_k) + upper.load_clearance; c = start clearance above the core top (Sean, N11)
 - Tip force: horizontal force that tips the unbolted jig about the nearest base edge, lever 304 mm (min footprint / 2, COM on the drill axis by three-fold symmetry), g 9.81. Masses: overlay ASSUMED; structure DERIVED; working values {'rho_al_kg_m3': 2700, 'rho_steel_kg_m3': 7850, 'nema17_kg': 0.35} ASSUMED. Receiver, collet, holder, wing nut, anchor and guide blocks omitted.
 - Old reference icd.tipover_statement: unbolted tip force 158 N at COM (0.69 m), 68 N at column top; bolt-down required with cutter above z = 400 mm
