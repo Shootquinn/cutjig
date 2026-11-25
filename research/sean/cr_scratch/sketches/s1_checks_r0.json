@@ -1,15 +1,15 @@
 {
  "sketch": "s1",
  "rev": 0,
- "timestamp": "2026-11-24T23:32:48",
+ "timestamp": "2026-11-25T11:58:51",
  "spec": "s1_spec.yaml",
- "spec_status": "draft, unsigned",
+ "spec_status": "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)",
  "script": "stubs\\s1_stub.py",
  "accepted": false,
  "frame": "z_S = z_A + jig.datum_a_above_floor",
  "files_sha256": {
   "params.yaml": "9469288a75c2dc57536e2a37f4e18db32e5da2a10d3bf8139cedfe006811c7b7",
-  "proposed_params.yaml": "bd38a0ba1f01f345a7f3d28a9f87018ec2741c77b7d53aba107dddcc9579c7ae"
+  "proposed_params.yaml": "0b160d002b83565d95b2fcd270a0e1255dfa21c923311c03920217c092866b7a"
  },
  "keys_read": {
   "base.plate_thickness": {
@@ -32,6 +32,11 @@
    "origin": "overlay",
    "status": "ASSUMED"
   },
+  "collar.od": {
+   "value": 152.4,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
   "collar.top_above_plate": {
    "value": 6.75,
    "origin": "params.yaml",
@@ -45,6 +50,11 @@
   "collet.core_seat_width": {
    "value": 3,
    "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.core_stop_z": {
+   "value": 42.5,
+   "origin": "overlay",
    "status": "ASSUMED"
   },
   "collet.relief_hole_dia": {
@@ -123,12 +133,27 @@
    "status": "ASSUMED"
   },
   "frame_upper.member_length": {
-   "value": 960,
+   "value": 1213,
    "origin": "overlay",
    "status": "DERIVED"
   },
   "frame_upper.radius": {
    "value": 300,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "frame_upper.stop_pad_r_in": {
+   "value": 200,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "frame_upper.stop_pad_r_out": {
+   "value": 215,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.back_face_above_pinion_axis": {
+   "value": 62,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -142,6 +167,11 @@
    "origin": "overlay",
    "status": "ASSUMED"
   },
+  "gear.od": {
+   "value": 252.64,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
   "gear.pitch_angle": {
    "value": 71.565,
    "origin": "overlay",
@@ -152,10 +182,10 @@
    "origin": "overlay",
    "status": "ASSUMED"
   },
-  "gear.tooth_count": {
-   "value": 60,
+  "gear.toe_tip_above_pinion_axis": {
+   "value": 28.23,
    "origin": "overlay",
-   "status": "ASSUMED"
+   "status": "DERIVED"
   },
   "guide.angle": {
    "value": [
@@ -226,7 +256,7 @@
    "status": "ASSUMED"
   },
   "jackscrew.anchor_z": {
-   "value": 0,
+   "value": 265,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -241,6 +271,11 @@
   },
   "jackscrew.guide_allowance": {
    "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.lead": {
+   "value": 8,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -270,7 +305,7 @@
    "status": "ASSUMED"
   },
   "jackscrew.top_guide_z": {
-   "value": 900,
+   "value": 1165,
    "origin": "overlay",
    "status": "DERIVED"
   },
@@ -286,6 +321,11 @@
   },
   "liftmotor.body": {
    "value": 42,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.coupling_length": {
+   "value": 25,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -318,6 +358,16 @@
    "origin": "overlay",
    "status": "ASSUMED"
   },
+  "pinion.axis_above_ring_top": {
+   "value": 52,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.hub_length": {
+   "value": 15,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
   "pinion.motor_body": {
    "value": 57,
    "origin": "overlay",
@@ -333,8 +383,43 @@
    "origin": "overlay",
    "status": "ASSUMED"
   },
+  "pinion.motor_r_in": {
+   "value": 142,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_shaft_length": {
+   "value": 21,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_shaft_od": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.outer_diameter": {
+   "value": 91.24,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
   "pinion.pitch_angle": {
    "value": 18.435,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.pitch_diameter": {
+   "value": 83.33,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.r_heel": {
+   "value": 125,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.r_toe": {
+   "value": 96.54,
    "origin": "overlay",
    "status": "DERIVED"
   },
@@ -369,9 +454,24 @@
    "status": "ASSUMED"
   },
   "ring.clearance_bore": {
-   "value": 190,
+   "value": 200,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "ring.guide_lug_half_width": {
+   "value": 20,
    "origin": "overlay",
    "status": "ASSUMED"
+  },
+  "ring.guide_lug_r_out": {
+   "value": 250,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.motor_mount_height": {
+   "value": 23.5,
+   "origin": "overlay",
+   "status": "DERIVED"
   },
   "ring.nut_housing_height": {
    "value": 30,
@@ -389,7 +489,7 @@
    "status": "ASSUMED"
   },
   "ring.position_above_tip": {
-   "value": 200,
+   "value": 130,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -407,6 +507,11 @@
    "value": 159.84,
    "origin": "params.yaml",
    "status": "DERIVED"
+  },
+  "stop.g_stop": {
+   "value": 25,
+   "origin": "params.yaml",
+   "status": "DECLARED"
   },
   "stop.height_range": {
    "value": [
@@ -449,6 +554,11 @@
    "origin": "params.yaml",
    "status": "DECLARED"
   },
+  "upper.travel_max": {
+   "value": 650,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
   "washer.thickness": {
    "value": 1.3,
    "origin": "params.yaml",
@@ -471,43 +581,114 @@
   }
  },
  "reported": {
-  "lift_stroke_mm": 830.16,
+  "lift_stroke_mm": 775.0,
+  "park_tip_z_A": 959.84,
+  "start_tip_max_z_A": 834.84,
   "collar_top_recomputed_z_A": 159.84,
   "collar_top_params_z_A": 159.84,
   "load_plane": "core_stop",
+  "entry_plane": "collar_top",
   "poses": {
    "load": {
-    "highest_z_S": 2025.0,
-    "margin_to_soft_target": -25.0
+    "highest_z_S": 1969.8400000000001,
+    "margin_to_soft_target": 30.159999999999854
    },
    "start": {
     "highest_z_S": 1844.8400000000001,
     "margin_to_soft_target": 155.15999999999985
    },
    "capture_end": {
-    "highest_z_S": 1260.0,
-    "margin_to_soft_target": 740.0
+    "highest_z_S": 1285.0,
+    "margin_to_soft_target": 715.0
    },
    "park": {
-    "highest_z_S": 2025.0,
-    "margin_to_soft_target": -25.0
+    "highest_z_S": 1969.8400000000001,
+    "margin_to_soft_target": 30.159999999999854
    }
   },
   "park_tip_by_plane_z_A": {
    "core_stop": {
-    "core.length_capture": 1015,
-    "core.length_install": 1015,
+    "core.length_capture": 884.84,
+    "core.length_install": 884.84,
     "core.length_optional": 1092.5
    },
    "collar_top": {
-    "core.length_capture": 1015,
-    "core.length_install": 1015,
+    "core.length_capture": 959.84,
+    "core.length_install": 959.84,
     "core.length_optional": 1209.84
    }
   },
-  "start_tip_minus_core_top_mm": 292.34000000000003,
+  "q9_options": {
+   "0.5 m only": {
+    "lengths": [
+     "core.length_capture"
+    ],
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84
+    },
+    "park_tip_z_A": 959.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 775.0,
+    "L": {
+     "L_min": 885.0,
+     "at anchor_z": 885.8400000000001
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003
+    }
+   },
+   "0.5 and 0.75 m": {
+    "lengths": [
+     "core.length_capture",
+     "core.length_install"
+    ],
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84
+    },
+    "park_tip_z_A": 959.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 775.0,
+    "L": {
+     "L_min": 885.0,
+     "at anchor_z": 885.8400000000001
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003
+    }
+   },
+   "plus 1 m": {
+    "lengths": [
+     "core.length_capture",
+     "core.length_install",
+     "core.length_optional"
+    ],
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84,
+     "core.length_optional": 917.5
+    },
+    "park_tip_z_A": 1209.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 1025.0,
+    "L": {
+     "L_min": 1135.0,
+     "at anchor_z": 1135.84
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003,
+     "core.length_optional": -125.0
+    }
+   }
+  },
+  "capture_core_length_key": "core.length_install",
+  "start_tip_minus_core_top_mm": 42.34000000000003,
   "end_tip_plus_advance_z_A": 719.77,
-  "core_top_on_core_stop_z_A": 542.5
+  "core_top_on_core_stop_z_A": 792.5
  },
  "checks": [
   {
@@ -525,7 +706,7 @@
   {
    "id": "K2",
    "result": "pass",
-   "reason": "138 spec keys resolve; 81 overlay leaves sourced, legal status, no shadow",
+   "reason": "210 spec keys resolve; 103 overlay leaves sourced, legal status, no shadow",
    "measured": 0,
    "threshold": 0,
    "n_issues": 0,
@@ -549,10 +730,10 @@
   {
    "id": "K4",
    "result": "fail",
-   "reason": "load/wingnut: no annotation label:wingnut; load/core_500: no annotation label:core_500; load/core_750: no annotation label:core_750; load/drill_head: no annotation label:drill_head; load/drill_tube: no annotation label:drill_tube; load/drill_top_block: no annotation label:drill_top_block; ... 39 more",
-   "measured": 45,
+   "reason": "load/wingnut: no annotation label:wingnut; load/core_750: no annotation label:core_750; load/drill_head: no annotation label:drill_head; load/drill_tube: no annotation label:drill_tube; load/drill_top_block: no annotation label:drill_top_block; load/bore_ceiling: no annotation label:bore_ceiling; ... 37 more",
+   "measured": 43,
    "threshold": 0,
-   "n_issues": 45,
+   "n_issues": 43,
    "cause": "content",
    "z_result": "clean 1/1",
    "b_result": "fired 3/3",
@@ -573,48 +754,530 @@
   {
    "id": "K6",
    "result": "fail",
-   "reason": "load/base_frame: z_rule [0.00, 60.00] z_S, nothing drawn; load/base_plate: z_rule [60.00, 72.00] z_S, nothing drawn; load/receiver: z_rule [72.00, 188.50] z_S, nothing drawn; load/collet: z_rule [100.00, 132.00] z_S, nothing drawn; load/core_seat: z_rule [100.00, 102.50] z_S, nothing drawn; load/holder: z_rule [109.09, 197.09] z_S, nothing drawn; ... 135 more",
+   "reason": "load/base_frame: z_rule [0.00, 60.00] z_S, nothing drawn; load/base_plate: z_rule [60.00, 72.00] z_S, nothing drawn; load/receiver: z_rule [72.00, 188.50] z_S, nothing drawn; load/collet: z_rule [100.00, 132.00] z_S, nothing drawn; load/core_seat: z_rule [100.00, 102.50] z_S, nothing drawn; load/holder: z_rule [109.09, 197.09] z_S, nothing drawn; ... 169 more",
    "measured": 0.0,
    "threshold": 0.05,
-   "n_issues": 141,
+   "n_issues": 175,
    "cause": "absent",
-   "z_result": "clean 2/2",
-   "b_result": "fired 5/5",
+   "z_result": "clean 3/3",
+   "b_result": "fired 7/7",
    "source": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)"
   },
   {
    "id": "K7",
    "result": "fail",
-   "reason": "load/base_frame|base_plate C: untestable, base_frame/base_plate not drawn; load/base_plate|receiver C: untestable, base_plate/receiver not drawn; load/ring|frame_upper_a G: untestable, ring/frame_upper_a not drawn; load/ring|frame_upper_b G: untestable, ring/frame_upper_b not drawn; load/ring|liftmotor_a G: untestable, ring/liftmotor_a not drawn; load/ring|liftmotor_b G: untestable, ring/liftmotor_b not drawn; ... 74 more",
-   "measured": 80,
+   "reason": "load/base_frame|base_plate C: untestable, base_frame/base_plate not drawn; load/base_plate|receiver C: untestable, base_plate/receiver not drawn; load/drill_tube|bearing C: untestable, drill_tube/bearing not drawn; load/drill_tube|gear_hub C: untestable, drill_tube/gear_hub not drawn; load/ring|frame_upper_a G: untestable, ring/frame_upper_a not drawn; load/ring|frame_upper_b G: untestable, ring/frame_upper_b not drawn; ... 279 more",
+   "measured": 285,
    "threshold": 0,
-   "n_issues": 80,
+   "n_issues": 285,
    "cause": "absent",
-   "states": [],
-   "failing": 80,
-   "z_result": "clean 7/7",
-   "b_result": "fired 10/10",
+   "states": [
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "depth-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated",
+    "swept:depth-separated"
+   ],
+   "failing": 285,
+   "z_result": "clean 10/10",
+   "b_result": "fired 13/13",
    "source": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED"
   },
   {
    "id": "K8",
    "result": "fail",
-   "reason": "load/base_frame below base_plate: untestable, base_frame not drawn; load/collet taper : untestable, collet not drawn; load/wingnut below drill_head: untestable, wingnut not drawn; load/core_500 rests_on core_seat: untestable, core_500 not drawn; load/core_750 rests_on core_seat: untestable, core_750 not drawn; load/drill_head projected_x: untestable, drill_head not drawn; ... 171 more",
-   "measured": 177,
+   "reason": "load/base_frame below base_plate: untestable, base_frame not drawn; load/collet taper : untestable, collet not drawn; load/wingnut below drill_head: untestable, wingnut not drawn; load/drill_head projected_x: untestable, drill_head not drawn; load/drill_head below gear: untestable, drill_head not drawn; load/drill_head below drill_top_block: untestable, drill_head not drawn; ... 220 more",
+   "measured": 226,
    "threshold": 0,
-   "n_issues": 177,
+   "n_issues": 226,
    "cause": "absent",
-   "z_result": "clean 2/2",
-   "b_result": "fired 11/11",
+   "z_result": "clean 3/3",
+   "b_result": "fired 13/13",
    "source": "gameplan l.141; ASSEMBLY.md Coordinate frame"
   },
   {
    "id": "K9",
    "result": "fail",
-   "reason": "load: spec row base_frame has no patch; load: spec row base_plate has no patch; load: spec row receiver has no patch; load: spec row collet has no patch; load: spec row core_seat has no patch; load: spec row holder has no patch; ... 135 more",
-   "measured": 141,
+   "reason": "load: spec row base_frame has no patch; load: spec row base_plate has no patch; load: spec row receiver has no patch; load: spec row collet has no patch; load: spec row core_seat has no patch; load: spec row holder has no patch; ... 169 more",
+   "measured": 175,
    "threshold": 0,
-   "n_issues": 141,
+   "n_issues": 175,
    "cause": "content",
    "z_result": "clean 1/1",
    "b_result": "fired 4/4",
@@ -628,8 +1291,8 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 2/2",
    "source": "travel DECLARED [CP \u00a715], [DN23]; advance DERIVED"
   },
   {
@@ -640,9 +1303,9 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
-   "source": "[DN23] (U13 re-derive); park ASSUMED"
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
+   "source": "[DN23] (U13 re-derive, option R, Design Notes 22); park ASSUMED"
   },
   {
    "id": "S1-3",
@@ -652,8 +1315,8 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
    "source": "core.length_install DECLARED; clearance ASSUMED"
   },
   {
@@ -664,8 +1327,8 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 2/2",
    "source": "overlay jackscrew.* ASSUMED"
   },
   {
@@ -676,8 +1339,8 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
    "source": "stop.g_stop reuse ASSUMED; bore ceiling ASSUMED (Q2e, Design Notes 19)"
   },
   {
@@ -688,8 +1351,8 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
    "source": "10 mm ASSUMED; wingnut.sweep_clear_radius DERIVED"
   },
   {
@@ -700,9 +1363,21 @@
    "threshold": null,
    "n_issues": 1,
    "cause": "absent",
-   "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
-   "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
    "source": "overlay jackscrew.angle, spacing DECLARED [DN23]"
+  },
+  {
+   "id": "S1-7",
+   "result": "fail",
+   "reason": "measured: none; core_750 not drawn in pose start",
+   "measured": null,
+   "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
+   "source": "G2 (Design Notes 21); advance DERIVED; collet.core_stop_z ASSUMED"
   }
  ]
 }

@@ -30,7 +30,7 @@ K_BY_SKETCH = {"s5": ["K1", "K2", "K3", "K4", "K9"]}
 STUB_EXPECT = {"s1": {"guard": ["K1", "K2", "K3", "K5"],
                       "red": ["K4", "K6", "K7", "K8", "K9", "S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7"]}}
 _ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
-_ABS_S = ("absent", "red (absent, fail-closed; content at 1.1 c)")
+_ABS_S = ("absent", "red (absent, fail-closed; content evidence run 1, S1-x B fixtures 1.1 (c))")
 STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, **{k: _ABS_S for k in ("S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6", "S1-7")}}
 SOURCES = {
     "K1": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)", "K2": "gameplan l.135; Design Notes 6",
@@ -292,7 +292,13 @@ def baseline(args):
            "run2": {"source": "s1_checks_r0.json", "at": s1["timestamp"], "spec_status": s1["spec_status"],
                     "matched": sum(r["match"] == "yes" for r in rows if r["run"] == 2), "total": sum(r["run"] == 2 for r in rows)},
            "checks": rows}
-    (HERE / "baseline_red.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
+    prior_path = HERE / "baseline_red.json"
+    if prior_path.is_file():   # keep earlier records under a dated key (1.1 (c) task 4)
+        prior = json.loads(prior_path.read_text(encoding="utf-8"))
+        hist = prior.pop("prior", {})
+        hist[f"{prior.get('timestamp', 'undated')} (spec {prior.get('run2', {}).get('spec_status')})"] = prior
+        out["prior"] = hist
+    prior_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print(json.dumps({k: out[k] for k in ("run1", "run2")}, indent=1))
     return 0 if all(r["match"] == "yes" for r in rows) else 1
 

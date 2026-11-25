@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T11:31:58",
+ "timestamp": "2026-11-25T11:58:43",
  "summary": {
-  "z_clean": 24,
-  "z_total": 24,
-  "b_fired": 59,
-  "b_total": 59,
+  "z_clean": 30,
+  "z_total": 30,
+  "b_fired": 67,
+  "b_total": 67,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -922,6 +922,160 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
    "finding": "LF-16; Loftsman NOTE 1"
+  },
+  {
+   "id": "S1-1-Z",
+   "check": "S1-1",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "drawn start tip minus end-of-capture tip 650.00 mm against [534.93, 650]",
+   "match": "yes",
+   "gameplan_line": 228,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-1-B1",
+   "check": "S1-1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "drawn start tip minus end-of-capture tip 650.00 mm against [534.93, 500]",
+   "match": "yes",
+   "gameplan_line": 228,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-1-B2",
+   "check": "S1-1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "drawn start tip minus end-of-capture tip 533.93 mm against [534.93, 650]",
+   "match": "yes",
+   "gameplan_line": 228,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-2-Z",
+   "check": "S1-2",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "park tip above the highest class start by 125.00 mm",
+   "match": "yes",
+   "gameplan_line": 229,
+   "finding": "H6; SW-10"
+  },
+  {
+   "id": "S1-2-B1",
+   "check": "S1-2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "park: drawn tip 894.84 not above the highest class start 894.84 z_S",
+   "match": "yes",
+   "gameplan_line": 229,
+   "finding": "H6; SW-10 (replacement, Design Notes 22)"
+  },
+  {
+   "id": "S1-3-Z",
+   "check": "S1-3",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "margins over core_stop {'core.length_capture': 367.34, 'core.length_install': 117.34}",
+   "match": "yes",
+   "gameplan_line": 230,
+   "finding": "H6; SW-10"
+  },
+  {
+   "id": "S1-3-B1",
+   "check": "S1-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "core.length_install: park tip - load_clearance - (core_stop + length) = -1.00",
+   "match": "yes",
+   "gameplan_line": 230,
+   "finding": "H6; SW-10 (revised at 1.1 (b))"
+  },
+  {
+   "id": "S1-4-B2",
+   "check": "S1-4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "park/screw a: nut z 1325.00 outside [380.00, 1170.00] (low margin +945.00, high margin -155.00)",
+   "match": "yes",
+   "gameplan_line": 231,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-5a-Z",
+   "check": "S1-5a",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "bore ceiling minus capture-core (core_750) top at end of capture 192.34 mm, need 25",
+   "match": "yes",
+   "gameplan_line": 232,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-5a-B1",
+   "check": "S1-5a",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "bore ceiling minus capture-core (core_750) top at end of capture -73.73 mm, need 25",
+   "match": "yes",
+   "gameplan_line": 232,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-6-Z",
+   "check": "S1-6",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "8 screw projections at r cos(theta), depth r sin(theta)",
+   "match": "yes",
+   "gameplan_line": 234,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-6-B1",
+   "check": "S1-6",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); start/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); capture_end/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); park/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30)",
+   "match": "yes",
+   "gameplan_line": 234,
+   "finding": "H6"
+  },
+  {
+   "id": "S1-7-Z",
+   "check": "S1-7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "capture-core (core_750) top at start minus end-of-capture tip 607.66 mm, need 534.93 (spare 72.73)",
+   "match": "yes",
+   "gameplan_line": 235,
+   "finding": "H6; G2"
+  },
+  {
+   "id": "S1-7-B1",
+   "check": "S1-7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture-core (core_750) top at start minus end-of-capture tip 357.66 mm, need 534.93 (short 177.27)",
+   "match": "yes",
+   "gameplan_line": 235,
+   "finding": "H6; G2"
   },
   {
    "id": "S1-FULL",

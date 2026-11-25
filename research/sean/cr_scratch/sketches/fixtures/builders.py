@@ -932,12 +932,18 @@ def _s1_draw_pose(P, spec, stack, pid):
     return fig
 
 
-def _s1_ctx(shift=None):
+def _s1_ctx(shift=None, spec_mut=None, values=None, xshift=None):
     """Live S1 spec, every row drawn from check_stack values. shift {(pose or None, fid): (dz_min, dz_max)} moves the
     drawn z of one row (None: every pose) in the drawing only; the context keeps the true stack, so a B planted this
-    way is a drawing that disagrees with the spec."""
+    way is a drawing that disagrees with the spec. xshift {(pose or None, fid): dx} moves the drawn x the same way.
+    spec_mut(spec) edits the spec and values {key: value} replaces params/overlay values before check_stack runs, so a
+    B planted that way is a spec or params decision drawn faithfully (SW-10: S1-2 and S1-3 can fail only that way)."""
     P = Params()
+    for k, v in (values or {}).items():
+        P.leaves[k] = dict(P.leaves[k], value=v)
     spec = load_spec(HERE.parent / "s1_spec.yaml")
+    if spec_mut:
+        spec_mut(spec)
     stack = check_stack.evaluate_spec(P, spec)
     drawn = copy.deepcopy(stack)
     for (pose, fid), (d0, d1) in (shift or {}).items():
@@ -945,6 +951,10 @@ def _s1_ctx(shift=None):
             if pose in (None, pid) and fid in pr["features"]:
                 pr["features"][fid]["z_min"] += d0
                 pr["features"][fid]["z_max"] += d1
+    for (pose, fid), dx in (xshift or {}).items():
+        for pid, pr in drawn["poses"].items():
+            if pose in (None, pid) and fid in pr["features"]:
+                pr["features"][fid]["place"]["x"] = [v + dx for v in pr["features"][fid]["place"]["x"]]
     figs = {p["id"]: _s1_draw_pose(P, spec, drawn, p["id"]) for p in spec["poses"]}
     return sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[], check_stack_path=CHECK_STACK_PATH)
 
@@ -979,6 +989,73 @@ def k7_b12():
 def k7_b13():
     """F4 (Designer): screw frame member foot drawn 1 mm above the plate top at load (C pair open by 1)."""
     return _s1_ctx({("load", "frame_upper_a"): (1, 0)})
+
+
+# ---------------------------------------------------------------- 1.1 (c) red-first: S1-x fixtures from the signed spec (H6)
+# Z for every S1-x is s1_live (the signed spec drawn faithfully). Each B plants one defect named in the gameplan S1
+# check table (l.226-234) or the SW-10 rule (Design Notes 20), as revised at 1.1 (b) (spec revision corrections 2, 3).
+
+def _pose_tip(pid, expr):
+    def mut(s):
+        next(p for p in s["poses"] if p["id"] == pid)["tip_z"] = expr
+    return mut
+
+
+def s1_1_b1():
+    """Gameplan l.228 B: upper.travel_max 500 (below drill_advance_500core 534.93); drawn reach 650.00 exceeds it."""
+    return _s1_ctx(values={"upper.travel_max": 500})
+
+
+def s1_1_b2():
+    """Low side: start tip set 1 below capture_end tip + drill_advance_500core (reach 533.93 < 534.93)."""
+    return _s1_ctx(spec_mut=_pose_tip("start", "stop.height_z + upper.drill_advance_500core - 1"))
+
+
+def s1_2_b1():
+    """Design Notes 22 replacement for SW-10 (the 959.84 live-defect B is retired under option R): park tip_z set to
+    start_tip_max, the top of the 650 mm travel (stroke conflated with travel, SE-3). Margin 0.00."""
+    return _s1_ctx(spec_mut=_pose_tip("park", "start_tip_max"))
+
+
+def s1_3_b1():
+    """SW-10 as revised at 1.1 (b) (correction 3): park tip_z = core_stop + core.length_install + upper.load_clearance
+    - 1 (the SW-10 form park_tip - load_clearance - 1 leaves 66.34 under the collar-top park). Margin -1.00."""
+    return _s1_ctx(spec_mut=_pose_tip("park", "core_stop + core.length_install + upper.load_clearance - 1"))
+
+
+def s1_4_b2():
+    """Gameplan l.231 B: ring nut drawn 100 above the top guide of screw a at park (nut and its housing moved)."""
+    P = Params()
+    spec = load_spec(HERE.parent / "s1_spec.yaml")
+    f = check_stack.evaluate_spec(P, spec)["poses"]["park"]["features"]
+    nut_c = (f["nut_a"]["z_min"] + f["nut_a"]["z_max"]) / 2
+    dz = f["guide_a"]["z_max"] + 100 - nut_c
+    return _s1_ctx({("park", "nut_a"): (dz, dz), ("park", "nut_housing_a"): (dz, dz)})
+
+
+def s1_5a_b1():
+    """Gameplan l.232 B: drill internal length (tip to bore ceiling) set 1 below drill_advance_500core (533.93)."""
+    P = Params()
+    return _s1_ctx(values={"drill.bore_ceiling_above_tip": P.get("upper.drill_advance_500core") - 1})
+
+
+def s1_6_b1():
+    """Gameplan l.234 B: screw b (theta jackscrew.angle[0] 30) drawn at x = r (160) in every pose, r cos(theta) 138.56."""
+    P = Params()
+    spec = load_spec(HERE.parent / "s1_spec.yaml")
+    pl = check_stack.evaluate_spec(P, spec)["poses"]["load"]["features"]["screw_b"]["place"]
+    dx = pl["r_c"] - pl["r_c"] * check_stack.cosd(pl["theta"])
+    return _s1_ctx(xshift={(None, "screw_b"): dx})
+
+
+def s1_7_b1():
+    """Gameplan l.234 S1-7 B: the 0.5 m core as the capture core (core_750 row drawn core.length_capture long):
+    542.50 - 184.84 = 357.66 against 534.93, short 177.27."""
+    def mut(s):
+        row = next(r for r in s["features"] if r["id"] == "core_750")
+        row["z_rule"] = dict(row["z_rule"], z_max="capture_core_bottom + core.length_capture")
+        s["capture_core_length"] = "core.length_capture"
+    return _s1_ctx(spec_mut=mut)
 
 
 def s1_full_draw():
