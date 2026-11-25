@@ -169,3 +169,51 @@ None from this review beyond the Engineer's open items 4 and 5 (l.144, l.229).
 ## Verdict
 
 CROSS-REVIEW PASS. Every hand value matches its JSON value to 0.01 mm (0.1 N for forces). LF1.1-1 is open to the Engineer, with the shape ruling to the Designer, before M1 acceptance.
+
+## Re-check r2
+
+Inputs: step1.1_engineer_revision_r2.md, s1_spec.yaml (r2 edits), s1_side_poses.py, check_stack.py, sketch_common.py (stack_ties lint), fixtures/manifest.yaml (K6-B7), sketches/s1_checks_r2.json. HAND values are DERIVED; JSON values are MEASURED.
+
+### Findings
+
+| ID | HAND | r2 (JSON / code) | Status |
+|---|---|---|---|
+| LF1.1-1 | holder z_A 49.09 to 49.09 + 88 = 137.09 (tube), flange 137.09 to 145.09 (z_S 197.09 to 205.09); rim 40 + 88.5 = 128.50, gap 137.09 - 128.50 = 8.59 = 13.126 - 4.536; tie 145.09 + 8.00 + 6.75 = 159.84 = collar_top | holder z_max = holder_bottom + holder.length + holder.flange_thickness; flange drawn 197.09 to 205.09; stack_ties.holder_flange linted in K6 (pass); K6-B7 at the r1 rule: 137.09 + 8.00 + 6.75 = 151.84 vs 159.84, "8.00 apart", fires | **closed** |
+| LF1.1-2 | 959.84 - 50 - (159.84 + 750) = 0.00 | reported entry_plane_margin_mm 0.0 (lengths from park_lengths, always_loaded included) | **closed** |
+| LF1.1-3 | capture class start 184.84 + 650 = 834.84; 834.84 - 792.50 = 42.34 | start_tip_minus_core_top_mm reads class_starts_z_A for capture_core_length: 42.34. global_vars sets start_tip_max once, after park_tip, from the class starts (834.84); the params 965 entry is gone | **closed** |
+| LF1.1-4 to -7 | | NOTEs, carried to the Designer list (items 8 and 9) | open as NOTE, no action required |
+
+### Hand values on r2 (unchanged from r1)
+
+All agree to 0.01:
+- Tips z_S: load and park 1019.84, start 894.84, capture_end 244.84.
+- Park 959.84 z_A, stroke 775.00. Plus 1 m: 1209.84 and 1025.00.
+- S1-1 650.00, S1-2 125.00, S1-3 367.34 and 117.34, S1-4 least 0.84, S1-5a 192.34, S1-5b 142.00 (bearing|collar 301.84 - 159.84), S1-6 x +/-138.564 with depth 80.00, S1-7 607.66 (spare 72.73).
+- L_min 885.00, at anchor 885.84 (1135.00 and 1135.84 with the 1 m core).
+- Highest points 1969.84 / 1844.84 / 1285.00 / 1969.84.
+
+Pairs the flange move touches:
+- ring|holder at capture_end: 374.84 - 205.09 = 169.75 vertical. 2D, the ring bore r 100 against the flange OD r 72.04 gives sqrt(169.75^2 + 27.96^2) = 172.04 (Engineer 172.04).
+- bearing|holder: 361.84 - 205.09 = 156.75, above S1-5b's 142.00.
+- head|holder at capture_end: 244.84 - 205.09 = 39.75.
+
+### Spec placement re-signature (r2 edits)
+
+| Edit | HAND | Ruling |
+|---|---|---|
+| holder `bore_cone: collet` | collet z_A 40 to 40 + 25 + 3 + 8 / 2 = 72. Cone r(z) = 67.29 - (z - 40) tan 10. At the holder bottom 49.09: 67.29 - 9.09 x 0.17633 = 65.687. At 72.00: 67.29 - 32 x 0.17633 = 61.648 (z_S 109.09 and 132.00, as the Engineer states). The holder piece runs from the cone face to r 67.29 over 49.09 to 72.00, then from r 50 to 67.29 to 137.09 | placement correct; contact on the cone face |
+| receiver\|collet C | collet foot r 67.29 at the register bore 67.29; foot on the floor at 40 | correct as drawn |
+| receiver\|core_seat C | seat bottom 40 = floor top 40 | correct |
+| receiver\|holder C | holder OD drawn at the register bore 67.29 | correct as drawn. The part has g_reg 0.25 (OD 67.04), so the real pair is G 0.25; Designer at M1 |
+| collet\|core_seat C | seat r 47 to 50, collet bore r 50 | correct |
+| collet\|holder C | shared cone face, 49.09 to 72.00 | correct; resolves the r1 overlap of 313.12 mm2 per side (K7-B15) |
+| collar\|holder F | 153.09 - 145.09 = 8.00 (nut plate 7.5 + 1.3 - 0.8) | correct for the S1 holder, which ends at the flange top. In build_parts the tube runs through the plate to the collar, which makes it C. Designer at M1 |
+| stack_ties.holder_flange | 145.09 + 8.00 + 6.75 = 159.84 | correct; it closes the term my 1.1 (b) sign-off passed |
+
+Re-check NOTE R2-1: the five C contacts are idealised zero-clearance fits (register bore, cone face). They are right for S1 placement. They are not fit values, and nothing downstream reads them as clearances.
+
+**SPEC PLACEMENT SIGNED (Loftsman, r2).** The holder section (bore 56.75, tube through the nut plate, collar 6.0 on a 0.75 lift play) stays with the Designer at M1.
+
+### Verdict r2
+
+RE-CHECK PASS. LF1.1-1, LF1.1-2 and LF1.1-3 are closed. BLOCK 0, FIX 0 open, NOTE 4 carried plus R2-1.

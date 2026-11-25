@@ -139,3 +139,48 @@ Every predicate holds in every pose with the drawn sense. Hand equals code at th
 ## Verdict
 
 CROSS-REVIEW FAIL (TP1.1-1, TP1.1-2, TP1.1-3 FIX; 0 BLOCK; 7 NOTE). Every K8 predicate holds in every pose with hand values equal to code values, and TP-9 is closed. The holder|collet interference (TP1.1-3) is a drawing defect in r1. TP1.1-1 and TP1.1-2 are checks that pass a reversed or extra part.
+
+## Re-check r2
+
+Inputs: `step1.1_engineer_revision_r2.md`; `sketch_common.py` k5 (bore_cone admission), k7 (section-N lint), `face_rises_issue`, k8, k9 (pose-set rule); `s1_spec.yaml` r2; the r2 figures from `s1_side_poses.build`. All values MEASURED 2026-11-25, in-process. No harness file was written: `controls_results.json` was not rewritten. Probe: scratchpad `tp11_r2_probe.py`, which runs the r1 probes against r2.
+
+**Controls (manifest, in-process, matched on reason and planted count):** K5 Z 2/2, B 6/6; K7 Z 10/10, B 15/15; K8 Z 4/4, B 14/14; K9 Z 2/2, B 5/5. The new controls carry their reasons:
+- K8-B14: "dz +15.00 over d|x| -35.00".
+- K9-B5: "park: core_750 drawn at a pose outside its poses".
+- K7-B14: "collet|holder class N between two section rows".
+- K7-B15: "overlap 626.239 mm2" x 4 poses, against r1 hand 626.24.
+- K5-B6: "bore_cone trapezoid z [137.00, 142.00] outside mate collet z [100.00, 132.00]".
+
+**Probes on r2.** Each r1 probe re-run against r2 gives:
+
+| Probe | r1 | r2 |
+|---|---|---|
+| Gear tooth face falling outward | all pass | K8 fires: face_rises, dz +16.88 over d|x| -36.32, all poses |
+| core_750 seated at park | all pass | K9 fires: drawn outside its poses |
+| 500 mm core tagged core_750 at park | all pass | K9 fires |
+| Collet bore tapered, outer face vertical | all pass | K7 fires: collet|holder C overlap 165.989 mm2 (the holder cone piece guards the outer face) |
+| Ring and assembly shifted +30, pinions toe outward | K7 / K8 fire | unchanged |
+| Live r2 | n/a | K5 to K9 and S1-1 to S1-7 all pass |
+
+**face_rises sign check by hand, live gear (load):** the lowest vertex is a = (90, 1242.07). Its adjacent vertex with the larger radial change is b = (126.32, 1258.955). (16.885)(36.32) = +613.3 > 0, so it holds (code: no issue, all four poses).
+
+**Holder cone piece, by hand:** r = 67.29 - (z - 100) tan 10.
+- At 109.09: 67.29 - 1.6028 = 65.687 (code 65.687).
+- At 132.00: 61.648 (code 61.648).
+
+collet|holder is class C, at distance 0.000 and overlap 0.000 in every pose. The holder has 6 pieces: the cone zone, the tube from 132.00 to 197.09, and the flange from 197.09 to 205.09. K9 counts 45 gids at load, start and capture_end and 44 at park.
+
+**TP1.1-7:** every figure carries an untagged note: "not drawn (project onto x = 0): third screw set, theta 270; third pinion and NEMA 23, theta 90; see S2 plan".
+
+| ID | Status | Evidence |
+|---|---|---|
+| TP1.1-1 | CLOSED | K8 `face_rises: outward` on the gear. K8-Z4 clean, K8-B14 fires; the r1 probe fires in all poses. The sign form (z_b - z_a)(|x_b| - |x_a|) > 0 matches the Designer's TP-2 check (b). |
+| TP1.1-2 | CLOSED | K9 pose-set half-space: no artist or Text of a row at a pose outside `poses`. K9-Z2 clean, K9-B5 fires; both r1 park probes fire. |
+| TP1.1-3 | CLOSED | Drawing: holder bore on the collet cone, overlap 0.000 and distance 0.000 in four poses. Spec: class C, `section` on receiver, collet, core_seat, holder and collar, and N refused between section rows (K7-B14). The r1 drawing fires at 626.239 (K7-B15). The bore_cone piece is admitted only inside the collet z extent (K5-Z2, K5-B6). The holder's true section (build_parts/holder.py OD 67.04, cone 62.04 to 56.75) is the Designer's at M1, as the revision lists. |
+| TP1.1-7 | CLOSED | Note on all four figures. |
+| TP1.1-4 | NOTE, now covered | A tapered collet bore with a vertical outer face fires K7 collet|holder (165.989 mm2). A bore that tapers while the outer cone stays is still unencoded; it stays optional for the Designer. |
+| TP1.1-5, -6, -8, -9, -10 | NOTE, carried | -6, -9 and -10 are on the Designer's M1 list in the revision. -8 is stated in the spec header. |
+
+No new finding.
+
+CROSS-REVIEW PASS (TP1.1-1, TP1.1-2, TP1.1-3 closed; TP1.1-7 closed; NOTEs carried to M1)
