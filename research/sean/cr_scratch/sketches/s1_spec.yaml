@@ -16,7 +16,16 @@ closes:
   carries_assumed: [Q2]
   re_derives: ["U13 park rule (upper.park_z 959.84 below stop.start_z 965)", "stop.height_range[1] 315 (not re-derived in params)"]
 q9_length_keys: [core.length_capture, core.length_install]   # batch 1 Q9 stand-in: 500 and 750 drawn, 1000 not drawn
-park_rule_draft: "park tip z_A = max(max(stop.start_z), core_stop + max(Q9 lengths)) + upper.load_clearance (check_stack.park_tip_z_A); ASSUMED, signed at 1.1"
+park_rule_draft: "park tip z_A = max(max(stop.start_z), load_plane + max(Q9 lengths)) + upper.load_clearance (check_stack.park_tip_z_A); ASSUMED, signed at 1.1"
+# LF-6: the plane the core bottom crosses during loading; check_stack's park rule and S1-3 both read this field.
+# Draft core_stop per gameplan S1-3 (l.227); params upper.park_z (U13) uses collar_top (term collar_top, feature wingnut,
+# edge z_max, offset collar.top_above_plate). Sean or the Designer rules at 1.1 (a).
+load_plane: {term: core_stop, feature: core_seat, edge: z_max, offset: 0}
+# TP-5: K7 tests every undeclared pair of drawn parts as F. Nested parts are declared class N; 1.1 (b) declares them.
+undeclared_pairs: F
+# place: plan position of a part: r_in, r_out (default r_in), theta (deg, counter-clockwise from +X seen from +Z),
+# half_width, footprint round (axis-Z part) or radial (radial-axis part). check_stack derives the depth band and the
+# projected x from it (LF-5, TP-4); K8 asserts the drawn x centre = r_c cos(theta) (TP-3).
 poses:
   - {id: load,        tip_z: park_tip,         cores: "0.75 m mid-insertion dashed; 0.5 m solid", purpose: "operator loads a core under the held ring"}
   - {id: start,       tip_z: "stop.start_z[0]", cores: "0.5 m in the collet (stop.start_z[1] for 0.75 m, dashed)", purpose: "cutter at first contact"}
@@ -108,7 +117,7 @@ features:
     depth: ["-receiver.register_bore_radius", "receiver.register_bore_radius"]
     label: null
     neighbours: []
-    sense: []
+    sense: [{pred: taper, narrows: down, source: "ASSUMED; Designer confirms the cone direction at 1.1 (a)"}]
     chain: [axial]
     moves: false
 
@@ -169,7 +178,7 @@ features:
     label: {text: "core", key: core.length_capture, fmt: ".0f"}
     neighbours:
       - {id: bore_ceiling, class: G, g_min: 25, poses: [capture_end], source: "stop.g_stop DECLARED as cutter gap; reuse ASSUMED (S1-5a)"}
-    sense: [{pred: rests_on, on: core_seat, tol: 0.05}]
+    sense: [{pred: rests_on, seat: core_seat, tol: 0.05}]
     chain: [axial]
     moves: false
     poses: [load, start, capture_end]
@@ -185,7 +194,9 @@ features:
     depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
     label: {text: "core", key: core.length_install, fmt: ".0f"}
     neighbours: []
-    sense: [{pred: rests_on, on: core_seat, tol: 0.05}]
+    # TP-9 (a), carried to 1.1 (b): the pose table draws this core mid-insertion at load; this row seats it in load and
+    # park. The Designer gives the load z_rule; then the predicate takes poses: [park].
+    sense: [{pred: rests_on, seat: core_seat, tol: 0.05}]
     chain: []
     moves: false
     poses: [load, park]
@@ -198,7 +209,7 @@ features:
     projection: rectangle
     keys: [drill.head_od, drill.head_length]
     z_rule: {z_min: tip, z_max: head_top}
-    depth: ["-drill.head_od / 2", "drill.head_od / 2"]
+    place: {r_in: 0, theta: 0, half_width: "drill.head_od / 2", footprint: round}
     label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
     neighbours: []
     sense: [{pred: below, of: gear}, {pred: below, of: drill_top_block}]
@@ -213,7 +224,7 @@ features:
     projection: rectangle
     keys: [drill.tube_od, drill.length, drill.head_length]
     z_rule: {z_min: head_top, z_max: drill_top}
-    depth: ["-drill.tube_od / 2", "drill.tube_od / 2"]
+    place: {r_in: 0, theta: 0, half_width: "drill.tube_od / 2", footprint: round}
     label: {text: "tube OD", key: drill.tube_od, fmt: ".1f", suffix: "(keep-out basis)"}
     neighbours: []
     sense: []
@@ -228,7 +239,7 @@ features:
     projection: rectangle
     keys: [drill.top_block_od, drill.top_block_length]
     z_rule: {z_min: drill_top, z_max: top_block_top}
-    depth: ["-drill.top_block_od / 2", "drill.top_block_od / 2"]
+    place: {r_in: 0, theta: 0, half_width: "drill.top_block_od / 2", footprint: round}
     label: {text: "top block", key: drill.top_block_length, fmt: ".0f"}
     neighbours: []
     sense: []
@@ -276,9 +287,12 @@ features:
     depth: ["-ring.od / 2", "ring.od / 2"]
     label: {text: "ring above tip", key: ring.position_above_tip, fmt: ".0f"}
     neighbours:
-      - {id: wingnut, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
-      - {id: holder, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
-      - {id: receiver, class: G, g_min: 10, source: "g_min seed l.148 ASSUMED (S1-5b)"}
+      - {id: collet, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: holder, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: wingnut, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: receiver, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: base_plate, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: base_frame, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
       - {id: frame_upper_a, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
       - {id: frame_upper_b, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
       - {id: liftmotor_a, class: G, g_min: 10, source: "g_min seed l.146 ASSUMED"}
@@ -298,7 +312,13 @@ features:
     z_rule: {z_min: ring_bottom, z_max: "ring_bottom + bearing.height"}
     depth: ["-bearing.od / 2", "bearing.od / 2"]
     label: null
-    neighbours: []
+    neighbours: &s1_5b_base
+      - {id: collet, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: holder, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: wingnut, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: receiver, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: base_plate, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
+      - {id: base_frame, class: G, g_min: 10, poses: [capture_end], group: S1-5b, source: "g_min seed l.148 ASSUMED"}
     sense: []
     chain: [axial]
     moves: true
@@ -311,10 +331,10 @@ features:
     projection: trapezoid
     keys: [gear.pitch_diameter, gear.bore, gear.face_width, gear.pitch_angle]
     z_rule: {z_min: ring_top, z_max: gear_top}
-    depth: ["-gear.pitch_diameter / 2", "gear.pitch_diameter / 2"]
+    depth: ["-(gear.pitch_diameter / 2 + gear.face_width / 2)", "gear.pitch_diameter / 2 + gear.face_width / 2"]   # outer edge as draw_gear_section (TP-4)
     label: {text: "gear PD", key: gear.pitch_diameter, fmt: ".0f"}
-    neighbours: []
-    sense: [{pred: mirror_about_axis, axis: drill_tube}]
+    neighbours: *s1_5b_base
+    sense: [{pred: mirror_about_axis, axis: drill_tube}, {pred: taper, narrows: up, source: "draw_gear_section; teeth face up and out to the pinions; Designer confirms at 1.1 (a)"}]
     chain: []
     moves: true
 
@@ -326,13 +346,13 @@ features:
     projection: trapezoid
     keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, gear.pitch_diameter, gear.face_width]
     z_rule: {z_min: ring_top, z_max: gear_top}
-    depth: ["gear.pitch_diameter / 2 * sind(pinion.angle[1]) - gear.face_width / 2", "gear.pitch_diameter / 2 * sind(pinion.angle[1]) + gear.face_width / 2"]
+    # radial footprint: axial length gear.face_width centred on the pitch radius, diameter = pinion PD (module x teeth)
+    place: {r_in: "gear.pitch_diameter / 2 - gear.face_width / 2", r_out: "gear.pitch_diameter / 2 + gear.face_width / 2", theta: "pinion.angle[1]", half_width: "gear.pitch_diameter / gear.tooth_count * pinion.tooth_count / 2", footprint: radial}
     label: null
-    neighbours: []
-    sense: []
+    neighbours: *s1_5b_base
+    sense: [{pred: taper, narrows: inward, source: "bevel pinion apex on the gear axis (intersecting axes)"}]
     chain: []
     moves: true
-    azimuth: "pinion.angle[1]"
 
   - id: pinion_b
     name: bevel pinion
@@ -342,13 +362,12 @@ features:
     projection: trapezoid
     keys: [pinion.angle, pinion.tooth_count, pinion.pitch_angle, gear.pitch_diameter, gear.face_width]
     z_rule: {z_min: ring_top, z_max: gear_top}
-    depth: ["gear.pitch_diameter / 2 * sind(pinion.angle[2]) - gear.face_width / 2", "gear.pitch_diameter / 2 * sind(pinion.angle[2]) + gear.face_width / 2"]
+    place: {r_in: "gear.pitch_diameter / 2 - gear.face_width / 2", r_out: "gear.pitch_diameter / 2 + gear.face_width / 2", theta: "pinion.angle[2]", half_width: "gear.pitch_diameter / gear.tooth_count * pinion.tooth_count / 2", footprint: radial}
     label: null
-    neighbours: []
-    sense: []
+    neighbours: *s1_5b_base
+    sense: [{pred: taper, narrows: inward, source: "bevel pinion apex on the gear axis (intersecting axes)"}]
     chain: []
     moves: true
-    azimuth: "pinion.angle[2]"
 
   - id: motor23_a
     name: NEMA 23
@@ -358,13 +377,13 @@ features:
     projection: rectangle
     keys: [pinion.motor_body, pinion.motor_length, pinion.angle, pinion.motor_class]
     z_rule: {z_min: ring_top, z_max: "ring_top + pinion.motor_body"}
-    depth: ["(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[1]) - pinion.motor_body / 2", "(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[1]) + pinion.motor_body / 2"]
+    # radial body from the pitch radius outward by pinion.motor_length (outer end 201 as the Wave 1b draft; TP-4 hand band)
+    place: {r_in: "gear.pitch_diameter / 2", r_out: "gear.pitch_diameter / 2 + pinion.motor_length", theta: "pinion.angle[1]", half_width: "pinion.motor_body / 2", footprint: radial}
     label: null
-    neighbours: []
-    sense: [{pred: above, of: ring}]
+    neighbours: *s1_5b_base
+    sense: [{pred: above, of: ring}, {pred: side, of: drill_tube, sign: -1, source: "cos(pinion.angle[1] 210) < 0"}, {pred: outboard, of: pinion_a}]
     chain: []
     moves: true
-    azimuth: "pinion.angle[1]"
 
   - id: motor23_b
     name: NEMA 23
@@ -374,13 +393,12 @@ features:
     projection: rectangle
     keys: [pinion.motor_body, pinion.motor_length, pinion.angle, pinion.motor_class]
     z_rule: {z_min: ring_top, z_max: "ring_top + pinion.motor_body"}
-    depth: ["(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[2]) - pinion.motor_body / 2", "(gear.pitch_diameter / 2 + pinion.motor_length) * sind(pinion.angle[2]) + pinion.motor_body / 2"]
+    place: {r_in: "gear.pitch_diameter / 2", r_out: "gear.pitch_diameter / 2 + pinion.motor_length", theta: "pinion.angle[2]", half_width: "pinion.motor_body / 2", footprint: radial}
     label: null
-    neighbours: []
-    sense: [{pred: above, of: ring}]
+    neighbours: *s1_5b_base
+    sense: [{pred: above, of: ring}, {pred: side, of: drill_tube, sign: 1, source: "cos(pinion.angle[2] 330) > 0"}, {pred: outboard, of: pinion_b}]
     chain: []
     moves: true
-    azimuth: "pinion.angle[2]"
 
   - id: screw_a
     name: T8 jack screw
@@ -390,13 +408,12 @@ features:
     projection: rectangle
     keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, jackscrew.length]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.top_guide_z"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nominal / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nominal / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nominal / 2", footprint: round}
     label: {text: "T8 screw L", key: jackscrew.length, fmt: ".0f"}
     neighbours: []
     sense: []
     chain: [axial]
     moves: false
-    azimuth: "jackscrew.angle[1]"
 
   - id: screw_b
     name: T8 jack screw
@@ -406,13 +423,12 @@ features:
     projection: rectangle
     keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.top_guide_z"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nominal / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nominal / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nominal / 2", footprint: round}
     label: null
     neighbours: []
     sense: []
     chain: [axial]
     moves: false
-    azimuth: "jackscrew.angle[0]"
 
   - id: nut_a
     name: lead-screw nut
@@ -422,7 +438,7 @@ features:
     projection: rectangle
     keys: [jackscrew.nut_length, jackscrew.nut_flange_od, ring.thickness]
     z_rule: {z_min: "nut_z - jackscrew.nut_length / 2", z_max: "nut_z + jackscrew.nut_length / 2"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: below, of: guide_a}]
@@ -437,7 +453,7 @@ features:
     projection: rectangle
     keys: [jackscrew.nut_length, jackscrew.nut_flange_od, ring.thickness]
     z_rule: {z_min: "nut_z - jackscrew.nut_length / 2", z_max: "nut_z + jackscrew.nut_length / 2"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: below, of: guide_b}]
@@ -452,7 +468,7 @@ features:
     projection: rectangle
     keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: below, of: nut_a}]
@@ -467,7 +483,7 @@ features:
     projection: rectangle
     keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: below, of: nut_b}]
@@ -482,7 +498,7 @@ features:
     projection: rectangle
     keys: [jackscrew.top_guide_z, jackscrew.guide_allowance]
     z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: []
@@ -497,7 +513,7 @@ features:
     projection: rectangle
     keys: [jackscrew.top_guide_z, jackscrew.guide_allowance]
     z_rule: {z_min: "jackscrew.top_guide_z - jackscrew.guide_allowance", z_max: "jackscrew.top_guide_z"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - jackscrew.nut_flange_od / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + jackscrew.nut_flange_od / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: []
@@ -512,7 +528,7 @@ features:
     projection: rectangle
     keys: [liftmotor.body, liftmotor.length, jackscrew.top_guide_z]
     z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + liftmotor.length"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[1]) - liftmotor.body / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[1]) + liftmotor.body / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "liftmotor.body / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: above, of: guide_a}]
@@ -527,7 +543,7 @@ features:
     projection: rectangle
     keys: [liftmotor.body, liftmotor.length, jackscrew.top_guide_z]
     z_rule: {z_min: "jackscrew.top_guide_z", z_max: "jackscrew.top_guide_z + liftmotor.length"}
-    depth: ["jackscrew.pitch_radius * sind(jackscrew.angle[0]) - liftmotor.body / 2", "jackscrew.pitch_radius * sind(jackscrew.angle[0]) + liftmotor.body / 2"]
+    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "liftmotor.body / 2", footprint: round}
     label: null
     neighbours: []
     sense: [{pred: above, of: guide_b}]
@@ -542,7 +558,7 @@ features:
     projection: rectangle
     keys: [guide.length, guide.rod_od, guide.radius, guide.angle]
     z_rule: {z_min: 0, z_max: "guide.length"}
-    depth: ["guide.radius * sind(guide.angle[0]) - guide.rod_od / 2", "guide.radius * sind(guide.angle[0]) + guide.rod_od / 2"]
+    place: {r_in: guide.radius, theta: "guide.angle[0]", half_width: "guide.rod_od / 2", footprint: round}
     label: null
     neighbours: []
     sense: []
@@ -557,7 +573,7 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
     z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
-    depth: ["frame_upper.radius * sind(jackscrew.angle[1]) - profile.width / 2", "frame_upper.radius * sind(jackscrew.angle[1]) + profile.width / 2"]
+    place: {r_in: frame_upper.radius, theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: round}
     label: null
     neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
     sense: []
@@ -572,7 +588,7 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle]
     z_rule: {z_min: 0, z_max: "frame_upper.member_length"}
-    depth: ["frame_upper.radius * sind(jackscrew.angle[0]) - profile.width / 2", "frame_upper.radius * sind(jackscrew.angle[0]) + profile.width / 2"]
+    place: {r_in: frame_upper.radius, theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: round}
     label: null
     neighbours: [{id: base_frame, class: C, g_min: 0, source: "S3-3 axial loop (frame member on the base frame)"}]
     sense: []
@@ -587,7 +603,7 @@ features:
     projection: rectangle
     keys: [stop.pad_thickness, stop.pad_width, ring.position_above_tip, upper.metal_stop]
     z_rule: {z_min: "ring_bottom_low - stop.pad_thickness", z_max: ring_bottom_low}
-    depth: ["frame_upper.radius * sind(jackscrew.angle[1]) - stop.pad_width / 2", "frame_upper.radius * sind(jackscrew.angle[1]) + stop.pad_width / 2"]
+    place: {r_in: frame_upper.radius, theta: "jackscrew.angle[1]", half_width: "stop.pad_width / 2", footprint: round}
     label: null
     neighbours: []
     sense: []

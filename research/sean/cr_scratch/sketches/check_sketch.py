@@ -23,12 +23,15 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
-from sketch_loader import Params, load_yaml  # noqa: E402
+from sketch_loader import Params, load_spec, load_yaml  # noqa: E402
 
 K_ALL = ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9"]
 K_BY_SKETCH = {"s5": ["K1", "K2", "K3", "K4", "K9"]}
 STUB_EXPECT = {"s1": {"guard": ["K1", "K2", "K3", "K5"],
                       "red": ["K4", "K6", "K7", "K8", "K9", "S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6"]}}
+_ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
+_ABS_S = ("absent", "red (absent, fail-closed; content at 1.1 c)")
+STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, **{k: _ABS_S for k in ("S1-1", "S1-2", "S1-3", "S1-4", "S1-5a", "S1-5b", "S1-6")}}
 SOURCES = {
     "K1": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)", "K2": "gameplan l.135; Design Notes 6",
     "K3": "gameplan l.136; LLM-PLM 8.4.2", "K4": "gameplan l.137; LLM-PLM 8.4.2",
@@ -72,26 +75,47 @@ def safe(fn, cid, *a):
 def run_control(entry):
     file, fn = entry["fixture"].split("::")
     mod = load_module(HERE / "fixtures" / file, "fixture_builders")
-    ctxs = getattr(mod, fn)()
-    ctxs = ctxs if isinstance(ctxs, list) else [ctxs]
+    built = getattr(mod, fn)()
+    if entry["check"] == "ALL":
+        ctx, extra = built
+        res = [safe(sc.CHECKS[k], k, ctx) for k in K_ALL] + extra(ctx)
+        return {"id": "ALL", "result": "error" if any(r["result"] == "error" for r in res) else "pass",
+                "reason": " || ".join(f"{r['id']} {r['result']}" + (f" ({r.get('cause')})" if r["result"] == "fail" else "") for r in res),
+                "measured": None, "threshold": None, "per_check": res}
+    ctxs = built if isinstance(built, list) else [built]
+    for c in ctxs:
+        if entry.get("anchors"):
+            c.anchors = entry["anchors"]
     res = [sc.CHECKS[entry["check"]](c) for c in ctxs]
     out = {"id": entry["check"], "result": "fail" if any(r["result"] != "pass" for r in res) else "pass",
            "reason": " || ".join(r["reason"] for r in res), "measured": [r["measured"] for r in res],
            "threshold": res[0]["threshold"], "states": [s for r in res for s in r.get("states", [])],
-           "failing": sum(r.get("failing", 0) for r in res)}
+           "failing": sum(r.get("failing", 0) for r in res), "n_issues": sum(r.get("n_issues", 0) for r in res)}
     return out
 
 
 def compare(entry, res):
+    """Z: clean (and, for a state expectation, every tested pair in that state). B: fires, the reason carries every
+    planted substring, and the issue count equals the planted count (default 1), so a B that fires for an extra or a
+    different reason is a mismatch (SW-2). smoke: every check returns pass or fail, none error, none fail-closed on
+    an absent part (SW-8)."""
     exp = entry["expected"]
     if res["result"] == "error":
         return False, "error"
+    if exp == "runs":
+        bad = [r["id"] for r in res["per_check"] if r["result"] == "error" or r.get("cause") == "absent"]
+        return not bad, "runs" if not bad else f"error or absent in {bad}"
     observed = "clean" if res["result"] == "pass" else "fires"
     if exp == "clean":
         return observed == "clean", observed
     if exp == "fires":
-        ok = observed == "fires" and res.get("failing", 0) >= entry.get("min_failing", 0)
-        return ok, observed + (f" ({res.get('failing')} failing)" if "min_failing" in entry else "")
+        want_n = entry.get("planted", 1)
+        missing = [s for s in entry.get("reason", []) if s not in res["reason"]]
+        ok = observed == "fires" and not missing and res.get("n_issues") == want_n
+        note = f" ({res.get('n_issues')} issue(s), planted {want_n})"
+        if missing:
+            note += f"; reason lacks {missing}"
+        return ok, observed + note
     states = res.get("states", [])
     ok = observed == "clean" and bool(states) and all(s == exp for s in states)
     return ok, f"{observed}, states {states}"
@@ -103,13 +127,19 @@ def controls(args):
     for e in man:
         res = safe(run_control, e["check"], e)
         ok, observed = compare(e, res)
-        rows.append({"id": e["id"], "check": e["check"], "control": e["control"], "expected": e["expected"],
-                     "observed": observed, "reason": res["reason"], "match": "yes" if ok else "no", "gameplan_line": e.get("gameplan_line")})
-        print(f"{e['id']:8s} {e['control']} expected {e['expected']:16s} observed {observed:24s} match {'yes' if ok else 'NO'}")
+        row = {"id": e["id"], "check": e["check"], "control": e["control"], "expected": e["expected"],
+               "observed": observed, "reason": res["reason"], "match": "yes" if ok else "no", "gameplan_line": e.get("gameplan_line"),
+               "finding": e.get("finding")}
+        if "per_check" in res:
+            row["reported"] = [{k: r.get(k) for k in ("id", "result", "cause", "measured", "reason")} for r in res["per_check"]]
+        rows.append(row)
+        print(f"{e['id']:9s} {e['control']} expected {e['expected']:16s} observed {observed[:40]:40s} match {'yes' if ok else 'NO'}")
     z = [r for r in rows if r["control"] == "Z"]
     b = [r for r in rows if r["control"] == "B"]
+    sm = [r for r in rows if r["control"] == "smoke"]
     summary = {"z_clean": sum(r["match"] == "yes" for r in z), "z_total": len(z),
-               "b_fired": sum(r["match"] == "yes" for r in b), "b_total": len(b)}
+               "b_fired": sum(r["match"] == "yes" for r in b), "b_total": len(b),
+               "smoke_ok": sum(r["match"] == "yes" for r in sm), "smoke_total": len(sm)}
     try:
         mod = load_module(HERE / "fixtures" / "builders.py", "fixture_builders")
         key = mod.control_figures(HERE / "fixtures" / "figs")
@@ -118,7 +148,8 @@ def controls(args):
         summary["ctrl_figs_error"] = f"{type(e).__name__}: {e}"
     out = {"run": 1, "timestamp": TIMESTAMP(), "summary": summary, "controls": rows}
     (HERE / "fixtures" / "controls_results.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
-    print(f"Z clean {summary['z_clean']}/{summary['z_total']}, B fired {summary['b_fired']}/{summary['b_total']}")
+    print(f"Z clean {summary['z_clean']}/{summary['z_total']}, B fired {summary['b_fired']}/{summary['b_total']}, "
+          f"smoke {summary['smoke_ok']}/{summary['smoke_total']}")
     return 0 if all(r["match"] == "yes" for r in rows) else 1
 
 
@@ -129,6 +160,8 @@ def control_tally():
     data = json.loads(p.read_text(encoding="utf-8"))
     tally = {}
     for r in data["controls"]:
+        if r["control"] not in ("Z", "B"):
+            continue
         t = tally.setdefault(r["check"], {"Z": [0, 0], "B": [0, 0]})
         t[r["control"]][1] += 1
         t[r["control"]][0] += r["match"] == "yes"
@@ -141,7 +174,7 @@ def run_sketch(args):
     s, rev = args.sketch, args.rev
     P = Params(args.params, args.overlay)
     spec_path = HERE / f"{s}_spec.yaml"
-    spec = load_yaml(spec_path)
+    spec = load_spec(spec_path)
     stack = check_stack.evaluate_spec(P, spec)
     script = HERE / "stubs" / f"{s}_stub.py" if rev == 0 else HERE / spec["script"]
     mod = load_module(script, f"{s}_script")
@@ -182,8 +215,13 @@ def write_summary(rec, path):
         reason = str(r["reason"]).replace("|", "/")[:160]
         lines.append(f"| {r['id']} | {r['result']} | {r['measured']} | {r['threshold']} | {r['z_result']} | {r['b_result']} | {reason} |")
     rep = rec["reported"]
-    lines += ["", "Reported (no threshold):", f"- Lift stroke (draft park rule): {rep['lift_stroke_mm']:.2f} mm",
-              f"- Collar top recomputed {rep['collar_top_recomputed_z_A']:.2f} z_A against params stop.collar_top_z {rep['collar_top_params_z_A']}"]
+    lines += ["", "| Check | Cause of red |", "|---|---|"] + [f"| {r['id']} | {r.get('cause')} |" for r in rec["checks"] if r["result"] != "pass"]
+    lines += ["", "Reported (no threshold):", f"- Lift stroke (draft park rule, load plane {rep['load_plane']}): {rep['lift_stroke_mm']:.2f} mm",
+              f"- Collar top recomputed {rep['collar_top_recomputed_z_A']:.2f} z_A against params stop.collar_top_z {rep['collar_top_params_z_A']}",
+              "- Park tip z_A by load plane and core length: " + "; ".join(
+                  f"{t}: " + ", ".join(f"{k.split('.')[-1]} {v:.2f}" for k, v in d.items()) for t, d in rep["park_tip_by_plane_z_A"].items()),
+              f"- Start tip minus 0.5 m core top on the core stop: {rep['start_tip_minus_core_top_mm']:.2f} mm "
+              f"(end tip + drill_advance_500core = {rep['end_tip_plus_advance_z_A']:.2f} z_A; core top {rep['core_top_on_core_stop_z_A']:.2f} z_A)"]
     for pid, v in rep["poses"].items():
         if v["highest_z_S"] is not None:
             lines.append(f"- {pid}: highest point {v['highest_z_S']:.2f} z_S, margin to the 2000 mm soft target {v['margin_to_soft_target']:.2f} mm (spec values, not drawn)")
@@ -226,12 +264,18 @@ def baseline(args):
         if r["id"] in exp["guard"]:
             e, ok = "green (guard)", r["result"] == "pass"
         elif r["id"] in exp["red"]:
-            e = "red (content)"
-            ok = r["result"] == "fail" and "missing file" not in r["reason"]
+            want_cause = STUB_CAUSE.get(r["id"], ("content", "red (content)"))
+            e = want_cause[1]
+            ok = r["result"] == "fail" and r.get("cause") == want_cause[0] and "missing file" not in r["reason"]
         else:
             e, ok = "unlisted", False
-        rows.append({"id": r["id"], "run": 2, "expected": e, "observed": "green" if r["result"] == "pass" else ("red" if r["result"] == "fail" else "error"),
+        obs = "green" if r["result"] == "pass" else ("red" if r["result"] == "fail" else "error")
+        rows.append({"id": r["id"], "run": 2, "expected": e, "observed": obs + (f" ({r.get('cause')})" if obs == "red" else ""),
                      "reason": r["reason"], "match": "yes" if ok else "no"})
+    for r in rows:
+        if r["run"] == 1:
+            cr = next(c for c in ctrl["controls"] if c["id"] == r["id"])
+            r["control"] = cr["control"]
     out = {"timestamp": TIMESTAMP(), "run1": {"source": "fixtures/controls_results.json", "at": ctrl["timestamp"], **ctrl["summary"]},
            "run2": {"source": "s1_checks_r0.json", "at": s1["timestamp"], "spec_status": s1["spec_status"],
                     "matched": sum(r["match"] == "yes" for r in rows if r["run"] == 2), "total": sum(r["run"] == 2 for r in rows)},

@@ -1,11 +1,13 @@
 {
  "run": 1,
- "timestamp": "2026-11-24T22:57:04",
+ "timestamp": "2026-11-24T23:26:05",
  "summary": {
-  "z_clean": 12,
-  "z_total": 12,
-  "b_fired": 29,
-  "b_total": 29
+  "z_clean": 17,
+  "z_total": 17,
+  "b_fired": 50,
+  "b_total": 50,
+  "smoke_ok": 1,
+  "smoke_total": 1
  },
  "controls": [
   {
@@ -16,27 +18,30 @@
    "observed": "clean",
    "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (k1_z_clean.py)",
    "match": "yes",
-   "gameplan_line": 134
+   "gameplan_line": 134,
+   "finding": null
   },
   {
    "id": "K1-B1",
    "check": "K1",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "k1_b1_literal.py:16 literal 152.4",
    "match": "yes",
-   "gameplan_line": 134
+   "gameplan_line": 134,
+   "finding": null
   },
   {
    "id": "K1-B2",
    "check": "K1",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "k1_b2_softkey.py:19 comparison with soft key jig.height_target",
    "match": "yes",
-   "gameplan_line": 134
+   "gameplan_line": 134,
+   "finding": null
   },
   {
    "id": "K2-Z",
@@ -46,37 +51,41 @@
    "observed": "clean",
    "reason": "5 spec keys resolve; 3 overlay leaves sourced, legal status, no shadow",
    "match": "yes",
-   "gameplan_line": 135
+   "gameplan_line": 135,
+   "finding": null
   },
   {
    "id": "K2-B1",
    "check": "K2",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay key drill.tube_od shadows params.yaml",
    "match": "yes",
-   "gameplan_line": 135
+   "gameplan_line": 135,
+   "finding": null
   },
   {
    "id": "K2-B2",
    "check": "K2",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay fx.ring_thickness: empty source",
    "match": "yes",
-   "gameplan_line": 135
+   "gameplan_line": 135,
+   "finding": null
   },
   {
    "id": "K2-B3",
    "check": "K2",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay fx.ring_od: DECLARED without [CP \u00a7n, mm:ss] or [DN23]",
    "match": "yes",
-   "gameplan_line": 135
+   "gameplan_line": 135,
+   "finding": null
   },
   {
    "id": "K3-Z",
@@ -84,69 +93,87 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "1 figure(s): title, (mm) labels, equal aspect, grids, figsize, dpi 150",
+   "reason": "1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B1",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: title 'k3 fixture pose start' lacks view side_xz",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B2",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: x label 'x' lacks (mm)",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B3",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: aspect 'auto'",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B4",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: minor grid off",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B5",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: figsize (6.4, 4.8) below (14, 10)",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
   },
   {
    "id": "K3-B6",
    "check": "K3",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: dpi 100 not 150",
    "match": "yes",
-   "gameplan_line": 136
+   "gameplan_line": 136,
+   "finding": null
+  },
+  {
+   "id": "K3-B7",
+   "check": "K3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture: 2 Axes in the figure, spec declares no inset (checks read the first Axes only)",
+   "match": "yes",
+   "gameplan_line": 136,
+   "finding": "TP-7"
   },
   {
    "id": "K4-Z",
@@ -156,27 +183,41 @@
    "observed": "clean",
    "reason": "3 label(s) carry their key value",
    "match": "yes",
-   "gameplan_line": 137
+   "gameplan_line": 137,
+   "finding": null
   },
   {
    "id": "K4-B1",
    "check": "K4",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/drill_tube: label 'tube OD' carries no number (want 152.4 from drill.tube_od)",
    "match": "yes",
-   "gameplan_line": 137
+   "gameplan_line": 137,
+   "finding": null
   },
   {
    "id": "K4-B2",
    "check": "K4",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/drill_tube: label 'tube OD 150' number differs from drill.tube_od = 152.4",
    "match": "yes",
-   "gameplan_line": 137
+   "gameplan_line": 137,
+   "finding": null
+  },
+  {
+   "id": "K4-B3",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "capture_end/core_500: label 'core 750' number differs from core.length_capture = 500; capture_end/core_750: label 'core 500' number differs from core.length_install = 750",
+   "match": "yes",
+   "gameplan_line": 137,
+   "finding": "SW-3"
   },
   {
    "id": "K5-Z",
@@ -184,39 +225,65 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "2 tagged artist(s) projected per kind and axis (view normal Y) || 1 tagged artist(s) projected per kind and axis (view normal Z)",
+   "reason": "2 tagged artist(s) projected per kind, axis and spec projection (view normal Y) || 1 tagged artist(s) projected per kind, axis and spec projection (view normal Z) || 15 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
-   "gameplan_line": 138
+   "gameplan_line": 138,
+   "finding": null
   },
   {
    "id": "K5-B1",
    "check": "K5",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/drill_tube: cylinder axis Z in side_xz drawn as circle, needs rectangle",
    "match": "yes",
-   "gameplan_line": 138
+   "gameplan_line": 138,
+   "finding": null
   },
   {
    "id": "K5-B2",
    "check": "K5",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/pinion_a: gear axis X in side_xz drawn as rectangle, needs trapezoid",
    "match": "yes",
-   "gameplan_line": 138
+   "gameplan_line": 138,
+   "finding": null
   },
   {
    "id": "K5-B3",
    "check": "K5",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: untagged Rectangle",
    "match": "yes",
-   "gameplan_line": 138
+   "gameplan_line": 138,
+   "finding": null
+  },
+  {
+   "id": "K5-B4",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end/nut_a: prism drawn as polygon, spec projection rectangle",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "TP-6"
+  },
+  {
+   "id": "K5-B5",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "drill_tube: spec error, cylinder row needs axis X, Y or Z (has None)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "TP-6"
   },
   {
    "id": "K6-Z",
@@ -224,49 +291,76 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports clean",
+   "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
    "match": "yes",
-   "gameplan_line": 139
+   "gameplan_line": 139,
+   "finding": null
+  },
+  {
+   "id": "K6-Z2",
+   "check": "K6",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
+   "match": "yes",
+   "gameplan_line": "139; Design Notes 17",
+   "finding": "LF-2"
   },
   {
    "id": "K6-B1",
    "check": "K6",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
    "reason": "capture_end/drill_head: drawn z [251.59, 357.96] vs stack [244.84, 351.21] z_S, off 6.75; capture_end/drill_tube: drawn z [357.96, 1051.59] vs stack [351.21, 1044.84] z_S, off 6.75; capture_end/drill_top_block: drawn z [1051.59, 1201.59] vs stack [1044.84, 1194.84] z_S, off 6.75",
    "match": "yes",
-   "gameplan_line": 139
+   "gameplan_line": 139,
+   "finding": null
   },
   {
    "id": "K6-B2",
    "check": "K6",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/core_500: drawn z [42.50, 542.50] vs stack [102.50, 602.50] z_S, off 60.00",
    "match": "yes",
-   "gameplan_line": 139
+   "gameplan_line": 139,
+   "finding": null
   },
   {
    "id": "K6-B2b",
    "check": "K6",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/core_500: drawn z [2.50, 502.50] vs stack [102.50, 602.50] z_S, off 100.00",
    "match": "yes",
-   "gameplan_line": "139; Design Notes 17"
+   "gameplan_line": "139; Design Notes 17",
+   "finding": null
   },
   {
    "id": "K6-B3",
    "check": "K6",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "import guard: k6_b3_check_stack.py:6 imports stubs",
    "match": "yes",
-   "gameplan_line": 139
+   "gameplan_line": 139,
+   "finding": null
+  },
+  {
+   "id": "K6-B4",
+   "check": "K6",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "stack anchors: to_shop_floor(0) = -60.00, want +60; floor_z_S -120.00, hand 0; datum_a_z_S -60.00, hand 60; receiver_floor_z_S -20.00, hand 100; collar_top_z_S 99.84, hand 219.84",
+   "match": "yes",
+   "gameplan_line": "139; Design Notes 17",
+   "finding": "LF-2"
   },
   {
    "id": "K7-Z1",
@@ -276,7 +370,8 @@
    "observed": "clean, states ['F']",
    "reason": "1 pair test(s) clean; states ['F']",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-Z2",
@@ -286,7 +381,8 @@
    "observed": "clean, states ['depth-separated']",
    "reason": "0 pair test(s) clean; states ['depth-separated']",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-Z3",
@@ -296,7 +392,8 @@
    "observed": "clean, states ['C']",
    "reason": "1 pair test(s) clean; states ['C']",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-Z4",
@@ -306,47 +403,151 @@
    "observed": "clean",
    "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
+  },
+  {
+   "id": "K7-Z5",
+   "check": "K7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "0 pair test(s) clean; states ['depth-separated', 'swept:depth-separated']",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "SW-6"
+  },
+  {
+   "id": "K7-Z6",
+   "check": "K7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "LF-3"
+  },
+  {
+   "id": "K7-Z7",
+   "check": "K7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "0 pair test(s) clean; states ['N', 'undeclared:F']",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "TP-5"
   },
   {
    "id": "K7-B1",
    "check": "K7",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (3 failing)",
-   "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0, gap - g_min +0.000; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-B2",
    "check": "K7",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
-   "reason": "fixture/a|b C: distance 1.000 mm, overlap 0.000 mm2, state F, g_min 0",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/a|b C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-B3",
    "check": "K7",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
-   "reason": "fixture/a|b G: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/a|b G: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10, gap - g_min -1.000",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
   },
   {
    "id": "K7-B4",
    "check": "K7",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
-   "reason": "swept p1..p4/ring|member G: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "swept p1..p4/ring|member G: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap, g_min 10, gap - g_min -10.000",
    "match": "yes",
-   "gameplan_line": 140
+   "gameplan_line": 140,
+   "finding": null
+  },
+  {
+   "id": "K7-B5",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/a|b C: C pair depth-separated by 490.000 mm (contact needs bands within 0.05)",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "LF-1"
+  },
+  {
+   "id": "K7-B6",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/a|b G: band gap 1.000 mm, projected distance 0.000 mm, lower bound 1.000, g_min 10, gap - g_min -9.000",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "LF-1"
+  },
+  {
+   "id": "K7-B7",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "motor: spec depth band [-129.00, -72.00] does not contain the placed projection [-125.18, -37.82]; fixture/motor|post F: distance 0.000 mm, overlap 570.000 mm2, state overlap",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "TP-4, LF-5"
+  },
+  {
+   "id": "K7-B8",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "swept p1..p4/ring|member G: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap, g_min 10, gap - g_min -10.000",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "SW-6"
+  },
+  {
+   "id": "K7-B9",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "p1/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; p2/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; swept p1..p2/ring|lmember G: swept hull non-convex piece in ['lmember']; split it in the spec",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "LF-4"
+  },
+  {
+   "id": "K7-B10",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/a|b undeclared (F): distance 0.000 mm, overlap 5000.000 mm2, state overlap",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "TP-5"
   },
   {
    "id": "K8-Z",
@@ -354,39 +555,142 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "8 predicate(s) hold, axes not inverted || 4 predicate(s) hold, axes not inverted",
+   "reason": "19 predicate(s) hold, axes not inverted || 4 predicate(s) hold, axes not inverted || 2 predicate(s) hold, axes not inverted",
    "match": "yes",
-   "gameplan_line": 141
+   "gameplan_line": 141,
+   "finding": null
+  },
+  {
+   "id": "K8-Z2",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "18 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP-9"
   },
   {
    "id": "K8-B1",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
    "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 471.0; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
    "match": "yes",
-   "gameplan_line": 141
+   "gameplan_line": 141,
+   "finding": null
   },
   {
    "id": "K8-B2",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/anchor_a below nut_a: centroid z 510.8 vs 450.8",
    "match": "yes",
-   "gameplan_line": 141
+   "gameplan_line": 141,
+   "finding": null
   },
   {
    "id": "K8-B3",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "plan: axis inverted (x False, y True)",
    "match": "yes",
-   "gameplan_line": 141
+   "gameplan_line": 141,
+   "finding": null
+  },
+  {
+   "id": "K8-B4",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end/core_500 rests_on core_seat: bottom minus seat top 1.000 mm",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "SW-4"
+  },
+  {
+   "id": "K8-B5",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end/gear not mirrored about x = 0.00 (8 unmatched vertices, 2 pieces)",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "SW-4"
+  },
+  {
+   "id": "K8-B6",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "plan/screw_b azimuth 270.00 deg vs jackscrew.angle[1] = 150.00",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "SW-4"
+  },
+  {
+   "id": "K8-B7",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "capture_end/motor23_a projected_x: drawn x centre 141.16 vs r_c cos(theta) -141.16 (r_c 163.00, theta 210); capture_end/motor23_a side of drill_tube: centroid x minus drill_tube x 141.16, spec sign -1",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "SW-5, TP-3"
+  },
+  {
+   "id": "K8-B8",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 471.0; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP-1"
+  },
+  {
+   "id": "K8-B9",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "core_500 rests_on: spec error, non-string key True (YAML 1.1 reads on/off/yes/no as booleans); missing key 'seat'",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "SW-1"
+  },
+  {
+   "id": "K8-B10",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end/gear taper narrows up: piece 0: width at bottom 35.00, at top 50.00",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP-2"
+  },
+  {
+   "id": "K8-B11",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/collet taper narrows down: piece 0: width at bottom 134.58, at top 125.76",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP-2"
   },
   {
    "id": "K9-Z",
@@ -396,27 +700,180 @@
    "observed": "clean",
    "reason": "every spec row drawn, every tagged artist in the spec (14 rows)",
    "match": "yes",
-   "gameplan_line": 142
+   "gameplan_line": 142,
+   "finding": null
   },
   {
    "id": "K9-B1",
    "check": "K9",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end: spec row guide_member has no patch",
    "match": "yes",
-   "gameplan_line": 142
+   "gameplan_line": 142,
+   "finding": null
   },
   {
    "id": "K9-B2",
    "check": "K9",
    "control": "B",
    "expected": "fires",
-   "observed": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end: tagged artist spare_bracket has no spec row",
    "match": "yes",
-   "gameplan_line": 142
+   "gameplan_line": 142,
+   "finding": null
+  },
+  {
+   "id": "K9-B3",
+   "check": "K9",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end: spec row guide_member has no patch (a Text carries its gid)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP-6"
+  },
+  {
+   "id": "K9-B4",
+   "check": "K9",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "spec error: id anchor_a appears on more than one row",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP-8"
+  },
+  {
+   "id": "S1-FULL",
+   "check": "ALL",
+   "control": "smoke",
+   "expected": "runs",
+   "observed": "runs",
+   "reason": "K1 pass || K2 pass || K3 pass || K4 pass || K5 pass || K6 pass || K7 fail (content) || K8 fail (content) || K9 pass || S1-1 pass || S1-2 pass || S1-3 pass || S1-4 fail (content) || S1-5a pass || S1-5b pass || S1-6 pass",
+   "match": "yes",
+   "gameplan_line": "153; 223-231",
+   "finding": "SW-8",
+   "reported": [
+    {
+     "id": "K1",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (no script)"
+    },
+    {
+     "id": "K2",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "138 spec keys resolve; 81 overlay leaves sourced, legal status, no shadow"
+    },
+    {
+     "id": "K3",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "4 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150"
+    },
+    {
+     "id": "K4",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "45 label(s) carry their key value"
+    },
+    {
+     "id": "K5",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "153 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
+    },
+    {
+     "id": "K6",
+     "result": "pass",
+     "cause": null,
+     "measured": 0.0,
+     "reason": "145 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean"
+    },
+    {
+     "id": "K7",
+     "result": "fail",
+     "cause": "content",
+     "measured": 190,
+     "reason": "load/base_plate|screw_a undeclared (F): distance 0.000 mm, overlap 96.000 mm2, state overlap; load/base_plate|screw_b undeclared (F): distance 0.000 mm, overlap 96.000 mm2, state overlap; load/base_plate|anchor_a undeclared (F): distance 0.000 mm, overlap 504.000 mm2, state overlap; load/base_plate|anchor_b undeclared (F): distance 0.000 mm, overlap 504.000 mm2, state overlap; load/base_plate|guide_member undeclared (F): distance 0.000 mm, overlap 240.000 mm2, state overlap; load/base_plate|frame_upper_a undeclared (F): distance 0.000 mm, overlap 720.000 mm2, state overlap; ... 184 more"
+    },
+    {
+     "id": "K8",
+     "result": "fail",
+     "cause": "content",
+     "measured": 6,
+     "reason": "load/nut_a below guide_a: centroid z 1281.0 vs 945.0; load/nut_b below guide_b: centroid z 1281.0 vs 945.0; start/nut_a below guide_a: centroid z 1100.8 vs 945.0; start/nut_b below guide_b: centroid z 1100.8 vs 945.0; park/nut_a below guide_a: centroid z 1281.0 vs 945.0; park/nut_b below guide_b: centroid z 1281.0 vs 945.0"
+    },
+    {
+     "id": "K9",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "every spec row drawn, every tagged artist in the spec (37 rows)"
+    },
+    {
+     "id": "S1-1",
+     "result": "pass",
+     "cause": null,
+     "measured": 650.0,
+     "reason": "drawn start tip minus end-of-capture tip 650.00 mm against [534.93, 650]"
+    },
+    {
+     "id": "S1-2",
+     "result": "pass",
+     "cause": null,
+     "measured": 50.0,
+     "reason": "park tip above max(stop.start_z) by 50.00 mm"
+    },
+    {
+     "id": "S1-3",
+     "result": "pass",
+     "cause": null,
+     "measured": {
+      "core.length_capture": 422.5,
+      "core.length_install": 172.5
+     },
+     "reason": "margins over core_stop {'core.length_capture': 422.5, 'core.length_install': 172.5}"
+    },
+    {
+     "id": "S1-4",
+     "result": "fail",
+     "cause": "content",
+     "measured": -366.0,
+     "reason": "load/screw a: nut z 1281.0 outside [105.0, 915.0]; load/screw b: nut z 1281.0 outside [105.0, 915.0]; start/screw a: nut z 1100.8 outside [105.0, 915.0]; start/screw b: nut z 1100.8 outside [105.0, 915.0]; park/screw a: nut z 1281.0 outside [105.0, 915.0]; park/screw b: nut z 1281.0 outside [105.0, 915.0]"
+    },
+    {
+     "id": "S1-5a",
+     "result": "pass",
+     "cause": null,
+     "measured": 442.34,
+     "reason": "bore ceiling minus 0.5 m core top at end of capture 442.34 mm, need 25"
+    },
+    {
+     "id": "S1-5b",
+     "result": "pass",
+     "cause": null,
+     "measured": 231.75,
+     "reason": "42 pairs, least certified clearance 231.75 mm"
+    },
+    {
+     "id": "S1-6",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "8 screw projections at r cos(theta), depth r sin(theta)"
+    }
+   ]
   }
  ]
 }

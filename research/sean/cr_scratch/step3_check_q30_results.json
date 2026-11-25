@@ -1,14 +1,16 @@
 {
   "check": "Q3-0",
   "script": "research/sean/cr_scratch/step3_check.py",
+  "rerun": "Step 1.0 revision pass",
   "runs": [
     {
       "control": "red-first",
       "expected": "FAIL",
       "match": true,
+      "exit": 1,
       "check": "Q3-0",
       "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_empty.md",
-      "timestamp": "2026-11-24T22:16:52",
+      "timestamp": "2026-11-24T23:24:10",
       "rows": [],
       "failures": [
         "table has no rows"
@@ -20,9 +22,10 @@
       "control": "Z",
       "expected": "PASS",
       "match": true,
+      "exit": 0,
       "check": "Q3-0",
       "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_z_complete.md",
-      "timestamp": "2026-11-24T22:16:53",
+      "timestamp": "2026-11-24T23:24:10",
       "rows": [
         {
           "line": 5,
@@ -48,9 +51,10 @@
       "control": "B",
       "expected": "FAIL",
       "match": true,
+      "exit": 1,
       "check": "Q3-0",
       "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step3_fixtures\\q30_b_blank_standin.md",
-      "timestamp": "2026-11-24T22:16:53",
+      "timestamp": "2026-11-24T23:24:11",
       "rows": [
         {
           "line": 5,
@@ -80,9 +84,10 @@
       "control": "batch",
       "expected": "PASS",
       "match": true,
+      "exit": 0,
       "check": "Q3-0",
       "file": "D:\\Unleashed Robotics\\cutjig\\research\\sean\\cr_scratch\\step1_quinn_batch1.md",
-      "timestamp": "2026-11-24T22:17:40",
+      "timestamp": "2026-11-24T23:24:11",
       "rows": [
         {
           "line": 11,

@@ -3,6 +3,7 @@
 Paths resolve from this file: walk up to the directory holding params.yaml; the overlay sits beside this module.
 No absolute paths, so the harness moves to docs/sketches/ unchanged (gameplan Design Notes 7).
 Dependencies: stdlib and PyYAML only. check_stack.py imports this module and nothing else from the harness.
+Specs load through load_spec (non-string keys rejected).
 """
 import hashlib
 from pathlib import Path
@@ -32,6 +33,24 @@ def default_overlay_path():
 def load_yaml(path):
     with open(path, "r", encoding="utf-8") as fh:
         return yaml.safe_load(fh) or {}
+
+
+def load_spec(path):
+    """A sketch spec. Rejects non-string keys in feature rows and their sense and neighbour entries (SW-1: YAML 1.1
+    reads an unquoted on/off/yes/no key as a boolean, so `on: core_seat` arrives as {True: 'core_seat'})."""
+    spec = load_yaml(path)
+    bad = []
+    for row in spec.get("features") or []:
+        rid = row.get("id", "?") if isinstance(row, dict) else "?"
+        bad += [f"row {rid}: key {k!r}" for k in row if not isinstance(k, str)]
+        for fld in ("sense", "neighbours", "place", "label", "z_rule"):
+            items = row.get(fld) or []
+            for item in (items if isinstance(items, list) else [items]):
+                if isinstance(item, dict):
+                    bad += [f"row {rid} {fld}: key {k!r}" for k in item if not isinstance(k, str)]
+    if bad:
+        raise ValueError(f"spec {Path(path).name}: non-string keys (quote on/off/yes/no or rename): " + "; ".join(bad))
+    return spec
 
 
 def is_leaf(node):

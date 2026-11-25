@@ -1,7 +1,7 @@
 {
  "sketch": "s1",
  "rev": 0,
- "timestamp": "2026-11-24T22:57:07",
+ "timestamp": "2026-11-24T23:26:09",
  "spec": "s1_spec.yaml",
  "spec_status": "draft, unsigned",
  "script": "stubs\\s1_stub.py",
@@ -149,6 +149,11 @@
   },
   "gear.pitch_diameter": {
    "value": 250,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.tooth_count": {
+   "value": 60,
    "origin": "overlay",
    "status": "ASSUMED"
   },
@@ -469,6 +474,7 @@
   "lift_stroke_mm": 830.16,
   "collar_top_recomputed_z_A": 159.84,
   "collar_top_params_z_A": 159.84,
+  "load_plane": "core_stop",
   "poses": {
    "load": {
     "highest_z_S": 2025.0,
@@ -486,7 +492,22 @@
     "highest_z_S": 2025.0,
     "margin_to_soft_target": -25.0
    }
-  }
+  },
+  "park_tip_by_plane_z_A": {
+   "core_stop": {
+    "core.length_capture": 1015,
+    "core.length_install": 1015,
+    "core.length_optional": 1092.5
+   },
+   "collar_top": {
+    "core.length_capture": 1015,
+    "core.length_install": 1015,
+    "core.length_optional": 1209.84
+   }
+  },
+  "start_tip_minus_core_top_mm": 292.34000000000003,
+  "end_tip_plus_advance_z_A": 719.77,
+  "core_top_on_core_stop_z_A": 542.5
  },
  "checks": [
   {
@@ -495,6 +516,8 @@
    "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (s1_stub.py)",
    "measured": 0,
    "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
    "z_result": "clean 1/1",
    "b_result": "fired 2/2",
    "source": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)"
@@ -505,6 +528,8 @@
    "reason": "138 spec keys resolve; 81 overlay leaves sourced, legal status, no shadow",
    "measured": 0,
    "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
    "z_result": "clean 1/1",
    "b_result": "fired 3/3",
    "source": "gameplan l.135; Design Notes 6"
@@ -512,31 +537,37 @@
   {
    "id": "K3",
    "result": "pass",
-   "reason": "4 figure(s): title, (mm) labels, equal aspect, grids, figsize, dpi 150",
+   "reason": "4 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150",
    "measured": 0,
    "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
    "z_result": "clean 1/1",
-   "b_result": "fired 6/6",
+   "b_result": "fired 7/7",
    "source": "gameplan l.136; LLM-PLM 8.4.2"
   },
   {
    "id": "K4",
    "result": "fail",
-   "reason": "load/wingnut: no annotation containing 'wing nut sweep r'; load/core_500: no annotation containing 'core'; load/core_750: no annotation containing 'core'; load/drill_head: no annotation containing 'cutter OD ASSUMED'; load/drill_tube: no annotation containing 'tube OD'; load/drill_top_block: no annotation containing 'top block'; ... 39 more",
+   "reason": "load/wingnut: no annotation label:wingnut; load/core_500: no annotation label:core_500; load/core_750: no annotation label:core_750; load/drill_head: no annotation label:drill_head; load/drill_tube: no annotation label:drill_tube; load/drill_top_block: no annotation label:drill_top_block; ... 39 more",
    "measured": 45,
    "threshold": 0,
+   "n_issues": 45,
+   "cause": "content",
    "z_result": "clean 1/1",
-   "b_result": "fired 2/2",
+   "b_result": "fired 3/3",
    "source": "gameplan l.137; LLM-PLM 8.4.2"
   },
   {
    "id": "K5",
    "result": "pass",
-   "reason": "4 tagged artist(s) projected per kind and axis (view normal Y)",
+   "reason": "4 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "measured": 0,
    "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
    "z_result": "clean 1/1",
-   "b_result": "fired 3/3",
+   "b_result": "fired 5/5",
    "source": "gameplan l.138; LLM-PLM 8.4.1"
   },
   {
@@ -545,30 +576,36 @@
    "reason": "load/base_frame: z_rule [0.00, 60.00] z_S, nothing drawn; load/base_plate: z_rule [60.00, 72.00] z_S, nothing drawn; load/receiver: z_rule [72.00, 188.50] z_S, nothing drawn; load/collet: z_rule [100.00, 132.00] z_S, nothing drawn; load/core_seat: z_rule [100.00, 102.50] z_S, nothing drawn; load/holder: z_rule [109.09, 197.09] z_S, nothing drawn; ... 135 more",
    "measured": 0.0,
    "threshold": 0.05,
-   "z_result": "clean 1/1",
-   "b_result": "fired 4/4",
+   "n_issues": 141,
+   "cause": "absent",
+   "z_result": "clean 2/2",
+   "b_result": "fired 5/5",
    "source": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)"
   },
   {
    "id": "K7",
    "result": "fail",
-   "reason": "load/base_frame|base_plate C: untestable, base_frame/base_plate not drawn; load/base_plate|receiver C: untestable, base_plate/receiver not drawn; load/ring|wingnut G: untestable, ring/wingnut not drawn; load/ring|holder G: untestable, ring/holder not drawn; load/ring|receiver G: untestable, ring/receiver not drawn; load/ring|frame_upper_a G: untestable, ring/frame_upper_a not drawn; ... 47 more",
-   "measured": 53,
+   "reason": "load/base_frame|base_plate C: untestable, base_frame/base_plate not drawn; load/base_plate|receiver C: untestable, base_plate/receiver not drawn; load/ring|frame_upper_a G: untestable, ring/frame_upper_a not drawn; load/ring|frame_upper_b G: untestable, ring/frame_upper_b not drawn; load/ring|liftmotor_a G: untestable, ring/liftmotor_a not drawn; load/ring|liftmotor_b G: untestable, ring/liftmotor_b not drawn; ... 74 more",
+   "measured": 80,
    "threshold": 0,
+   "n_issues": 80,
+   "cause": "absent",
    "states": [],
-   "failing": 53,
-   "z_result": "clean 4/4",
-   "b_result": "fired 4/4",
+   "failing": 80,
+   "z_result": "clean 7/7",
+   "b_result": "fired 10/10",
    "source": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED"
   },
   {
    "id": "K8",
    "result": "fail",
-   "reason": "load/base_frame below base_plate: untestable, base_frame not drawn; load/wingnut below drill_head: untestable, wingnut not drawn; load/core_500 rests_on : untestable, core_500 not drawn; load/core_750 rests_on : untestable, core_750 not drawn; load/drill_head below gear: untestable, drill_head not drawn; load/drill_head below drill_top_block: untestable, drill_head not drawn; ... 55 more",
-   "measured": 61,
+   "reason": "load/base_frame below base_plate: untestable, base_frame not drawn; load/collet taper : untestable, collet not drawn; load/wingnut below drill_head: untestable, wingnut not drawn; load/core_500 rests_on core_seat: untestable, core_500 not drawn; load/core_750 rests_on core_seat: untestable, core_750 not drawn; load/drill_head projected_x: untestable, drill_head not drawn; ... 171 more",
+   "measured": 177,
    "threshold": 0,
-   "z_result": "clean 1/1",
-   "b_result": "fired 3/3",
+   "n_issues": 177,
+   "cause": "absent",
+   "z_result": "clean 2/2",
+   "b_result": "fired 11/11",
    "source": "gameplan l.141; ASSEMBLY.md Coordinate frame"
   },
   {
@@ -577,8 +614,10 @@
    "reason": "load: spec row base_frame has no patch; load: spec row base_plate has no patch; load: spec row receiver has no patch; load: spec row collet has no patch; load: spec row core_seat has no patch; load: spec row holder has no patch; ... 135 more",
    "measured": 141,
    "threshold": 0,
+   "n_issues": 141,
+   "cause": "content",
    "z_result": "clean 1/1",
-   "b_result": "fired 2/2",
+   "b_result": "fired 4/4",
    "source": "gameplan l.142"
   },
   {
@@ -587,6 +626,8 @@
    "reason": "measured: none; drill_head not drawn in pose start",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "travel DECLARED [CP \u00a715], [DN23]; advance DERIVED"
@@ -597,6 +638,8 @@
    "reason": "measured: none; drill_head not drawn in pose park",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "[DN23] (U13 re-derive); park ASSUMED"
@@ -607,6 +650,8 @@
    "reason": "measured: none; drill_head not drawn in pose park",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "core.length_install DECLARED; clearance ASSUMED"
@@ -617,6 +662,8 @@
    "reason": "measured: none; anchor_a not drawn in pose load",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "overlay jackscrew.* ASSUMED"
@@ -627,6 +674,8 @@
    "reason": "measured: none; bore_ceiling not drawn in pose capture_end",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "stop.g_stop reuse ASSUMED; bore ceiling ASSUMED (Q2e, Design Notes 19)"
@@ -637,6 +686,8 @@
    "reason": "measured: none; ring not drawn in pose capture_end",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "10 mm ASSUMED; wingnut.sweep_clear_radius DERIVED"
@@ -647,6 +698,8 @@
    "reason": "measured: none; screw_a not drawn in pose load",
    "measured": null,
    "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
    "z_result": "not run at 1.0 (Z fixture from the signed spec, 1.1)",
    "b_result": "not run at 1.0 (B fixture from the signed spec, 1.1)",
    "source": "overlay jackscrew.angle, spacing DECLARED [DN23]"
