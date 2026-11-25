@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 0 (closed by Manager; awaiting Sean's approval at the gate)
+**Current step:** 1.0 (Step 0 approved by Sean 2026-11-24; Step 1.0 not opened)
 **lit_review:** no
 
 ---
@@ -86,7 +86,7 @@ Steps 1 to 4 produce sketches, scripts, check records and decision tables; none 
 
 | # | Step | Assigned To | TDD stage | Status |
 |---|------|-------------|-----------|--------|
-| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | Acceptance list: step0_manager_open.md section 1 | Closed by Manager 2026-11-24 (`research/sean/cr_scratch/step0_manager_close.md`); awaiting Sean's approval at the gate |
+| 0 | Team wave to draft this gameplan from the critical-path file | The Manager, The Engineer, The Designer, The Systems Engineer, The Software Engineer | Acceptance list: step0_manager_open.md section 1 | Complete. Closed by Manager 2026-11-24 (`research/sean/cr_scratch/step0_manager_close.md`); approved by Sean 2026-11-24 |
 | 1 | Sketch set S1 to S6, one sub-step per sketch, each with its own human correction pass before the next is drawn. See detail 1. | The Engineer (spec, scripts, checks), The Designer (params review, spec sign-off, visual gate on an image-capable model), The Loftsman and The Topologist (geometry cross-review on 1.1 (S1), 1.2 (S2), 1.3 (S3), 1.5 (S6)), The Software Engineer (harness at 1.0), Sean (human correction pass) | Per sub-step: spec (outline), red on stub, draw, checks green, orientation preview, cross-review, M1 visual gate, M2 human pass | Not started |
 | 1.0 | Sketch harness: proposed-keys overlay, spec format, shared plot and check library K1 to K9, fixtures, red-first baseline; question batch 1 to Quinn pushed first (detail 1.0, last paragraph) | The Engineer (write harness and batch), The Software Engineer (review, signs harness), Sean (approves and pushes the batch) | Test suite before any sketch geometry; Z and B fixture run; stub run; Q3-0 run on the batch | Not started |
 | 1.1 (S1) | S1 side XZ, whole jig, four poses: is it tall enough, where does the ring sit on the drill, what is the park rule and the lift stroke, does the axial loop close through the base | The Engineer, The Designer, The Loftsman, The Topologist, Sean | as row 1; checks K1 to K9, S1-1 to S1-6 | Not started |
@@ -457,6 +457,7 @@ Human gate: Sean, then pushed for Quinn.
 |------|------|-------|
 | 0 | 2026-11-24 | Drafting variant (A.6.4). Done: Engineer draft; Software Engineer TDD revision; Wave 2 review (Systems Engineer: 2 BLOCKS, 13 FIX, 3 NOTE; Designer: 10 FIX, 5 NOTE); Engineer revision (dispositions in `research/sean/cr_scratch/step0_engineer_revision_notes.md`; both BLOCKS owned by S3-3, S6-5, N4, N5 and Step 2 rows). Pending: Manager close, Sean's gate (decision list in the revision notes: lit_review, Design Notes 4 to 9, 15, 16). Baseline pytest 672 collected, 620 pass, 52 fail (Quinn's header; measured at 4a). |
 | 0 | 2026-11-24 | Closed pending Sean approval. Manager close (`research/sean/cr_scratch/step0_manager_close.md`): READY FOR SEAN; acceptance list 9 of 9, Designer close checklist 12 of 12; header, Start here and Repository Sync byte-identical to commit 4bfad31 except Current step. Manager edits: Current step, Steps row 0, check Q3-0 (batch mode of step3_check.py, written at 1.0), Context Recipe 5.4 Engineer. Accumulator created (`research/sean/accumulator.md`). Gate brief: 13 decisions in the close file. |
+| 0 | 2026-11-24 | Approved by Sean at the gate: all 13 decisions accepted as recommended in `research/sean/cr_scratch/step0_manager_close.md` (lit_review no; S3 one-screw section plus three-screw inset; docs/sketches/; order S1, S2, S3, S4, S6, Step 2, S5; shared-file changes after Quinn's review; base carries cut reaction, to Quinn as N5; batch 1 at Step 1.0 open; prose week-close record; proposed-keys overlay; 2D matplotlib, Engineer draws, Designer gates; owners as listed; ASSUMED seeds owned by Sean; rulings T1 to T7 ratified). Next: Step 1.0. |
 
 ---
 
