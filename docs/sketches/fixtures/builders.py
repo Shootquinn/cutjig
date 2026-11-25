@@ -1044,8 +1044,14 @@ def _pose_tip(pid, expr):
 
 
 def s1_1_b1():
-    """Gameplan l.228 B: upper.travel_max 500 (below drill_advance_500core 534.93); drawn reach 650.00 exceeds it."""
-    return _s1_ctx(values={"upper.travel_max": 500})
+    """Gameplan l.228 B: upper.travel_max 500 (below drill_advance_500core 534.93); drawn reach 650.00 exceeds it.
+    1.2 step 0 (H5): with travel 500 the start-above-core term governs the 0.75 m class (42.5 + 750 + c - 500), so the
+    park-rule start would depend on c, which check_stack refuses. The fixture evaluates the term at c = 0 (a control
+    input, not a design value); S1-1 reads the drawn tips only, so its reason is unchanged."""
+    def c0(spec):
+        spec["park_rule"]["stop_k"] = spec["park_rule"]["stop_k"].replace("L + c -", "L + 0 -")
+        spec.pop("symbols", None)
+    return _s1_ctx(values={"upper.travel_max": 500}, spec_mut=c0)
 
 
 def s1_1_b2():

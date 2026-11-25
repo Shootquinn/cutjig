@@ -32,7 +32,189 @@ def sind(t):
     return math.sin(math.radians(t))
 
 
-FUNCS = {"min": min, "max": max, "abs": abs, "sind": sind, "cosd": cosd, "sqrt": math.sqrt}
+# ---------------------------------------------------------------- symbols (H5, Design Notes 23: clearance c)
+
+INF = float("inf")
+EPS = 1e-9
+
+
+class PW:
+    """Piecewise-linear function of one spec symbol s on its domain [lo, inf): segments (s_lo, s_hi, a, b), value a + b*s.
+    Closed under +, -, scalar *, scalar /, unary -, min, max, abs. A spec symbol (spec `symbols`) has no value; an
+    expression that reads it evaluates to a PW, check_stack reports it as an expression, and a drawn value is taken only
+    where the PW is constant on its first segment (numeric()). Product or quotient of two non-constant PWs: ValueError."""
+
+    def __init__(self, segs, name="c"):
+        self.name = name
+        out = []
+        for s in segs:
+            if out and abs(out[-1][2] - s[2]) < EPS and abs(out[-1][3] - s[3]) < EPS:
+                out[-1] = (out[-1][0], s[1], out[-1][2], out[-1][3])
+            else:
+                out.append(tuple(s))
+        self.segs = out
+
+    @classmethod
+    def sym(cls, name="c", lo=0.0):
+        return cls([(lo, INF, 0.0, 1.0)], name)
+
+    def _lift(self, o):
+        return o if isinstance(o, PW) else PW([(self.segs[0][0], INF, float(o), 0.0)], self.name)
+
+    def _merge(self, o, fn):
+        o = self._lift(o)
+        cuts = sorted({s[0] for s in self.segs + o.segs} | {s[1] for s in self.segs + o.segs})
+        out = []
+        for lo, hi in zip(cuts, cuts[1:]):
+            out += fn(lo, hi, self._at(lo, hi), o._at(lo, hi))
+        return PW(out, self.name)
+
+    def _at(self, lo, hi):
+        mid = lo + 1.0 if hi == INF else (lo + hi) / 2
+        return next((a, b) for s0, s1, a, b in self.segs if s0 <= mid <= s1)
+
+    def __add__(self, o):
+        return self._merge(o, lambda lo, hi, p, q: [(lo, hi, p[0] + q[0], p[1] + q[1])])
+    __radd__ = __add__
+
+    def __sub__(self, o):
+        return self._merge(o, lambda lo, hi, p, q: [(lo, hi, p[0] - q[0], p[1] - q[1])])
+
+    def __rsub__(self, o):
+        return self._lift(o) - self
+
+    def __neg__(self):
+        return PW([(lo, hi, -a, -b) for lo, hi, a, b in self.segs], self.name)
+
+    def __pos__(self):
+        return self
+
+    def is_const(self):
+        return all(abs(b) < EPS for *_, b in self.segs) and len({round(a, 9) for _, _, a, _ in self.segs}) == 1
+
+    def _scale(self, k):
+        return PW([(lo, hi, a * k, b * k) for lo, hi, a, b in self.segs], self.name)
+
+    def __mul__(self, o):
+        if isinstance(o, PW):
+            if o.is_const():
+                return self._scale(o.segs[0][2])
+            if self.is_const():
+                return o._scale(self.segs[0][2])
+            raise ValueError(f"product of two expressions in symbol {self.name}")
+        return self._scale(o)
+    __rmul__ = __mul__
+
+    def __truediv__(self, o):
+        if isinstance(o, PW):
+            if not o.is_const():
+                raise ValueError(f"division by an expression in symbol {self.name}")
+            o = o.segs[0][2]
+        return self._scale(1.0 / o)
+
+    def _pick(self, o, take_max):
+        def fn(lo, hi, p, q):
+            pts = [lo]
+            if abs(p[1] - q[1]) > EPS:
+                x = (q[0] - p[0]) / (p[1] - q[1])
+                if lo + EPS < x < hi - EPS:
+                    pts.append(x)
+            pts.append(hi)
+            seg = []
+            for a, b in zip(pts, pts[1:]):
+                m = a + 1.0 if b == INF else (a + b) / 2
+                vp, vq = p[0] + p[1] * m, q[0] + q[1] * m
+                use = p if (vp >= vq) == take_max else q
+                seg.append((a, b, use[0], use[1]))
+            return seg
+        return self._merge(o, fn)
+
+    def __abs__(self):
+        return self._pick(-self, True)
+
+    def at(self, s):
+        return next(a + b * s for s0, s1, a, b in self.segs if s0 <= s <= s1)
+
+    def describe(self, nd=2):
+        def line(a, b):
+            if abs(b) < EPS:
+                return f"{a:.{nd}f}"
+            t = self.name if abs(b - 1) < EPS else f"{b:g} {self.name}"
+            return t if abs(a) < EPS else f"{a:.{nd}f} + {t}" if a > 0 else f"{t} - {-a:.{nd}f}"
+        parts = []
+        for lo, hi, a, b in self.segs:
+            rng = f"{self.name} >= {lo:g}" if hi == INF else f"{lo:g} <= {self.name} <= {hi:.{nd}f}"
+            parts.append(f"{line(a, b)} for {rng}")
+        return "; ".join(parts)
+
+    def first_const(self):
+        """(value, s_hi) when the PW is constant on its first segment, else None."""
+        lo, hi, a, b = self.segs[0]
+        return (a, hi) if abs(b) < EPS else None
+
+    def __repr__(self):
+        return f"PW({self.describe()})"
+
+
+def pmax(*xs):
+    xs = list(xs[0]) if len(xs) == 1 and not isinstance(xs[0], (int, float, PW)) else list(xs)
+    out = xs[0]
+    for x in xs[1:]:
+        if isinstance(out, PW) or isinstance(x, PW):
+            out = (out if isinstance(out, PW) else x._lift(out))._pick(x, True)
+        else:
+            out = max(out, x)
+    return out
+
+
+def pmin(*xs):
+    xs = list(xs[0]) if len(xs) == 1 and not isinstance(xs[0], (int, float, PW)) else list(xs)
+    out = xs[0]
+    for x in xs[1:]:
+        if isinstance(out, PW) or isinstance(x, PW):
+            out = (out if isinstance(out, PW) else x._lift(out))._pick(x, False)
+        else:
+            out = min(out, x)
+    return out
+
+
+def pabs(x):
+    return abs(x)
+
+
+def symbol_names(spec):
+    """Spec `symbols`: {name: {domain: [lo, null], ...}}. Each becomes a PW identity on its domain."""
+    out = {}
+    for name, d in ((spec or {}).get("symbols") or {}).items():
+        lo = ((d or {}).get("domain") or [0])[0]
+        out[name] = PW.sym(name, float(lo))
+    return out
+
+
+def numeric(x, what="value", validity=None):
+    """A drawn or checked number. A PW is accepted only when constant on its first segment (the domain lower bound up to
+    the first breakpoint); the upper end of that segment goes into validity[what]. Else ValueError: the drawn value would
+    depend on a symbol that has no value."""
+    if not isinstance(x, PW):
+        return x
+    fc = x.first_const()
+    if fc is None:
+        raise ValueError(f"{what} depends on symbol {x.name} ({x.describe()}); a drawn value needs it constant")
+    if validity is not None:
+        validity[what] = min(validity.get(what, INF), fc[1])
+    return fc[0]
+
+
+def report_value(x):
+    """Reported value: a number, or for a PW its value on the first segment when constant there (the range is listed with
+    it under symbol_terms), else the expression string."""
+    if isinstance(x, PW):
+        fc = x.first_const()
+        return fc[0] if fc is not None else x.describe()
+    return x
+
+
+FUNCS = {"min": pmin, "max": pmax, "abs": pabs, "sind": sind, "cosd": cosd, "sqrt": math.sqrt}
 
 
 # ---------------------------------------------------------------- frames
@@ -93,41 +275,51 @@ def park_lengths(P, spec, q9_keys):
     return keys
 
 
-def class_starts_z_A(P, spec, q9_keys, names=None):
+def _class_names(spec, names, L):
+    nm = dict(names or {})
+    for k, v in symbol_names(spec).items():
+        nm.setdefault(k, v)
+    nm["L"] = L
+    return nm
+
+
+def class_starts_z_A(P, spec, q9_keys, names=None, symbolic=False, validity=None):
     """Start tip per supported core class. spec park_rule.stop_k and start_k are expressions in L (core length) and
-    stop_k (option R, gameplan Design Notes 22); without park_rule, params stop.start_z (1.0 behaviour)."""
+    stop_k (option R, gameplan Design Notes 22); without park_rule, params stop.start_z (1.0 behaviour). A spec symbol
+    (H5: the 1 m clearance c) makes a class value a PW; symbolic=False returns numeric() values (ValueError where a
+    class depends on the symbol), symbolic=True the PW."""
     pr = spec.get("park_rule")
     if not pr:
         return {"params stop.start_z": max(P.get("stop.start_z"))}
     out = {}
     for k in park_lengths(P, spec, q9_keys):
-        nm = dict(names or {})
-        nm["L"] = P.get(k)
+        nm = _class_names(spec, names, P.get(k))
         nm["stop_k"] = eval_expr(pr["stop_k"], P, nm)
-        out[k] = eval_expr(pr["start_k"], P, nm)
+        v = eval_expr(pr["start_k"], P, nm)
+        out[k] = v if symbolic else numeric(v, f"start {k}", validity)
     return out
 
 
-def class_stops_z_A(P, spec, q9_keys, names=None):
+def class_stops_z_A(P, spec, q9_keys, names=None, symbolic=False, validity=None):
     pr = spec.get("park_rule")
     if not pr:
         return {"params stop.height_range": max(P.get("stop.height_range"))}
     out = {}
     for k in park_lengths(P, spec, q9_keys):
-        nm = dict(names or {})
-        nm["L"] = P.get(k)
-        out[k] = eval_expr(pr["stop_k"], P, nm)
+        v = eval_expr(pr["stop_k"], P, _class_names(spec, names, P.get(k)))
+        out[k] = v if symbolic else numeric(v, f"stop {k}", validity)
     return out
 
 
-def park_tip_z_A(P, q9_keys, plane_z_A, spec=None, names=None):
+def park_tip_z_A(P, q9_keys, plane_z_A, spec=None, names=None, symbolic=False, validity=None):
     """Park rule (S1-2, S1-3): the cutter tip clears the highest start pose of the supported classes and the tallest
     loaded core standing on the plane by upper.load_clearance. spec None: 1.0 draft (max params stop.start_z)."""
     spec = spec or {}
     lengths = park_lengths(P, spec, q9_keys)
     tallest = plane_z_A + max(P.get(k) for k in lengths)
-    start = max(class_starts_z_A(P, spec, q9_keys, names).values())
-    return max(start, tallest) + P.get("upper.load_clearance")
+    start = pmax(class_starts_z_A(P, spec, q9_keys, names, symbolic=True).values())
+    v = pmax(start, tallest) + P.get("upper.load_clearance")
+    return v if symbolic else numeric(v, "park", validity)
 
 
 def screw_block_g_min(spec, s):
@@ -146,8 +338,9 @@ def global_vars(P, spec):
     g = P.get
     q9 = spec.get("q9_length_keys", DEFAULT_Q9)
     lowest = min(g("stop.height_z"), min(g("stop.height_range")))
+    validity = {}
     if spec.get("park_rule"):
-        lowest = min(class_stops_z_A(P, spec, q9, {}).values())
+        lowest = numeric(pmin(class_stops_z_A(P, spec, q9, {}, symbolic=True).values()), "lowest stop", validity)
     receiver_floor = receiver_to_datum_a(0, P)
     drop = g("holder.stroke_gap_R") - g("witness.zone_high")
     out = {
@@ -163,9 +356,11 @@ def global_vars(P, spec):
     }
     out["load_plane"] = out[load_plane(spec)["term"]]
     out["entry_plane"] = out[load_plane(spec, "entry_plane")["term"]]
-    out["park_tip"] = park_tip_z_A(P, q9, out["entry_plane"], spec, out)
-    out["start_tip_max"] = max(class_starts_z_A(P, spec, q9, out).values())
+    out["park_tip"] = park_tip_z_A(P, q9, out["entry_plane"], spec, out, validity=validity)
+    out["start_tip_max"] = numeric(pmax(class_starts_z_A(P, spec, q9, out, symbolic=True).values()), "start max", validity)
     out["lift_stroke"] = out["park_tip"] - lowest
+    if validity:   # H5: drawn values constant in every spec symbol up to these bounds (reported, no threshold)
+        out["_symbol_validity"] = validity
     return out
 
 
@@ -226,7 +421,10 @@ def eval_expr(expr, P, names):
         if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in FUNCS:
             return FUNCS[n.func.id](*[ev(a) for a in n.args])
         raise ValueError(f"unsupported expression node {type(n).__name__} in {expr!r}")
-    return float(ev(tree))
+    v = ev(tree)
+    if isinstance(v, PW):
+        return v.segs[0][2] if v.is_const() else v
+    return float(v)
 
 
 # ---------------------------------------------------------------- spec evaluation
@@ -331,26 +529,39 @@ def reported(P, spec, stack):
            "load_plane": lp["term"], "entry_plane": load_plane(spec, "entry_plane")["term"], "poses": {}}
     # LF-6: park tip per plane and per core length (no threshold)
     lengths = [k for k in ("core.length_capture", "core.length_install", "core.length_optional") if P.has(k)]
-    rep["park_tip_by_plane_z_A"] = {term: {k: park_tip_z_A(P, [k], glob[term], spec, glob) for k in lengths} for term in ("core_stop", "collar_top")}
+    rep["park_tip_by_plane_z_A"] = {term: {k: report_value(park_tip_z_A(P, [k], glob[term], spec, glob, symbolic=True)) for k in lengths} for term in ("core_stop", "collar_top")}
     # Q9 options (gameplan detail 1.1 Reported): park, stroke and screw length per option; no threshold
     opts = {}
     for name, keys in (spec.get("q9_options") or {}).items():
         keys = [k for k in keys if P.has(k)]
-        park = park_tip_z_A(P, keys, glob["entry_plane"], spec, glob)
-        low = min(class_stops_z_A(P, spec, keys, glob).values()) if spec.get("park_rule") else glob["lowest_tip"]
+        park = park_tip_z_A(P, keys, glob["entry_plane"], spec, glob, symbolic=True)
+        low = pmin(class_stops_z_A(P, spec, keys, glob, symbolic=True).values()) if spec.get("park_rule") else glob["lowest_tip"]
         nm = dict(glob)
         nm.update({"park": park, "stroke": park - low})
         gm = [g for s in ("a", "b") for g in _try_block_g_min(spec, s)]
         if gm:
             nm["g_min_screw_block"] = max(gm)
         Ls = {lk: eval_expr(ex, P, nm) for lk, ex in (spec.get("screw_length") or {}).items()}
-        starts = class_starts_z_A(P, spec, keys, glob)
+        starts = class_starts_z_A(P, spec, keys, glob, symbolic=True)
+        stops = class_stops_z_A(P, spec, keys, glob, symbolic=True) if spec.get("park_rule") else {}
         # FIX 5 (Loftsman 1.1 (b)), reported only: start tip minus the top of that class's core on the core stop.
-        # Negative = the cutter starts inside the uncut core.
+        # Negative = the cutter starts inside the uncut core. H5: with the start-above-core term it reads c (1 m class).
         over = {k: v - (glob["core_stop"] + P.get(k)) for k, v in starts.items() if P.has(k)}
-        opts[name] = {"lengths": keys, "starts_z_A": starts, "park_tip_z_A": park,
-                      "lowest_stop_z_A": low, "lift_stroke": park - low, "L": Ls, "start_minus_core_top": over}
+        rv = report_value
+        o = {"lengths": keys, "stops_z_A": {k: rv(v) for k, v in stops.items()}, "starts_z_A": {k: rv(v) for k, v in starts.items()},
+             "park_tip_z_A": rv(park), "lowest_stop_z_A": rv(low), "lift_stroke": rv(park - low),
+             "L": {k: rv(v) for k, v in Ls.items()}, "start_minus_core_top": {k: rv(v) for k, v in over.items()}}
+        # H5: every value that reads a spec symbol is also listed as its full expression with the ranges it holds for.
+        terms = [("park", park), ("lowest stop", low), ("lift stroke", park - low), *[(f"L {k}", v) for k, v in Ls.items()],
+                 *[(f"stop {k}", v) for k, v in stops.items()], *[(f"start {k}", v) for k, v in starts.items()],
+                 *[(f"start_minus_core_top {k}", v) for k, v in over.items()]]
+        sym = {lab: v.describe() for lab, v in terms if isinstance(v, PW)}
+        if sym:
+            o["symbol_terms"] = sym
+        opts[name] = o
     rep["q9_options"] = opts
+    if glob.get("_symbol_validity"):
+        rep["drawn_symbol_validity"] = {k: (v if v != INF else "every value") for k, v in glob["_symbol_validity"].items()}
     # LF-7 / G2: start pose against the capture core on the core stop (no threshold)
     ck = spec.get("capture_core_length", "core.length_capture")
     core_top = glob["core_stop"] + P.get(ck)

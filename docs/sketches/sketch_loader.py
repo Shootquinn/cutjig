@@ -4,6 +4,13 @@ Paths resolve from this file: walk up to the directory holding params.yaml; the 
 No absolute paths, so the harness moves to docs/sketches/ unchanged (gameplan Design Notes 7).
 Dependencies: stdlib and PyYAML only. check_stack.py imports this module and nothing else from the harness.
 Specs load through load_spec (non-string keys rejected).
+
+Output rule (Design Notes 26 decision 1; gameplan Design Notes 25 H4): every unaccepted revision output r0 to r<k>
+(checks JSON, summary, PNGs, mass report, visual-gate file) and every verification output (--controls results and
+control figures, --baseline record) is written to docs/sketches/wip/ (git-ignored by docs/sketches/.gitignore), created
+on demand. Only `check_sketch.py --accept` copies an accepted revision's outputs up to docs/sketches/, with a SHA-256
+equality check. Every script resolves its output path through output_path() and reads through find_output() (wip/
+first, then docs/sketches/), so the S2 to S6 scripts inherit the rule.
 """
 import hashlib
 from pathlib import Path
@@ -13,6 +20,32 @@ import yaml
 HERE = Path(__file__).resolve().parent
 LEGAL_STATUS = ("VERIFIED", "DECLARED", "ASSUMED", "DERIVED")
 LEAF_FIELDS = ("value", "unit", "source", "status")
+
+
+WIP = HERE / "wip"
+
+
+def output_dir(wip=True):
+    """docs/sketches/wip/ (created on demand) for unaccepted and verification outputs; docs/sketches/ when wip=False
+    (accepted copies, written only by check_sketch.py --accept)."""
+    d = WIP if wip else HERE
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def output_path(name, wip=True):
+    """Path of an output file under the output rule (module docstring). name may hold sub-directories."""
+    p = output_dir(wip) / name
+    p.parent.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def find_output(name):
+    """Read path of an output: wip/ first, then docs/sketches/. Returns the wip path when neither exists."""
+    for d in (WIP, HERE):
+        if (d / name).is_file():
+            return d / name
+    return WIP / name
 
 
 def find_root(start=HERE):

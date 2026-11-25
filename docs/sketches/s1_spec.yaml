@@ -61,21 +61,28 @@ entry_plane: {term: collar_top, feature: collar, edge: z_max, offset: 0}     # F
 stack_ties:
   - {id: holder_flange, term: collar_top, feature: holder, edge: z_max, offset: "nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate", source: "Loftsman 1.1 (e) LF1.1-1; check_stack.collar_top_z_A (test_P18)"}
 
-# Park rule, option R (Design Notes 22). Per supported core class of length L:
-#   stop_k  = max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip)
+# Park rule, option R (Design Notes 22), with the start-above-core term (Design Notes 23, Sean's FIX 5 ruling; H5,
+# 1.2 step 0). Per supported core class of length L:
+#   stop_k  = max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip,
+#                 collet.core_stop_z + L + c - upper.travel_max)
 #   start_k = stop_k + upper.travel_max
 #   park    = max(max_k start_k, entry_plane + max L) + upper.load_clearance            (check_stack.park_tip_z_A)
-# Values (DERIVED): stop 184.84 / 184.84 / 267.5, start 834.84 / 834.84 / 917.5 for 0.5 / 0.75 / 1.0 m;
-# park 959.84 z_A (stand-in), 1209.84 with 1 m. Lift stroke = park - lowest stop_k = 775.00 (stand-in).
-# OPEN, decision for Sean (Loftsman FIX 5, 1.1 (b)): for the 1 m class this rule gives stop 267.5 and start 917.5, and
-# the 1 m core top on the core stop is 42.5 + 1000 = 1042.5 z_A, so the cutter starts 125.00 inside the uncut core
-# (check_stack reported q9_options.start_minus_core_top: 292.34 / 42.34 / -125.00 for 0.5 / 0.75 / 1 m). The rule has
-# no start-above-core term. The 1 m core is the third Q9 option and is not drawn in S1. No rule change at (b).
+# c: clearance of the start tip above the top of the class's core on the core stop. Owned by Sean (N11); no value. It is
+# a spec symbol (symbols.c below), so check_stack carries it as an expression and reports every value that reads it as
+# an expression with the range of c it holds for; a drawn value that would depend on c is an error (check_stack.numeric).
+# Values (DERIVED, c >= 0): stop 184.84 / 184.84 / 392.50 + c, start 834.84 / 834.84 / 1042.50 + c for 0.5 / 0.75 / 1 m;
+# capture for the 1 m class 650 - c; park 959.84 z_A (stand-in), 1209.84 with 1 m; lift stroke 775.00 (stand-in),
+# 1025.00 with 1 m; L 885.00 / 1135.00 (buy 900 / 1140); start_minus_core_top 292.34 / 42.34 / c.
+# Ranges (DERIVED): the 0.75 m class start stays 834.84 while c <= 42.34 (the term reads 142.50 + c there); the 0.5 m
+# class while c <= 292.34; park 1209.84, stroke 1025 and L 1140 with the 1 m class while c <= 117.34 (entry plane
+# 159.84 + 1000 + 50 governs). Design Notes 23 holds for 0 <= c <= 42.34; above it the 0.75 m start rises with c.
+symbols:
+  c: {domain: [0, null], unit: mm, owner: "Sean (N11)", source: "Design Notes 23 (FIX 5 ruling): 1 m stop 392.50 + c, start 1042.50 + c z_A, capture 650 - c", status: "no value; reported as an expression"}
 park_rule:
-  stop_k: "max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip)"
+  stop_k: "max(stop.height_z, collet.core_stop_z + L + stop.g_stop - drill.bore_ceiling_above_tip, collet.core_stop_z + L + c - upper.travel_max)"
   start_k: "stop_k + upper.travel_max"
   park: "max(max_k start_k, entry_plane + max L) + upper.load_clearance"
-  for_step4: "upper.park_z = max(max_k (max(stop.height_z, collet.core_stop_z + L_k + stop.g_stop - drill.bore_ceiling_above_tip) + upper.travel_max), stop.collar_top_z + max_k L_k) + upper.load_clearance"
+  for_step4: "upper.park_z = max(max_k (max(stop.height_z, collet.core_stop_z + L_k + stop.g_stop - drill.bore_ceiling_above_tip, collet.core_stop_z + L_k + c - upper.travel_max) + upper.travel_max), stop.collar_top_z + max_k L_k) + upper.load_clearance; c = start clearance above the core top (Sean, N11)"
 
 # Screw length per Q9 option (reported, never asserted). stroke and park from check_stack per option.
 # Loftsman B3 ruling (1.1 (b) section 2): L_min is the governing expression. g_min_screw_block = the spec g_min of
@@ -310,7 +317,7 @@ features:
 
   - id: collar
     name: holder collar ring
-    shape: "holder collar ring in section, collar.od wide, from the wing-nut top (plate top) to stop.collar_top_z; the highest clamped base feature and the g_stop reference (collar top, wings included)"
+    shape: "holder collar ring in section, collar.od wide, from the wing-nut top (collar.top_above_plate above the wing-nut top) to stop.collar_top_z; the highest clamped base feature and the g_stop reference (collar top, wings included)"
     kind: cylinder
     axis: Z
     projection: rectangle

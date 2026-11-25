@@ -155,3 +155,16 @@ controls:
   - {id: K8-B16, check: K8, control: B, expected: fires, fixture: "builders.py::k8_b16", reason: ["motor_shaft_a projected_extent", "(by 15.00)"], planted: 4, finding: "TP1.1-11", gameplan_line: 141, desc: "live S1: motor shaft a drawn 15 wider at each end (centre unchanged)"}
 
   - {id: S1-FULL, check: ALL, control: smoke, expected: runs, fixture: "builders.py::s1_full_draw", finding: SW-8, gameplan_line: "153; 223-231", desc: "every S1 spec row drawn from check_stack values; K1 to K9 and S1-1 to S1-7 run; results reported, no threshold"}
+
+  # 1.2 step 0 (step1.2_engineer_step0.md), gameplan Design Notes 25 H1 and H5. Harness controls: the fixture returns the
+  # check result; H1 runs check_sketch.accept / stale on temporary docs/ and wip/ copies, never on the live records.
+  # Under the pre-change code (no --accept, no symbols) every H1 entry errors and H5-Z / H5-B mismatch (step0 file section 2).
+  - {id: H1-Z1,  check: H1, control: Z, expected: clean, fixture: "step0_fixtures.py::h1_z_accept", finding: "DN25 H1", gameplan_line: 124, desc: "accept a passing record from wip/: flag, note, accepted_at in docs; PNG byte-equal kept; --stale 1 record, 0 differences"}
+  - {id: H1-Z2,  check: H1, control: Z, expected: clean, fixture: "step0_fixtures.py::h1_z_rerun", finding: "DN25 H1", gameplan_line: 124, desc: "re-run of an accepted revision writes to wip/; docs record keeps the flag; --stale reads it"}
+  - {id: H1-B1,  check: H1, control: B, expected: fires, fixture: "step0_fixtures.py::h1_b_failing_check", reason: ["refused", "checks not pass: S1-4 fail"], finding: "DN25 H1", gameplan_line: 124, desc: "record with S1-4 fail: accept refused, docs/ unchanged"}
+  - {id: H1-B2,  check: H1, control: B, expected: fires, fixture: "step0_fixtures.py::h1_b_empty_note", reason: ["refused: empty note"], finding: "DN25 H1", gameplan_line: 124, desc: "empty --note: accept refused"}
+  - {id: H1-B3,  check: H1, control: B, expected: fires, fixture: "step0_fixtures.py::h1_b_stale_key", reason: ["s1_checks_r4.json: jackscrew.anchor_z recorded 265"], finding: "DN25 H1", gameplan_line: 124, desc: "--stale on a flagged record, overlay jackscrew.anchor_z 265 -> 266"}
+  - {id: H1-B4,  check: H1, control: B, expected: fires, fixture: "step0_fixtures.py::h1_b_superseded", reason: ["s1_checks_r5.json: ring.thickness recorded 999"], finding: "DN25 H1", gameplan_line: 124, desc: "r4 superseded by r5: stale key only in r4 is not read; r5's stale key fires alone (2 if r4 were read)"}
+  - {id: H1-B5,  check: H1, control: B, expected: fires, fixture: "step0_fixtures.py::h1_b_png_pixels", reason: ["refused", "differs in pixels"], finding: "DN25 H1", gameplan_line: 124, desc: "wip PNG one pixel off the docs PNG of the same name: copy-up blocked, record not flagged"}
+  - {id: H5-Z,   check: H5, control: Z, expected: clean, fixture: "step0_fixtures.py::h5_z_live", finding: "DN25 H5", gameplan_line: 650, desc: "live S1: 1 m stop 392.50 + c, start 1042.50 + c, start_minus_core_top c; 0.5/0.75 m and drawn values unchanged"}
+  - {id: H5-B,   check: H5, control: B, expected: fires, fixture: "step0_fixtures.py::h5_b_drawn_depends_on_c", reason: ["depends on symbol c"], finding: "DN25 H5", gameplan_line: 650, desc: "1 m class made a drawn class: drawn start max reads 1042.50 + c; check_stack refuses"}

@@ -1,6 +1,6 @@
 """S1 reported values not produced by check_stack.reported (gameplan detail 1.1 Reported; no threshold, never asserted).
 
-Appends a section to s1_summary_r<rev>.md: drawn highest point per pose, ring position (N1) with anchor and guide
+Appends a section to wip/s1_summary_r<rev>.md (writes wip/s1_mass_report_r<rev>.json; output rule in sketch_loader): drawn highest point per pose, ring position (N1) with anchor and guide
 heights, park rule for Step 4, centre-of-mass height per pose and unbolted tip force at the frame top.
 Masses: overlay leaves where they exist (ASSUMED); the rest are WORKING values below (ASSUMED, this file only,
 not design values). Run after check_sketch.py s1 --rev k.
@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
-from sketch_loader import Params, load_spec  # noqa: E402
+from sketch_loader import Params, find_output, load_spec, output_path  # noqa: E402
 
 G = 9.81
 WORKING = {  # ASSUMED working values for the mass report only
@@ -116,13 +116,14 @@ def main(argv=None):
              f"(min footprint / 2, COM on the drill axis by three-fold symmetry), g {G}. Masses: overlay ASSUMED; structure DERIVED; "
              f"working values {WORKING} ASSUMED. Receiver, collet, holder, wing nut, anchor and guide blocks omitted.",
              f"- Old reference icd.tipover_statement: {g('icd.tipover_statement')}"]
-    out = HERE / f"s1_summary_r{a.rev}.md"
-    txt = out.read_text(encoding="utf-8")
+    out = output_path(f"s1_summary_r{a.rev}.md")   # wip/ (sketch_loader output rule); check_sketch.py s1 writes it first
+    src = find_output(f"s1_summary_r{a.rev}.md")
+    txt = src.read_text(encoding="utf-8")
     marker = "\n## Reported values, drawn"
     if marker in txt:
         txt = txt[:txt.index(marker)]
     out.write_text(txt.rstrip("\n") + "\n" + "\n".join(lines) + "\n", encoding="utf-8")
-    (HERE / f"s1_mass_report_r{a.rev}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
+    output_path(f"s1_mass_report_r{a.rev}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
     print("\n".join(lines))
     return 0
 

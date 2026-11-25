@@ -5,7 +5,7 @@ Every z comes from check_stack (z_S, shop floor); every x from check_stack `plac
 Shapes follow each row's `shape` field (Designer 1.1 (a) section 2) as far as the K checks admit: an artist tagged
 with a round-kind row must be its declared projection, so section detail is drawn as extra rectangles of that row.
 
-  python s1_side_poses.py [--rev k]   writes s1_pose_<pose>_r<k>.png beside this file (default rev 1)
+  python s1_side_poses.py [--rev k]   writes s1_pose_<pose>_r<k>.png to wip/ (sketch_loader output rule; default rev 1)
 """
 import argparse
 import math
@@ -17,7 +17,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
-from sketch_loader import Params, load_spec  # noqa: E402
+from sketch_loader import Params, load_spec, output_path  # noqa: E402
 from matplotlib.patches import Polygon  # noqa: E402
 
 GREY = "0.8"
@@ -286,7 +286,7 @@ def main(argv=None):
     stack = check_stack.evaluate_spec(P, spec)
     out = []
     for pid, fig in build(P, spec, stack).items():
-        path = HERE / f"s1_pose_{pid}_r{a.rev}.png"
+        path = output_path(f"s1_pose_{pid}_r{a.rev}.png")   # wip/ (sketch_loader output rule)
         fig.savefig(path)
         out.append(path)
     for p in out:
