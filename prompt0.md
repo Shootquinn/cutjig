@@ -1,8 +1,25 @@
 **Run this prompt at session start and after any compaction event** unless the gameplan and memory are sufficient to resume without it.
 
-## CRITICAL: You are on Windows via Git Bash (MINGW64)
+## CRITICAL: You are on Windows via Git Bash (MINGW64) or PowerShell
 
-You are running Claude Code on Windows. Your bash shell is Git Bash (MINGW64), NOT WSL. If you find yourself on a different system, you need to update this file. However, the capabilities required herein must be available for you to do your work properly.
+You are running Claude Code on Windows. Depending on the machine, your shell is Git Bash (MINGW64, NOT WSL) or Windows PowerShell 5.1 (Claude desktop app). If you find yourself on a different system, you need to update this file. However, the capabilities required herein must be available for you to do your work properly.
+
+### Machine: sean (Claude desktop app, PowerShell 5.1), verified 2026-11-24
+
+| Tool | Version | Path |
+|---|---|---|
+| Python | 3.12.10 | `C:\Users\UR\AppData\Local\Programs\Python\Python312\python.exe` (pypdf, pdfplumber, openpyxl, pyyaml, matplotlib, numpy installed) |
+| Git | 2.56.1 | `C:\Users\UR\AppData\Local\Programs\Git\cmd\git.exe` (identity CE-cyber734) |
+| Node | 26.13.1 | docx-js installed globally; `NODE_PATH` (user env) = `C:\Users\UR\AppData\Roaming\npm\node_modules` |
+| Pandoc | 3.14 | on PATH |
+| LibreOffice | 26.8.3 | `C:\Program Files\LibreOffice\program\soffice.com` (added to user PATH) |
+| FreeCAD | — | `D:\Program Files (x86)\bin\freecadcmd.exe`; FreeCAD's own Python 3.11 is `D:\Program Files (x86)\bin\python.exe`. Use it only for FreeCAD scripts; do not pip-install into it. |
+
+- The `python` alias in `WindowsApps` is the Microsoft Store stub; the Python312 install above precedes it on PATH.
+- A shell started before an install does not see the new PATH. In PowerShell, refresh with `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
+- `claude-docx-bundle/` on this machine holds only the four .md files; `scripts/office/validate.py` is absent.
+
+### Git Bash notes
 
 - Windows drives are mounted at `/c/`, `/d/`, etc., NOT `/mnt/c/`.
 - Windows-installed tools (node, pandoc, python) should all be on PATH if installed correctly. Run them directly.
