@@ -1238,6 +1238,34 @@ def k7_b19():
         "place", dict(r["place"], r_in="jackscrew.pitch_radius + jackscrew.nut_flange_od / 2 + 1"))))
 
 
+# ---------------------------------------------------------------- r4: LF1.1-8 = TP1.1-12, TP1.1-11
+
+def k7_b20():
+    """r4 B (LF1.1-8): screw frame member a turned 45 deg in plan (place rot 45), drawn faithfully. The square's corner
+    reaches r 300 - 42.43 = 257.57 toward the axis, 12.43 into each arm face at r 270: overlap 12.43^2 = 154.4 mm2."""
+    return _s1_ctx(spec_mut=_mut_row("frame_upper_a", lambda r: r.__setitem__("place", dict(r["place"], rot=45))))
+
+
+def _widen(fid, d):
+    """Live S1 drawing with every artist of row fid drawn d wider at each end in x (centre unchanged)."""
+    c = _s1_ctx()
+    for fig in c.figs.values():
+        for a in sc.tagged(fig.axes[0]).get(fid, []):
+            a.set_x(a.get_x() - d)
+            a.set_width(a.get_width() + 2 * d)
+    return c
+
+
+def k8_b15():
+    """r4 B (TP1.1-11): bracket_anchor_a drawn 20 wider at each end; centre and spec footprint unchanged."""
+    return _widen("bracket_anchor_a", 20)
+
+
+def k8_b16():
+    """r4 B (TP1.1-11): motor_shaft_a drawn 15 wider at each end; centre and spec footprint unchanged."""
+    return _widen("motor_shaft_a", 15)
+
+
 def s1_full_draw():
     """Returns (ctx, extra checks): K1 to K9 and S1-1 to S1-6 run on it."""
     return s1_full_ctx(), checks_s1.run

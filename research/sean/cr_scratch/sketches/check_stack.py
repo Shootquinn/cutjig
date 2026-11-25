@@ -235,15 +235,31 @@ def applies(row, pose_id):
     return not row.get("poses") or pose_id in row["poses"]
 
 
-def place_extents(r_in, r_out, theta, w, footprint):
+def radial_corners(r_in, r_out, theta, w, rot=0):
+    """Plan corners (x, y) of a radial footprint: rectangle from r_in to r_out along the radial direction at theta,
+    half-width w across it, turned by rot (deg, counter-clockwise) about its own centre (r4: rot 0 is one face toward
+    the axis; the LF1.1-8 control turns the 30-6060 member square 45 deg)."""
+    s, c = sind(theta), cosd(theta)
+    uc = (r_in + r_out) / 2
+    sr, cr = sind(rot), cosd(rot)
+    out = []
+    for u, v in ((r_in, -w), (r_out, -w), (r_out, w), (r_in, w)):
+        du, dv = u - uc, v
+        u2, v2 = uc + du * cr - dv * sr, du * sr + dv * cr
+        out.append((u2 * c - v2 * s, u2 * s + v2 * c))
+    return out
+
+
+def place_extents(r_in, r_out, theta, w, footprint, rot=0):
     """Plan footprint of a placed part projected on X (side-view x extent) and Y (side-view depth band).
     round: circle of radius w at every radius from r_in to r_out (axis-Z parts).
     radial: rectangle along the radial direction from r_in to r_out, half-width w across it (radial-axis parts; LF-5, TP-4):
       y in [min(r_in s, r_out s) - w|c|, max(r_in s, r_out s) + w|c|], x in [min(r_in c, r_out c) - w|s|, max(...) + w|s|]."""
     s, c = sind(theta), cosd(theta)
     if footprint == "radial":
-        x = [min(r_in * c, r_out * c) - w * abs(s), max(r_in * c, r_out * c) + w * abs(s)]
-        y = [min(r_in * s, r_out * s) - w * abs(c), max(r_in * s, r_out * s) + w * abs(c)]
+        pts = radial_corners(r_in, r_out, theta, w, rot)
+        x = [min(p[0] for p in pts), max(p[0] for p in pts)]
+        y = [min(p[1] for p in pts), max(p[1] for p in pts)]
     elif footprint == "round":
         x = [min(r_in * c, r_out * c) - w, max(r_in * c, r_out * c) + w]
         y = [min(r_in * s, r_out * s) - w, max(r_in * s, r_out * s) + w]
@@ -280,9 +296,10 @@ def evaluate_spec(P, spec):
                 r_out = eval_expr(pl.get("r_out", pl["r_in"]), P, names)
                 th = eval_expr(pl["theta"], P, names)
                 w = eval_expr(pl["half_width"], P, names)
-                x, y, rc = place_extents(r_in, r_out, th, w, pl.get("footprint", "round"))
+                rot = eval_expr(pl.get("rot", 0), P, names)
+                x, y, rc = place_extents(r_in, r_out, th, w, pl.get("footprint", "round"), rot)
                 rec["place"] = {"r_c": rc, "theta": th, "x": x, "y": y, "r_in": r_in, "r_out": r_out, "half_width": w,
-                                "footprint": pl.get("footprint", "round")}
+                                "footprint": pl.get("footprint", "round"), "rot": rot}
                 rec["depth_true"] = y
             if row.get("depth") is not None:
                 rec["depth"] = sorted(eval_expr(d, P, names) for d in row["depth"])

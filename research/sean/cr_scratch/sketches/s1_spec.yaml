@@ -3,6 +3,8 @@ status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
 # r2 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r2.md), re-sign due (Designer; Loftsman for placement):
 # stack_ties (LF1.1-1), holder z_max + flange (LF1.1-1), section on receiver, collet, core_seat, holder, collar and
 # bore_cone on holder (TP1.1-3), N -> C/F between section rows (TP1.1-3), gear face_rises (TP1.1-1), rubric line (TP1.1-2).
+# r4 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r4.md): frame_upper_a/_b plan footprint 60 x 60 square,
+# radial r 270 to 330 (LF1.1-8 = TP1.1-12); place field rot (deg, footprint turned about its centre) for controls.
 # r3 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r3.md, from sketches/s1_visual_gate_r2.md F1 to F5),
 # re-sign due (Designer; Loftsman for placement): rows bracket_anchor_a/_b, bracket_guide_a/_b (F2), descent_stop_post
 # (F3), motor_shaft_a/_b and pinion_axis_a/_b (F1), labels on anchor_b, guide_b, frame_upper_b, drill_head (tip z_edge),
@@ -88,7 +90,9 @@ screw_length:
 # TP-5: K7 tests every undeclared pair of drawn parts as F. Nests are declared class N with the nesting stated.
 undeclared_pairs: F
 # place: plan position of a part: r_in, r_out (default r_in), theta (deg, counter-clockwise from +X seen from +Z),
-# half_width, footprint round (axis-Z part) or radial (radial-axis part). check_stack derives the depth band and the
+# half_width, footprint round (axis-Z part) or radial (radial-axis part; also a square section with one face toward the
+# axis), optional rot (deg, radial footprint turned about its centre). Every footprint contains its whole part (K8
+# projected_extent checks the drawn extent against it, TP1.1-11). check_stack derives the depth band and the
 # projected x from it (LF-5, TP-4); K8 asserts the drawn x centre = r_c cos(theta) (TP-3).
 # section: [r_in, r_out] of an axis-Z annulus drawn in section as one piece per side (mirrored about x = 0), or a list
 #   of such pieces [r_in, r_out, z_lo, z_hi] (z in z_A stack names; omitted z = the row's z_rule).
@@ -885,7 +889,8 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
     z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
-    place: {r_in: frame_upper.radius, theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: round}
+    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 270 to 330, half-width 30
+    place: {r_in: "frame_upper.radius - profile.width / 2", r_out: "frame_upper.radius + profile.width / 2", theta: "jackscrew.angle[1]", half_width: "profile.width / 2", footprint: radial}
     label: null
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
     sense: []
@@ -900,7 +905,8 @@ features:
     projection: rectangle
     keys: [frame_upper.radius, frame_upper.member_length, profile.width, jackscrew.angle, base.plate_thickness]
     z_rule: {z_min: base.plate_thickness, z_max: "base.plate_thickness + frame_upper.member_length"}
-    place: {r_in: frame_upper.radius, theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: round}
+    # r4 (LF1.1-8 = TP1.1-12): 30-6060 square in plan, one face toward the axis: radial r 270 to 330, half-width 30
+    place: {r_in: "frame_upper.radius - profile.width / 2", r_out: "frame_upper.radius + profile.width / 2", theta: "jackscrew.angle[0]", half_width: "profile.width / 2", footprint: radial}
     label: {text: "screw frame 30-6060 r", key: frame_upper.radius, fmt: ".0f"}   # r3 F4
     neighbours: [{id: base_plate, class: C, g_min: 0, source: "member foot bolted on the plate top; axial loop through the plate to the base frame (Designer 1.1 (b) F4)"}]
     sense: []

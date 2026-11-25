@@ -552,8 +552,8 @@ def plan_footprint(row, rec):
         c, s = math.cos(t), math.sin(t)
         r0, r1, w = pl["r_in"], pl["r_out"], pl["half_width"]
         if pl.get("footprint") == "radial":
-            return [(r0 * c + w * s, r0 * s - w * c), (r1 * c + w * s, r1 * s - w * c),
-                    (r1 * c - w * s, r1 * s + w * c), (r0 * c - w * s, r0 * s + w * c)]
+            import check_stack as cs  # stdlib + sketch_loader only; no cycle
+            return cs.radial_corners(r0, r1, pl["theta"], w, pl.get("rot", 0))
         pts = _ngon(r0 * c, r0 * s, w) + (_ngon(r1 * c, r1 * s, w) if abs(r1 - r0) > 1e-9 else [])
         return convex_hull(pts)
     dep = (rec or {}).get("depth")
@@ -1223,11 +1223,20 @@ def k8(ctx):
                     want = pl["r_c"] * math.cos(math.radians(pl["theta"]))
                     if abs(cx - want) > TOL_Z:
                         issues.append(f"{pose}/{fid} projected_x: drawn x centre {cx:.2f} vs r_c cos(theta) {want:.2f} (r_c {pl['r_c']:.2f}, theta {pl['theta']:g})")
+                    # TP1.1-11 (r4): the whole drawn part lies inside its spec footprint's projection. K7 plan tests
+                    # (plan-separated, plan-contact) read the spec footprint, so they hold only for a part it contains.
+                    fx0, fx1 = pl["x"]
+                    if ex[0] < fx0 - TOL_Z or ex[1] > fx1 + TOL_Z:
+                        issues.append(f"{pose}/{fid} projected_extent: drawn x [{ex[0]:.2f}, {ex[1]:.2f}] outside the spec footprint x "
+                                      f"[{fx0:.2f}, {fx1:.2f}] (by {max(fx0 - ex[0], ex[1] - fx1):.2f})")
                     if plan:
                         ey = extent_z(me)
                         wy = pl["r_c"] * math.sin(math.radians(pl["theta"]))
                         if abs((ey[0] + ey[1]) / 2 - wy) > TOL_Z:
                             issues.append(f"{pose}/{fid} projected_y: drawn y centre {(ey[0] + ey[1]) / 2:.2f} vs r_c sin(theta) {wy:.2f}")
+                        fy0, fy1 = pl["y"]
+                        if ey[0] < fy0 - TOL_Z or ey[1] > fy1 + TOL_Z:
+                            issues.append(f"{pose}/{fid} projected_extent_y: drawn y [{ey[0]:.2f}, {ey[1]:.2f}] outside the spec footprint y [{fy0:.2f}, {fy1:.2f}]")
             for pr in row.get("sense") or []:
                 if id(pr) in bad or (pr.get("poses") and pose not in pr["poses"]):
                     continue

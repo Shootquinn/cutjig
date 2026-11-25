@@ -1,11 +1,11 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T13:01:31",
+ "timestamp": "2026-11-25T13:17:31",
  "summary": {
-  "z_clean": 34,
-  "z_total": 34,
-  "b_fired": 78,
-  "b_total": 78,
+  "z_clean": 35,
+  "z_total": 35,
+  "b_fired": 81,
+  "b_total": 81,
   "smoke_ok": 1,
   "smoke_total": 1
  },
@@ -697,11 +697,11 @@
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (2 issue(s), planted 2)",
-   "reason": "capture_end/motor23_a projected_x: drawn x centre 141.16 vs r_c cos(theta) -141.16 (r_c 163.00, theta 210); capture_end/motor23_a side of drill_tube: centroid x minus drill_tube x 141.16, spec sign -1",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "capture_end/motor23_a projected_x: drawn x centre 141.16 vs r_c cos(theta) -141.16 (r_c 163.00, theta 210); capture_end/motor23_a projected_extent: drawn x [94.00, 188.32] outside the spec footprint x [-188.32, -94.00] (by 282.32); capture_end/motor23_a side of drill_tube: centroid x minus drill_tube x 141.16, spec sign -1",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-5, TP-3"
+   "finding": "SW-5, TP-3; r4 TP1.1-11 adds projected_extent"
   },
   {
    "id": "K8-B8",
@@ -885,7 +885,7 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "457 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
+   "reason": "477 pair test(s) clean; states ['C', 'F', 'G', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:G', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
    "match": "yes",
    "gameplan_line": 140,
    "finding": "Loftsman FIX 3; Designer F4"
@@ -1243,6 +1243,50 @@
    "finding": "Designer M1 r2 F2"
   },
   {
+   "id": "K8-Z5",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "330 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP1.1-11"
+  },
+  {
+   "id": "K7-B20",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (8 issue(s), planted 8)",
+   "reason": "load/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); load/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); ... 2 more",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "LF1.1-8 = TP1.1-12"
+  },
+  {
+   "id": "K8-B15",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/bracket_anchor_a projected_extent: drawn x [-268.83, -121.75] outside the spec footprint x [-248.83, -141.75] (by 20.00); start/bracket_anchor_a projected_extent: drawn x [-268.83, -121.75] outside the spec footprint x [-248.83, -141.75] (by 20.00); capture_end/bracket_anchor_a projected_extent: drawn x [-268.83, -121.75] outside the spec footprint x [-248.83, -141.75] (by 20.00); park/bracket_anchor_a projected_extent: drawn x [-268.83, -121.75] outside the spec footprint x [-248.83, -141.75] (by 20.00)",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP1.1-11"
+  },
+  {
+   "id": "K8-B16",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); start/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); capture_end/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); park/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00)",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP1.1-11"
+  },
+  {
    "id": "S1-FULL",
    "check": "ALL",
    "control": "smoke",
@@ -1300,7 +1344,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "457 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
+     "reason": "477 pair test(s) clean; states ['C', 'F', 'G', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:F', 'swept:G', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
     },
     {
      "id": "K8",
