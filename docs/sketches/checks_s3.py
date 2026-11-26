@@ -81,7 +81,7 @@ def loads(P, spec):
                       "eta_back": math.tan(lam - phin) / math.tan(lam)}
     n = P.get("jackscrew.count")
     fst = max(v["F_stall_per_screw"] for v in thread.values())     # governing: low mu (largest stall thrust)
-    core = float(c2["core_mass_kg"]) * g
+    core = P.get(c2["core_mass"]) * g    # liftload.core_mass_capture (P2f, Designer 1.3 (b) section 7 item 9)
     per = {"static": W / n, "capture_lift": (W + core) / n, "retract_bind": min((W + P.get("liftload.f_bind")) / n, fst),
            "cut": (P.get("loads.axial_design") - W) / n, "stall_up": fst}
     two = {k: v * n / 2 for k, v in per.items() if k != "stall_up"}

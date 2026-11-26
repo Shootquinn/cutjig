@@ -29,6 +29,9 @@ ring:
   nut_housing_od: {value: 50, unit: mm, source: "around jackscrew.nut_flange_od 42; no source", status: ASSUMED}
   nut_housing_height: {value: 30, unit: mm, source: "= jackscrew.nut_length; no source", status: ASSUMED}
   nut_mounting: {value: "floating: 0.5 radial float, flange axially clamped between the housing shoulder and a retaining ring, one pin through the flange against rotation (S3-2: K 0.7 over the anchor-to-guide span L_t)", unit: "", source: "Designer 1.3 (a) section 4 (floating recommended; was rigid K 1.0, floating wrongly K 2.0, Correction 3); Sean STOP S3-A, Design Notes 31 (drawn); pick at the S3 M2 pass", status: ASSUMED}
+  nut_clamp_od: {value: 46, unit: mm, source: "nut clamp ring over the flange, bolted to the housing top (the upward seat of the floating nut, Loftsman 1.3 (b) FIX 3 (b)); OD 46 keeps the housing-to-switch G 10 at park (10.75); orchestrator P2f ruling; Designer signs", status: ASSUMED}
+  nut_clamp_id: {value: 30, unit: mm, source: "nut clamp ring bore: over the flange (r 15 < 21), clear of the screw and of the 0.5 float; orchestrator P2f ruling; Designer signs", status: ASSUMED}
+  nut_clamp_thickness: {value: 3, unit: mm, source: "nut clamp ring thickness; orchestrator P2f ruling; Designer signs", status: ASSUMED}
   nut_float: {value: 0.5, unit: mm, source: "Designer 1.3 (a) section 1 row 4: radial float of the nut body in the housing bore; Sean STOP S3-A, Design Notes 31", status: ASSUMED}
   motor_mount_count: {value: 3, expr: "pinion.count", unit: "", source: "one per pinion; pinion.count [DN23]", status: DERIVED}
   motor_mount_placement: {value: "at each pinion.angle; pinion azimuths = screw azimuths + 60 deg (pinion.angle), S2; Designer 1.2 (a), Sean STOP S2-A O1-B", unit: "", source: "gameplan detail 1.0 ring.* seed; Designer 1.2 (b) sign-off FIX 4", status: ASSUMED}
@@ -138,6 +141,12 @@ jackscrew:
   guide_bearing_z: {value: 1150, expr: "jackscrew.top_guide_z - jackscrew.guide_allowance / 2", unit: mm, source: "guide bearing line at block mid-height; Designer 1.3 (a) section 3; S3-2 L_t upper end", status: DERIVED}
   nut_length: {value: 30, unit: mm, source: "brass T8 flange nut; no source", status: ASSUMED}
   nut_flange_od: {value: 42, unit: mm, source: "no source; kept for Tr12x3 until vendor data (Designer 1.3 (a) section 4; batch 2 B2-1)", status: ASSUMED}
+  nut_body_od: {value: 22, unit: mm, source: "Tr12x3 brass flange nut, body D22, flange D42 x 8, length 30, typical catalogue form; Designer 1.3 (b) sign-off FIX 1; vendor open, batch 2 B2-1", status: ASSUMED}
+  nut_flange_thickness: {value: 8, unit: mm, source: "Tr12x3 brass flange nut, flange D42 x 8; Designer 1.3 (b) sign-off FIX 1; vendor open, batch 2 B2-1", status: ASSUMED}
+  locknut_od: {value: 18, unit: mm, source: "M10x1 locknut under the anchor inner races; Designer 1.3 (b) sign-off FIX 3 (fixed end)", status: ASSUMED}
+  locknut_thickness: {value: 6, unit: mm, source: "M10x1 locknut; Designer 1.3 (b) sign-off FIX 3", status: ASSUMED}
+  anchor_shoulder_bore: {value: 20, unit: mm, source: "anchor block bore under the outer races (outer-race shoulder at the lower bearing face); Designer 1.3 (b) sign-off FIX 3; Loftsman 1.3 (b) FIX 2", status: ASSUMED}
+  anchor_cover_bore: {value: 16, unit: mm, source: "anchor cover bore over the outer races (cover face at the upper bearing face); Designer 1.3 (b) sign-off FIX 3; Loftsman 1.3 (b) FIX 2", status: ASSUMED}
   nut_mass: {value: 0.05, unit: kg, source: "each; no source", status: ASSUMED}
 
 liftmotor:
@@ -148,17 +157,18 @@ liftmotor:
   length: {value: 48, unit: mm, source: "no source", status: ASSUMED}
   position: {value: "coaxial under the anchor block at (jackscrew.pitch_radius, jackscrew.angle[k]), coupling up to the screw bottom", unit: "", source: "Designer 1.2 (a) section 4 (H4, replaces the 1.1 placeholder); S3 dimensions the mount", status: ASSUMED}
   plan_rot: {value: 0, unit: deg, source: "Designer 1.2 (a) section 4: 42 square with faces radial and tangential about the screw azimuth; S3 confirms", status: ASSUMED}
-  coupling_length: {value: 25, unit: mm, source: "Designer 1.1 (a); no source. Meaning (Designer 1.3 (a) section 3): motor face to anchor-block underside, the M3 hex standoff length", status: ASSUMED}
+  coupling_length: {value: 36, unit: mm, source: "motor face to anchor-block underside = M3 standoff length; shaft 24 with half the 20 coupling on each shaft and liftmotor.shaft_gap 1 (Designer 1.3 (b) sign-off FIX 2, remedy B; orchestrator P2f ruling; P2f dry run); was 25 (Designer 1.1 (a))", status: ASSUMED}
+  shaft_gap: {value: 1, unit: mm, source: "motor shaft tip to screw end inside the coupling; Designer 1.3 (b) sign-off FIX 2", status: ASSUMED}
   shaft_od: {value: 5, unit: mm, source: "NEMA 17 frame; no source on file; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
   shaft_length: {value: 24, unit: mm, source: "NEMA 17 frame; no source on file; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
   pilot: {value: [22, 2], unit: mm, source: "NEMA 17 pilot diameter and height; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
   bolt_pattern: {value: 31, unit: mm, source: "NEMA 17 face bolt square (M3); Designer 1.3 (a) section 1 row 9, Correction 7", status: ASSUMED}
   standoff: {value: "four M3 hex standoffs, liftmotor.coupling_length long, on the liftmotor.bolt_pattern square, motor face to the anchor-block underside", unit: "", source: "Designer 1.3 (a) section 3 (LF1.1-10: the motor hangs under its block)", status: ASSUMED}
   standoff_af: {value: 5.5, unit: mm, source: "M3 hex standoff across flats; no source; S3 elevation width (Designer 1.3 (a) section 7 standoffs_c)", status: ASSUMED}
-  coupling: {value: "beam coupling OD 19 x 20, bores 5 (motor) and 8 (screw end), 1.5 clear of the pilot top and of the block underside", unit: "", source: "Designer 1.3 (a) section 3", status: ASSUMED}
+  coupling: {value: "beam coupling OD 19 x 20, bores 5 (motor) and 8 (screw end), centred on the motor shaft tip (half on each shaft), z 243 to 263 z_A: 2.0 below the block, 12.0 above the pilot", unit: "", source: "Designer 1.3 (a) section 3; Designer 1.3 (b) sign-off FIX 2", status: ASSUMED}
   coupling_od: {value: 19, unit: mm, source: "beam coupling; Designer 1.3 (a) section 3", status: ASSUMED}
-  coupling_height: {value: 20, unit: mm, source: "beam coupling; Designer 1.3 (a) section 3 (z 243.5 to 263.5 z_A in the 25 gap)", status: ASSUMED}
-  screw_end_d: {value: 8, unit: mm, source: "screw end below the anchor journal, 10 engaged in the coupling; Designer 1.3 (a) section 3", status: ASSUMED}
+  coupling_height: {value: 20, unit: mm, source: "beam coupling; Designer 1.3 (a) section 3; z 243 to 263 z_A in the 36 gap (Designer 1.3 (b) sign-off FIX 2)", status: ASSUMED}
+  screw_end_d: {value: 8, unit: mm, source: "screw end below the anchor journal, 9 engaged in the coupling (shaft_gap 1 above the motor shaft tip); Designer 1.3 (a) section 3, 1.3 (b) sign-off FIX 2", status: ASSUMED}
   mass: {value: 0.35, unit: kg, source: "each; fixed part (not in W); no source; Designer 1.3 (a) section 8", status: ASSUMED}
 
 hold:
@@ -170,11 +180,14 @@ liftsync:
   switch_r_in: {value: 190, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
   switch_r_out: {value: 210, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
   switch_height: {value: 13, unit: mm, source: "Designer 1.3 (a) section 1 row 13 (z 1122 to 1135 z_A)", status: ASSUMED}
+  lever_r_tip: {value: 182, unit: mm, source: "home-switch roller lever tip radius in its free state, 3 inboard of the housing rim r 185; Designer 1.3 (b) sign-off FIX 4", status: ASSUMED}
+  lever_free_gap: {value: 1.16, unit: mm, source: "lever tip above the nut-clamp top at park in the free state (Designer 1.3 (b) sign-off FIX 4: 1.16 above the housing top; the P2f clamp adds ring.nut_clamp_thickness, DERIVED); the ring trips it about 2 above park when homing", status: ASSUMED}
   switch_width: {value: 6, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
 
 liftload:
   # S3 load-case inputs (gameplan detail 1.3 load cases; Designer 1.3 (a) section 6). Not a params.yaml namespace.
   f_bind: {value: 300, unit: N, source: "cutter bind force on retract; Sean STOP S3-A, Design Notes 31 (SF 3, F_bind 300 N; Sean owns, Step 2); batch 2 B2-3", status: ASSUMED}
+  core_mass_capture: {value: 10.4, unit: kg, source: "0.5 m capture core; Quinn Source Verification Register, DERIVED (density ASSUMED); Designer 1.3 (b) sign-off section 7 item 9 (replaces the spec literal)", status: DERIVED}
   rapid_speed: {value: 25, unit: "mm/s", source: "lift rapid traverse (stroke 775 in 31 s); critical-speed basis; Designer 1.3 (a) section 8; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-5", status: ASSUMED}
 
 frame_upper:
