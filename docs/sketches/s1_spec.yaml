@@ -839,6 +839,7 @@ features:
     keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    mark: {sub: line, z: "jackscrew.anchor_z + jackscrew.anchor_allowance / 2", source: "Topologist P0T section 4 (K5 mark admission, signed in advance; clause and controls land at P4, drawn at P6 in S1 r8): back-to-back bearing contact plane at block mid-height, 280 z_A (= jackscrew.anchor_bearing_z)"}
     label: null
     neighbours: []
     sense: [{pred: below, of: nut_a}]
@@ -854,6 +855,7 @@ features:
     keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    mark: {sub: line, z: "jackscrew.anchor_z + jackscrew.anchor_allowance / 2", source: "Topologist P0T section 4 (K5 mark admission, signed in advance; clause and controls land at P4, drawn at P6 in S1 r8): back-to-back bearing contact plane at block mid-height, 280 z_A (= jackscrew.anchor_bearing_z)"}
     label: {text: "anchor", key: jackscrew.anchor_z, fmt: ".0f", z_S: true}   # r3 F4: dimensioned, right-hand instance
     neighbours: []
     sense: [{pred: below, of: nut_b}]

@@ -28,7 +28,8 @@ ring:
   nut_housing_placement: {value: "on jackscrew.pitch_radius at each jackscrew.angle", unit: "", source: "gameplan detail 1.0 ring.* seed", status: ASSUMED}
   nut_housing_od: {value: 50, unit: mm, source: "around jackscrew.nut_flange_od 42; no source", status: ASSUMED}
   nut_housing_height: {value: 30, unit: mm, source: "= jackscrew.nut_length; no source", status: ASSUMED}
-  nut_mounting: {value: "rigid (S3-2 K = 1.0); floating option gives K = 2.0", unit: "", source: "gameplan detail 1.3; Sean picks at the S3 M2 pass (N2)", status: ASSUMED}
+  nut_mounting: {value: "floating: 0.5 radial float, flange axially clamped between the housing shoulder and a retaining ring, one pin through the flange against rotation (S3-2: K 0.7 over the anchor-to-guide span L_t)", unit: "", source: "Designer 1.3 (a) section 4 (floating recommended; was rigid K 1.0, floating wrongly K 2.0, Correction 3); Sean STOP S3-A, Design Notes 31 (drawn); pick at the S3 M2 pass", status: ASSUMED}
+  nut_float: {value: 0.5, unit: mm, source: "Designer 1.3 (a) section 1 row 4: radial float of the nut body in the housing bore; Sean STOP S3-A, Design Notes 31", status: ASSUMED}
   motor_mount_count: {value: 3, expr: "pinion.count", unit: "", source: "one per pinion; pinion.count [DN23]", status: DERIVED}
   motor_mount_placement: {value: "at each pinion.angle; pinion azimuths = screw azimuths + 60 deg (pinion.angle), S2; Designer 1.2 (a), Sean STOP S2-A O1-B", unit: "", source: "gameplan detail 1.0 ring.* seed; Designer 1.2 (b) sign-off FIX 4", status: ASSUMED}
   clearance_bore: {value: 200, expr: "bearing.od", unit: mm, source: "Designer 1.1 (a): = bearing.od 200 (bearing seat ID); 13.8 over icd.keepout_radius 86.2 per side", status: DERIVED}
@@ -49,6 +50,7 @@ bearing:
   axial_rating_up: {value: 2000, unit: N, source: "no source; cut case load 1000 N up (loads.axial_design)", status: ASSUMED}
   axial_rating_down: {value: 2000, unit: N, source: "no source", status: ASSUMED}
   radial_rating: {value: 1000, unit: N, source: "no source", status: ASSUMED}
+  mass: {value: 1.5, unit: kg, source: "no source; Designer 1.3 (a) Correction 1 (moving mass W); Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-6", status: ASSUMED}
 
 guide:
   type: {value: "round rod with linear bushing on the ring", unit: "", source: "N2; Sean picks at the S2 and S6 M2 passes", status: ASSUMED}
@@ -62,6 +64,7 @@ guide:
   bushing_length: {value: 42, unit: mm, source: "LM20UU class; Designer 1.2 (a) section 9", status: ASSUMED}
   bushing_housing_od: {value: 40, expr: "2 * ring.guide_lug_half_width", unit: mm, source: "2 x ring.guide_lug_half_width 20; Designer 1.2 (a) section 9", status: DERIVED}
   bushing_drop: {value: 30, expr: "guide.bushing_length - ring.thickness", unit: mm, source: "guide.bushing_length 42 - ring.thickness 12: housing hangs below the ring underside; Designer 1.2 (a) section 9", status: DERIVED}
+  bushing_mass: {value: 0.2, unit: kg, source: "each LM20UU with its housing; no source; Designer 1.3 (a) Correction 1; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-6", status: ASSUMED}
   top_support: {value: "30-6060 tie on each top-guide bracket arm at jackscrew.angle[0] and [1], z_A 1165 to 1225, rod top (1212) in a bore in the tie, tie end at the member's near corner; rod at guide.angle[0] to member at jackscrew.angle[0], rod at guide.angle[1] to member at jackscrew.angle[1]; Step 2 decides", unit: "", source: "Designer 1.2 (b) sign-off FIX 1", status: ASSUMED}
 
 gear:
@@ -74,6 +77,7 @@ gear:
   od: {value: 252.64, expr: "gear.pitch_diameter + 2 * gear.pitch_diameter / gear.tooth_count * cosd(gear.pitch_angle)", unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter + 2 m cos(gear.pitch_angle), m = 4.1667", status: DERIVED}
   toe_tip_above_pinion_axis: {value: 28.23, expr: "pinion.r_toe * pinion.tooth_count / gear.tooth_count - gear.pitch_diameter / gear.tooth_count * cosd(pinion.pitch_angle)", unit: mm, source: "Designer 1.1 (a): toe pitch point z 32.18 (pinion.r_toe 96.54 / 3) minus addendum normal 3.95; teeth face down onto the pinions (Design Notes 1, 22)", status: DERIVED}
   back_face_above_pinion_axis: {value: 62, unit: mm, source: "Designer 1.1 (a): heel pitch point 41.67 + rim 20.33; no source", status: ASSUMED}
+  hub_mass: {value: 0.7, unit: kg, source: "aluminium clamp ring OD 180, bore 152.4, 33.77 tall: 0.66 DERIVED, rounded; Designer 1.3 (a) Correction 1; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-6", status: ASSUMED}
   hub: {value: "clamp hub on the tube, bore drill.tube_od, OD gear.bore, height = gear section height 33.77", unit: "", source: "Designer 1.1 (a)", status: ASSUMED}
 
 pinion:
@@ -86,6 +90,7 @@ pinion:
   motor_body: {value: 57, unit: mm, source: "NEMA 23 frame square; no source", status: ASSUMED}
   motor_length: {value: 76, unit: mm, source: "no source", status: ASSUMED}
   motor_mass: {value: 1.0, unit: kg, source: "each; no source", status: ASSUMED}
+  mass: {value: 0.5, unit: kg, source: "each pinion; no source; Designer 1.3 (a) Correction 1; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-6", status: ASSUMED}
   pitch_diameter: {value: 83.33, expr: "gear.pitch_diameter / gear.tooth_count * pinion.tooth_count", unit: mm, source: "Designer 1.1 (a): gear.pitch_diameter / gear.tooth_count x pinion.tooth_count (module 4.1667)", status: DERIVED}
   outer_diameter: {value: 91.24, expr: "pinion.pitch_diameter + 2 * gear.pitch_diameter / gear.tooth_count * cosd(pinion.pitch_angle)", unit: mm, source: "Designer 1.1 (a): pinion.pitch_diameter + 2 m cos(pinion.pitch_angle)", status: DERIVED}
   face_width: {value: 30, expr: "gear.face_width", unit: mm, source: "Designer 1.1 (a): = gear.face_width", status: DERIVED}
@@ -101,17 +106,38 @@ jackscrew:
   count: {value: 3, unit: "", source: "three jack screws at 120 deg [DN23]", status: DECLARED}
   angle: {value: [30, 150, 270], unit: deg, source: "120 deg spacing [DN23]; phase ASSUMED; theta counter-clockwise from +X seen from +Z (ASSEMBLY.md Coordinate frame)", status: ASSUMED}
   pitch_radius: {value: 160, unit: mm, source: "outside icd.keepout_radius 86.2 + nut flange 21 + 10 mm (S2-2 g_min ASSUMED); no source", status: ASSUMED}
-  nominal: {value: 8, unit: mm, source: "T8 lead screw [DN23]", status: DECLARED}
+  nominal: {value: 12, unit: mm, source: "Tr12x3 single start, the DN23 compression fallback (TR10 or TR12); Designer 1.3 (a) section 4 option (i); Sean STOP S3-A, Design Notes 31 (Adopt Tr12x3); was T8 8 [DN23] DECLARED; vendor open (batch 2 B2-1, B2-9)", status: ASSUMED}
   length: {value: 900, unit: mm, source: "800 to 900 mm estimate built on travel 650 [DN23]; upper end used; Designer 1.1 (a) option R (Sean, gameplan Design Notes 22): lift stroke 775, L_min 885.84 at anchor_z 265, so 900 fits; reported, never asserted", status: DECLARED}
-  root_diameter: {value: 6.2, unit: mm, source: "T8 root, until vendor data (Sean); no source", status: ASSUMED}
-  lead: {value: 8, unit: mm, source: "common T8 brass-nut lead; back-drives (gameplan detail 1.0)", status: ASSUMED}
-  efficiency: {value: 0.6, unit: "", source: "no source", status: ASSUMED}
+  root_diameter: {value: 8.5, unit: mm, source: "ISO 2904 Tr12x3 minor diameter d3 = d - 2 (0.5 P + a_c) = 12 - 3.5; Designer 1.3 (a) section 8; Sean STOP S3-A, Design Notes 31; vendor data open (batch 2 B2-1); was 6.2 (a Tr8x1.5 root, Designer 1.3 (a) Correction 4)", status: ASSUMED}
+  lead: {value: 3, unit: mm, source: "Tr12x3 single start; Designer 1.3 (a) section 4; Sean STOP S3-A, Design Notes 31; was 8 (T8 4-start, back-drives)", status: ASSUMED}
+  starts: {value: 1, unit: "", source: "Tr12x3 single start; Sean STOP S3-A, Design Notes 31", status: ASSUMED}
+  mean_diameter: {value: 10.5, expr: "jackscrew.nominal - jackscrew.lead / jackscrew.starts / 2", unit: mm, source: "ISO 2904 pitch diameter d2 = d - 0.5 P (P = lead / starts); lead-angle and efficiency basis", status: DERIVED}
+  thread_half_angle: {value: 15, unit: deg, source: "ISO 2904 trapezoidal thread, 30 deg included; Designer 1.3 (a) sources line", status: ASSUMED}
+  thread_mu: {value: [0.15, 0.2], unit: "", source: "brass nut on steel screw, lubricated; no source; Designer 1.3 (a) section 8; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED)", status: ASSUMED}
+  efficiency: {value: 0.33, unit: "", source: "tan(lambda) / tan(lambda + phi_n), lambda = atan(lead / (pi mean_diameter)) 5.19 deg, phi_n = atan(mu / cos 15 deg): 0.364 at mu 0.15, 0.299 at mu 0.20, 0.33 at mu 0.175; Designer 1.3 (a) section 8; S3 reported values use both ends of jackscrew.thread_mu; was 0.6 (no source)", status: DERIVED}
+  youngs_modulus: {value: 200000, unit: "N/mm2", source: "steel 193 to 210 GPa; no source; Designer 1.3 (a) section 8; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED)", status: ASSUMED}
+  density: {value: 7850, unit: "kg/m3", source: "steel; critical-speed basis; Designer 1.3 (a) section 8", status: ASSUMED}
+  end_factor_floating: {value: 0.7, unit: "", source: "floating nut with the top guide: column over the anchor-to-guide span L_t, fixed anchor (two angular-contact bearings back-to-back), pinned guide; Designer 1.3 (a) Correction 3 and section 5; Sean STOP S3-A, Design Notes 31 (K 0.7 credited; the stall case reads 1.95 at K 1.0)", status: ASSUMED}
+  end_factor_rigid: {value: 0.5, unit: "", source: "rigid nut: nut centre to the anchor bearing line, fixed-fixed (1.0 conservative); Designer 1.3 (a) section 5; reported alternative, not drawn", status: ASSUMED}
+  buckling_sf: {value: 3, unit: "", source: "gameplan detail 1.3 S3-2 (ASSUMED 3, Sean confirms); Sean STOP S3-A, Design Notes 31 (SF 3 in every case, stall included); batch 2 B2-4", status: ASSUMED}
   anchor_z: {value: 265, unit: mm, source: "Designer 1.1 (a), G3: z_A of the anchor block bottom (block 265 to 295) on the frame-member bracket, 253 above the plate top (12); nut-housing bottom at capture_end 305.84, gap 10.84 >= g_min 10; Design Notes 22", status: ASSUMED}
   top_guide_z: {value: 1165, expr: "jackscrew.anchor_z + jackscrew.length", unit: mm, source: "jackscrew.anchor_z 265 + jackscrew.length 900", status: DERIVED}
-  anchor_allowance: {value: 30, unit: mm, source: "thrust bearing and anchor height; no source", status: ASSUMED}
-  guide_allowance: {value: 30, unit: mm, source: "top guide height; no source", status: ASSUMED}
+  anchor_allowance: {value: 30, unit: mm, source: "anchor block height: two angular-contact bearings 2 x 8 + locknut 6 + shoulders 8 = 30 (Designer 1.3 (a) section 3); Sean STOP S3-A, Design Notes 31 (42-square block 30 tall); was no source", status: ASSUMED}
+  anchor_block_width: {value: 42, unit: mm, source: "anchor block 42 square, faces radial and tangential (= liftmotor.plan_rot 0), carries the NEMA 17 31-square bolt pattern (its corners r 21.92 lie outside the old r 21 round block, Designer 1.3 (a) Correction 7); Sean STOP S3-A, Design Notes 31", status: ASSUMED}
+  anchor_bearing: {value: "fixed end: two 7000-class angular-contact bearings 10 x 26 x 8 back-to-back, M10x1 locknut, journal 10", unit: "", source: "Designer 1.3 (a) section 3; Sean STOP S3-A, Design Notes 31 (fixed anchor, K 0.7)", status: ASSUMED}
+  anchor_bearing_count: {value: 2, unit: "", source: "back-to-back pair; Sean STOP S3-A, Design Notes 31", status: ASSUMED}
+  anchor_bearing_od: {value: 26, unit: mm, source: "7000 class; Designer 1.3 (a) section 3", status: ASSUMED}
+  anchor_bearing_width: {value: 8, unit: mm, source: "7000 class, each of two; Designer 1.3 (a) section 3", status: ASSUMED}
+  anchor_bearing_z: {value: 280, expr: "jackscrew.anchor_z + jackscrew.anchor_allowance / 2", unit: mm, source: "anchor bearing line (back-to-back contact plane) at block mid-height; Designer 1.3 (a) section 3; S3-2 L_t lower end; Topologist P0T section 4 mark z", status: DERIVED}
+  journal_d: {value: 10, unit: mm, source: "machined screw end through both bearing sets (bearing bore 10); Designer 1.3 (a) section 3; vendor open (batch 2 B2-1)", status: ASSUMED}
+  guide_allowance: {value: 30, unit: mm, source: "top guide block height, one 6000-2RS radial bearing with shoulders; Designer 1.3 (a) section 3; was no source", status: ASSUMED}
+  guide_block_od: {value: 42, unit: mm, source: "top-guide block D42 round, equal to the old r 21 declaration; Designer 1.3 (a) section 3", status: ASSUMED}
+  guide_bearing: {value: "one 6000-2RS radial bearing 10 x 26 x 8, journal 10 axially free (no shoulder): radial support only", unit: "", source: "Designer 1.3 (a) section 3 (DN23 guided only at the top); Sean STOP S3-A, Design Notes 31 (radial top guide drawn; pick at M2)", status: ASSUMED}
+  guide_bearing_od: {value: 26, unit: mm, source: "6000 class; Designer 1.3 (a) section 3", status: ASSUMED}
+  guide_bearing_width: {value: 8, unit: mm, source: "6000 class; Designer 1.3 (a) section 3", status: ASSUMED}
+  guide_bearing_z: {value: 1150, expr: "jackscrew.top_guide_z - jackscrew.guide_allowance / 2", unit: mm, source: "guide bearing line at block mid-height; Designer 1.3 (a) section 3; S3-2 L_t upper end", status: DERIVED}
   nut_length: {value: 30, unit: mm, source: "brass T8 flange nut; no source", status: ASSUMED}
-  nut_flange_od: {value: 42, unit: mm, source: "no source", status: ASSUMED}
+  nut_flange_od: {value: 42, unit: mm, source: "no source; kept for Tr12x3 until vendor data (Designer 1.3 (a) section 4; batch 2 B2-1)", status: ASSUMED}
   nut_mass: {value: 0.05, unit: kg, source: "each; no source", status: ASSUMED}
 
 liftmotor:
@@ -122,10 +148,34 @@ liftmotor:
   length: {value: 48, unit: mm, source: "no source", status: ASSUMED}
   position: {value: "coaxial under the anchor block at (jackscrew.pitch_radius, jackscrew.angle[k]), coupling up to the screw bottom", unit: "", source: "Designer 1.2 (a) section 4 (H4, replaces the 1.1 placeholder); S3 dimensions the mount", status: ASSUMED}
   plan_rot: {value: 0, unit: deg, source: "Designer 1.2 (a) section 4: 42 square with faces radial and tangential about the screw azimuth; S3 confirms", status: ASSUMED}
-  coupling_length: {value: 25, unit: mm, source: "Designer 1.1 (a); no source", status: ASSUMED}
+  coupling_length: {value: 25, unit: mm, source: "Designer 1.1 (a); no source. Meaning (Designer 1.3 (a) section 3): motor face to anchor-block underside, the M3 hex standoff length", status: ASSUMED}
+  shaft_od: {value: 5, unit: mm, source: "NEMA 17 frame; no source on file; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
+  shaft_length: {value: 24, unit: mm, source: "NEMA 17 frame; no source on file; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
+  pilot: {value: [22, 2], unit: mm, source: "NEMA 17 pilot diameter and height; Designer 1.3 (a) section 1 row 9", status: ASSUMED}
+  bolt_pattern: {value: 31, unit: mm, source: "NEMA 17 face bolt square (M3); Designer 1.3 (a) section 1 row 9, Correction 7", status: ASSUMED}
+  standoff: {value: "four M3 hex standoffs, liftmotor.coupling_length long, on the liftmotor.bolt_pattern square, motor face to the anchor-block underside", unit: "", source: "Designer 1.3 (a) section 3 (LF1.1-10: the motor hangs under its block)", status: ASSUMED}
+  standoff_af: {value: 5.5, unit: mm, source: "M3 hex standoff across flats; no source; S3 elevation width (Designer 1.3 (a) section 7 standoffs_c)", status: ASSUMED}
+  coupling: {value: "beam coupling OD 19 x 20, bores 5 (motor) and 8 (screw end), 1.5 clear of the pilot top and of the block underside", unit: "", source: "Designer 1.3 (a) section 3", status: ASSUMED}
+  coupling_od: {value: 19, unit: mm, source: "beam coupling; Designer 1.3 (a) section 3", status: ASSUMED}
+  coupling_height: {value: 20, unit: mm, source: "beam coupling; Designer 1.3 (a) section 3 (z 243.5 to 263.5 z_A in the 25 gap)", status: ASSUMED}
+  screw_end_d: {value: 8, unit: mm, source: "screw end below the anchor journal, 10 engaged in the coupling; Designer 1.3 (a) section 3", status: ASSUMED}
+  mass: {value: 0.35, unit: kg, source: "each; fixed part (not in W); no source; Designer 1.3 (a) section 8", status: ASSUMED}
 
 hold:
-  device: {value: "open: non-back-driving lead, brake, or park pin with visible state", unit: "", source: "gameplan detail 2 power-off hold row; Step 2 decides", status: ASSUMED}
+  device: {value: "self-locking Tr12x3 lead (drawn; lambda 5.19 deg < phi_n 8.83 to 11.70 deg); options brake on each NEMA 17, park pin with visible state; Step 2 decides", unit: "", source: "Designer 1.3 (a) section 4 option (a); Sean STOP S3-A, Design Notes 31 (self-locking lead as the power-off hold; pick at M2); gameplan detail 2 power-off hold row", status: ASSUMED}
+
+liftsync:
+  method: {value: "one controller, three drivers, home switch per screw at park; no belt", unit: "", source: "Designer 1.3 (a) section 4 (a belt enclosing the axis crosses S2-5a, 1.3 open O7); Sean STOP S3-A, Design Notes 31 (drawn; pick at M2)", status: ASSUMED}
+  home_switch: {value: "micro switch under the top-guide arm, body 13 tall x 20 radial x 6, r 190 to 210, top on the guide-block underside, roller lever on the nut-housing top at park", unit: "", source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
+  switch_r_in: {value: 190, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
+  switch_r_out: {value: 210, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
+  switch_height: {value: 13, unit: mm, source: "Designer 1.3 (a) section 1 row 13 (z 1122 to 1135 z_A)", status: ASSUMED}
+  switch_width: {value: 6, unit: mm, source: "Designer 1.3 (a) section 1 row 13", status: ASSUMED}
+
+liftload:
+  # S3 load-case inputs (gameplan detail 1.3 load cases; Designer 1.3 (a) section 6). Not a params.yaml namespace.
+  f_bind: {value: 300, unit: N, source: "cutter bind force on retract; Sean STOP S3-A, Design Notes 31 (SF 3, F_bind 300 N; Sean owns, Step 2); batch 2 B2-3", status: ASSUMED}
+  rapid_speed: {value: 25, unit: "mm/s", source: "lift rapid traverse (stroke 775 in 31 s); critical-speed basis; Designer 1.3 (a) section 8; Sean STOP S3-A, Design Notes 31 (accepted as ASSUMED); batch 2 B2-5", status: ASSUMED}
 
 frame_upper:
   member_profile: {value: "30-6060", unit: "", source: "params profile.series (DECLARED)", status: ASSUMED}

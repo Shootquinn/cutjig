@@ -601,7 +601,7 @@ def reported(P, spec, stack):
         low = pmin(class_stops_z_A(P, spec, keys, glob, symbolic=True).values()) if spec.get("park_rule") else glob["lowest_tip"]
         nm = dict(glob)
         nm.update({"park": park, "stroke": park - low})
-        gm = [g for s in ("a", "b") for g in _try_block_g_min(spec, s)]
+        gm = [g for s in ("a", "b", "c") for g in _try_block_g_min(spec, s)]   # 1.3 (b): S3 declares the pair on screw c only
         if gm:
             nm["g_min_screw_block"] = max(gm)
         Ls = {lk: eval_expr(ex, P, nm) for lk, ex in (spec.get("screw_length") or {}).items()}
