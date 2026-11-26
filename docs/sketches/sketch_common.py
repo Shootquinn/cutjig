@@ -215,12 +215,25 @@ def _rank(ax):
     return {id(a): (a.get_zorder(), i) for i, a in enumerate(kids)}
 
 
-def is_opaque(a):
-    """A Patch whose fill hides what is under it: filled, face alpha times artist alpha equal to 1."""
+OPAQUE_ALPHA = 0.75     # 1.3 P1R (TP1.2-19): a fill whose rendered alpha is at least this hides what is under it
+TRANSLUCENT_MAX = 0.5   # 1.3 P1R premise of the alpha rule: a fill counted see-through renders at alpha at most this
+
+
+def fill_alpha(a):
+    """Rendered alpha of a Patch's fill (0 for no fill). matplotlib folds a set artist alpha into the face colour (and
+    forces it on the fill at draw time), so the face colour's alpha is the rendered one."""
     if not isinstance(a, Patch) or not a.get_fill():
-        return False
+        return 0.0
     fc = a.get_facecolor()
-    return fc is not None and fc[3] * (a.get_alpha() if a.get_alpha() is not None else 1.0) >= 1 - 1e-9
+    return 0.0 if fc is None else float(fc[3])
+
+
+def is_opaque(a):
+    """A Patch whose fill hides what is under it (1.3 P1R alpha rule, TP1.2-19): filled with a rendered alpha of at least
+    OPAQUE_ALPHA (0.75: what lies under shows at a quarter of its contrast or less). Premise, K8 cover opacity lint: no
+    plan fill renders at an alpha between TRANSLUCENT_MAX and OPAQUE_ALPHA, so every fill is either opaque or shows what
+    is under it at half its contrast or more."""
+    return fill_alpha(a) >= OPAQUE_ALPHA - 1e-9
 
 
 def is_area(a):
@@ -231,8 +244,24 @@ def is_area(a):
     return (bool(a.get_fill()) and fc is not None and fc[3] > 0) or bool(a.get_hatch())
 
 
+def in_rings(p, polys):
+    """p inside a patch's closed rings by the even-odd rule (an Annulus's bore is outside; a one-ring patch as _inside)."""
+    return sum(1 for q in polys if len(q) >= 3 and _inside(p, q)) % 2 == 1
+
+
+def in_drawn(a, p, polys=None):
+    """p inside the area artist a as drawn: inside its rings (even-odd) and inside its clip region (1.3 P1R renderer:
+    a split piece draws only inside its clip path; an artist with no clip path of its own draws everywhere)."""
+    polys = polys if polys is not None else artist_polys(a)
+    if not in_rings(p, polys):
+        return False
+    reg = drawn_region(a)
+    return reg is None or reg.contains(p)
+
+
 def covering_areas(ax, fid, p, rank=None):
-    """gids of area artists of other rows that contain p and draw above every artist of row fid that carries ink at p."""
+    """gids of area artists of other rows that contain p and draw above every artist of row fid that carries ink at p.
+    1.3 P1R: containment as drawn (even-odd rings, clip region of a renderer piece)."""
     rank = rank or _rank(ax)
     mine = [a for a in tagged(ax).get(fid, []) if ink_distance(p, [(q, isinstance(a, Patch)) for q in artist_polys(a)]) <= TOL_Z]
     top = max((rank[id(a)] for a in mine), default=(-1e9, -1))
@@ -241,15 +270,15 @@ def covering_areas(ax, fid, p, rank=None):
         g = a.get_gid()
         if not g or g == fid or g.startswith(fid + ":") or not is_area(a) or rank[id(a)] <= top:
             continue
-        if any(len(q) >= 3 and _inside(p, q) for q in artist_polys(a)):
+        if in_drawn(a, p):
             out.append(g)
     return out
 
 
 def hatch_areas(ax):
-    """(gid, closed pieces) of every hatched Patch with a gid: dense ink a thin leader disappears into (Designer M1 S1 r6
-    F1)."""
-    return [(a.get_gid(), [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax)
+    """(gid, closed pieces, artist) of every hatched Patch with a gid: dense ink a thin leader disappears into (Designer
+    M1 S1 r6 F1). The artist is kept so containment reads the piece as drawn (1.3 P1R clip regions)."""
+    return [(a.get_gid(), [q for q in artist_polys(a) if len(q) >= 3], a) for a in artists(ax)
             if a.get_gid() and isinstance(a, Patch) and a.get_hatch()]
 
 
@@ -266,7 +295,8 @@ def leader_hatch(fid, p0, p1, hatches):
     hit, gids = 0, set()
     for k in ks:
         q = (p0[0] + (p1[0] - p0[0]) * k / ANCHOR_SAMPLES, p0[1] + (p1[1] - p0[1]) * k / ANCHOR_SAMPLES)
-        inq = {g for g, polys in hatches if g != fid and not g.startswith(fid + ":") and any(_inside(q, pp) for pp in polys)}
+        inq = {h[0] for h in hatches if h[0] != fid and not h[0].startswith(fid + ":") and
+               (in_drawn(h[2], q, h[1]) if len(h) > 2 else any(_inside(q, pp) for pp in h[1]))}
         if inq:
             hit += 1
             gids |= inq
@@ -413,6 +443,382 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
             ann.set_gid(gid)
 
 
+# ------------------------------------------------------------------------ plan leader placer (1.3 P1R R3)
+# One function, place_plan_labels, places every label of a plan figure. Each label's candidates, in this order: label
+# column (the row's label_side first, right when unset, then the other column) x anchor (the ray hit at label_theta when
+# the row sets it and the ray meets its ink; then the column's default anchor: (max x, mid y) of the ink for the right
+# column, (min x, mid y) for the left, or the extreme vertex nearest mid y when that point is off the ink; then every
+# ink sample, at most ANCHOR_STEP apart along each ink edge, the column edge first and then by distance from the
+# default anchor).
+# A candidate passes when its leader passes every K4 leader rule: ends on the row's ink within TOL_Z; the anchor under
+# no area of another row drawn above the row's ink there; no area drawn above the leader; at most LEADER_HATCH_MAX of
+# its end-quarter samples in other rows' hatch; its last quarter outside every other row's true plan outline that does
+# not contain the anchor (leader_outline_issue, Design Notes 30); and no crossing with another leader. Text inside the
+# saved image is K3's rule (a margin column is inside the tight bounding box the script saves; K3 reads the premise);
+# a left-column text box must also not overlap a y tick label (placer rule, margin mode).
+# Labels are taken in spec row order: each takes its first candidate that passes at its wanted text position (column
+# x, anchor y); the columns are then stacked (_stack_z) and every leader is re-judged at its stacked position; a label
+# that fails there takes, in candidate order, the first candidate whose stacked layout gives it no failure and adds no
+# failure to another label (at most PLACER_PASSES rounds). A label with no passing candidate is UNPLACEABLE: drawn at
+# its first candidate, recorded with its candidate table on the axes (ax._sc_placer), and K4 fails it with reason
+# "unplaceable". No silent fall-back.
+
+LEADER_OUTLINE_STEP = 0.5   # mm: sample step along a leader's last quarter for the outline rule
+ANCHOR_STEP = 2.0           # mm: placer anchor candidates along each ink edge, at most this far apart (edge ends included)
+PLACER_PASSES = 3
+
+
+def leader_outlines(ctx, pose):
+    """What the K4 outline rule reads at pose: cover_table's true outlines {id: (outline, box)} and z_max per row (every
+    row with a stack record, labelled reference rows included)."""
+    if ctx is None or ctx.stack is None or ctx.view != "plan_xy":
+        return {}, {}
+    outl = cover_table(ctx, pose)[2]
+    zmax = {r["id"]: _feat(ctx, pose, r["id"]).get("z_max") for r in ctx.spec.get("features", [])}
+    return outl, zmax
+
+
+def leader_outline_issue(outl, fid, p0, p1, zmax=None):
+    """1.3 P1R K4 rule (Design Notes 30): [(row id, mm)] of the true plan outlines of rows nearer the viewer than row fid
+    that the last LEADER_END of its leader (text p0, anchor p1) runs inside, with the length inside (samples at most
+    LEADER_OUTLINE_STEP apart, the anchor end excluded); empty when none. Premises: (1) the anchor lies on the row's ink
+    (K4 (a)); (2) an outline counts when its row's z_max is higher than fid's z_max by more than TOL_Z (seen from +Z
+    the end of the leader then runs over a nearer part, as the descent-stop leader runs over tie b; a lower part, the
+    plate, the base frame, a ring under a gear, lies behind the labelled part and every leader crosses it); a row with
+    no z_max (a zone) counts every outline; (3) an outline that contains the anchor (within TOL_Z: a part seated on or in
+    another, a hidden part under its cover) is exempt, since no leader can end on that ink without entering it.
+    outl: cover_table's {id: (outline, box)}; zmax: {id: z_max} (None: every outline counts)."""
+    L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    Lq = L * LEADER_END
+    n = max(int(ANCHOR_SAMPLES * LEADER_END), int(math.ceil(Lq / LEADER_OUTLINE_STEP)))
+    ts = [1 - LEADER_END + LEADER_END * k / n for k in range(n)]
+    pts = [(p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t) for t in ts]
+    sx0, sx1 = min(p[0] for p in pts), max(p[0] for p in pts)
+    sy0, sy1 = min(p[1] for p in pts), max(p[1] for p in pts)
+    zf = (zmax or {}).get(fid)
+    out = []
+    for oid, (O, (x0, x1, y0, y1)) in sorted(outl.items()):
+        if oid == fid or oid.startswith(fid + ":") or x0 > sx1 or x1 < sx0 or y0 > sy1 or y1 < sy0:
+            continue
+        zo = (zmax or {}).get(oid)
+        if zf is not None and (zo is None or zo <= zf + TOL_Z):
+            continue
+        if outline_outside(O, p1) <= TOL_Z:
+            continue
+        if O[0] == "annulus":
+            k = sum(1 for q in pts if outline_contains(O, q))
+        else:
+            rings = [ccw(q) for q in O[1] if len(q) >= 3]
+            k = sum(1 for q in pts if any(_inside_c(q, C) for C in rings))
+        if k:
+            out.append((oid, Lq * k / n))
+    return out
+
+
+def _inside_c(p, C):
+    """_inside on a ring already in counter-clockwise order (ccw(P))."""
+    n = len(C)
+    return all((C[(i + 1) % n][0] - C[i][0]) * (p[1] - C[i][1]) - (C[(i + 1) % n][1] - C[i][1]) * (p[0] - C[i][0]) >= -1e-12
+               for i in range(n))
+
+
+class _AreaInfo:
+    """An area artist with its rings in ccw order and bounding box, for fast as-drawn containment (in_drawn semantics)."""
+
+    def __init__(self, a, polys):
+        self.a, self.gid = a, a.get_gid()
+        self.rings = [ccw(q) for q in polys if len(q) >= 3]
+        self.box = bbox(self.rings) if self.rings else (1, 0, 1, 0)
+
+    def contains(self, p):
+        x0, x1, y0, y1 = self.box
+        if not (x0 - 1e-9 <= p[0] <= x1 + 1e-9 and y0 - 1e-9 <= p[1] <= y1 + 1e-9):
+            return False
+        if sum(1 for C in self.rings if _inside_c(p, C)) % 2 != 1:
+            return False
+        reg = drawn_region(self.a)
+        return reg is None or reg.contains(p)
+
+
+class _LeaderCtx:
+    """What the leader rules read from a figure, cached for the placer: draw order, area artists with their rings, hatch,
+    ink per row, true outlines at the pose, and the draw rank a label annotation gets. Same rules as leader_issues."""
+
+    def __init__(self, ax, outl, zmax=None):
+        self.ax, self.outl, self.zmax = ax, outl, zmax
+        self.rank = _rank(ax)
+        self.polys = {id(a): [q for q in artist_polys(a)] for a in artists(ax)}
+        self.areas = [_AreaInfo(a, self.polys[id(a)]) for a in artists(ax) if a.get_gid() and is_area(a)]
+        self.hatch = [h for h in self.areas if h.a.get_hatch()]
+        self.lz = (LEADER_ZORDER, len(ax.get_children()))
+        self.by_gid = tagged(ax)
+
+        self._segs = {}
+
+    def ink(self, fid):
+        return [(q, isinstance(a, Patch)) for a in self.by_gid.get(fid, []) for q in self.polys[id(a)]]
+
+    def _art_dist(self, a, p):
+        """ink_distance from p to one artist's ink (0 inside a closed piece), vectorised over its edges."""
+        k = id(a)
+        if k not in self._segs:
+            closed = isinstance(a, Patch)
+            segs, rings = [], []
+            for q in self.polys[k]:
+                if closed and len(q) >= 3:
+                    rings.append(ccw(q))
+                es = _edges(q) if closed else ([(q[i], q[i + 1]) for i in range(len(q) - 1)] or [(q[0], q[0])])
+                segs += [(e0[0], e0[1], e1[0], e1[1]) for e0, e1 in es]
+            self._segs[k] = (rings, np.asarray(segs, dtype=float).reshape(-1, 4))
+        rings, S = self._segs[k]
+        if any(_inside_c(p, C) for C in rings):
+            return 0.0
+        if not len(S):
+            return float("inf")
+        dx, dy = S[:, 2] - S[:, 0], S[:, 3] - S[:, 1]
+        L2 = dx * dx + dy * dy
+        with np.errstate(divide="ignore", invalid="ignore"):
+            t = np.where(L2 > 1e-24, np.clip(((p[0] - S[:, 0]) * dx + (p[1] - S[:, 1]) * dy) / L2, 0, 1), 0.0)
+        return float(np.min(np.hypot(p[0] - (S[:, 0] + t * dx), p[1] - (S[:, 1] + t * dy))))
+
+    def ink_dist(self, fid, p):
+        return min((self._art_dist(a, p) for a in self.by_gid.get(fid, [])), default=float("inf"))
+
+    def covering(self, fid, p):
+        """covering_areas on the cached rings."""
+        mine = [a for a in self.by_gid.get(fid, []) if self._art_dist(a, p) <= TOL_Z]
+        top = max((self.rank[id(a)] for a in mine), default=(-1e9, -1))
+        return sorted({h.gid for h in self.areas if h.gid != fid and not h.gid.startswith(fid + ":")
+                       and self.rank[id(h.a)] > top and h.contains(p)})
+
+    def hatch_end(self, fid, p0, p1):
+        """leader_hatch on the cached rings."""
+        k0 = int(ANCHOR_SAMPLES * (1 - LEADER_END))
+        ks = list(range(k0, ANCHOR_SAMPLES))
+        hit, gids = 0, set()
+        hs = [h for h in self.hatch if h.gid != fid and not h.gid.startswith(fid + ":")]
+        for k in ks:
+            q = (p0[0] + (p1[0] - p0[0]) * k / ANCHOR_SAMPLES, p0[1] + (p1[1] - p0[1]) * k / ANCHOR_SAMPLES)
+            inq = {h.gid for h in hs if h.contains(q)}
+            if inq:
+                hit += 1
+                gids |= inq
+        return gids if hit > LEADER_HATCH_MAX * len(ks) else set()
+
+    def fail(self, fid, txy, anc):
+        """First failing single-leader rule as (rule, detail), or None."""
+        d = self.ink_dist(fid, anc)
+        if d > TOL_Z:
+            return ("off ink", f"{d:.2f}")
+        cov = self.covering(fid, anc)
+        if cov:
+            return ("anchor under area", ", ".join(cov))
+        over = set()
+        for h in self.areas:
+            if self.rank[id(h.a)] <= self.lz:
+                continue
+            for k in range(1, ANCHOR_SAMPLES):
+                q = (txy[0] + (anc[0] - txy[0]) * k / ANCHOR_SAMPLES, txy[1] + (anc[1] - txy[1]) * k / ANCHOR_SAMPLES)
+                if h.contains(q):
+                    over.add(h.gid)
+                    break
+        if over:
+            return ("area above leader", ", ".join(sorted(over)))
+        hx = self.hatch_end(fid, txy, anc)
+        if hx:
+            return ("end in hatch", ", ".join(sorted(hx)))
+        lo = leader_outline_issue(self.outl, fid, txy, anc, self.zmax)
+        if lo:
+            return ("end inside outline", ", ".join(f"{o} {mm:.1f} mm" for o, mm in lo))
+        return None
+
+
+def _column_default(ink, column):
+    pts = [p for poly, _ in ink for p in poly]
+    xm = max(p[0] for p in pts) if column == "right" else min(p[0] for p in pts)
+    ym = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
+    if ink_distance((xm, ym), ink) <= TOL_Z:
+        return (xm, ym)
+    cand = [p for p in pts if abs(p[0] - xm) <= TOL_Z]
+    return min(cand, key=lambda p: abs(p[1] - ym))
+
+
+def anchor_candidates(lc, row, column):
+    """[(source, anchor)] for one row in one column, in placer order (see the block comment)."""
+    ink = lc.ink(row["id"])
+    if not ink:
+        return []
+    out = []
+    if row.get("label_theta") is not None:
+        hit = _ray_hit(ink, float(row["label_theta"]))
+        if hit is not None:
+            out.append(("label_theta", hit))
+    first = _column_default(ink, column)
+    out.append(("default", first))
+    samples = []
+    for poly, closed in ink:
+        segs = _edges(poly) if closed else [(poly[i], poly[i + 1]) for i in range(len(poly) - 1)]
+        for a, b in segs:
+            m = max(1, int(math.ceil(math.hypot(b[0] - a[0], b[1] - a[1]) / ANCHOR_STEP)))
+            samples += [(a[0] + (b[0] - a[0]) * k / m, a[1] + (b[1] - a[1]) * k / m) for k in range(m + 1)]
+    if column == "right":
+        samples.sort(key=lambda q: (q[0] < first[0] - TOL_Z, math.hypot(q[0] - first[0], q[1] - first[1])))
+    else:
+        x_min = min(q[0] for q in samples)
+        samples.sort(key=lambda q: (q[0] > x_min + TOL_Z, math.hypot(q[0] - x_min, q[1] - first[1])))
+    out += [("ink", q) for q in samples]
+    seen, uniq = set(), []
+    for src, q in out:
+        k = (round(q[0], 6), round(q[1], 6))
+        if k not in seen:
+            seen.add(k)
+            uniq.append((src, (float(q[0]), float(q[1]))))
+    return uniq
+
+
+def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
+    """The plan leader placer (1.3 P1R R3; rules in the block comment above). margin=True: labels in a right column
+    (x = right axes limit + one text line, left-aligned) and a left column (left limit - one line, right-aligned),
+    stacked in anchor-y order with LABEL_GAP_LINES between boxes, as place_labels(margin=True), no left-column text box
+    over a y tick label; notes without an anchor
+    go under the right column below the axes. margin=False (fixtures): text 60 right (left column: 60 left) and 20 above
+    the anchor. Call after render_plan and finish_axes. Returns the placer record (also ax._sc_placer)."""
+    spec, P = ctx.spec, ctx.P
+    outl, zmx = leader_outlines(ctx, pose)
+    lc = _LeaderCtx(ax, outl, zmx)
+    rows = [r for r in spec.get("features", []) if r.get("label") and applies(r, pose) and lc.ink(r["id"])]
+    order = [r["id"] for r in rows]
+    byid = {r["id"]: r for r in rows}
+    texts = {r["id"]: label_text(r, P, (stack_pose or {}).get(r["id"])) for r in rows}
+    cands = {}
+    for r in rows:
+        cols = ["left", "right"] if r.get("label_side") == "left" else ["right", "left"]
+        cands[r["id"]] = [(col, src, anc) for col in cols for src, anc in anchor_candidates(lc, r, col)]
+    ax.apply_aspect()
+    (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
+    line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)
+    gap = line * LABEL_GAP_LINES
+    zlo, zhi = ax.get_ylim()
+    x_col, x_left = ax.get_xlim()[1] + line, ax.get_xlim()[0] - line
+    ticks = []   # y bands of the y tick labels: left-column text must not overlap one
+    if margin:
+        rnd = ax.figure.canvas.get_renderer()
+        for tl in ax.get_yticklabels():
+            if tl.get_visible() and tl.get_text():
+                e = tl.get_window_extent(rnd)
+                ya, yb = (float(v[1]) for v in ax.transData.inverted().transform([(e.x0, e.y0), (e.x1, e.y1)]))
+                if zlo <= (ya + yb) / 2 <= zhi:
+                    ticks.append((min(ya, yb), max(ya, yb)))
+    hgt = {f: line * (texts[f].count("\n") + 1) for f in order}
+
+    def wanted(f, c):
+        col, _, anc = c
+        if not margin:
+            return (anc[0] + (60 if col == "right" else -60), anc[1] + 20)
+        h = hgt[f]
+        return (x_col if col == "right" else x_left, min(max(anc[1], zlo + h / 2), zhi - h / 2))
+
+    def layout(choice):
+        pos = {}
+        if not margin:
+            return {f: wanted(f, c) for f, c in choice.items() if c}
+        for col, xx in (("right", x_col), ("left", x_left)):
+            items = sorted([f for f in order if choice.get(f) and choice[f][0] == col], key=lambda f: -choice[f][2][1])
+            zs = _stack_z([choice[f][2][1] for f in items], [hgt[f] for f in items], zlo, zhi, gap)
+            pos.update({f: (xx, z) for f, z in zip(items, zs)})
+        return pos
+
+    memo = {}
+
+    def fail1(f, txy, anc):
+        k = (f, round(txy[0], 9), round(txy[1], 9), anc)
+        if k not in memo:
+            memo[k] = lc.fail(f, txy, anc)
+        return memo[k]
+
+    def tick_clash(f, col, txy):
+        if col != "left" or not margin:
+            return None
+        h = hgt[f]
+        hit = [f"{(a + b) / 2:.0f}" for a, b in ticks if a < txy[1] + h / 2 and b > txy[1] - h / 2]
+        return ("text over y tick label", ", ".join(hit)) if hit else None
+
+    def issues(choice, pos):
+        out = {}
+        legs = [(f, pos[f], choice[f][2]) for f in order if choice.get(f)]
+        for f, t, anc in legs:
+            r = fail1(f, t, anc) or tick_clash(f, choice[f][0], t)
+            if r:
+                out.setdefault(f, []).append(r)
+        for i in range(len(legs)):
+            for j in range(i + 1, len(legs)):
+                (fa, a0, a1), (fb, b0, b1) = legs[i], legs[j]
+                if _segs_cross(a0, a1, b0, b1):
+                    out.setdefault(fa, []).append(("crosses leader", fb))
+                    out.setdefault(fb, []).append(("crosses leader", fa))
+        return out
+
+    choice = {}
+    for f in order:
+        choice[f] = next((c for c in cands[f] if not fail1(f, wanted(f, c), c[2]) and not tick_clash(f, c[0], wanted(f, c))), None)
+    for _ in range(PLACER_PASSES):
+        pos = layout(choice)
+        iss = issues(choice, pos)
+        bad = [f for f in order if iss.get(f) or choice[f] is None]
+        if not bad:
+            break
+        changed = False
+        for f in bad:
+            base = {g: set(v) for g, v in iss.items() if g != f}
+            for c in cands[f]:
+                if c == choice[f] or fail1(f, wanted(f, c), c[2]) or tick_clash(f, c[0], wanted(f, c)):
+                    continue
+                trial = dict(choice)
+                trial[f] = c
+                p2 = layout(trial)
+                i2 = issues(trial, p2)
+                if not i2.get(f) and all(set(v) <= base.get(g, set()) for g, v in i2.items() if g != f):
+                    choice, iss, changed = trial, i2, True
+                    break
+        if not changed:
+            break
+    pos = layout(choice)
+    iss = issues(choice, pos)
+    record = {"pose": pose, "placed": {}, "unplaceable": {}}
+    for f in order:
+        if choice[f] is None or iss.get(f):
+            table = [{"column": col, "source": src, "anchor": [round(anc[0], 2), round(anc[1], 2)],
+                      "fails": " / ".join(fail1(f, wanted(f, (col, src, anc)), anc) or tick_clash(f, col, wanted(f, (col, src, anc)))
+                                          or ("passes alone; fails in the stacked layout",))}
+                     for col, src, anc in cands[f]]
+            record["unplaceable"][f] = {"candidates": len(table), "table": table,
+                                        "final": [" / ".join(map(str, x)) for x in iss.get(f, [])]}
+            if choice[f] is None:
+                choice[f] = cands[f][0]
+    pos = layout(choice)
+    for f in order:
+        col, src, anc = choice[f]
+        record["placed"][f] = {"column": col, "source": src, "anchor": [round(anc[0], 2), round(anc[1], 2)],
+                               "text": [round(pos[f][0], 2), round(pos[f][1], 2)]}
+        kw = {"ha": "left" if col == "right" else "right", "va": "center"} if margin else {}
+        ann = ax.annotate(texts[f], xy=anc, xytext=pos[f], fontsize=LABEL_FONTSIZE, zorder=LEADER_ZORDER, annotation_clip=False,
+                          arrowprops={"arrowstyle": "-", "linewidth": 0.4 if margin else 0.5, **({"color": "0.35"} if margin else {})}, **kw)
+        ann.set_gid(f"label:{f}")
+    if margin:
+        z = zlo - gap
+        for n_ in notes:
+            if n_[0]:
+                raise ValueError("place_plan_labels: notes carry no anchor (S2 notes are free text under the right column)")
+            txt, gid = n_[1], (n_[2] if len(n_) > 2 else None)
+            h = line * (txt.count("\n") + 1)
+            ann = ax.annotate(txt, xy=(x_col, z - h / 2), fontsize=LABEL_FONTSIZE, ha="left", va="center", annotation_clip=False)
+            if gid:
+                ann.set_gid(gid)
+            z -= h + gap
+    ax._sc_placer = record
+    return record
+
+
 def finish_axes(ax):
     ax.relim()
     ax.autoscale_view()
@@ -521,7 +927,9 @@ def artist_polys(a):
 
 
 def pieces(ax, gid):
-    return [poly for a in tagged(ax).get(gid, []) for poly in artist_polys(a)]
+    """Drawn polygons of a row, each part once: a renderer hidden copy (1.3 P1R; artist attribute _sc_hidden_copy, set by
+    render_plan) repeats the geometry of the piece it is split from and is left out (areas, overlaps, extents)."""
+    return [poly for a in tagged(ax).get(gid, []) if not getattr(a, "_sc_hidden_copy", False) for poly in artist_polys(a)]
 
 
 def extent_z(polys):
@@ -1314,8 +1722,12 @@ def k4(ctx):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {lab['key']} = {want}")
     issues += figure_note_issues(ctx)
     issues += leader_issues(ctx)
+    extra = {}
+    for pose, fig in ctx.figs.items():   # 1.3 P1R: the placer's UNPLACEABLE candidate tables go into the record
+        for fid, u in ((getattr(fig.axes[0], "_sc_placer", None) or {}).get("unplaceable") or {}).items():
+            extra.setdefault("unplaceable", {})[f"{pose}/{fid}"] = u
     return result("K4", not issues, _summ(issues) if issues else f"{n} label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
-                  measured=len(issues), threshold=0, n_issues=len(issues))
+                  measured=len(issues), threshold=0, n_issues=len(issues), **extra)
 
 
 NOTE_GID = "note:figure_note"
@@ -1328,12 +1740,22 @@ def leader_issues(ctx):
     to xy, in data coordinates, and two leaders that properly intersect fail. r3 (Designer M1 S2 r2 F1, S1 r6 F1):
     (a') the anchor lies on ink no area of another row covers (an area artist, filled or hatched, drawn above the
     row's ink there); (c) no area artist is drawn above a leader where the leader runs (sampled along the segment), so
-    the visible end of the leader is its anchor."""
+    the visible end of the leader is its anchor. 1.3 P1R, plan view: (e) the last quarter of a leader lies outside every
+    other row's true plan outline that does not contain its anchor (leader_outline_issue; Design Notes 30); (f) a label
+    the placer recorded UNPLACEABLE (ax._sc_placer) fails with reason "unplaceable" and is not judged again by (a) to (e).
+    Containment of an area is as drawn (even-odd rings, clip region of a renderer piece)."""
     out = []
+    plan = ctx.view == "plan_xy"
     for pose, fig in ctx.figs.items():
         ax = fig.axes[0]
         legs = []
         rank = _rank(ax)
+        rec = getattr(ax, "_sc_placer", None) or {}
+        unpl = rec.get("unplaceable", {})
+        for fid in sorted(unpl):   # 1.3 P1R: the placer found no candidate passing every rule (no silent fall-back)
+            out.append(f"{pose}/{fid}: label unplaceable ({unpl[fid]['candidates']} candidate(s), none passes every leader rule; "
+                       f"table in the placer record)")
+        outl, zmx = leader_outlines(ctx, pose)
         areas = [(a, [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax) if a.get_gid() and is_area(a)]
         hatches = hatch_areas(ax)
         for t in ax.texts:
@@ -1343,8 +1765,8 @@ def leader_issues(ctx):
             fid = g[len("label:"):]
             ink = ink_pieces(ax, fid)
             xy = tuple(float(v) for v in t.xy)
-            if not ink:
-                continue          # K9 reports an undrawn row
+            if not ink or fid in unpl:
+                continue          # K9 reports an undrawn row; an unplaceable label is reported once, above
             d = ink_distance(xy, ink)
             if d > TOL_Z:
                 out.append(f"{pose}/{fid}: label leader ends at ({xy[0]:.2f}, {xy[1]:.2f}), {d:.2f} off the drawn part")
@@ -1361,7 +1783,7 @@ def leader_issues(ctx):
                         continue
                     for k in range(1, ANCHOR_SAMPLES):
                         q = (xt[0] + (xy[0] - xt[0]) * k / ANCHOR_SAMPLES, xt[1] + (xy[1] - xt[1]) * k / ANCHOR_SAMPLES)
-                        if any(_inside(q, pp) for pp in polys):
+                        if in_drawn(a, q, polys):
                             over.add(a.get_gid())
                             break
                 if over:
@@ -1369,6 +1791,8 @@ def leader_issues(ctx):
                 hx = leader_hatch(fid, (float(xt[0]), float(xt[1])), xy, hatches)
                 if hx:
                     out.append(f"{pose}/{fid}: label leader ends across the hatch of {', '.join(sorted(hx))}")
+                for oid, mm in leader_outline_issue(outl, fid, (float(xt[0]), float(xt[1])), xy, zmx):   # 1.3 P1R, Design Notes 30
+                    out.append(f"{pose}/{fid}: label leader ends inside the outline of {oid} ({mm:.1f} mm of its last quarter)")
             if xt is not None and (abs(xt[0] - xy[0]) > 1e-9 or abs(xt[1] - xy[1]) > 1e-9):
                 legs.append((fid, (float(xt[0]), float(xt[1])), xy))
         for i in range(len(legs)):
@@ -2501,29 +2925,53 @@ def _piece_samples(poly):
     nx, ny = max(1, int(math.ceil(w / step))), max(1, int(math.ceil(h / step)))
     while nx * ny > COVER_SAMPLES_MAX:
         nx, ny = max(1, nx // 2), max(1, ny // 2)
-    for i in range(nx):
-        for j in range(ny):
-            p = (x0 + w * (i + 0.5) / nx, y0 + h * (j + 0.5) / ny)
-            if _inside(p, poly):
-                out.append(p)
+    I, J = np.meshgrid(np.arange(nx, dtype=float), np.arange(ny, dtype=float), indexing="ij")
+    gx, gy = (x0 + w * (I.ravel() + 0.5) / nx), (y0 + h * (J.ravel() + 0.5) / ny)
+    m = _inside_np(poly, gx, gy)   # 1.3 P1R: vectorised, same test and order as _inside over the i, j loop
+    out += list(zip(gx[m].tolist(), gy[m].tolist()))
+    return out
+
+
+def _inside_np(P, xs, ys):
+    """_inside for arrays of points: the same convex half-plane test on ccw(P), inclusive within 1e-12."""
+    xs, ys = np.asarray(xs, dtype=float), np.asarray(ys, dtype=float)
+    if len(P) < 3:
+        return np.zeros(xs.shape, dtype=bool)
+    C = ccw(P)
+    n = len(C)
+    m = np.ones(xs.shape, dtype=bool)
+    for i in range(n):
+        (ax_, ay_), (bx_, by_) = C[i], C[(i + 1) % n]
+        m &= (bx_ - ax_) * (ys - ay_) - (by_ - ay_) * (xs - ax_) >= -1e-12
+    return m
+
+
+ANNULUS_ARC_STEP = 2.5   # 1.3 P1R (TP1.2-19): annulus samples step by arc length at the outer radius, at most 2.5 mm
+
+
+def _annulus_samples(cx, cy, ri, ro):
+    """Samples of an annulus about (cx, cy): COVER_RINGS fractions of the width along directions spaced by at most
+    ANNULUS_ARC_STEP of arc at the outer radius (1.3 P1R, TP1.2-19; the r4 form stepped by outer-ring vertex)."""
+    n = max(8, int(math.ceil(2 * math.pi * ro / ANNULUS_ARC_STEP)))
+    out = []
+    for i in range(n):
+        t = 2 * math.pi * (i + 0.5) / n
+        ux, uy = math.cos(t), math.sin(t)
+        out += [(cx + (ro - f * (ro - ri)) * ux, cy + (ro - f * (ro - ri)) * uy) for f in COVER_RINGS]
     return out
 
 
 def _cover_samples(a):
-    """Points strictly inside a drawn area artist, in rendered data coordinates. An Annulus (outer and inner rings from
-    artist_polys) on COVER_RINGS fractions of its width along each outer-ring vertex direction; any other closed piece
-    by _piece_samples."""
+    """Points strictly inside a drawn area artist's geometry (its clip region not applied), in rendered data
+    coordinates. An Annulus (outer and inner rings from artist_polys) by _annulus_samples; any other closed piece by
+    _piece_samples."""
     polys = [p for p in artist_polys(a) if len(p) >= 3]
     if isinstance(a, Annulus) and len(polys) == 2:
         outer, inner = sorted(polys, key=poly_area_abs, reverse=True)
         cx, cy = centroid([outer])
         ri = sum(math.hypot(x - cx, y - cy) for x, y in inner) / len(inner)
-        out = []
-        for x, y in outer:
-            ro = math.hypot(x - cx, y - cy)
-            ux, uy = (x - cx) / ro, (y - cy) / ro
-            out += [(cx + (ro - f * (ro - ri)) * ux, cy + (ro - f * (ro - ri)) * uy) for f in COVER_RINGS]
-        return out
+        ro = sum(math.hypot(x - cx, y - cy) for x, y in outer) / len(outer)
+        return _annulus_samples(cx, cy, ri, ro)
     return [p for poly in polys for p in _piece_samples(poly)]
 
 
@@ -2581,58 +3029,521 @@ def _covered_by(p, covers):
     return None
 
 
-def artist_cover(a, covers):
-    """(state, covering ids, uncovered sample points) of one drawn area artist: 'hidden' when every sample lies under a
-    cover, 'visible' when none does, else 'partial'."""
-    pts = _cover_samples(a)
-    by, open_pts = set(), []
-    for p in pts:
-        hit = _covered_by(p, covers)
-        if hit is None:
-            open_pts.append(p)
+# ------------------------------------------------------------------------ plan renderer (1.3 P1R)
+# One entry point, render_plan(ctx, ax, pose), called once per plan figure after every row is drawn and before the
+# labels. Visibility rule (gameplan K8 row, 1.3 P1R R1): a point of a drawn area artist is hidden when it lies inside
+# the true plan outline (plan_outline true) of a row whose z_max is higher by more than TOL_Z, or inside an opaque fill
+# (is_opaque, the alpha rule) of another row drawn above the artist. Premise: only true outlines cover (a circumscribing
+# outline is a bound for K7 F and G, never a cover: K8-Z7, K8-B33); opacity per the alpha rule (K8 cover opacity lint,
+# K8-B45). The covered region is exact: a union of covers is a union (slab decomposition below), an annulus outline is
+# an annulus (its bore open), a convex piece is itself; circles of annulus outlines are polygons with sagitta at most
+# RENDER_SAGITTA, the outer one inscribed and the bore one circumscribed, so the hidden region lies inside the true
+# covered region. A partly hidden artist keeps its style and draws only inside its visible region (clip path); a hidden
+# copy (dashed, or its own non-solid line style; no fill, no hatch) draws only inside its hidden region, inserted in the
+# draw order right after it. A wholly hidden artist is restyled in place. Rows with plan_style: stand_in (Step 2
+# stand-ins drawn dashed by convention) are drawn as styled.
+
+RENDER_SAGITTA = 0.01   # mm: chord error of the polygon standing for an annulus outline circle in the renderer
+RENDER_MARGIN = 5.0     # mm: the region box extends this far past the artist (strokes at its edge stay inside)
+REGION_BUCKETS = 512
+
+
+def _circle_ring(r, circumscribe=False):
+    n = 16 if r <= RENDER_SAGITTA else max(16, int(math.ceil(math.pi / math.acos(1 - RENDER_SAGITTA / r))))
+    R = r / math.cos(math.pi / n) if circumscribe else r
+    return [(R * math.cos(2 * math.pi * i / n), R * math.sin(2 * math.pi * i / n)) for i in range(n)]
+
+
+def _seg_cross_xs(A, B):
+    """x of every proper intersection between the edges in A and in B (numpy arrays n x 4, m x 4: x0, y0, x1, y1)."""
+    px, py = A[:, 0][:, None], A[:, 1][:, None]
+    rx, ry = (A[:, 2] - A[:, 0])[:, None], (A[:, 3] - A[:, 1])[:, None]
+    qx, qy = B[:, 0][None, :], B[:, 1][None, :]
+    sx, sy = (B[:, 2] - B[:, 0])[None, :], (B[:, 3] - B[:, 1])[None, :]
+    den = rx * sy - ry * sx
+    with np.errstate(divide="ignore", invalid="ignore"):
+        t = ((qx - px) * sy - (qy - py) * sx) / den
+        u = ((qx - px) * ry - (qy - py) * rx) / den
+    ok = (np.abs(den) > 1e-12) & (t >= 0) & (t <= 1) & (u >= 0) & (u <= 1)
+    return (px + t * rx)[ok]
+
+
+def region_split(shapes, box):
+    """Exact split of a box by a union of shapes (1.3 P1R, TP1.2-13). shapes: list of shapes, each a list of closed rings
+    (membership even-odd within a shape: an annulus is its outer ring and its bore ring); the union is over shapes.
+    box: (x0, x1, y0, y1), every shape inside it in y. Vertical slab decomposition: slab edges at every vertex x and every
+    x where edges of two shapes cross, so inside a slab every edge is one straight line and the order of the crossings
+    is fixed; the union is merged per slab at the slab middle. Returns (hidden, visible): disjoint vertical-sided
+    trapezoids [(xa, ya_lo), (xb, yb_lo), (xb, yb_hi), (xa, ya_hi)] (counter-clockwise), the union and its complement
+    in the box, merged along x where the bounding edges continue."""
+    bx0, bx1, by0, by1 = box
+    E = []
+    for si, rings in enumerate(shapes):
+        for ring in rings:
+            n = len(ring)
+            for i in range(n):
+                (xa, ya), (xb, yb) = ring[i], ring[(i + 1) % n]
+                if abs(xb - xa) > 1e-12:
+                    E.append((xa, ya, xb, yb, si))
+    if not E:
+        return [], [[(bx0, by0), (bx1, by0), (bx1, by1), (bx0, by1)]]
+    arr = np.asarray(E, dtype=float)
+    X0, Y0, X1, Y1, S = arr[:, 0], arr[:, 1], arr[:, 2], arr[:, 3], arr[:, 4].astype(int)
+    xmin, xmax = np.minimum(X0, X1), np.maximum(X0, X1)
+    slope = (Y1 - Y0) / (X1 - X0)
+    ev = [np.array([bx0, bx1]), X0, X1]
+    sb = []
+    for si in range(len(shapes)):
+        idx = np.nonzero(S == si)[0]
+        sb.append(None if not len(idx) else (idx, xmin[idx].min(), xmax[idx].max(),
+                                             min(Y0[idx].min(), Y1[idx].min()), max(Y0[idx].max(), Y1[idx].max())))
+    for i in range(len(shapes)):
+        for j in range(i + 1, len(shapes)):
+            a, b = sb[i], sb[j]
+            if a is None or b is None or a[1] > b[2] or b[1] > a[2] or a[3] > b[4] or b[3] > a[4]:
+                continue
+            ev.append(_seg_cross_xs(arr[a[0], :4], arr[b[0], :4]))
+    xs = np.unique(np.concatenate(ev))
+    xs = xs[(xs >= bx0) & (xs <= bx1)]
+    keep = np.concatenate([[True], np.diff(xs) > 1e-9])
+    xs = xs[keep]
+    xa_s, xb_s = xs[:-1], xs[1:]
+    xm = (xa_s + xb_s) / 2
+    recs = []
+    for si, b in enumerate(sb):
+        if b is None:
+            continue
+        idx = b[0]
+        j0, j1 = int(np.searchsorted(xm, b[1], "right")), int(np.searchsorted(xm, b[2], "left"))
+        if j1 <= j0:
+            continue
+        xmm = xm[j0:j1][:, None]
+        act = (xmin[idx][None, :] < xmm) & (xmax[idx][None, :] > xmm)
+        Y = np.where(act, Y0[idx][None, :] + (xmm - X0[idx][None, :]) * slope[idx][None, :], np.inf)
+        order = np.argsort(Y, axis=1, kind="stable")
+        Ys = np.take_along_axis(Y, order, 1)
+        cnt = act.sum(1)
+        for j in range(0, int(cnt.max()) - 1, 2):
+            rows = np.nonzero(cnt >= j + 2)[0]
+            if len(rows):
+                recs.append(np.column_stack([rows + j0, Ys[rows, j], Ys[rows, j + 1], idx[order[rows, j]], idx[order[rows, j + 1]]]))
+    R = np.concatenate(recs) if recs else np.zeros((0, 5))
+    R = R[np.lexsort((R[:, 1], R[:, 0]))]
+
+    def yat(e, x):
+        if e == -1:
+            return by0
+        if e == -2:
+            return by1
+        return float(Y0[e] + (x - X0[e]) * slope[e])
+
+    hid, vis, open_h, open_v = [], [], {}, {}
+    k, nrec = 0, len(R)
+    for s in range(len(xm)):
+        xa, xb = float(xa_s[s]), float(xb_s[s])
+        merged = []
+        while k < nrec and int(R[k, 0]) == s:
+            _, ylo, yhi, elo, ehi = R[k]
+            if merged and ylo <= merged[-1][1] + 1e-12:
+                if yhi > merged[-1][1]:
+                    merged[-1][1], merged[-1][3] = yhi, int(ehi)
+            else:
+                merged.append([ylo, yhi, int(elo), int(ehi)])
+            k += 1
+        hs = [(m[2], m[3]) for m in merged]
+        bounds = [-1] + [e for m in merged for e in (m[2], m[3])] + [-2]
+        vs = [(bounds[i], bounds[i + 1]) for i in range(0, len(bounds), 2)]
+        for keys, opn, out in ((hs, open_h, hid), (vs, open_v, vis)):
+            nxt = {}
+            for key in keys:
+                if key in opn:
+                    out[opn[key]][3] = xb
+                    nxt[key] = opn[key]
+                else:
+                    out.append([key[0], key[1], xa, xb])
+                    nxt[key] = len(out) - 1
+            opn.clear()
+            opn.update(nxt)
+
+    def traps(lst):
+        return [[(xa, yat(lo, xa)), (xb, yat(lo, xb)), (xb, yat(hi, xb)), (xa, yat(hi, xa))] for lo, hi, xa, xb in lst]
+    return traps(hid), traps(vis)
+
+
+def region_path(traps):
+    """Compound Path of disjoint closed pieces (all counter-clockwise; the non-zero fill is their union)."""
+    if not traps:
+        return MPath(np.zeros((0, 2)))
+    verts, codes = [], []
+    for t in traps:
+        verts += list(t) + [t[0]]
+        codes += [MPath.MOVETO] + [MPath.LINETO] * (len(t) - 1) + [MPath.CLOSEPOLY]
+    return MPath(np.asarray(verts, dtype=float), codes)
+
+
+class RegionIndex:
+    """Point membership in a region given as closed pieces (from a clip path): vertical-sided trapezoids by x bucket and
+    linear bounds, any other piece by bounding box and crossing number. Membership is inclusive within eps."""
+
+    def __init__(self, polys, eps=1e-9):
+        self.eps = eps
+        self.traps, self.polys = [], []
+        for q in polys:
+            q = [tuple(map(float, v)) for v in q]
+            if len(q) > 1 and abs(q[0][0] - q[-1][0]) < 1e-12 and abs(q[0][1] - q[-1][1]) < 1e-12:
+                q = q[:-1]
+            if len(q) == 4 and abs(q[0][0] - q[3][0]) < 1e-9 and abs(q[1][0] - q[2][0]) < 1e-9 and q[1][0] > q[0][0]:
+                self.traps.append((q[0][0], q[1][0], q[0][1], q[1][1], q[3][1], q[2][1]))
+            elif len(q) >= 3:
+                self.polys.append((bbox([q]), q))
+        xs = [t[0] for t in self.traps] + [t[1] for t in self.traps] + [b[0] for b, _ in self.polys] + [b[1] for b, _ in self.polys]
+        self.x0, self.x1 = (min(xs), max(xs)) if xs else (0.0, 1.0)
+        self.w = max((self.x1 - self.x0) / REGION_BUCKETS, 1e-9)
+        self.buckets = {}
+        for i, t in enumerate(self.traps):
+            for b in range(self._b(t[0] - eps), self._b(t[1] + eps) + 1):
+                self.buckets.setdefault(b, []).append(i)
+
+    def _b(self, x):
+        return int(math.floor((x - self.x0) / self.w))
+
+    def contains(self, p):
+        x, y = p
+        e = self.eps
+        for i in self.buckets.get(self._b(x), ()):
+            xa, xb, ya0, yb0, ya1, yb1 = self.traps[i]
+            if xa - e <= x <= xb + e:
+                f = 0.0 if xb - xa < 1e-15 else min(1.0, max(0.0, (x - xa) / (xb - xa)))
+                if ya0 + f * (yb0 - ya0) - e <= y <= ya1 + f * (yb1 - ya1) + e:
+                    return True
+        for (x0, x1, y0, y1), q in self.polys:
+            if x0 - e <= x <= x1 + e and y0 - e <= y <= y1 + e and _pip(p, q):
+                return True
+        return False
+
+
+def _pip(p, ring):
+    """Crossing-number point-in-polygon (any simple ring)."""
+    x, y = p
+    c = False
+    n = len(ring)
+    for i in range(n):
+        x0, y0 = ring[i]
+        x1, y1 = ring[(i + 1) % n]
+        if (y0 > y) != (y1 > y) and x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+            c = not c
+    return c
+
+
+def drawn_region(a):
+    """RegionIndex of an artist's own clip path in data coordinates, or None when it has none (the axes box only): the
+    region a renderer piece draws in (1.3 P1R). Read from the figure (Artist.get_clip_path), cached per clip path."""
+    cp = a.get_clip_path()
+    if cp is None or a.axes is None:
+        return None
+    path = cp._path if hasattr(cp, "_path") else cp.get_fully_transformed_path()
+    cache = getattr(a, "_sc_region", None)
+    if cache is not None and cache[0] is path:
+        return cache[1]
+    T = getattr(cp, "_transform", None)
+    if T is a.axes.transData:
+        data = path
+    else:
+        full = cp.get_fully_transformed_path()
+        data = MPath(a.axes.transData.inverted().transform(full.vertices), full.codes)
+    reg = RegionIndex(data.to_polygons(closed_only=False))
+    a._sc_region = (path, reg)
+    return reg
+
+
+def cover_context(ctx, ax, pose):
+    """What the visibility rule reads at pose: cover_table (true outlines, z_max), the draw order, the opaque fills."""
+    rows, zmax, outl = cover_table(ctx, pose)
+    rank = _rank(ax)
+    opaque = [(a, [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax) if a.get_gid() and is_opaque(a)]
+    return {"rows": rows, "zmax": zmax, "outl": outl, "rank": rank, "drawn": tagged(ax),
+            "opaque": [(a, polys, bbox(polys)) for a, polys in opaque if polys]}
+
+
+def artist_covers(cc, a, fid):
+    """Covers of one drawn area artist of row fid: ('ann', id, (r_in, r_out), box) for an annulus outline, ('poly', id,
+    piece, box) per convex piece of a polys outline (true outlines of rows higher by more than TOL_Z), and ('patch', id,
+    (artist, rings), box) per opaque fill of another row drawn above a (as drawn: even-odd rings, clip region)."""
+    out = []
+    for oid, o, box in _covers_of(fid, cc["zmax"], cc["outl"]):
+        if o[0] == "annulus":
+            out.append(("ann", oid, o[1], box))
         else:
-            by.add(hit)
-    if not pts:
-        return "visible", by, []
-    return ("hidden" if not open_pts else ("visible" if not by else "partial")), by, open_pts
+            out += [("poly", oid, q, bbox([q])) for q in o[1] if len(q) >= 3]
+    ra = cc["rank"].get(id(a), (-1e9, -1))
+    for o_a, polys, box in cc["opaque"]:
+        g = o_a.get_gid()
+        if g == fid or g.startswith(fid + ":") or cc["rank"].get(id(o_a), (-1e9, -1)) <= ra:
+            continue
+        out.append(("patch", g, (o_a, polys), box))
+    return out
+
+
+def _edge_depth(p, polys):
+    return min((_pt_seg(p, q[i], q[(i + 1) % len(q)]) for q in polys for i in range(len(q))), default=0.0)
+
+
+def cover_hit(p, covers, deep=None):
+    """(id of the first cover containing p or None, True when some cover contains p by more than deep). Containment is
+    inclusive (a point on a cover's boundary is covered)."""
+    hit, is_deep = None, False
+    for kind, oid, data, (x0, x1, y0, y1) in covers:
+        if not (x0 - 1e-9 <= p[0] <= x1 + 1e-9 and y0 - 1e-9 <= p[1] <= y1 + 1e-9):
+            continue
+        if kind == "ann":
+            a, b = data
+            r = math.hypot(*p)
+            if not (a - 1e-9 <= r <= b + 1e-9):
+                continue
+            d = (b - r) if a <= 0 else min(r - a, b - r)
+        elif kind == "poly":
+            if not _inside(p, data):
+                continue
+            d = None
+        else:
+            if not in_drawn(data[0], p, data[1]):
+                continue
+            d = None
+        hit = hit or oid
+        if deep is None:
+            return hit, False
+        if d is None:
+            d = _edge_depth(p, [data] if kind == "poly" else data[1])
+        if d > deep:
+            return hit, True
+    return hit, is_deep
+
+
+def _seg_dist_np(xs, ys, a, b):
+    ax_, ay_ = a
+    dx, dy = b[0] - ax_, b[1] - ay_
+    L2 = dx * dx + dy * dy
+    t = np.zeros_like(xs) if L2 < 1e-24 else np.clip(((xs - ax_) * dx + (ys - ay_) * dy) / L2, 0.0, 1.0)
+    return np.hypot(xs - (ax_ + t * dx), ys - (ay_ + t * dy))
+
+
+def in_drawn_np(a, polys, xs, ys):
+    """in_drawn for arrays of points (even-odd over the closed rings, then the clip region)."""
+    cnt = np.zeros(xs.shape, dtype=int)
+    for q in polys:
+        if len(q) >= 3:
+            cnt += _inside_np(q, xs, ys)
+    m = cnt % 2 == 1
+    reg = drawn_region(a)
+    if reg is not None and m.any():
+        idx = np.nonzero(m)[0]
+        m[idx] = [reg.contains((float(xs[i]), float(ys[i]))) for i in idx]
+    return m
+
+
+def cover_hits(pts, covers, deep=None):
+    """cover_hit for a list of points, vectorised: (ids of the first cover containing each point or None, flags: some
+    cover contains the point by more than deep)."""
+    N = len(pts)
+    if not N:
+        return [], []
+    X = np.fromiter((p[0] for p in pts), float, N)
+    Y = np.fromiter((p[1] for p in pts), float, N)
+    hit = np.full(N, -1)
+    dp = np.zeros(N, dtype=bool)
+    for ci, (kind, oid, data, (x0, x1, y0, y1)) in enumerate(covers):
+        cand = (X >= x0 - 1e-9) & (X <= x1 + 1e-9) & (Y >= y0 - 1e-9) & (Y <= y1 + 1e-9)
+        cand &= (hit < 0) if deep is None else ~dp
+        if not cand.any():
+            continue
+        idx = np.nonzero(cand)[0]
+        x, y = X[idx], Y[idx]
+        d = None
+        if kind == "ann":
+            a, b = data
+            r = np.hypot(x, y)
+            m = (r >= a - 1e-9) & (r <= b + 1e-9)
+            d = (b - r) if a <= 0 else np.minimum(r - a, b - r)
+            rings = None
+        elif kind == "poly":
+            m = _inside_np(data, x, y)
+            rings = [data]
+        else:
+            m = in_drawn_np(data[0], data[1], x, y)
+            rings = data[1]
+        sel = idx[m]
+        if not len(sel):
+            continue
+        hit[sel[hit[sel] < 0]] = ci
+        if deep is not None:
+            if d is None:
+                xs_, ys_ = X[sel], Y[sel]
+                dd = np.full(len(sel), np.inf)
+                for q in rings:
+                    for i in range(len(q)):
+                        dd = np.minimum(dd, _seg_dist_np(xs_, ys_, q[i], q[(i + 1) % len(q)]))
+            else:
+                dd = d[m]
+            dp[sel[dd > deep]] = True
+    return [covers[h][1] if h >= 0 else None for h in hit.tolist()], dp.tolist()
+
+
+def _hidden_linestyle(a):
+    ls = a.get_linestyle()
+    return "--" if ls in SOLID_STYLES else ls
+
+
+def _restyle_hidden(a):
+    a.set_linestyle(_hidden_linestyle(a))
+    if isinstance(a, Patch):
+        a.set_fill(False)
+        a.set_hatch(None)
+
+
+def _patch_copy(a):
+    """A new patch with a's geometry (same class where the class carries it: Polygon, Circle, Annulus, Rectangle)."""
+    ax = a.axes
+    plain = ax is not None and isinstance(a, (Circle, Annulus, Rectangle, Ellipse)) and \
+        a.get_transform() == a.get_patch_transform() + ax.transData
+    if isinstance(a, Polygon) and ax is not None and a.get_transform() == ax.transData:
+        return Polygon(np.asarray(a.get_xy(), dtype=float), closed=a.get_closed())
+    if plain and isinstance(a, Annulus):
+        return Annulus(a.get_center(), a.get_radii(), a.get_width(), angle=a.get_angle())
+    if plain and isinstance(a, Circle):
+        return Circle(a.get_center(), a.get_radius())
+    if plain and isinstance(a, Rectangle):
+        return Rectangle(a.get_xy(), a.get_width(), a.get_height(), angle=a.get_angle())
+    from matplotlib.patches import PathPatch
+    return PathPatch(a.get_path().transformed(_to_data(a)))
+
+
+def _cover_shapes(covers):
+    """Renderer shapes (closed rings, even-odd per shape) of covers: an annulus outline by its polygons (outer
+    inscribed, bore circumscribed), a convex piece as itself, an opaque fill by its rings, or, when the fill is a renderer
+    piece with a clip region, by its rings intersected with each convex clip piece."""
+    shapes = []
+    for kind, oid, data, box in covers:
+        if kind == "ann":
+            a, b = data
+            shapes.append([_circle_ring(b)] + ([_circle_ring(a, circumscribe=True)] if a > 0 else []))
+        elif kind == "poly":
+            shapes.append([data])
+        else:
+            o_a, polys = data
+            reg = drawn_region(o_a)
+            if reg is None:
+                shapes.append(polys)
+            else:
+                outer = max(polys, key=poly_area_abs)
+                for t in reg.traps:
+                    q = [(t[0], t[2]), (t[1], t[3]), (t[1], t[5]), (t[0], t[4])]
+                    c = clip(q, outer)
+                    if len(c) >= 3:
+                        shapes.append([c])
+    return shapes
+
+
+def _rendered_rows(ctx, pose):
+    return [r for r in ctx.spec.get("features", []) if applies(r, pose) and _measurable(r) and r.get("plan_style") != "stand_in"]
+
+
+def render_plan(ctx, ax, pose):
+    """Plan hidden-line renderer (1.3 P1R R1, R2): the single entry point a plan script calls per figure, after every
+    row is drawn and before the labels. Every area artist (Patch) of a measurable row that is not a stand-in is taken
+    from the top of the draw order down (so the opaque fills above an artist are final when it is taken): no covered
+    sample, unchanged; every sample covered, restyled in place (hidden line style, no fill, no hatch); otherwise split:
+    the artist keeps its style and gets the visible region as its clip path, and a hidden copy (hidden line style, no
+    fill, no hatch, same edge colour and width) gets the hidden region and is inserted in the draw order right after it.
+    Samples as K8 cover (_cover_samples). Returns {artist: (row id, 'visible' | 'hidden' | 'split', cover ids)}."""
+    cc = cover_context(ctx, ax, pose)
+    rows = {r["id"] for r in _rendered_rows(ctx, pose)}
+    todo = [a for g in rows for a in cc["drawn"].get(g, []) if isinstance(a, Patch) and a.get_clip_path() is None
+            and not getattr(a, "_sc_hidden_copy", False)]   # a second call takes only pieces not yet split
+    todo.sort(key=lambda a: cc["rank"][id(a)], reverse=True)
+    out = {}
+    for a in todo:
+        fid = a.get_gid()
+        covers = artist_covers(cc, a, fid)
+        pts = _cover_samples(a)
+        hits = cover_hits(pts, covers)[0]
+        by = {h for h in hits if h}
+        if not by:
+            out[a] = (fid, "visible", by)
+            continue
+        if all(hits):
+            _restyle_hidden(a)
+            cc["opaque"] = [o for o in cc["opaque"] if o[0] is not a]   # no longer a fill over what lies under it
+            out[a] = (fid, "hidden", by)
+            continue
+        polys = [q for q in artist_polys(a) if len(q) >= 3]
+        x0, x1, y0, y1 = bbox(polys)
+        box = (x0 - RENDER_MARGIN, x1 + RENDER_MARGIN, y0 - RENDER_MARGIN, y1 + RENDER_MARGIN)
+        near = [c for c in covers if not (c[3][0] > box[1] or c[3][1] < box[0] or c[3][2] > box[3] or c[3][3] < box[2])]
+        shapes = _cover_shapes(near)
+        ys = [v[1] for s in shapes for ring in s for v in ring]
+        box = (box[0], box[1], min([box[2]] + ys) - RENDER_MARGIN, max([box[3]] + ys) + RENDER_MARGIN)
+        hid, vis = region_split(shapes, box)
+        cp = _patch_copy(a)
+        cp.set_edgecolor(a.get_edgecolor())
+        cp.set_linewidth(a.get_linewidth())
+        cp.set_linestyle(_hidden_linestyle(a))
+        cp.set_fill(False)
+        cp.set_hatch(None)
+        cp.set_zorder(a.get_zorder())
+        cp._sc_hidden_copy = True
+        a.set_clip_path(region_path(vis), ax.transData)
+        draw(fid, cp, ax)
+        cp.set_clip_path(region_path(hid), ax.transData)
+        kids = ax._children
+        kids.remove(cp)
+        kids.insert(kids.index(a) + 1, cp)
+        out[a] = (fid, "split", by)
+    return out
 
 
 def plan_cover_states(ctx, ax, pose):
-    """{artist: (row id, state, covering ids, uncovered samples)} for every drawn area artist of a measurable row in plan
-    (Line2D pieces and reference rows out). Shared by the drawing styles and K8 cover."""
-    rows, zmax, outl = cover_table(ctx, pose)
+    """{artist: (row id, state, covering ids, uncovered sample points)} for every drawn area artist of a measurable row in
+    plan (Line2D pieces and reference rows out), on the samples inside the artist's drawn region (its clip region):
+    'hidden' when every such sample is covered, 'visible' when none is, else 'partial'."""
+    cc = cover_context(ctx, ax, pose)
     out = {}
-    drawn = tagged(ax)
-    for r in rows:
-        covers = _covers_of(r["id"], zmax, outl)
-        for a in drawn.get(r["id"], []):
+    for r in cc["rows"]:
+        for a in cc["drawn"].get(r["id"], []):
             if isinstance(a, Line2D):
                 continue
-            if not covers:
-                out[a] = (r["id"], "visible", set(), [])
-                continue
-            out[a] = (r["id"],) + artist_cover(a, covers)
+            covers = artist_covers(cc, a, r["id"])
+            reg = drawn_region(a)
+            pts = [p for p in _cover_samples(a) if reg is None or reg.contains(p)]
+            hits = cover_hits(pts, covers)[0]
+            by = {h for h in hits if h}
+            open_pts = [p for p, h in zip(pts, hits) if h is None]
+            st = "visible" if not pts or not by else ("hidden" if not open_pts else "partial")
+            out[a] = (r["id"], st, by, open_pts)
     return out
 
 
 def cover_issues(ctx, ax, pose, rows_list):
-    """K8 cover (1.2 (h); Topologist TP1.2-2, TP1.2-9, TP1.2-13; Designer M1 r1 F2 rule), plan view. (1) A drawn area
-    artist whose every sample lies inside the true plan outline of some row with a z_max greater by more than TOL_Z is
-    hidden and is drawn non-solid (dashed or dotted, no fill, no hatch). (2) r3 converse: every uncovered sample of a
-    non-solid artist lies inside a solid artist of the same row, so a partly visible part shows its visible area solid
-    (the row may split it: a solid piece under the covers' fills and a dashed copy). Rows with plan_style: stand_in
-    (Step 2 stand-ins drawn dashed by convention) are out of (2). Premise: only true outlines (plan_outline true) cover;
-    samples are interior grid points plus pulled-in vertices (annulus: rings across the width). Returns (artists tested,
-    issues)."""
+    """K8 cover (1.2 (h); Topologist TP1.2-2, TP1.2-9, TP1.2-13, TP1.2-15; Designer M1 r1 F2 rule; 1.3 P1R N2), plan
+    view. Hidden: inside a true plan outline of a row with z_max higher by more than TOL_Z, or inside an opaque fill
+    (alpha rule) of another row drawn above (1.3 P1R). Samples: interior grid plus pulled-in vertices of each piece,
+    annulus rings by arc length (TP1.2-19); the drawn region of an artist is its geometry inside its clip region.
+    (1) A solid artist (solid line, fill or hatch) whose every drawn sample is hidden fails. (2) 1.3 P1R (N2): a solid
+    artist with a drawn sample hidden by more than TOL_Z (and some not hidden) fails: the covered part of a partly
+    covered piece is drawn by the renderer as a hidden copy, not solid. (3) r3 converse: every uncovered sample of a
+    non-solid artist's geometry lies in the drawn region of a solid artist of the same row under no opaque fill of
+    another row drawn above that solid artist (TP1.2-15); rows with plan_style: stand_in and a stand_in_owner naming a
+    Step or sketch id are out of (3). (4) 1.3 P1R premise of the alpha rule: no plan fill renders at an alpha between
+    TRANSLUCENT_MAX and OPAQUE_ALPHA. Premise of the rule set: only true outlines (plan_outline true) cover (K8-Z7,
+    K8-B33). Returns (artists tested, issues)."""
     rows = {r["id"]: r for r in rows_list}
-    states = plan_cover_states(ctx, ax, pose)
+    cc = cover_context(ctx, ax, pose)
     n, out = 0, []
-    solid_arts = {}
-    for a, (fid, st, by, open_pts) in states.items():
-        if is_solid(a):
-            solid_arts.setdefault(fid, []).append((a, [p for p in artist_polys(a) if len(p) >= 3]))
-    rank = _rank(ax)
-    opaque = [(a, [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax) if a.get_gid() and is_opaque(a)]
+    for a in artists(ax):
+        g = a.get_gid()
+        fa = fill_alpha(a)
+        if g and TRANSLUCENT_MAX + 1e-9 < fa < OPAQUE_ALPHA - 1e-9:
+            out.append(f"{pose}/{g} cover: fill alpha {fa:.2f} between {TRANSLUCENT_MAX:g} and {OPAQUE_ALPHA:g} (alpha rule "
+                       f"premise: a fill is opaque or shows what is under it at half its contrast or more)")
     exempt = set()
     for fid, r in rows.items():
         if r.get("plan_style") == "stand_in":
@@ -2643,47 +3554,73 @@ def cover_issues(ctx, ax, pose, rows_list):
                 out.append(f"{pose}/{fid} cover: spec error, stand_in_owner {owner!r} names no Step id (Step 2) or sketch id (S3, s1 to s6) (TP1.2-18)")
             else:
                 exempt.add(fid)
+    solid_arts = {}
+    for r in cc["rows"]:
+        for a in cc["drawn"].get(r["id"], []):
+            if not isinstance(a, Line2D) and is_solid(a):
+                above = [c for c in artist_covers(cc, a, r["id"]) if c[0] == "patch"]
+                solid_arts.setdefault(r["id"], []).append((a, [q for q in artist_polys(a) if len(q) >= 3], above))
 
-    def shown(fid, p):
-        """p lies in a solid artist of fid that no opaque fill of another row draws over (r4, TP1.2-15)."""
-        for s_a, polys in solid_arts.get(fid, []):
-            if not any(_inside(p, q) for q in polys):
+    def shown(fid, pts):
+        """Flags: each point lies in the drawn region of a solid artist of fid that no opaque fill of another row draws
+        over (TP1.2-15)."""
+        if not pts:
+            return []
+        X = np.fromiter((p[0] for p in pts), float, len(pts))
+        Y = np.fromiter((p[1] for p in pts), float, len(pts))
+        ok = np.zeros(len(pts), dtype=bool)
+        for s_a, polys, above in solid_arts.get(fid, []):
+            m = in_drawn_np(s_a, polys, X, Y) & ~ok
+            if m.any():
+                idx = np.nonzero(m)[0]
+                h = cover_hits([pts[i] for i in idx], above)[0]
+                ok[idx[[x is None for x in h]]] = True
+        return ok.tolist()
+    for r in cc["rows"]:
+        fid = r["id"]
+        for a in cc["drawn"].get(fid, []):
+            if isinstance(a, Line2D):
                 continue
-            if not any(o.get_gid() != fid and not o.get_gid().startswith(fid + ":") and rank[id(o)] > rank[id(s_a)]
-                       and any(_inside(p, q) for q in oq) for o, oq in opaque):
-                return True
-        return False
-    for a, (fid, st, by, open_pts) in states.items():
-        n += 1
-        if st == "hidden" and is_solid(a):
-            out.append(f"{pose}/{fid} cover: {type(a).__name__} wholly under {', '.join(sorted(by))} drawn solid "
-                       f"(linestyle {a.get_linestyle()!r}, fill {a.get_fill() if isinstance(a, Patch) else False}, "
-                       f"hatch {a.get_hatch() if isinstance(a, Patch) else None!r}); a hidden part is dashed, no fill")
-        elif st != "hidden" and not is_solid(a) and fid not in exempt:
-            bare = [p for p in open_pts if not shown(fid, p)]
-            if bare:
-                out.append(f"{pose}/{fid} cover: {type(a).__name__} partly visible drawn dashed ({len(bare)} of "
-                           f"{len(open_pts)} uncovered samples not shown by a solid piece of the row under no opaque fill, "
-                           f"e.g. ({bare[0][0]:.2f}, {bare[0][1]:.2f})); its visible area is drawn solid")
+            n += 1
+            covers = artist_covers(cc, a, fid)
+            reg = drawn_region(a)
+            solid = is_solid(a)
+            geo = _cover_samples(a)
+            if solid:
+                pts = [p for p in geo if reg is None or reg.contains(p)]
+                hits = list(zip(*cover_hits(pts, covers, deep=TOL_Z))) if pts else []
+                by = {h for h, _ in hits if h}
+                if pts and all(h for h, _ in hits):
+                    out.append(f"{pose}/{fid} cover: {type(a).__name__} wholly under {', '.join(sorted(by))} drawn solid "
+                               f"(linestyle {a.get_linestyle()!r}, fill {a.get_fill() if isinstance(a, Patch) else False}, "
+                               f"hatch {a.get_hatch() if isinstance(a, Patch) else None!r}); a hidden part is dashed, no fill")
+                elif any(d for _, d in hits):
+                    deep = [p for p, (h, d) in zip(pts, hits) if d]
+                    dby = {h for h, d in hits if d}
+                    out.append(f"{pose}/{fid} cover: {type(a).__name__} partly covered drawn solid ({len(deep)} of {len(pts)} "
+                               f"drawn samples under {', '.join(sorted(dby))} by more than {TOL_Z:g}, e.g. ({deep[0][0]:.2f}, "
+                               f"{deep[0][1]:.2f})); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)")
+            elif fid not in exempt:
+                open_pts = [p for p, h in zip(geo, cover_hits(geo, covers)[0]) if h is None]
+                bare = [p for p, ok in zip(open_pts, shown(fid, open_pts)) if not ok]
+                if bare:
+                    out.append(f"{pose}/{fid} cover: {type(a).__name__} partly visible drawn dashed ({len(bare)} of "
+                               f"{len(open_pts)} uncovered samples not shown by a solid piece of the row under no opaque fill, "
+                               f"e.g. ({bare[0][0]:.2f}, {bare[0][1]:.2f})); its visible area is drawn solid")
     return n, out
 
 
 def style_hidden(ctx, ax, pose):
-    """Drawing helper (r3): every drawn area artist that K8 cover reads as hidden and drawn solid is restyled dashed, no
-    fill, no hatch. Returns plan_cover_states after the restyle (the caller splits partly visible dashed pieces)."""
-    states = plan_cover_states(ctx, ax, pose)
-    for a, (fid, st, by, op) in states.items():
-        if st == "hidden" and is_solid(a):
-            a.set_linestyle("--")
-            if isinstance(a, Patch):
-                a.set_fill(False)
-                a.set_hatch(None)
-    return states
+    """r3 drawing helper, superseded at 1.3 P1R by render_plan (one renderer for scripts and fixtures). Returns
+    plan_cover_states after rendering."""
+    render_plan(ctx, ax, pose)
+    return plan_cover_states(ctx, ax, pose)
 
 
 def hidden_rows(ctx, pose):
-    """Rows whose own plan outline lies wholly under true outlines of higher rows at pose (outline samples as in K8 cover).
-    Kept for reports; the drawings style per drawn artist through plan_cover_states (r3, TP1.2-13)."""
+    """Rows whose own plan outline lies wholly under true outlines of higher rows at pose (reports). 1.3 P1R (TP1.2-13):
+    the outline is sampled as K8 cover samples a drawn piece (annulus by arc length, convex pieces by grid and pulled-in
+    vertices) and each sample is tested against the exact covers (annulus as annulus, union as union)."""
     rows, zmax, outl = cover_table(ctx, pose)
     out = set()
     for r in rows:
@@ -2694,8 +3631,7 @@ def hidden_rows(ctx, pose):
             continue
         if o[0] == "annulus":
             a, b = o[1]
-            pts = [(rr * math.cos(2 * math.pi * i / PLAN_NGON), rr * math.sin(2 * math.pi * i / PLAN_NGON))
-                   for rr in (a + f * (b - a) for f in COVER_RINGS) for i in range(PLAN_NGON)]
+            pts = _annulus_samples(0.0, 0.0, a, b)
         else:
             pts = [p for poly in o[1] for p in _piece_samples(poly)]
         if pts and all(_covered_by(p, covers) for p in pts):

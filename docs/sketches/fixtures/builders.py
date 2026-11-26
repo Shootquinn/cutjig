@@ -1471,13 +1471,14 @@ def _s2_draw(P, spec, stack, skip=(), note=None):
         tk = next((p for p in row.get("sense") or [] if p.get("pred") == "ticks_radial"), None)
         if tk:   # 1.2 (h): gear tooth ticks (Designer M1 r1 F1), from the predicate's own fields
             sc.draw(row["id"] + sc.TICKS_SUFFIX, _ticks(P, tk), ax)
-    sc.style_hidden(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), ax, pid)   # r3: hidden pieces dashed (K8 cover)
+    rctx = sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"])
+    sc.render_plan(rctx, ax, pid)   # 1.3 P1R: the plan hidden-line renderer (r3 to r5: style_hidden)
     bp = next((r for r in spec["features"] if r["id"] == "base_plate"), None)
     if bp and any(p.get("pred") == "outline_matches" for p in bp.get("sense") or []) and "base_plate" not in skip:
         sc.draw("base_plate:outline", Polygon(_notch_ring(stack["poses"][pid]["features"]["base_plate"]["plan_pieces"]),
                                               closed=True, fill=False), ax)   # r4: plate outline (Designer sign-off r3)
     sc.finish_axes(ax)
-    sc.place_labels(ax, spec, P, pid)
+    sc.place_plan_labels(ax, rctx, pid, margin=False)   # 1.3 P1R: the plan leader placer (text 60 right, 20 up)
     txt = (spec.get("plan_figure") or {}).get("figure_note") if note is None else note
     if txt:
         t = ax.text(0, -0.06, txt, transform=ax.transAxes, fontsize=6)
@@ -1516,13 +1517,17 @@ def _s2_ax(c):
     return next(iter(c.figs.values())).axes[0]
 
 
-def _s2_replace(c, fid, artists_fn):
-    """Remove every artist of row fid from the S2 plan figure and draw artists_fn(ctx) in its place (drawing-only B)."""
+def _s2_replace(c, fid, artists_fn, render=False):
+    """Remove every artist of row fid from the S2 plan figure and draw artists_fn(ctx) in its place (drawing-only B).
+    render=True (1.3 P1R): the new artists go through the plan renderer as the drawing's own pieces did (a B whose
+    planted defect is not the hidden-line drawing)."""
     ax = _s2_ax(c)
     for a in sc.tagged(ax).get(fid, []):
         a.remove()
     for a in artists_fn(c):
         sc.draw(fid, a, ax)
+    if render:
+        sc.render_plan(c, ax, _s2_pose(c.spec))
     return c
 
 
@@ -1770,7 +1775,7 @@ def k8_b22():
         heel, w = c.P.get("pinion.r_heel"), pl["half_width"]
         return [Polygon(_radial_poly(pl["r_in"], heel, pl["theta"], w, w * pl["r_in"] / heel), closed=True, fill=False),
                 Polygon(_radial_poly(heel, pl["r_out"], pl["theta"], w * pl["r_in"] / heel / 2), closed=True, fill=False)]
-    return _s2_replace(_s2_ctx(), "pinion_a", fn)
+    return _s2_replace(_s2_ctx(), "pinion_a", fn, render=True)   # 1.3 P1R: the taper alone is planted
 
 
 def k8_b23():
@@ -2047,11 +2052,17 @@ def k4_b7():
 
 
 def k4_b8():
-    """F5 B: live S2 with label_theta removed from the four concentric rows (the r1 anchors on y = 0): leaders cross."""
-    def mut(spec):
-        for r in spec["features"]:
-            r.pop("label_theta", None)
-    return _script_ctx("s2", spec_mut=mut)
+    """F5 B: live S2 with two concentric labels at the r1 anchors (r, 0) on y = 0 (drill_tube 76.2, keepout 86.2) and
+    their placed texts exchanged (inner anchor to the upper text): the leaders cross. 1.3 P1R re-plant: with label_theta
+    removed from the spec (the r1 to r5 plant) the placer finds anchors whose leaders do not cross."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    t = {g: next(x for x in ax.texts if x.get_gid() == f"label:{g}") for g in ("drill_tube", "keepout")}
+    xt = {g: tuple(t[g].xyann) for g in t}
+    for g in t:
+        t[g].xy = (max(q[0] for poly in sc.pieces(ax, g) for q in poly), 0.0)
+    t["drill_tube"].xyann, t["keepout"].xyann = xt["keepout"], xt["drill_tube"]
+    return c
 
 
 # K5 tick admission and K9 sub-gid (Designer M1 r1 F1)
@@ -2550,4 +2561,146 @@ def k5_b24():
     for a in sc.tagged(_s2_ax(c)).get("drill_tube", []):
         if isinstance(a, Annulus):
             a.set_width(0.001)
+    return c
+
+
+# ---------------------------------------------------------------- 1.3 P1R (research/sean/cr_scratch/step1.3_engineer_renderer.md)
+# Plan hidden-line renderer (sc.render_plan) and leader placer (sc.place_plan_labels): K8 cover (2) partly covered drawn
+# solid (N2), exact covered region (annulus, hollow disk, union; TP1.2-13), annulus samples by arc length and the alpha
+# rule (TP1.2-19); K4 leader last quarter outside other true outlines (Design Notes 30) and UNPLACEABLE.
+
+def _rplan(specs, render=True):
+    """Synthetic plan (_k7_plan rows, unfilled solid outlines) with the renderer applied (render=False: the drawing as
+    before 1.3 P1R, each piece solid and unsplit)."""
+    c = _k7_plan(specs)
+    if render:
+        pid = next(iter(c.figs))
+        sc.render_plan(c, c.figs[pid].axes[0], pid)
+    return c
+
+
+def _sec(a, b):
+    return {"section": [a, b], "kind": "cylinder", "projection": "circle"}
+
+
+_R_ANN = [("c", _rad(80, 160, 0, 5), (0, 10), None, {}), ("u", None, (0, 100), None, _sec(100, 130))]
+_R_HOLLOW = [("c", _rad(10, 50, 30, 5), (0, 10), None, {}), ("t", None, (0, 100), None, _sec(40, 60))]
+_R_UNION = [("c", _rad(100, 220, 0, 5), (0, 10), None, {}), ("a", _rad(95, 130, 0, 10), (0, 100), None, {}),
+            ("b", _rad(120, 205, 0, 10), (0, 100), None, {})]
+# TP1.2-19: ring r 100 to 110 under two half-plane covers (u >= 1.5 along 94.225 deg, u <= -1.5 along 274.225 deg):
+# visible only in a 3 mm strip through the axis at 4.225 and 184.225 deg (1.56 to 1.72 deg of arc across the ring),
+# between the outer-vertex sample directions of the r4 annulus sampling (every 2.8125 deg: 2.81, 5.63, 182.81, 185.63)
+# and wider than the 1.30 deg step of the P1R arc-length sampling (2.5 mm at r 110)
+_R_GAP = [("ring", None, (0, 10), None, _sec(100, 110)), ("p", _rad(1.5, 300, 94.225, 300), (0, 100), None, {}),
+          ("q", _rad(1.5, 300, 274.225, 300), (0, 100), None, {})]
+
+
+def k8_z9():
+    """Annulus cover: bar r 80 to 160 crossing an annulus r 100 to 130 above it, rendered (split: visible 80 to 100 and
+    130 to 160 solid, hidden 100 to 130 dashed)."""
+    return _rplan(_R_ANN)
+
+
+def k8_b44():
+    """Annulus cover B: the same bar drawn solid and unsplit (as before the renderer)."""
+    return _rplan(_R_ANN, render=False)
+
+
+def k8_z10():
+    """Hollow disk with its bore: bar r 10 to 50 at 30 deg under a hollow disk r 40 to 60 (section annulus), rendered:
+    the part in the bore (10 to 40) visible solid, 40 to 50 hidden dashed."""
+    return _rplan(_R_HOLLOW)
+
+
+def k8_b45():
+    """Hollow disk B: the same bar drawn solid and unsplit."""
+    return _rplan(_R_HOLLOW, render=False)
+
+
+def k8_z11():
+    """Union of covers: bar r 100 to 220 under a (95 to 130) and b (120 to 205), which overlap, rendered: hidden 100 to 205
+    as one union, visible 205 to 220."""
+    return _rplan(_R_UNION)
+
+
+def k8_b46():
+    """Union B: the same bar drawn solid and unsplit."""
+    return _rplan(_R_UNION, render=False)
+
+
+def k8_z12():
+    """TP1.2-19: ring visible only in two 3 mm strips, rendered (split)."""
+    return _rplan(_R_GAP)
+
+
+def k8_b47():
+    """TP1.2-19 B: the ring drawn wholly dashed (the r4 annulus sampling read it hidden): its visible strips are shown by
+    no solid piece."""
+    c = _rplan(_R_GAP, render=False)
+    for a in sc.tagged(next(iter(c.figs.values())).axes[0]).get("ring", []):
+        a.set_linestyle("--")
+    return c
+
+
+def k8_b48():
+    """N2 B: live S2 drawn by s2_plan.py with the renderer bypassed for the ring: its clip path removed and its hidden
+    copy deleted, so the rim under the unfilled guide arms is drawn solid."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("ring", []):
+        if sc.is_solid(a):
+            a.set_clip_path(None)
+        else:
+            a.remove()
+    return c
+
+
+def k8_b49():
+    """TP1.2-19 alpha rule B: live S2 with the operator sector fill at alpha 0.95 (counts opaque): the plate it draws over
+    is partly covered and drawn solid."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("operator_sector", []):
+        a.set_alpha(0.95)
+    return c
+
+
+def k8_b50():
+    """Alpha rule premise B: live S2 with the operator sector fill at alpha 0.6 (neither opaque nor see-through)."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("operator_sector", []):
+        a.set_alpha(0.6)
+    return c
+
+
+def k4_b12():
+    """Design Notes 30 B: live S2 r6 drawing with the descent-stop label put back on the r4/r5 leader: anchor at the pad
+    outer corner t +30 (-201.20, 81.52), text in the left column at the anchor height (the r5 layout); the last 60.1 mm
+    of the leader runs inside guide_tie_b."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    pl = _s2_place(c, "descent_stop")
+    corners = check_stack.radial_corners(pl["r_in"], pl["r_out"], pl["theta"], pl["half_width"], pl.get("rot", 0))
+    anc = min(corners, key=lambda p: (p[0], p[1]))   # outer corner t +30: least x
+    t = next(t for t in ax.texts if t.get_gid() == "label:descent_stop")
+    ax.apply_aspect()
+    (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
+    line = sc.LABEL_FONTSIZE * ax.figure.dpi / 72 * sc.LABEL_LINESPACING / abs(y1 - y0)
+    t.xy = anc
+    t.xyann = (ax.get_xlim()[0] - line, anc[1])
+    t.set_ha("right")
+    return c
+
+
+def k4_b13():
+    """UNPLACEABLE B: a pad (r 150 to 170 at 0 deg, z 0 to 10, labelled) wholly under a lid (r 140 to 180, half-width 20,
+    z 0 to 100) drawn with an opaque fill above it: every anchor on the pad's ink lies under the lid's area, so no
+    candidate passes and the placer records the label UNPLACEABLE."""
+    c = _k7_plan([("pad", _rad(150, 170, 0, 5), (0, 10), None, {}), ("lid", _rad(140, 180, 0, 20), (0, 100), None, {})])
+    next(r for r in c.spec["features"] if r["id"] == "pad")["label"] = {"text": "pad", "key": "drill.tube_od", "fmt": ".1f"}
+    pid = next(iter(c.figs))
+    ax = c.figs[pid].axes[0]
+    for a in sc.tagged(ax).get("lid", []):
+        a.set_fill(True)
+        a.set_facecolor("white")
+    sc.render_plan(c, ax, pid)
+    sc.place_plan_labels(ax, c, pid, margin=False)
     return c
