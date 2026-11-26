@@ -58,6 +58,7 @@ K_SOURCES = {
     "K9": "gameplan l.142",
     "X1": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)",
     "RPT": "1.3 open O10; Step 1.2 gate D3; gameplan detail 1.3 Reported (spec reported_items)",
+    "SYM": "Loftsman 1.3 (b) R1 and (b) sign-off (screw-set symmetry premise of S3-3); 1.3 P4",
 }
 SKETCH_TABLES = {
     "s1": {
@@ -148,6 +149,83 @@ def source_of(s, cid):
 # ---------------------------------------------------------------- X1 shared-row lint (1.2 (c), Loftsman 1.2 (b))
 
 X1_FIELDS = ("place", "z_rule", "plan_poly")
+X1_EXEMPT_FIELD = "place"   # 1.3 P4 (Loftsman (b) sign-off): x1_exempt skips this field only
+
+
+def x1_exemptions(specs):
+    """Rows carrying x1_exempt in any spec: [(spec name, row id, reason)] (--accept refuses while any remains)."""
+    out = []
+    for name, spec in specs.items():
+        for row in spec.get("features", []):
+            ex = row.get("x1_exempt")
+            if ex:
+                out.append((name, row["id"], ex.get("reason") if isinstance(ex, dict) else str(ex)))
+    return out
+
+
+def specs_in(d):
+    return {p.stem.replace("_spec", ""): load_spec(p) for p in sorted(Path(d).glob("s*_spec.yaml"))}
+
+
+# ---------------------------------------------------------------- SYM screw-set symmetry lint (1.3 P4, Loftsman (b) sign-off)
+
+SYM_FAMILIES = ("anchor", "anchor_locknut", "screw", "nut", "nut_housing")
+SYM_FIELDS = ("z_rule", "place", "keys")
+SYM_INDEX = {"a": 1, "b": 0, "c": 2}   # jackscrew.angle index per screw letter (S1, S2, S3 specs)
+_ANGLE_IX = re.compile(r"(jackscrew\.angle)\[\s*\d+\s*\]")
+
+
+def _sym_norm(v):
+    """A field with every jackscrew.angle[<n>] written jackscrew.angle[i] (the angle index swapped) and whitespace
+    normalised."""
+    v = _x1_norm(v)
+    if isinstance(v, str):
+        return _ANGLE_IX.sub(r"\1[i]", v)
+    if isinstance(v, dict):
+        return {k: _sym_norm(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [_sym_norm(x) for x in v]
+    return v
+
+
+def sym_lint(specs=None):
+    """Premise of S3-3's certification of the a, b screw-set pairs from screw c (Loftsman 1.3 (b) R1 and (b) sign-off):
+    in every spec, the anchor, anchor_locknut, screw, nut and nut_housing rows of a and b equal the c row (or, where the
+    spec has no c row, each other) in z_rule, place and keys once the angle index is swapped; each row's theta names its
+    own angle index (a 1, b 0, c 2); no row of those families carries x1_exempt."""
+    if specs is None:
+        specs = specs_in(HERE)
+    issues, n = [], 0
+    for name, spec in sorted(specs.items()):
+        rows = {r["id"]: r for r in spec.get("features", [])}
+        for fam in SYM_FAMILIES:
+            have = {l: rows[f"{fam}_{l}"] for l in "abc" if f"{fam}_{l}" in rows}
+            for l, r in have.items():
+                if r.get("x1_exempt"):
+                    issues.append(f"{name} {fam}_{l}: x1_exempt on a symmetry row (exemptions certify nothing)")
+                th = str((r.get("place") or {}).get("theta", ""))
+                m = re.search(r"jackscrew\.angle\[\s*(\d+)\s*\]", th)
+                if r.get("place") and (not m or int(m.group(1)) != SYM_INDEX[l]):
+                    issues.append(f"{name} {fam}_{l}: place theta {th!r}, needs jackscrew.angle[{SYM_INDEX[l]}]")
+            if len(have) < 2:
+                continue
+            ref_l = "c" if "c" in have else sorted(have)[0]
+            for l, r in sorted(have.items()):
+                if l == ref_l:
+                    continue
+                n += 1
+                for fld in SYM_FIELDS:
+                    a, b = _sym_norm(have[ref_l].get(fld)), _sym_norm(r.get(fld))
+                    if fld == "keys":
+                        a, b = sorted(a or []), sorted(b or [])
+                    if json.dumps(a, sort_keys=True) != json.dumps(b, sort_keys=True):
+                        d = ""
+                        if fld == "keys":
+                            d = f" (only {fam}_{ref_l}: {sorted(set(a) - set(b))}; only {fam}_{l}: {sorted(set(b) - set(a))})"
+                        issues.append(f"{name} {fam}_{l} {fld} differs from {fam}_{ref_l}{d}")
+    msg = f"{n} row pair(s) compared on {', '.join(SYM_FIELDS)} in {len(specs)} spec(s)"
+    return {"id": "SYM", "result": "pass" if not issues else "fail", "reason": (sc._summ(issues) + "; " + msg) if issues else msg,
+            "measured": len(issues), "threshold": 0, "n_issues": len(issues), "cause": None if not issues else "content", "issues": issues}
 
 
 def _x1_norm(v):
@@ -164,8 +242,9 @@ def x1_lint(specs=None):
     """Premise of the S1/S2 footprint identity (Loftsman 1.2 (b) section 2): for every row id present in two or more
     specs, the place, z_rule and plan_poly expressions are equal after whitespace normalisation, so one check_stack
     evaluation gives one footprint and one z band in every sketch. A field present in one spec only is skipped and
-    listed; a row carrying x1_exempt: {reason} in any spec passes and is listed. specs: {name: spec} (default: every
-    s*_spec.yaml beside this file)."""
+    listed; a row carrying x1_exempt: {reason} in any spec skips the place field only and is listed (1.3 P4, Loftsman (b)
+    sign-off: z_rule and plan_poly are compared on an exempt row; --accept refuses while any exemption remains). specs:
+    {name: spec} (default: every s*_spec.yaml beside this file)."""
     if specs is None:
         specs = {p.stem.replace("_spec", ""): load_spec(p) for p in sorted(HERE.glob("s*_spec.yaml"))}
     by_id = {}
@@ -179,9 +258,10 @@ def x1_lint(specs=None):
         n += 1
         ex = next((r.get("x1_exempt") for _, r in occ if r.get("x1_exempt")), None)
         if ex:
-            exempt.append(f"{fid} ({ex.get('reason') if isinstance(ex, dict) else ex})")
-            continue
+            exempt.append(f"{fid} place ({ex.get('reason') if isinstance(ex, dict) else ex})")
         for fld in X1_FIELDS:
+            if ex and fld == X1_EXEMPT_FIELD:
+                continue
             have = [(nm, r[fld]) for nm, r in occ if r.get(fld) is not None]
             if not have:
                 continue
@@ -449,8 +529,11 @@ def run_sketch(args):
                 r.update(result="fail", reason=sc._summ(lint) + " || " + r["reason"], n_issues=(r.get("n_issues") or 0) + len(lint), cause="content")
     smod_path = HERE / f"checks_{s}.py"
     smod = load_module(smod_path, f"checks_{s}")
+    ctx.records_dir, ctx.wip_dir = _dirs(args)   # 1.3 P4: S3-3 reads the latest accepted records there (--docs-dir)
     results += smod.run(ctx)
     results.append(safe(x1_lint, "X1"))
+    if spec.get("chains"):   # 1.3 P4: SYM, the premise of the a, b chain pairs certified from screw c (S3-3)
+        results.append(safe(sym_lint, "SYM"))
     acc = dict(P.accessed)   # keys_read keeps its pre-RPT scope: keys the reported values read are not added
     rd = safe(smod.reported, "reported", ctx) if hasattr(smod, "reported") else None
     P.accessed.clear()
@@ -683,6 +766,10 @@ def accept(s, k, note, docs, wip, out=print):
         bad.append("RPT absent")   # 1.3 step 0 R3; SW P0S FIX 2: every record carries an RPT row
     if bad:
         say(f"refused: {src.name} has checks not pass: {', '.join(bad)}")
+        return 1, msgs
+    exs = x1_exemptions(specs_in(docs))   # 1.3 P4 (Loftsman (b) sign-off): no record is accepted while an exemption remains
+    if exs:
+        say(f"refused: x1_exempt remains on {len(exs)} row(s): " + ", ".join(f"{nm} {fid}" for nm, fid, _ in exs))
         return 1, msgs
     ups = revision_outputs(wip, s, k) if src.parent == wip else []
     blocks, plan = [], []

@@ -1,10 +1,11 @@
 """S3 checks S3-1 to S3-3 (contributor gameplan (sean) detail 1.3 table; Design Notes 4 and 31).
-Skeleton written at 1.3 (b) from the spec blocks s3_checks, load_cases and chains. The arithmetic (load cases, F_stall,
-P_cr, critical speed, back-drive) is complete and feeds reported(ctx) for RPT; the checks read drawn patches located by
-gid in the section Axes and fail closed (cause "absent") when a part they need is not drawn, so they are red on the
-floor-only stub. The section-view readers (u = +Y, depth along X) and S3-3's cross-record reader land at 1.3 (c) (P4) with
-the S3-x fixtures; until then S3-3 fails closed. Heights z_A from check_stack unless stated.
+Skeleton written at 1.3 (b) from the spec blocks s3_checks, load_cases and chains; drawn readers and S3-3's cross-record
+reader landed at 1.3 (c) (P4). The arithmetic (load cases, F_stall, P_cr, critical speed, back-drive) feeds reported(ctx)
+for RPT. The checks read drawn patches located by gid in the section Axes (sketch_common.axes_context, TP-7: the Axes
+declared `section`, u = +Y, depth along X) and fail closed (cause "absent") when a part they need is not drawn, so they
+are red on the floor-only stub. Heights z_A from check_stack unless stated.
 """
+import json
 import math
 import sys
 from pathlib import Path
@@ -16,6 +17,8 @@ import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
 
 K_CHECKS = ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9"]
+SECTION_AXES = "section"
+C_STATES = ("C", "z-contact", "plan-contact")   # K7 pass states of a class C pair (side, plan)
 
 
 class Absent(Exception):
@@ -40,9 +43,25 @@ def _fig_pose(ctx):
     return pf
 
 
-def _pieces(ctx, fid):
+def _section(ctx):
+    """The section Axes sub-context (TP-7); its stack is in the reflected section frame (x' = u = plan y)."""
+    c = sc.axes_context(ctx, SECTION_AXES)
+    if c is None:
+        raise Content(f"spec declares no Axes {SECTION_AXES}")
+    return c
+
+
+def _ax(ctx):
     pose = _fig_pose(ctx)
-    p = sc.pieces(ctx.figs[pose].axes[0], fid)   # P4 (TP-7): the section Axes by declaration, not axes[0]
+    c = _section(ctx)
+    if pose not in c.figs:
+        raise Absent(f"section Axes absent from figure {pose}")
+    return c.figs[pose].axes[0], pose
+
+
+def _pieces(ctx, fid):
+    ax, _ = _ax(ctx)
+    p = sc.pieces(ax, fid)
     if not p:
         raise Absent(f"{fid} not drawn")
     return p
@@ -118,31 +137,45 @@ def critical_speed(P, Lt):
     return out, rpm
 
 
+# ---------------------------------------------------------------- drawn readers
+
+def anchor_line_z(ctx, fid):
+    """z_S of the drawn bearing line <fid>:line (the mark sub-artist; K5 M1 to M5 hold it to mark.z and the part)."""
+    ax, _ = _ax(ctx)
+    arts = sc.tagged(ax).get(f"{fid}:{sc.MARK_SUB}", [])
+    if not arts:
+        raise Absent(f"{fid}:{sc.MARK_SUB} (bearing line) not drawn")
+    pts = [p for a in arts for p in sc.artist_polys(a)[0]]
+    return sum(z for _, z in pts) / len(pts)
+
+
 # ---------------------------------------------------------------- checks
 
 def s3_1(ctx):
     """Sign: the screw segment from the nut down to the anchor bearing line is in tension in the cut case at every nut
-    position from the S1 poses: drawn bearing line below the nut bottom (check_stack nut_z per pose) and the drawn cut
-    arrow pointing +Z. P4 (c) adds the section-view reader of the bearing line (anchor_bearing_c:line)."""
+    position from the S1 poses: the drawn bearing line (anchor_bearing_c:line) below the nut bottom (check_stack nut_z per
+    pose) and the drawn cut arrow pointing +Z (K8 points form)."""
     c = _cfg(ctx, "S3-1")
-    line = _pieces(ctx, c["anchor_line"])
+    ax, _ = _ax(ctx)
     _pieces(ctx, c["load_arrow"])
-    z_line = min(sc.extent_z(line))   # P4: the :line sub-artist's z, not the row extent
+    z_line = anchor_line_z(ctx, c["anchor_line"])
     issues, worst = [], None
+    for t in sc.points_issues(ax, c["load_arrow"], "+Z"):
+        issues.append(f"cut arrow {c['load_arrow']}: {t}")
     for pose in c["nut_positions"]:
         nz = check_stack.to_shop_floor(ctx.stack["poses"][pose]["vars_z_A"]["nut_z"] - ctx.P.get("jackscrew.nut_length") / 2, ctx.P)
         m = nz - z_line
         worst = m if worst is None else min(worst, m)
         if m <= 0:
             issues.append(f"{pose}: nut bottom {nz:.2f} not above the anchor line {z_line:.2f} z_S (compression)")
-    return sc.result("S3-1", not issues, sc._summ(issues) if issues else f"tension segment least {worst:.2f} mm (nut bottom above the anchor line in every pose)",
+    return sc.result("S3-1", not issues, sc._summ(issues) if issues else f"tension segment least {worst:.2f} mm (nut bottom above the anchor line in every pose; cut arrow +Z)",
                      measured=round(worst, 3), threshold=0, n_issues=len(issues))
 
 
 def s3_2(ctx):
     """Buckling, floating nut: P_cr over the drawn anchor-to-guide bearing span, K jackscrew.end_factor_floating;
     P_cr / F >= jackscrew.buckling_sf in every case of s3_checks.S3-2 (Sean STOP S3-A, Design Notes 31). The drawn span
-    must equal the spec expression within 0.05 (P4: bearing-line readers in the section Axes)."""
+    (centres of the drawn bearing rows in the section Axes) must equal the spec expression within 0.05."""
     c = _cfg(ctx, "S3-2")
     a = _pieces(ctx, c["column"]["from"])
     b = _pieces(ctx, c["column"]["to"])
@@ -166,13 +199,156 @@ def s3_2(ctx):
                      measured=round(least, 3), threshold=sf, n_issues=len(issues))
 
 
+def _records(ctx):
+    """{sketch: (path, record, stale diffs)} for the latest accepted, unsuperseded record of each sketch in the records
+    directory (check_sketch.stale_records; ctx.records_dir, default docs/sketches/). A record whose keys_read differ
+    from the live params and overlay is stale and certifies nothing (premise of S3-3, checked here)."""
+    import check_sketch as cs   # lazy: check_sketch loads this module by path
+    docs = Path(getattr(ctx, "records_dir", None) or HERE)
+    wip = Path(getattr(ctx, "wip_dir", None) or (docs / "wip"))
+    out = {}
+    for p, rec in cs.stale_records(docs, wip):
+        out[rec.get("sketch", Path(p).name.split("_")[0]).upper()] = (Path(p), rec, cs.stale_diffs(ctx.P, [(p, rec)]))
+    return out
+
+
+def _k7_tests(rec):
+    k7 = next((c for c in rec.get("checks", []) if c.get("id") == "K7"), None) or {}
+    f = k7.get("test_fields") or sc.K7_TEST_FIELDS
+    return [dict(zip(f, t)) for t in (k7.get("tests") or [])]
+
+
+def _pair_ok(tests, x, y, pose):
+    """(found, ok, states) for the pair x|y (either order) at pose in K7 test entries."""
+    st = [t["state"] for t in tests if t.get("pose") == pose and t.get("pair") in (f"{x}|{y}", f"{y}|{x}")]
+    return bool(st), bool(st) and all(s in C_STATES for s in st), st
+
+
+def _face_issue(ctx, sec, ax, pose, x, y, face):
+    """The named face of an S3 certifier (s3_spec chains field face, or the neighbour entry's face z): the drawn pieces of
+    x and y each have a horizontal edge at the face z (z_A expression, or the expression in the text before ',') within
+    TOL_Z, overlapping in u: the axial face that carries the cut-case load."""
+    expr = face.get("z") if isinstance(face, dict) else None
+    if expr is None:
+        return None
+    names = ctx.stack["poses"][pose]["vars_z_A"]
+    z = check_stack.to_shop_floor(check_stack.eval_expr(expr, ctx.P, names), ctx.P)
+    spans = []
+    for fid in (x, y):
+        ss = []
+        for P in sc.pieces(ax, fid):
+            for i in range(len(P)):
+                a, b = P[i], P[(i + 1) % len(P)]
+                if abs(a[1] - b[1]) <= sc.TOL_Z and abs(a[1] - z) <= sc.TOL_Z:
+                    ss.append((min(a[0], b[0]), max(a[0], b[0])))
+        spans.append(ss)
+    if not spans[0] or not spans[1]:
+        return f"no horizontal edge of {x if not spans[0] else y} at the face z {z:.2f} z_S ({expr})"
+    if not any(min(a1, b1) - max(a0, b0) > -sc.TOL_Z for a0, a1 in spans[0] for b0, b1 in spans[1]):
+        return f"faces of {x} and {y} at z {z:.2f} do not overlap in u"
+    return None
+
+
+def _face_of(ctx, link, x, y):
+    """The face a link names: a neighbour entry's face {z} (row x or y), else none (the chain text is descriptive)."""
+    rows = {r["id"]: r for r in ctx.spec.get("features", [])}
+    for a, b in ((x, y), (y, x)):
+        for nb in (rows.get(a, {}).get("neighbours") or []):
+            if nb.get("id") == b and isinstance(nb.get("face"), dict):
+                return nb["face"]
+    if isinstance(link.get("face"), dict):
+        return link["face"]
+    return None
+
+
 def s3_3(ctx):
-    """Axial loop closed in the cut case (spec chains): every consecutive pair class C in a certifying record (latest
-    accepted S1 and S2 records, --stale clean, and this run's K7). Cross-record reader: P4 (c). Fails closed until then."""
-    _cfg(ctx, "S3-3")
+    """Axial loop closed in the cut case (spec chains, 1.3 open O11): every consecutive pair of each screw chain is class
+    C in at least one certifier named for it: a record certifier "S1 a|b" or "S2 a|b" reads the K7 entries (pose of the
+    section figure) of the latest accepted record of that sketch, which must not be stale (a stale record certifies
+    nothing); "S3 a|b" reads this run's K7 entries in the section Axes, and a link that names a face (neighbour face z)
+    has the two drawn pieces meeting on a horizontal edge at that z; an S3 certifier whose test fails opens the link (the
+    drawing contradicts the record); "declared ..." passes as declared and is listed; "none" certifies nothing, except a,
+    b links certified by symmetry from the c chain under SYM (check_sketch.sym_lint) when every c link between the two
+    rows' c counterparts passes."""
+    c = _cfg(ctx, "S3-3")
+    chains = ctx.spec.get("chains") or {}
+    if not chains:
+        raise Content("spec has no chains")
+    ax, pose = _ax(ctx)
     for f in ("anchor_c", "anchor_bearing_c", "screw_c", "nut_c", "nut_housing_c", "ring"):
         _pieces(ctx, f)
-    raise Content("S3-3 cross-record reader not written (1.3 (c), P4); fail-closed skeleton")
+    sec = _section(ctx)
+    k7 = sc.k7(sec)
+    s3_tests = [dict(zip(k7.get("test_fields") or sc.K7_TEST_FIELDS, t)) for t in (k7.get("tests") or [])]
+    recs = _records(ctx)
+    import check_sketch as cs
+    sym = cs.sym_lint(getattr(ctx, "specs", None))
+    issues, listed, n = [], [], 0
+    passed = {}
+    for ch in sorted(chains, key=lambda k: (k != "c", k)):
+        for i, link in enumerate(chains[ch]):
+            x, y = link["pair"]
+            n += 1
+            ok, why, veto, decl = False, [], None, False
+            for cert in link.get("certifiers") or []:
+                w = str(cert).split()
+                head = w[0] if w else ""
+                if head in ("S1", "S2"):
+                    if head not in recs:
+                        why.append(f"{head}: no accepted record")
+                        continue
+                    p, rec, diffs = recs[head]
+                    if diffs:
+                        why.append(f"{head} {p.name} stale ({len(diffs)} key(s), e.g. {diffs[0].split(': ', 1)[-1]})")
+                        continue
+                    found, good, st = _pair_ok(_k7_tests(rec), x, y, pose)
+                    if not found:
+                        why.append(f"{head} {p.name}: pair absent")
+                    elif good:
+                        ok = True
+                    else:
+                        why.append(f"{head} {p.name}: states {sorted(set(st))}")
+                elif head == "S3":
+                    found, good, st = _pair_ok(s3_tests, x, y, pose)
+                    face = _face_of(ctx, link, x, y)
+                    fi = _face_issue(ctx, sec, ax, pose, x, y, face) if face and found and good else None
+                    if not found:
+                        why.append("S3: pair not tested in the section")
+                    elif not good:
+                        veto = f"S3 section K7 states {sorted(set(st))}"
+                    elif fi:
+                        veto = f"S3 face: {fi}"
+                    else:
+                        ok = True
+                elif head.startswith("declared"):
+                    decl = True
+                elif head == "none":
+                    why.append("none")
+            if not ok and decl:
+                ok = True
+                listed.append(f"{ch} {x}|{y} declared")
+            if not ok and ch in ("a", "b") and [str(q).split()[0] for q in link.get("certifiers") or []] == ["none"]:
+                xc, yc = (v[:-2] + "_c" if v.endswith(f"_{ch}") else v for v in (x, y))
+                cids = [tuple(l["pair"]) for l in chains.get("c", [])]
+                seq = [v for pr in cids for v in pr]
+                if xc in seq and yc in seq and sym["result"] == "pass":
+                    i0, i1 = sorted((seq.index(xc) // 2, (len(seq) - 1 - seq[::-1].index(yc)) // 2))
+                    if all(passed.get(("c", j)) for j in range(i0, i1 + 1)):
+                        ok = True
+                        listed.append(f"{ch} {x}|{y} by symmetry from c")
+                    else:
+                        why.append("symmetry: a c link between the counterparts is open")
+                elif sym["result"] != "pass":
+                    why.append(f"symmetry premise (SYM) fails: {sym['n_issues']} issue(s)")
+            if veto:
+                ok = False
+                why.append(veto)
+            passed[(ch, i)] = ok
+            if not ok:
+                issues.append(f"chain {ch}: {x}|{y} not certified ({'; '.join(why) or 'no certifier'})")
+    return sc.result("S3-3", not issues, sc._summ(issues) if issues else
+                     f"{n} chain link(s) closed in the cut case; listed: {'; '.join(listed) or 'none'}",
+                     measured=len(issues), threshold=0, n_issues=len(issues), listed=listed)
 
 
 # ---------------------------------------------------------------- reported (RPT items; no threshold, never asserted)
@@ -213,12 +389,11 @@ def reported(ctx):
     items["screw_share"] = {"value": "; ".join(f"{k} {v:.2f}" + (f" / {ld['two_screw'][k]:.2f}" if k in ld["two_screw"] else "") for k, v in ld["per_screw"].items()),
                             "basis": "per screw (load / 3) / two-screw (load / 2), N", "tag": "DERIVED"}
     try:
-        line = _pieces(ctx, "anchor_bearing_c")
-        z_line = check_stack.from_shop_floor(sum(sc.extent_z(line)) / 2, P)
+        z_line = check_stack.from_shop_floor(anchor_line_z(ctx, "anchor_bearing_c"), P)
         items["tension_segment"] = {"value": "; ".join(f"{p} {stack['poses'][p]['vars_z_A']['nut_z'] - z_line:.2f}" for p in ("load", "start", "capture_end", "park")),
-                                    "basis": "nut centre per pose (check_stack) - drawn anchor bearing line (P4: anchor_bearing_c:line)", "tag": "MEASURED"}
-    except Absent:
-        items["tension_segment"] = {"value": None, "basis": "anchor_bearing_c not drawn", "tag": None}
+                                    "basis": "nut centre per pose (check_stack) - drawn anchor bearing line anchor_bearing_c:line", "tag": "MEASURED"}
+    except (Absent, Content):
+        items["tension_segment"] = {"value": None, "basis": "anchor_bearing_c:line not drawn", "tag": None}
     for k, v in items.items():
         rows.append((k, v["value"], v["basis"]))
     return {"id": "reported", "result": "pass", "rows": rows, "items": items}
@@ -229,9 +404,11 @@ def reported(ctx):
 _ABS = ("absent", "red (absent, fail-closed; content evidence run 1, S3-x B fixtures 1.3 (c))")
 _ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
 STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1"],
-               "red": ["K4", "K6", "K7", "K8", "K9", "S3-1", "S3-2", "S3-3", "RPT"]}
-STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, "RPT": _ABS_K,
-              **{k: _ABS for k in ("S3-1", "S3-2", "S3-3")}}
+               "red": ["K4", "K6", "K7", "K8", "K9", "S3-1", "S3-2", "S3-3", "RPT", "SYM"]}
+STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "RPT": _ABS_K,
+              "K8": ("content", "red (content: spec error motor_shaft_c outboard frame radial in the section, P4 finding F3; every other K8 issue absent)"),
+              **{k: _ABS for k in ("S3-1", "S3-2", "S3-3")},
+              "SYM": ("content", "red (content: S3 anchor rows carry x1_exempt and the a/b key lists differ from c; clears at P6, S1 r8 / S2 r9)")}
 SOURCES = {
     "S3-1": "[DN23]; gameplan detail 1.3 S3-1",
     "S3-2": "[DN23]; Design Notes 31 (SF 3 every case, K 0.7 on L_t, F_bind 300 N); E, d_r, mu, masses ASSUMED",

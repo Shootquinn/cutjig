@@ -24,7 +24,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg  # noqa: E402
 from matplotlib.collections import Collection, LineCollection  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Annulus, Circle, Ellipse, Patch, Polygon, Rectangle  # noqa: E402
+from matplotlib.patches import Annulus, Circle, Ellipse, FancyArrowPatch, Patch, Polygon, Rectangle  # noqa: E402
 from matplotlib.path import Path as MPath  # noqa: E402
 from matplotlib.text import Text  # noqa: E402,F401
 
@@ -39,9 +39,12 @@ TOL_AREA = 0.01       # K7 overlap area, mm^2
 TOL_ANCHOR = 0.01     # K6 stack anchors (test_P18 tolerance)
 K1_ALLOWED = {0, 1, -1, 2, 0.5}
 SOFT_KEYS = ("jig.height_target", "jig.height_is_soft", "core.length_install", "core.length_optional")
-SIDE_VIEWS = ("side_xz", "section_xz")
-VIEW_NORMAL = {"side_xz": "Y", "section_xz": "Y", "plan_xy": "Z"}
-VIEW_LABELS = {"side_xz": ("x (mm)", "z (mm)"), "section_xz": ("x (mm)", "z (mm)"),
+SIDE_VIEWS = ("side_xz", "section_xz", "section_yz")
+# 1.3 P4 (O4): section_yz, plane x = 0 seen from +X, u = +Y right, z up, depth along X (Design Notes 4, s3_spec section).
+# Checks evaluate it as the side view of the plan reflected across x = y (reflect_stack): u = plan y, depth = plan x.
+SECTION_VIEWS = ("section_yz",)
+VIEW_NORMAL = {"side_xz": "Y", "section_xz": "Y", "plan_xy": "Z", "section_yz": "X"}
+VIEW_LABELS = {"side_xz": ("x (mm)", "z (mm)"), "section_xz": ("x (mm)", "z (mm)"), "section_yz": ("y (mm)", "z (mm)"),
                "plan_xy": ("x (mm)", "y (mm)"), "stock": ("length (mm)", "bar (mm)")}
 FIGSIZE = {"plan_xy": (10, 10)}
 FIGSIZE_DEFAULT = (14, 10)
@@ -84,8 +87,10 @@ def _cause(n_absent, n_total):
 
 # ======================================================================== figure and drawing helpers
 
-def setup_figure(view, title=""):
-    """Sole owner of figsize, dpi, aspect and grid (K3). Side views are seen from -Y looking along +Y (+X right, +Z up)."""
+def setup_figure(view, title="", insets=None):
+    """Sole owner of figsize, dpi, aspect and grid (K3). Side views are seen from -Y looking along +Y (+X right, +Z up);
+    section_yz from +X looking along -X (+Y right, +Z up). 1.3 P4 (TP-7): every Axes carries its view and its Axes id
+    (sketch_view, sketch_axes); insets (the spec's insets list) are added by add_inset with their own view."""
     fig = Figure(figsize=FIGSIZE.get(view, FIGSIZE_DEFAULT), dpi=DPI)
     FigureCanvasAgg(fig)
     ax = fig.add_subplot(111)
@@ -98,7 +103,42 @@ def setup_figure(view, title=""):
     ax.grid(True, which="major", linewidth=0.6)
     ax.grid(True, which="minor", linewidth=0.3, alpha=0.5)
     fig.sketch_view = view
+    ax.sketch_view, ax.sketch_axes = view, main_axes_id(view)
+    for d in insets or []:
+        add_inset(fig, d)
     return fig, ax
+
+
+INSET_RECT = (0.60, 0.50, 0.36, 0.42)   # figure fraction (left, bottom, width, height): upper right, height >= 0.3 (s3_spec)
+
+
+def main_axes_id(view):
+    """Axes id of a figure's main Axes: rows name it in their `axes` field (s3_spec: section); a row without `axes` is drawn
+    in the main Axes only."""
+    return "section" if str(view).startswith("section") else "main"
+
+
+def add_inset(fig, decl, rect=INSET_RECT):
+    """1.3 P4 (TP-7): an inset Axes with its own view (title "<view>: <title>", (mm) labels, equal aspect, both grids, the
+    declared extent). Returns the Axes; sketch_view and sketch_axes name its view and Axes id for K3 to K9."""
+    view = decl["view"]
+    ax = fig.add_axes(list(rect))
+    ax.set_title(f"{view}: {decl.get('title', decl['id'])}", fontsize=8)
+    xl, yl = VIEW_LABELS.get(view, ("x (mm)", "y (mm)"))
+    ax.set_xlabel(xl, fontsize=7)
+    ax.set_ylabel(yl, fontsize=7)
+    ax.tick_params(labelsize=6)
+    ax.set_aspect("equal")
+    ax.minorticks_on()
+    ax.grid(True, which="major", linewidth=0.6)
+    ax.grid(True, which="minor", linewidth=0.3, alpha=0.5)
+    ext = decl.get("extent") or {}
+    if ext.get("x"):
+        ax.set_xlim(*ext["x"])
+    if ext.get("y"):
+        ax.set_ylim(*ext["y"])
+    ax.sketch_view, ax.sketch_axes = view, decl["id"]
+    return ax
 
 
 def draw(feature_id, artist, ax=None):
@@ -142,7 +182,46 @@ def draw_hline(ax, fid, x0, x1, z, **kw):
     return draw(fid, Line2D([x0, x1], [z, z], **kw), ax)
 
 
-def label_text(row, P, rec=None):
+def _spec_path(spec, path):
+    """1.3 P4 (label value_from): a dotted path into the spec; a list segment selects the entry whose id equals the
+    segment; a missing first segment is skipped (s3_checks.load_cases reads spec load_cases), a dict with `cases` is
+    entered. Returns the value or None."""
+    def walk(node, segs):
+        for sg in segs:
+            if isinstance(node, dict) and sg in node:
+                node = node[sg]
+            elif isinstance(node, dict) and isinstance(node.get("cases"), list):
+                node = next((c for c in node["cases"] if isinstance(c, dict) and c.get("id") == sg), None)
+            elif isinstance(node, list):
+                node = next((c for c in node if isinstance(c, dict) and c.get("id") == sg), None)
+            else:
+                return None
+            if node is None:
+                return None
+        return node
+    segs = str(path).split(".")
+    v = walk(spec or {}, segs)
+    return v if v is not None or len(segs) < 2 else walk(spec or {}, segs[1:])
+
+
+def label_value(lab, P, spec=None):
+    """1.3 P4: the value a label must print, as a string, or None when the label carries no single value (its text
+    carries it). expr: the expression's value in fmt; value_from: the spec value at that path (a number, str());
+    fmt "s": the key's value when it is a string or number; else the key's value in fmt."""
+    fmt = lab.get("fmt", ".1f")
+    if lab.get("expr"):
+        import check_stack as _cs
+        return format(_cs.eval_expr(lab["expr"], P, {}), fmt if fmt != "s" else ".2f")
+    if lab.get("value_from"):
+        v = _spec_path(spec, lab["value_from"])
+        return (format(v, ".2f").rstrip("0").rstrip(".") if isinstance(v, float) else str(v)) if isinstance(v, (int, float, str)) else None
+    v = P.get(lab["key"])
+    if fmt == "s":
+        return str(v) if isinstance(v, (str, int, float)) else None
+    return format(v, fmt)
+
+
+def label_text(row, P, rec=None, spec=None):
     """Label text: text + key value [+ suffix]. Label field z_S: true (a z_A height key) writes
     '<text> z_S <key + jig.datum_a_above_floor> (<key> <value> z_A)'. Field z_edge: z_min | z_max appends the row's
     stack edge in z_S at this pose (rec = check_stack feature record), e.g. the cutter tip (r3, Designer M1 F4)."""
@@ -151,10 +230,11 @@ def label_text(row, P, rec=None):
         return row["label_text_override"]
     fmt = lab.get("fmt", ".1f")
     v = P.get(lab["key"])
-    if lab.get("z_S"):
+    if lab.get("z_S") and isinstance(v, (int, float)) and fmt != "s":
         txt = f"{lab['text']} z_S {format(v + P.get('jig.datum_a_above_floor'), fmt)} ({lab['key']} {format(v, fmt)} z_A)"
     else:
-        txt = f"{lab['text']} {format(v, fmt)}"
+        lv = label_value(lab, P, spec)
+        txt = f"{lab['text']}" + (f" {lv}" if lv is not None else "")
     txt += f" {lab['suffix']}" if lab.get("suffix") else ""
     edge = lab.get("z_edge")
     if edge and rec and edge in rec:
@@ -388,7 +468,7 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
         if anc is None:
             continue
         rec = (stack_pose or {}).get(row["id"])
-        items.append((anc, label_text(row, P, rec), f"label:{row['id']}"))
+        items.append((anc, label_text(row, P, rec, spec), f"label:{row['id']}"))
         if row.get("label_side") == "left":
             left_ids.add(f"label:{row['id']}")
     if not margin:
@@ -796,7 +876,7 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
     rows = [r for r in spec.get("features", []) if r.get("label") and applies(r, pose) and lc.ink(r["id"])]
     order = [r["id"] for r in rows]
     byid = {r["id"]: r for r in rows}
-    texts = {r["id"]: label_text(r, P, (stack_pose or {}).get(r["id"])) for r in rows}
+    texts = {r["id"]: label_text(r, P, (stack_pose or {}).get(r["id"]), ctx.spec) for r in rows}
     cands = {}
     for r in rows:
         cols = ["left", "right"] if r.get("label_side") == "left" else ["right", "left"]
@@ -1034,6 +1114,29 @@ def artist_polys(a):
             out.append(pts)
         return out
     return []
+
+
+def arrow_ends(a):
+    """1.3 P4: (tail, head) of an arrow artist in data coordinates: a FancyArrowPatch's posA and posB through its own
+    transform (transData by default), or the first and last vertex of a Line2D drawn tail to head; None otherwise."""
+    if isinstance(a, FancyArrowPatch) and getattr(a, "_posA_posB", None) is not None and a.axes is not None:
+        T = a.get_transform()
+        pts = T.transform(np.asarray(a._posA_posB, dtype=float))
+        (x0, y0), (x1, y1) = a.axes.transData.inverted().transform(pts)
+        return (float(x0), float(y0)), (float(x1), float(y1))
+    if isinstance(a, Line2D):
+        p = artist_polys(a)[0]
+        return (p[0], p[-1]) if len(p) >= 2 else None
+    return None
+
+
+def geom_pieces(ax, row):
+    """1.3 P4: the drawn geometry of a row for centre and extent tests: its pieces, without look arrows (FancyArrowPatch)
+    on a line row (an arrowhead marks the direction of a cutting-plane line; it is not the line's extent)."""
+    if row.get("kind") == "line":
+        return [poly for a in tagged(ax).get(row["id"], []) if not isinstance(a, FancyArrowPatch)
+                and not getattr(a, "_sc_hidden_copy", False) for poly in artist_polys(a)]
+    return pieces(ax, row["id"])
 
 
 def pieces(ax, gid):
@@ -1573,7 +1676,8 @@ def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 
 PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
                "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward",
-               "ticks_radial": "count", "outline_matches": "pieces"}
+               "ticks_radial": "count", "outline_matches": "pieces",
+               "look_direction": "toward", "axes_not_inverted": "pred", "points": "dir"}   # 1.3 P4 (s3_spec)
 
 
 FRAME_VALUES = ("radial",)   # sense `frame` values a predicate may carry (outboard radial form, plan_xy only: TP1.2-1)
@@ -1756,13 +1860,16 @@ def k3(ctx):
         for which in ("major", "minor"):
             if not (_grid_on(ax.xaxis, which) and _grid_on(ax.yaxis, which)):
                 issues.append(f"{name}: {which} grid off")
+        if getattr(ctx, "axes_role", "main") == "inset":
+            continue   # 1.3 P4 (TP-7): figure size and dpi belong to the figure, judged with the main Axes
         need = FIGSIZE.get(view, FIGSIZE_DEFAULT)
         w, h = fig.get_size_inches()
         if w < need[0] - 1e-9 or h < need[1] - 1e-9:
             issues.append(f"{name}: figsize ({w:.1f}, {h:.1f}) below {need}")
         if abs(fig.dpi - DPI) > 1e-9:
             issues.append(f"{name}: dpi {fig.dpi:g} not {DPI}")
-    issues += text_clip_issues(ctx)
+    if getattr(ctx, "axes_role", "main") == "main":
+        issues += text_clip_issues(ctx)
     return result("K3", not issues, _summ(issues) if issues else f"{len(ctx.figs)} figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi {DPI}; every text inside the saved image",
                   measured=len(issues), threshold=0, n_issues=len(issues))
 
@@ -1787,6 +1894,7 @@ def text_clip_issues(ctx):
     out = []
     tight = saves_tight(ctx.script_paths) if ctx.script_paths else False
     for name, fig in ctx.figs.items():
+        fig = real_figure(fig)   # 1.3 P4: every Axes of the figure, the inset included
         r = fig.canvas.get_renderer()
         box = fig.get_tightbbox(r).transformed(fig.dpi_scale_trans) if tight else fig.bbox
         texts = [t for ax in fig.axes for t in ax.texts] + list(fig.texts) + [ax.title for ax in fig.axes]
@@ -1817,7 +1925,7 @@ def k4(ctx):
                 continue
             n += 1
             lab = row["label"]
-            want = format(ctx.P.get(lab["key"]), lab.get("fmt", ".1f"))
+            want = label_value(lab, ctx.P, ctx.spec)   # 1.3 P4: expr, value_from and fmt "s" labels
             txt = anns.get(f"label:{row['id']}")
             if txt is None:
                 issues.append(f"{pose}/{row['id']}: no annotation label:{row['id']}")
@@ -1825,11 +1933,17 @@ def k4(ctx):
             if lab["text"] not in txt:
                 issues.append(f"{pose}/{row['id']}: label {txt!r} lacks text {lab['text']!r}")
                 continue
+            if want is None:
+                continue   # 1.3 P4: no single value (a list key or a spec block); the text carries it
+            if lab.get("fmt") == "s" and not lab.get("expr"):
+                if want not in txt.replace(lab["text"], " "):
+                    issues.append(f"{pose}/{row['id']}: label {txt!r} lacks the value {want!r} ({lab.get('value_from') or lab['key']})")
+                continue
             nums = NUMBER.findall(txt.replace(lab["text"], " "))
             if not nums:
                 issues.append(f"{pose}/{row['id']}: label {txt!r} carries no number (want {want} from {lab['key']})")
             elif not any(abs(float(m) - float(want)) < 1e-9 for m in nums):
-                issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {lab['key']} = {want}")
+                issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {('expr ' + lab['expr']) if lab.get('expr') else lab['key']} = {want}")
     issues += figure_note_issues(ctx)
     issues += leader_issues(ctx)
     extra = {}
@@ -1973,6 +2087,8 @@ def classify(a):
     projection of an axis-Z part with a bore."""
     if isinstance(a, (Circle, Ellipse, Annulus)):
         return "circle"
+    if isinstance(a, FancyArrowPatch):   # 1.3 P4: load and look arrows draw no area (line, arrow kinds)
+        return "line"
     if isinstance(a, Rectangle):
         return "rectangle"
     if isinstance(a, Line2D):
@@ -2166,6 +2282,153 @@ def expected_projection(kind, axis, normal):
     return None
 
 
+def expected_projection_par(kind, axis, parallel):
+    """expected_projection with the axis-normal relation given (1.3 P4: section views)."""
+    if axis is None or parallel is None:
+        return None
+    if kind in ("cylinder", "screw"):
+        return "circle" if parallel else "rectangle"
+    if kind in ("cone", "gear"):
+        return "circle" if parallel else "trapezoid"
+    return None
+
+
+def axis_parallel(row, rec, view, normal):
+    """1.3 P4 (O4): is the row's axis along the view normal? In a section view (reflected frame, normal along y') a row
+    with axis X or Y and a place is radial (X) or tangential (Y) at its placed theta (S1, S2 meaning of X); without a
+    place X and Y are literal. Axis Z lies in every vertical section plane."""
+    axis = row.get("axis")
+    if axis is None:
+        return None
+    if view in SECTION_VIEWS:
+        if axis == "Z":
+            return False
+        pl = (rec or {}).get("place")
+        if pl:
+            t = math.radians(pl["theta"]) + (math.pi / 2 if axis == "Y" else 0.0)
+            return abs(math.sin(t)) > abs(math.cos(t))
+        return axis == normal
+    return axis == normal
+
+
+MARK_SUB = "line"
+
+
+def _hull_contains(hull, v, tol=TOL_Z):
+    """Half-space test of point v against every edge (p, q) of the CCW convex hull: cross(q - p, v - p) >= -tol |q - p|."""
+    for i in range(len(hull)):
+        p, q = hull[i], hull[(i + 1) % len(hull)]
+        ex, ey = q[0] - p[0], q[1] - p[1]
+        if ex * (v[1] - p[1]) - ey * (v[0] - p[0]) < -tol * math.hypot(ex, ey):
+            return False
+    return True
+
+
+def _on_vertical_edge(v, polys, tol=TOL_Z):
+    for P in polys:
+        for i in range(len(P)):
+            a, b = P[i], P[(i + 1) % len(P)]
+            if abs(a[0] - b[0]) <= tol and abs(v[0] - a[0]) <= tol and min(a[1], b[1]) - tol <= v[1] <= max(a[1], b[1]) + tol:
+                return True
+    return False
+
+
+def _z_S_expr(ctx, pose, expr):
+    import check_stack as _cs   # lazy: check_stack imports no sketch module (K6 import guard)
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    return _cs.to_shop_floor(_cs.eval_expr(expr, ctx.P, names), ctx.P)
+
+
+def mark_issues(ctx, ax, pose, prow, arts):
+    """Topologist P0T section 4 (signed in advance; landed 1.3 P4): K5 admits one Line2D <row>:line per row per pose as
+    ink on its parent when M1 to M5 hold. Section form (1.3 P4, s3_spec anchor_bearing_c): M4 reads the convex hull of
+    the parent's drawn pieces and M5 an endpoint on a vertical edge of any parent piece, which for a one-piece parent
+    (S1 anchors) is the signed form."""
+    fid = prow["id"] if prow else None
+    m = (prow or {}).get("mark")
+    if not m or m.get("sub") != MARK_SUB:   # M1
+        return ["mark sub-artist without a mark declaration on its row (premise unenforced) (M1)"]
+    if prow.get("kind") in NO_AREA_KINDS:   # M2
+        return [f"mark on a {prow.get('kind')} row: the parent draws no area (M2)"]
+    own = [x for x in tagged(ax).get(fid, []) if isinstance(x, Patch) and not getattr(x, "_sc_hidden_copy", False) and least_thickness(x) > TOL_Z]
+    if not own:
+        return [f"mark on {fid}: parent {fid} not drawn as an area at this pose (M2)"]
+    if len(arts) != 1:   # M3 count
+        return [f"{len(arts)} mark artists on {fid} (one per row per pose) (M3)"]
+    a = arts[0]
+    if not isinstance(a, Line2D):   # M3 type
+        return [f"mark drawn as a {type(a).__name__}, not a Line2D (M3)"]
+    pts = artist_polys(a)[0]
+    if len(pts) != 2:
+        return [f"mark with {len(pts)} vertices, needs 2 (M3)"]
+    if ctx.view not in SIDE_VIEWS:
+        return [f"mark not admitted in {ctx.view} (side and section views only) (M5)"]
+    polys = [p for x in own for p in artist_polys(x)]
+    hull = convex_hull([q for P in polys for q in P])
+    out = []
+    for v in pts:   # M4
+        if not _hull_contains(hull, v):
+            out.append(f"mark endpoint ({v[0]:.2f}, {v[1]:.2f}) outside the drawn {fid} (M4)")
+    (x0, z0), (x1, z1) = pts
+    if abs(z1 - z0) > TOL_Z:   # M5 direction
+        out.append(f"mark not normal to the axis: dz {z1 - z0:.2f} (M5)")
+    zw = _z_S_expr(ctx, pose, m["z"])
+    if abs((z0 + z1) / 2 - zw) > TOL_Z:   # M5 place
+        out.append(f"mark at z {(z0 + z1) / 2:.2f} against mark.z {zw:.2f} z_S ({m['z']}) (M5)")
+    for v in pts:
+        if not _on_vertical_edge(v, polys):
+            out.append(f"mark endpoint ({v[0]:.2f}, {v[1]:.2f}) not on a vertical edge of {fid} (M5)")
+    return out
+
+
+def _in_any(v, polys, tol=TOL_Z):
+    return any(len(P) >= 3 and (_inside(v, P) or min_distance([v], P) <= tol) for P in polys)
+
+
+def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
+    """1.3 P4: admission of a <row>:<sub> artist. :line is a mark (mark_issues). Any other sub must be declared in the
+    row's sub_artists; balls: Circle patches, every drawn point inside a drawn piece of the row (ink on the part);
+    lever: one two-vertex Line2D whose ends equal the row's lever.from and lever.to (section frame u, z_A) within TOL_Z."""
+    fid, sub = gid.rsplit(":", 1)
+    prow = rows.get(fid)
+    if prow is None:
+        return [f"sub-artist of no spec row {fid}"]
+    if sub == MARK_SUB:
+        return mark_issues(ctx, ax, pose, prow, arts)
+    if sub not in (prow.get("sub_artists") or []):
+        return [f"sub-artist {sub} not declared in {fid} sub_artists"]
+    own = [x for x in tagged(ax).get(fid, []) if isinstance(x, Patch) and not getattr(x, "_sc_hidden_copy", False)]
+    if not own:
+        return [f"{sub} on {fid}: parent {fid} not drawn at this pose"]
+    if sub == "balls":
+        polys = [p for x in own for p in artist_polys(x)]
+        out = []
+        for a in arts:
+            if not isinstance(a, Circle):
+                out.append(f"balls drawn as a {type(a).__name__}, not a Circle")
+                continue
+            bad = [v for P in artist_polys(a) for v in P if not _in_any(v, polys)]
+            if bad:
+                out.append(f"ball at ({a.center[0]:.2f}, {a.center[1]:.2f}) outside the drawn {fid} ({len(bad)} points)")
+        return out
+    if sub == "lever":
+        lv = prow.get("lever") or {}
+        if not lv.get("from") or not lv.get("to"):
+            return [f"lever on {fid} without lever.from / lever.to in the spec"]
+        if len(arts) != 1 or not isinstance(arts[0], Line2D) or len(artist_polys(arts[0])[0]) != 2:
+            return [f"lever on {fid}: needs one two-vertex Line2D ({len(arts)} artists)"]
+        import check_stack as _cs
+        names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+        want = [(_cs.eval_expr(e[0], ctx.P, names), _cs.to_shop_floor(_cs.eval_expr(e[1], ctx.P, names), ctx.P)) for e in (lv["from"], lv["to"])]
+        got = artist_polys(arts[0])[0]
+        out = []
+        for w, g, nm in zip(want, got, ("from", "to")):
+            if math.hypot(w[0] - g[0], w[1] - g[1]) > TOL_Z:
+                out.append(f"lever {nm} drawn ({g[0]:.2f}, {g[1]:.2f}) vs spec ({w[0]:.2f}, {w[1]:.2f})")
+        return out
+    return [f"sub-artist {sub} has no admission rule"]
+
+
 def zero_area_issue(row, a):
     """TP1.1-9 (1.3 step 0 R5 a; Topologist P0T FIX 1): on a row whose kind draws an area (not line, arrow or callout),
     (1) a non-Patch artist (Line2D, Collection) under the row's own id draws no area and fails; (2) a Patch whose least
@@ -2222,6 +2485,7 @@ def k5(ctx):
             if fp != "radial":
                 issues.append(f"{r['id']}: spec error, radial-axis {r.get('kind')} row in plan_xy needs a radial place footprint (TP-13; has {fp!r})")
     normal = VIEW_NORMAL.get(ctx.view)
+    sub_seen = {}
     for pose, fig in ctx.figs.items():
         drawn = tagged(fig.axes[0])
         for a in artists(fig.axes[0]):
@@ -2230,6 +2494,16 @@ def k5(ctx):
                 issues.append(f"{pose}: untagged {type(a).__name__}")
                 continue
             row = rows.get(gid)
+            if row is None and ":" in gid and not gid.endswith(SUB_SUFFIXES):
+                # 1.3 P4: mark admission <row>:line (Topologist P0T section 4, M1 to M5) and declared sub-artists
+                # (<row>:balls, <row>:lever; spec field sub_artists)
+                n += 1
+                if gid in sub_seen.setdefault(pose, set()):
+                    continue
+                sub_seen[pose].add(gid)
+                for t in sub_artist_issues(ctx, fig.axes[0], pose, rows, gid, drawn.get(gid, [])):
+                    issues.append(f"{pose}/{gid}: {t}")
+                continue
             if row is None:
                 if gid.endswith(TICKS_SUFFIX):
                     n += 1
@@ -2247,7 +2521,10 @@ def k5(ctx):
             if za:
                 issues.append(f"{pose}/{gid}: {za}")
                 continue
-            want = expected_projection(row.get("kind"), row.get("axis"), normal)
+            if ctx.view in SECTION_VIEWS:   # 1.3 P4 (O4): a radial axis X at its placed theta, against the section normal
+                want = expected_projection_par(row.get("kind"), row.get("axis"), axis_parallel(row, _feat(ctx, pose, gid), ctx.view, normal))
+            else:
+                want = expected_projection(row.get("kind"), row.get("axis"), normal)
             got = classify(a)
             spec_proj = row.get("projection")
             pl = _feat(ctx, pose, gid).get("place") if plan else None
@@ -2286,7 +2563,7 @@ def k5(ctx):
             elif spec_proj:
                 if got != spec_proj:
                     issues.append(f"{pose}/{gid}: {row.get('kind')} drawn as {got}, spec projection {spec_proj}")
-            elif got == "circle" and normal == "Y" and row.get("kind") not in ("sphere",):
+            elif got == "circle" and normal in ("Y", "X") and row.get("kind") not in ("sphere",):
                 issues.append(f"{pose}/{gid}: circle in side view for kind {row.get('kind')}")
     return result("K5", not issues, _summ(issues) if issues else f"{n} tagged artist(s) projected per kind, axis and spec projection (view normal {normal})",
                   measured=len(issues), threshold=0, n_issues=len(issues))
@@ -2437,7 +2714,10 @@ def k6(ctx):
                 issues.append(f"{pose}/{fid}: z_rule [{rec['z_min']:.2f}, {rec['z_max']:.2f}] z_S, nothing drawn")
                 absent += 1
                 continue
-            ez = extent_z([p for a in drawn[fid] for p in artist_polys(a)])
+            if any(isinstance(a, FancyArrowPatch) for a in drawn[fid]):   # 1.3 P4: an arrow spans tail to head
+                ez = extent_z([list(e) for e in (arrow_ends(a) for a in drawn[fid]) if e])
+            else:
+                ez = extent_z([p for a in drawn[fid] for p in artist_polys(a)])
             d = max(abs(ez[0] - rec["z_min"]), abs(ez[1] - rec["z_max"]))
             worst = max(worst, d)
             if d > TOL_Z:
@@ -2483,7 +2763,7 @@ def _k6_plan(ctx, issues):
             if basis is None:
                 continue
             n += 1
-            me = pieces(ax, row["id"])
+            me = geom_pieces(ax, row)
             if not me:
                 issues.append(f"{pose}/{row['id']}: plan centre from the spec, nothing drawn")
                 absent += 1
@@ -3787,6 +4067,8 @@ def k8(ctx):
     rows = {r["id"]: r for r in rows_list}
     lint, bad = sense_lint(rows_list)
     issues, n, absent = list(lint), 0, 0
+    if getattr(ctx, "axes_role", None) == "main" and getattr(ctx, "parent", None) is not None:
+        issues += orphan_predicates(ctx.parent.spec)   # 1.3 P4 (TP-7)
     side, plan = ctx.view in SIDE_VIEWS, ctx.view == "plan_xy"
     # TP1.2-1: the radial outboard form reads the plan centroid (x, y) in the drill-axis frame; in a side view the
     # centroid is (x, z) and its hypot is no radius. frame: radial outside plan_xy is a spec error, reported once.
@@ -3817,7 +4099,7 @@ def k8(ctx):
                     absent += 1
                 elif po:
                     n += 1
-                    pts = [p for poly in me for p in poly]
+                    pts = [p for poly in geom_pieces(ax, row) for p in poly]
                     d, p = max(((outline_outside(po, q), q) for q in pts), key=lambda e: e[0])
                     if d > TOL_Z:
                         issues.append(f"{pose}/{fid} plan_extent: drawn point ({p[0]:.2f}, {p[1]:.2f}) outside its plan outline (by {d:.2f})")
@@ -3830,6 +4112,13 @@ def k8(ctx):
                     if d_out > TOL_Z or d_in > TOL_Z:
                         issues.append(f"{pose}/{fid} sector: drawn wedge differs from the spec wedge (theta {sec['theta']:g}, half-angle "
                                       f"{sec['half_angle']:g}, r {sec['r']:g}): {d_out:.2f} outside, spec boundary {d_in:.2f} outside the drawing")
+            if ctx.view in SECTION_VIEWS and row.get("section_u"):
+                if me:
+                    n += 1
+                    issues += [f"{pose}/{fid} section_u: {t}" for t in section_u_issues(ctx, pose, row, me)]
+                elif not pl:
+                    issues.append(f"{pose}/{fid} section_u: untestable, {fid} not drawn")
+                    absent += 1
             if pl and side:
                 if not me:
                     issues.append(f"{pose}/{fid} projected_x: untestable, {fid} not drawn")
@@ -3839,6 +4128,8 @@ def k8(ctx):
                     ex = extent_x(me)
                     cx = (ex[0] + ex[1]) / 2
                     want = pl["r_c"] * math.cos(math.radians(pl["theta"]))
+                    if ctx.view in SECTION_VIEWS and row.get("section_u"):
+                        want = cx   # 1.3 P4: the true section need not be centred on the footprint; section_u_issues rules it
                     if abs(cx - want) > TOL_Z:
                         issues.append(f"{pose}/{fid} projected_x: drawn x centre {cx:.2f} vs r_c cos(theta) {want:.2f} (r_c {pl['r_c']:.2f}, theta {pl['theta']:g})")
                     # TP1.1-11 (r4): the whole drawn part lies inside its spec footprint's projection. K7 plan tests
@@ -3924,6 +4215,17 @@ def k8(ctx):
                         d = (centroid(me)[0] - centroid(other)[0]) * math.cos(math.radians(th))
                         if d <= 0:
                             issues.append(f"{pose}/{fid} outboard of {other_id}: (x - x_{other_id}) cos(theta) {d:.2f}, needs > 0")
+                elif kind == "azimuth" and ctx.view in SECTION_VIEWS:
+                    # 1.3 P4 (O4): a section shows the azimuth as the drawn u centre, u = r_c sin(azimuth) (reflected
+                    # frame: x' centre = r_c cos(90 - azimuth)); a row with no place has no section azimuth (spec error)
+                    if not pl:
+                        issues.append(f"{pose}/{fid} azimuth: spec error, no place to project in {ctx.view}")
+                    else:
+                        want = _key_index(ctx.P, pr["expr"])
+                        ex = extent_x(me)
+                        wu = pl["r_c"] * math.sin(math.radians(want))
+                        if abs((ex[0] + ex[1]) / 2 - wu) > TOL_Z:
+                            issues.append(f"{pose}/{fid} azimuth (section): drawn u centre {(ex[0] + ex[1]) / 2:.2f} vs r_c sin({pr['expr']} = {want:g}) {wu:.2f}")
                 elif kind == "azimuth":
                     cx, cy = centroid(me)
                     got = math.degrees(math.atan2(cy, cx)) % 360
@@ -3952,12 +4254,227 @@ def k8(ctx):
                 elif kind == "outline_matches":
                     for t in outline_matches_issue(ax, ctx, pose, fid):
                         issues.append(f"{pose}/{fid} outline_matches: {t}")
+                elif kind == "points":
+                    for t in points_issues(ax, fid, pr["dir"]):
+                        issues.append(f"{pose}/{fid} points {pr['dir']}: {t}")
+                elif kind == "look_direction":
+                    for t in look_direction_issues(ax, fid, pr["toward"]):
+                        issues.append(f"{pose}/{fid} look_direction {pr['toward']}: {t}")
+                elif kind == "axes_not_inverted":
+                    for t in axes_arrows_issues(ax, fid):
+                        issues.append(f"{pose}/{fid} axes_not_inverted: {t}")
         if plan and ctx.stack:
             nc, ci = cover_issues(ctx, ax, pose, rows_list)
             n += nc
             issues += ci
+        if ctx.view in SECTION_VIEWS and ctx.stack:   # 1.3 P4: renderer section convention
+            nc, ci = section_convention_issues(ctx, ax, pose)
+            n += nc
+            issues += ci
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
                   n_issues=len(issues), cause=_cause(absent, len(issues)))
+
+
+# ======================================================================== 1.3 P4: arrows and the section convention
+
+DIRS = {"+Z": (0.0, 1.0), "-Z": (0.0, -1.0), "+X": (1.0, 0.0), "-X": (-1.0, 0.0), "+Y": (0.0, 1.0), "-Y": (0.0, -1.0),
+        "+U": (1.0, 0.0), "-U": (-1.0, 0.0)}
+DIR_TOL = 0.1   # |cross| / |d|: an arrow within about 5.7 deg of its stated direction
+
+
+def _arrows(ax, fid):
+    return [e for e in (arrow_ends(a) for a in tagged(ax).get(fid, []) if isinstance(a, FancyArrowPatch)) if e]
+
+
+def points_issues(ax, fid, d):
+    """1.3 P4 (s3_spec load arrows): the row's FancyArrowPatch arrows point along d (+Z, -Z: head minus tail along the
+    direction, |cross| <= DIR_TOL |d|), or, for d = apart, two arrows on one line with the heads farther apart than the
+    tails (tension in the member between them)."""
+    arr = _arrows(ax, fid)
+    if not arr:
+        return ["no arrow (FancyArrowPatch) drawn"]
+    if d == "apart":
+        if len(arr) != 2:
+            return [f"{len(arr)} arrows, needs 2"]
+        (t0, h0), (t1, h1) = arr
+        if math.dist(h0, h1) <= math.dist(t0, t1):
+            return [f"heads {math.dist(h0, h1):.2f} apart against tails {math.dist(t0, t1):.2f} (arrows point together: compression)"]
+        return []
+    if d not in DIRS:
+        return [f"spec error, unknown direction {d!r}"]
+    ux, uy = DIRS[d]
+    out = []
+    for t, h in arr:
+        dx, dy = h[0] - t[0], h[1] - t[1]
+        L = math.hypot(dx, dy)
+        if L <= TOL_Z or dx * ux + dy * uy <= 0 or abs(dx * uy - dy * ux) > DIR_TOL * L:
+            out.append(f"arrow ({t[0]:.1f}, {t[1]:.1f}) -> ({h[0]:.1f}, {h[1]:.1f}) does not point {d}")
+    return out
+
+
+def look_direction_issues(ax, fid, toward):
+    """1.3 P4 (s3_spec section_line): a cutting-plane line in plan on x = 0 (a two-vertex Line2D, both ends |x| <= TOL_Z)
+    and at least one look arrow (FancyArrowPatch) under the row, every arrow pointing `toward` (the viewer looks that
+    way; A-A from +X looks toward -X)."""
+    lines = [artist_polys(a)[0] for a in tagged(ax).get(fid, []) if isinstance(a, Line2D)]
+    out = []
+    if not any(len(p) >= 2 and all(abs(x) <= TOL_Z for x, _ in p) for p in lines):
+        out.append("no cutting-plane line on x = 0")
+    out += points_issues(ax, fid, toward)
+    return out
+
+
+def axes_arrows_issues(ax, fid):
+    """1.3 P4 (s3_spec plan_axes): the Axes is not inverted and the row's drawn axis marks run from the origin toward +X
+    and +Y (drawn points with x >= -TOL_Z and y >= -TOL_Z, reaching x > TOL_Z and y > TOL_Z)."""
+    out = []
+    if ax.xaxis_inverted() or ax.yaxis_inverted():
+        out.append(f"Axes inverted (x {ax.xaxis_inverted()}, y {ax.yaxis_inverted()})")
+    pts = [q for P in pieces(ax, fid) for q in P]
+    if not pts:
+        return out + ["axis marks not drawn"]
+    if min(x for x, _ in pts) < -TOL_Z or min(y for _, y in pts) < -TOL_Z or max(x for x, _ in pts) <= TOL_Z or max(y for _, y in pts) <= TOL_Z:
+        out.append("axis marks do not run from the origin toward +X and +Y")
+    return out
+
+
+HATCH = {"aluminium": "//", "extrusion": "xx", "steel": "\\\\", "brass": "..", "plastic": "oo"}
+SECTION_CLASSES = ("cut", "unsectioned", "beyond", "reference")
+
+
+def _area_artists(ax, fid):
+    return [a for a in tagged(ax).get(fid, []) if isinstance(a, Patch) and not isinstance(a, FancyArrowPatch)]
+
+
+def _cut_polys(ctx, ax):
+    rows = ctx.spec.get("features", [])
+    return [P for r in rows if r.get("section_class") == "cut" for a in _area_artists(ax, r["id"]) for P in artist_polys(a) if len(P) >= 3]
+
+
+def _behind(a, cut):
+    """(inside, outside) sample counts of artist a against the drawn cut pieces (strict inside)."""
+    smp = _cover_samples(a)
+    ins = sum(1 for p in smp if any(_inside(p, P) for P in cut))
+    return ins, len(smp) - ins
+
+
+def render_section(ctx, ax, pose):
+    """1.3 P4 renderer section convention (s3_spec section.convention): cut rows hatched with their material pattern
+    (HATCH[row.hatch]); unsectioned rows unhatched, outline drawn above the cut rows (zorder 3); beyond rows unhatched,
+    solid where visible and dashed where every sample lies inside a drawn cut piece; reference rows untouched. Rows in
+    front of the plane or past one profile width are not drawn by the script (figure note); the check reports any."""
+    sctx = axes_context(ctx, main_axes_id(ctx.spec.get("view"))) if needs_split(ctx) else ctx
+    rows = sctx.spec.get("features", [])
+    for r in rows:
+        if r.get("section_class") == "cut":
+            for a in _area_artists(ax, r["id"]):
+                a.set_hatch(HATCH.get(r.get("hatch") or "steel"))
+                a.set_zorder(1)
+    for r in rows:
+        if r.get("section_class") == "unsectioned":
+            for a in _area_artists(ax, r["id"]):
+                a.set_hatch(None)
+                a.set_zorder(3)
+    cut = _cut_polys(sctx, ax)
+    for r in rows:
+        if r.get("section_class") == "beyond":
+            for a in _area_artists(ax, r["id"]):
+                a.set_hatch(None)
+                ins, outs = _behind(a, cut)
+                a.set_linestyle("--" if ins and not outs else "-")
+
+
+def section_u_pieces(ctx, pose, row):
+    """Spec section_u pieces of a row at a pose as (u0, u1, z0, z1), u along +Y, z in z_S."""
+    import check_stack as _cs
+    names = ctx.stack["poses"][pose]["vars_z_A"]
+    out = []
+    for pc in row.get("section_u") or []:
+        u0, u1 = sorted((_cs.eval_expr(pc[0], ctx.P, names), _cs.eval_expr(pc[1], ctx.P, names)))
+        z0, z1 = sorted((_cs.to_shop_floor(_cs.eval_expr(pc[2], ctx.P, names), ctx.P), _cs.to_shop_floor(_cs.eval_expr(pc[3], ctx.P, names), ctx.P)))
+        out.append((u0, u1, z0, z1))
+    return out
+
+
+def section_u_issues(ctx, pose, row, me):
+    """1.3 P4 (s3_spec section_u): premise of reading a section row's drawn pieces as its true section: each spec piece
+    [u0, u1, z0, z1] is drawn (a drawn piece with that bounding box within TOL_Z) and every drawn piece is a spec piece."""
+    spec_p = section_u_pieces(ctx, pose, row)
+    drawn = [bbox([P]) for P in me if len(P) >= 3]
+    near = lambda a, b: all(abs(x - y) <= TOL_Z for x, y in zip(a, b))  # noqa: E731
+    out = []
+    for sp in spec_p:
+        if not any(near(sp, d) for d in drawn):
+            out.append(f"spec piece u [{sp[0]:.2f}, {sp[1]:.2f}] z [{sp[2]:.2f}, {sp[3]:.2f}] not drawn")
+    for d in drawn:
+        if not any(near(sp, d) for sp in spec_p):
+            out.append(f"drawn piece u [{d[0]:.2f}, {d[1]:.2f}] z [{d[2]:.2f}, {d[3]:.2f}] is no spec piece")
+    return out
+
+
+def section_convention_issues(ctx, ax, pose):
+    """1.3 P4: the renderer section convention as a check, per section Axes and pose.
+    (1) cut: every area artist hatched with its material pattern; the plane cuts the row (depth band reaches x = 0).
+    (2) unsectioned: no hatch; drawn above every cut artist (zorder).
+    (3) beyond: no hatch; wholly behind drawn cut pieces -> dashed, wholly visible -> solid, partly -> split required;
+        depth band within 0 >= x >= -profile.width.
+    (4) omitted: no drawn row lies in front of the plane (depth band x > 0) or wholly past one profile width (x <
+        -profile.width): such rows are not drawn and are named in the figure note.
+    (5) every area row of the section Axes carries a section_class (spec error otherwise).
+    Depth is the reflected stack depth (plan x band). Returns (tests, issues)."""
+    rows = ctx.spec.get("features", [])
+    pw = ctx.P.get("profile.width") if ctx.P is not None and ctx.P.has("profile.width") else 60.0
+    cut = _cut_polys(ctx, ax)
+    cut_z = max([a.get_zorder() for r in rows if r.get("section_class") == "cut" for a in _area_artists(ax, r["id"])] or [0])
+    n, out = 0, []
+    for r in rows:
+        fid, cls = r["id"], r.get("section_class")
+        arts = _area_artists(ax, fid)
+        drawn = bool(tagged(ax).get(fid))
+        if r.get("kind") in NO_AREA_KINDS or r.get("reference"):
+            continue
+        if cls not in SECTION_CLASSES:
+            out.append(f"{pose}/{fid}: spec error, section_class {cls!r} (known: {', '.join(SECTION_CLASSES)})")
+            continue
+        dep = _feat(ctx, pose, fid).get("depth")
+        if drawn and dep:
+            n += 1
+            if dep[0] > TOL_Z:
+                out.append(f"{pose}/{fid}: drawn in front of the plane (depth x [{dep[0]:.2f}, {dep[1]:.2f}]); omit it and name it in the figure note (section convention 4)")
+                continue
+            if dep[1] < -pw - TOL_Z:
+                out.append(f"{pose}/{fid}: drawn past one profile width behind the plane (depth x [{dep[0]:.2f}, {dep[1]:.2f}], limit -{pw:g}); omit it (section convention 4)")
+                continue
+        for a in arts:
+            n += 1
+            h = a.get_hatch()
+            if cls == "cut":
+                want = HATCH.get(r.get("hatch") or "steel")
+                if not h:
+                    out.append(f"{pose}/{fid}: cut row drawn without hatch (section convention 1)")
+                elif h != want:
+                    out.append(f"{pose}/{fid}: hatch {h!r} against material {r.get('hatch')} {want!r} (section convention 1)")
+            elif cls == "unsectioned":
+                if h:
+                    out.append(f"{pose}/{fid}: unsectioned row hatched {h!r} (section convention 2: outline over the hatch)")
+                elif a.get_zorder() <= cut_z:
+                    out.append(f"{pose}/{fid}: unsectioned outline at zorder {a.get_zorder():g}, not above the cut hatch ({cut_z:g}) (section convention 2)")
+            elif cls == "beyond":
+                if h:
+                    out.append(f"{pose}/{fid}: beyond row hatched {h!r} (section convention 3)")
+                ins, outs = _behind(a, cut)
+                dashed = a.get_linestyle() not in SOLID_STYLES
+                if ins and outs:
+                    out.append(f"{pose}/{fid}: beyond piece partly behind a cut part ({ins} of {ins + outs} samples): draw visible and hidden parts as separate pieces (section convention 3)")
+                elif ins and not dashed:
+                    out.append(f"{pose}/{fid}: beyond piece behind a cut part drawn solid; edges behind a cut part are dashed (section convention 3)")
+                elif outs and dashed:
+                    out.append(f"{pose}/{fid}: visible beyond piece drawn dashed (section convention 3)")
+        if cls == "beyond" and dep and drawn and (dep[1] > TOL_Z):
+            out.append(f"{pose}/{fid}: beyond row reaches in front of the plane (depth x up to {dep[1]:.2f}) (section convention 3)")
+        if cls == "cut" and dep and drawn and not (dep[0] <= TOL_Z and dep[1] >= -TOL_Z):
+            out.append(f"{pose}/{fid}: cut row the plane x = 0 does not cut (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 1)")
+    return n, out
 
 
 # ======================================================================== K9 coverage
@@ -3985,12 +4502,296 @@ def k9(ctx):
             # TP1.1-2: the half-space of the pose set; a row with `poses` has no artist at a pose outside it
             if not applies(r, pose) and (r["id"] in gids or r["id"] in text_gids):
                 issues.append(f"{pose}: {r['id']} drawn at a pose outside its poses {r.get('poses')}")
+        rows_by = {r["id"]: r for r in rows}
         for g in sorted((gids | text_gids) - ids):
             if any(g.endswith(sfx) and g[:-len(sfx)] in ids for sfx in SUB_SUFFIXES) and g in gids:
                 continue      # sub-artist of a row; K5 rules its admission (1.2 (h), Designer M1 r1 F1)
-            issues.append(f"{pose}: tagged artist {g} has no spec row")
+            if ":" in g and g in gids:
+                par, sub = g.rsplit(":", 1)
+                pr = rows_by.get(par)
+                if pr is not None and par in gids and (sub == MARK_SUB or sub in (pr.get("sub_artists") or [])):
+                    continue  # 1.3 P4: mark (P0T section 4) or declared sub-artist with its parent drawn; K5 rules admission
+            other = (getattr(ctx, "other_axes", None) or {}).get(g)
+            issues.append(f"{pose}: tagged artist {g} has no spec row" + (f" in this Axes (declared in {', '.join(other)})" if other else ""))
     return result("K9", not issues, _summ(issues) if issues else f"every spec row drawn, every tagged artist in the spec ({len(ids)} rows)",
                   measured=len(issues), threshold=0, n_issues=len(issues))
 
 
-CHECKS = {"K1": k1, "K2": k2, "K3": k3, "K4": k4, "K5": k5, "K6": k6, "K7": k7, "K8": k8, "K9": k9}
+# ======================================================================== 1.3 P4 (c): per-Axes views (TP-7), section view
+
+class AxesFig:
+    """One Axes of a figure presented as a one-Axes figure (TP-7): a check written for fig.axes[0] reads this Axes. Every
+    other attribute (size, dpi, canvas, texts) is the real figure's; `fig` is the real figure."""
+
+    def __init__(self, fig, ax):
+        self.fig, self._ax = fig, ax
+
+    @property
+    def axes(self):
+        return [self._ax]
+
+    def __getattr__(self, name):
+        return getattr(self.fig, name)
+
+
+def real_figure(fig):
+    return fig.fig if isinstance(fig, AxesFig) else fig
+
+
+def declared_axes(spec):
+    """The Axes a spec declares: the main Axes (spec view, id main_axes_id) and each entry of `insets` (id, view)."""
+    view = (spec or {}).get("view")
+    out = [{"id": main_axes_id(view), "view": view, "main": True}]
+    for d in (spec or {}).get("insets") or []:
+        out.append({"id": d["id"], "view": d["view"], "main": False, "decl": d})
+    return out
+
+
+def row_axes(row, main_id):
+    return list(row.get("axes") or [main_id])
+
+
+def needs_split(ctx):
+    """Per-Axes evaluation applies when the spec declares insets or the view is a section view (TP-7, O4). S1 and S2 (one
+    Axes, side_xz or plan_xy) are evaluated as before."""
+    return bool((ctx.spec or {}).get("insets")) or ctx.view in SECTION_VIEWS
+
+
+def axes_of_figure(fig, main_id):
+    """({Axes id: Axes}, [Axes without a usable id]) of a figure; an Axes without sketch_axes counts as the main Axes when
+    it is the first Axes."""
+    out, extra = {}, []
+    for i, ax in enumerate(real_figure(fig).axes):
+        aid = getattr(ax, "sketch_axes", None)
+        if aid is None and i == 0:
+            aid = main_id
+        if aid is None or aid in out:
+            extra.append(ax)
+        else:
+            out[aid] = ax
+    return out, extra
+
+
+def sub_spec(spec, decl):
+    """The spec as one Axes sees it: rows whose `axes` names this Axes; projection_by_axes[id] replaces projection;
+    neighbours restricted to rows of this Axes; sense predicates with an `axes` field kept only in that Axes; the label
+    only in the row's home Axes (the first entry of `axes`). The figure-level fields (figure note, not_drawn, planes,
+    stack ties) stay with the main Axes."""
+    main_id = main_axes_id(spec.get("view"))
+    aid = decl["id"]
+    rows_in = [r for r in spec.get("features", []) if aid in row_axes(r, main_id)]
+    ids = {r["id"] for r in rows_in}
+    rows = []
+    for r in rows_in:
+        r2 = dict(r)
+        pba = r.get("projection_by_axes") or {}
+        if aid in pba:
+            r2["projection"] = pba[aid]
+        r2["neighbours"] = [nb for nb in (r.get("neighbours") or []) if nb.get("id") in ids]
+        r2["sense"] = [pr for pr in (r.get("sense") or []) if _pred_in_axes(pr, aid, decl["view"], ids)]
+        if row_axes(r, main_id)[0] != aid:
+            r2["label"] = None
+        rows.append(r2)
+    out = dict(spec)
+    out["features"] = rows
+    out["view"] = decl["view"]
+    if not decl["main"]:
+        for k in ("figure_note", "not_drawn", "part_list", "load_plane", "entry_plane", "stack_ties", "insets"):
+            out.pop(k, None)
+    return out
+
+
+Z_PREDS = ("below", "above", "clears_above", "top_within", "rests_on", "mirror_about_axis", "face_rises")   # z-sense
+PLAN_PREDS = ("ticks_radial", "outline_matches")
+
+
+def _pred_in_axes(pr, aid, view, ids):
+    """A sense predicate is evaluated in an Axes when its `axes` field is absent or names it, its target row is drawn
+    there, and its kind reads that view: z predicates not in plan, plan-only predicates not in a side or section view."""
+    if pr.get("axes") not in (None, aid):
+        return False
+    t = _pred_target(pr)
+    if t is not None and t not in ids:
+        return False
+    if view == "plan_xy" and pr.get("pred") in Z_PREDS:
+        return False
+    if view in SIDE_VIEWS and pr.get("pred") in PLAN_PREDS:
+        return False
+    return True
+
+
+def _pred_target(pr):
+    return pr.get("of") or pr.get("seat") or (pr.get("axis") if pr.get("pred") == "mirror_about_axis" else None)
+
+
+def orphan_predicates(spec):
+    """1.3 P4 (TP-7): a sense predicate kept in no declared Axes (its `axes` names none, or its target shares no Axes with
+    its row) is never evaluated: spec error, reported by K8 in the main Axes."""
+    main_id = main_axes_id(spec.get("view"))
+    decl = [d["id"] for d in declared_axes(spec)]
+    rows = {r["id"]: r for r in spec.get("features", [])}
+    out = []
+    if not rows:
+        return out
+    for r in spec.get("features", []):
+        ra = row_axes(r, main_id)
+        for pr in r.get("sense") or []:
+            views = {d["id"]: d["view"] for d in declared_axes(spec)}
+            homes = [a for a in ra if a in decl and _pred_in_axes(pr, a, views[a], {k for k, rr in rows.items() if a in row_axes(rr, main_id)})]
+            if not homes:
+                out.append(f"{r['id']} {pr.get('pred')} {t or ''}: spec error, predicate evaluated in no declared Axes")
+    return out
+
+
+def filter_stack(stack, ids):
+    if not stack:
+        return stack
+    out = dict(stack)
+    out["poses"] = {pid: dict(pr, features={k: v for k, v in pr["features"].items() if k in ids})
+                    for pid, pr in stack["poses"].items()}
+    return out
+
+
+def _refl(pc):
+    return [(y, x) for x, y in reversed(pc)]   # reflection across x = y; reversed keeps the ring orientation
+
+
+def reflect_record(rec, row):
+    """A check_stack feature record in the section frame (O4): reflection across x = y, so x' = plan y = section u and
+    y' = plan x = depth along the section normal. A placed row's theta becomes 90 - theta and rot becomes -rot (the
+    reflected footprint); the depth band is the spec depth (an x band in a section spec) hulled with the place x extent,
+    or the place x extent, or the plan_poly x extent, as evaluate_spec builds it from y in a side view."""
+    r = dict(rec)
+    pl = rec.get("place")
+    if pl:
+        p = dict(pl)
+        p["theta"], p["rot"] = 90.0 - pl["theta"], -pl.get("rot", 0)
+        p["x"], p["y"] = list(pl["y"]), list(pl["x"])
+        r["place"] = p
+        r["depth_true"] = list(pl["x"])
+    if rec.get("plan_pieces"):
+        r["plan_pieces"] = [_refl(pc) for pc in rec["plan_pieces"]]
+        r["plan_x"], r["plan_y"] = list(rec["plan_y"]), list(rec["plan_x"])
+    if rec.get("sector"):
+        sec = dict(rec["sector"])
+        sec["theta"], sec["x"], sec["y"] = 90.0 - sec["theta"], list(rec["sector"]["y"]), list(rec["sector"]["x"])
+        r["sector"] = sec
+    if row.get("depth") is not None:
+        if pl:
+            d = rec.get("depth_spec") or rec.get("depth")
+            r["depth_spec"] = list(d)
+            r["depth"] = [min(d[0], pl["x"][0]), max(d[1], pl["x"][1])]
+    elif pl:
+        r["depth"] = list(pl["x"])
+    elif rec.get("plan_pieces"):
+        r["depth"] = list(rec["plan_x"])
+    return r
+
+
+def reflect_stack(stack, rows):
+    """check_stack record in the section frame (reflect_record per feature); z values and stack names unchanged."""
+    out = dict(stack)
+    out["frame_view"] = "section_yz (reflected: x' = y, y' = x)"
+    out["poses"] = {pid: dict(pr, features={k: reflect_record(v, rows.get(k, {})) for k, v in pr["features"].items()})
+                    for pid, pr in stack["poses"].items()}
+    return out
+
+
+def axes_contexts(ctx):
+    """[(decl, sub-context)] for a split context (needs_split): one sub-context per declared Axes with its view, its rows
+    (sub_spec), its figures (AxesFig per pose; poses where the Axes is absent listed in missing_poses) and its stack
+    (filtered to its rows; reflected for a section view). Cached on the context."""
+    cache = getattr(ctx, "_axes_ctxs", None)
+    if cache is not None:
+        return cache
+    spec = ctx.spec or {}
+    main_id = main_axes_id(spec.get("view"))
+    rows = {r["id"]: r for r in spec.get("features", [])}
+    out = []
+    for d in declared_axes(spec):
+        ss = sub_spec(spec, d)
+        ids = {r["id"] for r in ss["features"]}
+        st = filter_stack(ctx.stack, ids)
+        if st and d["view"] in SECTION_VIEWS:
+            st = reflect_stack(st, rows)
+        figs, missing = {}, []
+        for pose, fig in (ctx.figs or {}).items():
+            ax = axes_of_figure(fig, main_id)[0].get(d["id"])
+            if ax is None:
+                missing.append(pose)
+            else:
+                figs[pose] = AxesFig(real_figure(fig), ax)
+        c = Ctx(P=ctx.P, spec=ss, figs=figs, stack=st, view=d["view"], script_paths=ctx.script_paths if d["main"] else [],
+                overlay_path=ctx.overlay_path, check_stack_path=ctx.check_stack_path if d["main"] else None, anchors=ctx.anchors)
+        c.axes_id, c.axes_role, c.parent, c.missing_poses = d["id"], "main" if d["main"] else "inset", ctx, missing
+        c.other_axes = {r["id"]: row_axes(r, main_id) for r in rows.values() if d["id"] not in row_axes(r, main_id)}
+        out.append((d, c))
+    ctx._axes_ctxs = out
+    return out
+
+
+def axes_context(ctx, aid):
+    """The sub-context of Axes aid (the context itself when it is not split; None when the spec does not declare aid)."""
+    if not needs_split(ctx):
+        return ctx
+    return next((c for d, c in axes_contexts(ctx) if d["id"] == aid), None)
+
+
+def undeclared_axes_issues(ctx):
+    """TP-7 lint (replaces the 1.0 multi-Axes lint for split contexts): every Axes of every figure is a declared Axes."""
+    out = []
+    main_id = main_axes_id((ctx.spec or {}).get("view"))
+    known = {d["id"] for d in declared_axes(ctx.spec)}
+    for pose, fig in (ctx.figs or {}).items():
+        found, extra = axes_of_figure(fig, main_id)
+        for aid in sorted(set(found) - known):
+            out.append(f"{pose}: Axes {aid} is not declared in the spec (insets)")
+        if extra:
+            out.append(f"{pose}: {len(extra)} Axes without a declared id (checks read declared Axes only)")
+    return out
+
+
+def _merge(cid, parts, extra):
+    issues_n = sum((r.get("n_issues") or 0) for _, r in parts) + len(extra)
+    ok = not extra and all(r["result"] == "pass" for _, r in parts)
+    reasons = list(extra) + [f"[{d['id']}] {r['reason']}" for d, r in parts]
+    failing = [r for _, r in parts if r["result"] != "pass"]
+    cause = None if ok else ("absent" if not extra and failing and all(r.get("cause") == "absent" for r in failing) else "content")
+    ms = [r.get("measured") for _, r in parts]
+    num = all(isinstance(m, (int, float)) or m is None for m in ms)
+    out = {"id": cid, "result": "pass" if ok else "fail", "reason": " | ".join(reasons), "n_issues": issues_n, "cause": cause,
+           "measured": (max(m for m in ms if m is not None) if cid in ("K6",) else sum(m for m in ms if m is not None)) if num and any(m is not None for m in ms) else (None if num else ms),
+           "threshold": parts[0][1].get("threshold") if parts else 0,
+           "by_axes": {d["id"]: {"result": r["result"], "n_issues": r.get("n_issues"), "cause": r.get("cause")} for d, r in parts}}
+    if any("states" in r for _, r in parts):
+        out["states"] = [s for _, r in parts for s in r.get("states", [])]
+        out["tests"] = [t for _, r in parts for t in r.get("tests", [])]
+        out["test_fields"] = next((r["test_fields"] for _, r in parts if "test_fields" in r), K7_TEST_FIELDS)
+        out["failing"] = sum(r.get("failing", 0) for _, r in parts)
+        out["tests_axes"] = [d["id"] for d, r in parts for _ in r.get("tests", [])]
+    return out
+
+
+def per_axes(fn, cid):
+    """TP-7: run check fn once per declared Axes with that Axes' view, rows and stack, and merge (reason prefixed by the
+    Axes id). A declared Axes absent from a figure fails K3 and K9; an undeclared Axes fails K3."""
+    def run(ctx):
+        if not needs_split(ctx):
+            return fn(ctx)
+        parts, extra = [], []
+        for d, c in axes_contexts(ctx):
+            if c.missing_poses and cid in ("K3", "K9"):
+                extra.append(f"[{d['id']}] declared Axes {d['id']} ({d['view']}) absent from figure(s) {', '.join(c.missing_poses)}")
+            if not c.figs and not d["main"]:
+                continue
+            parts.append((d, fn(c)))
+        if cid == "K3":
+            extra += undeclared_axes_issues(ctx)
+        return _merge(cid, parts, extra)
+    run.__name__ = getattr(fn, "__name__", cid)
+    run.unsplit = fn
+    return run
+
+
+CHECKS = {"K1": k1, "K2": k2, **{k: per_axes(f, k) for k, f in (("K3", k3), ("K4", k4), ("K5", k5), ("K6", k6), ("K7", k7), ("K8", k8), ("K9", k9))}}
+
