@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.2 (S2) in progress: STOP M2 on S2 r5 and S1 r7 (see latest Progress Log row)
+**Current step:** 1.2 (S2) in progress: S1 r7 and S2 r5 accepted; P10 Manager close (see latest Progress Log row)
 **lit_review:** no
 
 ---
@@ -494,6 +494,7 @@ Human gate: Sean, then pushed for Quinn.
 | 1.2 | 2026-11-25 | r2 reviews: Designer signed ticks, leaders, K3, ties legend, spec edits (S2 highest point 1819.84 accepted; S1 1969.84 is the jig height of record); Loftsman PASS (record lint and G 3 signed; FIX R2-1 tick toe 96.54, ruled for him, Design Notes 29); Topologist PASS both (cover and S2-5b signed; NOTE TP1.2-13 rail top drawn dashed while visible, taken as a fix); fresh M1: S2 r2 FAIL F1 (leaders hidden under the gear fill), S1 r6 FAIL F1 (core 750 leader hidden under hatch, also in accepted r4); reviewer controls scored a FAIL V3, b PASS, c PASS, d FAIL, matching key.json. Controls run 1640 s (was 284 s). Next: Engineer fix pass to S2 r3 / S1 r7. |
 | 1.2 | 2026-11-25 | S2 r4 reviews: Designer SIGNED all five r4 items (notch outline rule, label_side, spec edits; carries fresh-M1 N2 ring rim through unfilled arms to S3), FIX D4-1 (descent-stop leader ends in a tie outline; set label_theta: 150 on descent_stop, anchor on the pad outer-edge midpoint -186.20, 107.50). Topologist S2 r4 CROSS-REVIEW PASS (TP1.2-15/16/17 and the K8 cover converse signed; NOTEs TP1.2-18, TP1.2-19 to S3). S1 r7 has passed every review (fresh M1, Topologist). **Resume here:** the Engineer applies D4-1 only (label_theta: 150 on descent_stop) to make S2 r5, re-runs S2 checks and --controls (about 734 s); the Designer does a delta read of s2_plan_r5.png; then STOP M2, Sean's correction pass on S2 r5 and S1 r7; then ORCH-B (--accept s1 --rev 7 and --accept s2 --rev 5) and P10 Manager close. Carried for S3/Manager close: controls runtime (734 s), N2 hidden-line renderer, TP1.2-18/19, Loftsman NOTE 2 (member-top stack tie, before S3 opens). |
 | 1.2 | 2026-11-25 | P9 r5 (`step1.2_engineer_revision_r5.md`): D4-1 applied (label_theta 150) but rejected by the end-quarter hatch rule; place_labels falls back to the r4 anchor; S2 r5 PNG pixel-equal to r4. S2 r5 17/17 (32 s); controls 230/230 (Z 64, B 164, smoke 2; 775 s). Candidate scan: no CLEAN anchor except the r3 leader rejected at M1; ruled D4-1 closed with no geometry change (Design Notes 30). **Resume here:** STOP M2, Sean's correction pass on S2 r5 and S1 r7; then ORCH-B (--accept s1 --rev 7 and --accept s2 --rev 5) and P10 Manager close. Carried for S3/Manager close: controls runtime (775 s), N2 hidden-line renderer (now includes the descent-stop leader inside tie b), TP1.2-18/19, Loftsman NOTE 2 (member-top stack tie, before S3 opens). |
+| 1.2 | 2026-11-25 | M2: Sean "Accept both"; S1-r7 and S2-r5 accepted (Design Notes 13). ORCH-B: --accept s1 --rev 7 (r4 superseded) and --accept s2 --rev 5, copy-up SHA-256 equal; s2_checks_r0.json (red-first record), s2_visual_gate_r1.md (Designer sign-offs r1 to r4) and s2_visual_gate_r3.md (fresh M1 PASS) copied up equal; --stale 2 records, 0 differences; X1 47 shared rows pass. **Resume here:** P10 Manager close. |
 
 ---
 
@@ -533,6 +534,8 @@ Human gate: Sean, then pushed for Quinn.
 | S1-r2 | 2026-11-25 | No correction from Sean. r3 came from the Designer's M1 F1 to F5 (`s1_visual_gate_r2.md`) | r3: K7-B16 to K7-B19; F1 (c), F4, F5 visual only (`step1.1_engineer_revision_r3.md`) |
 | S1-r3 | 2026-11-25 | No correction from Sean. r4 came from the r3 re-checks (LF1.1-8 = TP1.1-12, TP1.1-11) | r4: K7-B20, K8-B15, K8-B16 (`step1.1_engineer_revision_r4.md`) |
 | S1-r4 | 2026-11-25 | S1-r4 accepted, no corrections; V1 to V5 confirmed; F6 accepted as assigned to Step 2 and S2 (Design Notes 24) | accepted; moved to `docs/sketches/` (Design Notes 7) |
+| S1-r7 | 2026-11-25 | "Accept both" (M2, Step 1.2): S1-r7 accepted, no corrections. r5 to r7 came from Sean's S2-A and housing picks (Design Notes 27, 28) and the 1.2 reviews | accepted (`step1.2_engineer_revision_r2.md` to `_r4.md`) |
+| S2-r5 | 2026-11-25 | "Accept both" (M2, Step 1.2): S2-r5 accepted, no corrections; the descent-stop leader inside tie b goes to S3 with N2 (Design Notes 30). r1 to r5 came from the 1.2 reviews | accepted (`step1.2_engineer_draw_r1.md`, `_revision_r2.md` to `_r5.md`) |
 
 **14. Test-design decisions (The Software Engineer, Step 0).**
 - The sketch spec `sN_spec.yaml` is also the feature table every check reads. One file, so the spec and the checks cannot disagree; K9 checks the figure against the spec as an outline is checked against its suite.

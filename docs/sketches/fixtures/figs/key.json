@@ -1,4 +1,6 @@
 {
  "ctrl_a.png": "K8-B1 (drill flipped tip-up; must FAIL V3)",
- "ctrl_b.png": "K8-Z (correct sense; must PASS)"
+ "ctrl_b.png": "K8-Z (correct sense; must PASS)",
+ "ctrl_c.png": "plan of the mini spec, screws counter-clockwise from +X at 30, 150, 270 (must PASS handedness)",
+ "ctrl_d.png": "the same plan mirrored in y, azimuths clockwise (must FAIL handedness)"
 }
