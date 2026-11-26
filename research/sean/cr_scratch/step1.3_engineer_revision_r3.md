@@ -278,6 +278,27 @@ PNG: `docs/sketches/wip/s3_jackscrew_section_r6.png`.
 
 Item for Sean at M2 (not a revision): the S1 r8 height_target leader runs along the z 2000 gridline (Corrections 1).
 
+## r7
+
+Source: Sean at M2 (2026-11-26): "Apply fixes as r7, accept". The fixes are those in the fresh M1 r6 file, `docs/sketches/wip/s3_visual_gate_r6.md`. Scratch: `D:\Unleashed Robotics\_scratch\cutjig\p9r7\` (`pre\` the r6 harness). TMP and TEMP at `_scratch\cutjig\tmp`; nothing on C:. Three spec edits only. No code change.
+
+### Fixes
+
+| Item | Edit (s3_spec.yaml) | Result (MEASURED) |
+|---|---|---|
+| M1 r6, load_comp_c leader | `label_anchor_frac` 0.5 to 0.3 | anchor (-185.00, 404.84), placer source label_anchor_frac |
+| M1 r6, nut_c leader | `label_anchor_frac: 0.85` added | anchor (-139.00, 391.34), placer source label_anchor_frac |
+| M1 r6 N4 | load_cases header comment: W 24.25 to 26.25 kg (top-end block, 1.3 (h) r3) | comment only |
+
+### Check results (MEASURED)
+
+- **S3 r7** (`docs/sketches/wip/s3_checks_r7.json`): **15 of 16 pass**. K4 passes. S3-3 fails on the stale S1 r7 / S2 r5 records only (ORCH-B).
+- **PNG equality:** `docs/sketches/wip/s3_jackscrew_section_r7.png` is pixel-equal to the reviewer's dry run `D:\Unleashed Robotics\_scratch\cutjig\p8r6\ws\docs\sketches\wip\s3_jackscrew_section_r98.png`. Both are 3876 x 4157 x 4, `numpy.array_equal` True, 0 differing pixels. The leader positions are therefore the reviewed ones.
+- `--stale`: 2 records, 5 differences (the adopted keys).
+- **`--controls --jobs 12`: 413/413 match (Z 98, B 312, smoke 3), 225.7 s.**
+
+PNG: `docs/sketches/wip/s3_jackscrew_section_r7.png`.
+
 ## Gameplan lines to change
 
 Merged from `step1.3_engineer_revision_r2.md` (E2), `step1.3_designer_r2_values.md` (D), `step1.3_loftsman_recheck_r2.md` (L) and `step1.3_topologist_recheck_r2.md` (T), plus r3. Apply the E2 items first. Each later Old reads text an earlier New writes; where an item supersedes an earlier one, the earlier item is marked.
@@ -390,4 +411,12 @@ New: (406 controls: Z 97, B 306, smoke 3, all match; 197.1 s at --jobs 12). Step
 22. r6, Progress Log: insert after the item 19 r5 row.
 ```
 New: | 1.3 | 2026-11-26 | (h) P9 r6, last drawn revision before M2 (step1.3_engineer_revision_r3.md section r6): labels print loads() and the spec per_screw literals are held to it (K4-B26); frac anchor record and lint (B27, B28); leader collinearity in section views (B29, B30); load_comp_c leader on the arrow shaft at z_S 410.84 (10.84 from the nearest gridline); nut station labels z_S 1030.84 and 1155.84 from check_stack nut_z (B31); S3 r6 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); S1 r8 19/19, S2 r9 18/18; controls 413/413 in 211.1 s; S1 height_target leader along the z 2000 gridline to Sean at M2 |
+```
+23. r7, Progress Log: insert after the item 22 r6 row.
+```
+New: | 1.3 | 2026-11-26 | (h) r7 on Sean's M2 "Apply fixes as r7, accept" (step1.3_engineer_revision_r3.md section r7): load_comp_c label_anchor_frac 0.3 (anchor -185.00, 404.84), nut_c label_anchor_frac 0.85 (-139.00, 391.34), load_cases header W 26.25 kg (N4); S3 r7 15/16 (S3-3 stale records only), K4 green; wip/s3_jackscrew_section_r7.png pixel-equal to the M1 r6 reviewer dry run r98; controls 413/413 in 225.7 s; --stale 5 differences (adopted keys) |
+```
+24. r7, Design Notes 13: insert after the S3-r2 row (item 12).
+```
+New: | S3-r6 | 2026-11-26 | "Apply fixes as r7, accept" (M2, Step 1.3) | r7: label anchors load_comp_c 0.3 and nut_c 0.85, header W 26.25 (`step1.3_engineer_revision_r3.md` section r7); acceptance recorded by the orchestrator at ORCH-B |
 ```

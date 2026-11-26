@@ -112,7 +112,7 @@ poses:
     purpose: "stack only (S3-1, S3-2 rigid segment, home-switch G pairs, swept case top); nut station tick, row nut_station_park; not drawn"
 
 # Load cases (gameplan detail 1.3; Designer 1.3 (a) section 6; Sean STOP S3-A, Design Notes 31). Per screw = load / 3 (equal
-# share ASSUMED), two-screw = load / 2 (reported). W from the overlay masses (W_kg below, 24.25 kg). g = 9.81 m/s2 (standard
+# share ASSUMED), two-screw = load / 2 (reported). W from the overlay masses (W_kg below, 26.25 kg with the top-end block, 1.3 (h) r3; M1 S3 r6 N4). g = 9.81 m/s2 (standard
 # gravity; no params key). F_stall per screw = 2 pi liftmotor.holding_torque eta / lead, eta = tan(lambda) / tan(lambda +
 # phi_n), lambda = atan(lead / (pi mean_diameter)), phi_n = atan(mu / cos(thread_half_angle)), at both ends of thread_mu.
 # Values DERIVED (hand, step1.3_engineer_spec.md section 4); checks_s3 computes them from the keys at run time.
@@ -779,6 +779,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + (ring.nut_screw_shoulder_d / 2 + ring.nut_float)', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_flange_od / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2]
   hatch: brass
   label: {text: 'floating nut, radial float', key: ring.nut_float, fmt: .1f}
+  label_anchor_frac: 0.85   # 1.3 (h) r7 (M1 S3 r6, Sean M2): leader on the flange face at z_S 391.34, 4.50 above the ring top
 - id: nut_screws_c
   name: nut shoulder screws
   shape: shoulder screw d 6 x 8.05, M5 into the counterbore floor, head D10 x 4.5 over the nut flange, 0.05 axial play; the one on the inboard radial drawn (unsectioned), two at +-60 deg from the outboard radial off the plane (not_drawn); the nut's upward seat in every lifting case (Designer 1.3 (b) re-sign FIX A)
@@ -1748,7 +1749,7 @@ features:
   keys: [liftload.f_bind, liftmotor.holding_torque, jackscrew.lead, jackscrew.thread_mu]
   z_rule: {z_min: nut_z + ring.nut_housing_height / 2, z_max: nut_z + ring.nut_housing_height / 2 + ring.nut_housing_height}
   label: {text: 'compression per screw:', key: liftload.f_bind, fmt: .0f, value_from: s3_checks.load_cases, cases: [[static, static], [capture_lift, capture], [retract_bind, 'retract (F_bind {liftload.f_bind})'], [stall_up, stall up]], suffix: N}
-  label_anchor_frac: 0.5   # 1.3 (h) r6 (M1 S3 r5 F1): leader on the arrow shaft at mid height (z_S 410.84), off the z 400 gridline
+  label_anchor_frac: 0.3   # 1.3 (h) r7 (M1 S3 r6, Sean M2 'Apply fixes as r7'): leader on the arrow shaft at z_S 404.84, 4.84 above the z 400 gridline (r6: 0.5, 410.84)
   neighbours: []
   sense:
   - {pred: points, dir: -Z}

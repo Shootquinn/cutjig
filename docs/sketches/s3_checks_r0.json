@@ -1,0 +1,2778 @@
+{
+ "sketch": "s3",
+ "rev": 0,
+ "timestamp": "2026-11-26T12:15:31",
+ "spec": "s3_spec.yaml",
+ "spec_status": "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md",
+ "script": "stubs\\s3_stub.py",
+ "accepted": false,
+ "frame": "z_S = z_A + jig.datum_a_above_floor",
+ "files_sha256": {
+  "params.yaml": "9469288a75c2dc57536e2a37f4e18db32e5da2a10d3bf8139cedfe006811c7b7",
+  "proposed_params.yaml": "f1f39a7455f0ea9da4f1d9e07d376cca656d7606e0224ba2272f1d6ab1610e40"
+ },
+ "keys_read": {
+  "base.column_notch": {
+   "value": [
+    70,
+    65
+   ],
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.column_notch_x": {
+   "value": 35,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.plate_thickness": {
+   "value": 12,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.spigot_hole_dia": {
+   "value": 160.4,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "bearing.bore": {
+   "value": 152.4,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "bearing.height": {
+   "value": 25,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "bearing.od": {
+   "value": 200,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "collar.id": {
+   "value": 110.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collar.od": {
+   "value": 152.4,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collar.top_above_plate": {
+   "value": 6.75,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.core_seat_height": {
+   "value": 2.5,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.core_seat_width": {
+   "value": 3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.core_stop_z": {
+   "value": 42.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "collet.relief_hole_dia": {
+   "value": 8.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.slit_length": {
+   "value": 25.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.slit_ligament": {
+   "value": 3.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "cone.alpha": {
+   "value": 10,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "core.diameter_nominal": {
+   "value": 100,
+   "origin": "params.yaml",
+   "status": "VERIFIED"
+  },
+  "core.length_capture": {
+   "value": 500,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "core.length_install": {
+   "value": 750,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "drill.bore_ceiling_above_tip": {
+   "value": 800,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.head_length": {
+   "value": 106.369,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.head_od": {
+   "value": 177.8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.length": {
+   "value": 800,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.top_block_length": {
+   "value": 150,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.top_block_od": {
+   "value": 152.4,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.tube_id": {
+   "value": 146.05,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "drill.tube_od": {
+   "value": 152.4,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "frame.end_x": {
+   "value": 232,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "frame.support_x": {
+   "value": 112,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "frame_upper.foot": {
+   "value": "members a, b (theta 150, 30) on the plate top over the end members; member c (theta 270) on the rail top through base.column_notch, 5 clear of the notch each side and inboard",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "frame_upper.member_length": {
+   "value": 1213,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "frame_upper.member_length_rail": {
+   "value": 1225,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "frame_upper.orientation": {
+   "value": "one 60 face toward the axis (square 30-6060 section, radial footprint, rot 0)",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "frame_upper.radius": {
+   "value": 274,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.back_face_above_pinion_axis": {
+   "value": 62,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.bore": {
+   "value": 180,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.face_width": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.od": {
+   "value": 252.64,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "gear.pitch_angle": {
+   "value": 71.565,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "gear.pitch_diameter": {
+   "value": 250,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "gear.toe_tip_above_pinion_axis": {
+   "value": 28.23,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "hold.device": {
+   "value": "self-locking Tr12x3 lead (drawn; lambda 5.19 deg < phi_n 8.83 to 11.70 deg); options brake on each NEMA 17, park pin with visible state; Step 2 decides",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "holder.flange_od": {
+   "value": 144.08,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "holder.flange_thickness": {
+   "value": 8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "holder.length": {
+   "value": 88.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "holder.stroke_gap_R": {
+   "value": 13.126,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "icd.datum_c": {
+   "value": "rail slot line with two plate keys (rotation, across-slot) and an end-member stop pin (along-slot)",
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "icd.floor_above_datum_a": {
+   "value": 40,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "icd.footprint_x": {
+   "value": 644,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "icd.footprint_y": {
+   "value": 608,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "icd.keepout_radius": {
+   "value": 86.2,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "jackscrew.anchor_allowance": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_bearing": {
+   "value": "fixed end: two 7000-class angular-contact bearings 10 x 26 x 8 back-to-back, M10x1 locknut, journal 10",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_bearing_count": {
+   "value": 2,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_bearing_od": {
+   "value": 26,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_bearing_width": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_bearing_z": {
+   "value": 280,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "jackscrew.anchor_block_width": {
+   "value": 42,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_cover_bore": {
+   "value": 16,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_shoulder_bore": {
+   "value": 20,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.anchor_z": {
+   "value": 265,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.angle": {
+   "value": [
+    30,
+    150,
+    270
+   ],
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.count": {
+   "value": 3,
+   "origin": "overlay",
+   "status": "DECLARED"
+  },
+  "jackscrew.end_factor_floating": {
+   "value": 0.7,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.guide_allowance": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.guide_bearing": {
+   "value": "one 6000-2RS radial bearing 10 x 26 x 8, journal 10 axially free (no shoulder): radial support only",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.guide_bearing_od": {
+   "value": 26,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.guide_bearing_width": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.guide_bearing_z": {
+   "value": 1150,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "jackscrew.guide_block_od": {
+   "value": 42,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.journal_d": {
+   "value": 10,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.lead": {
+   "value": 3,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.length": {
+   "value": 900,
+   "origin": "overlay",
+   "status": "DECLARED"
+  },
+  "jackscrew.locknut_od": {
+   "value": 18,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.locknut_thickness": {
+   "value": 6,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.mean_diameter": {
+   "value": 10.5,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "jackscrew.nominal": {
+   "value": 12,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.nut_body_od": {
+   "value": 22,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.nut_flange_od": {
+   "value": 42,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.nut_flange_thickness": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.nut_length": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.pitch_radius": {
+   "value": 160,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.thread_end_z": {
+   "value": 1120,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.thread_half_angle": {
+   "value": 15,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.thread_mu": {
+   "value": [
+    0.15,
+    0.2
+   ],
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.thread_start_z": {
+   "value": 300,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jackscrew.top_guide_z": {
+   "value": 1165,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "jig.datum_a_above_floor": {
+   "value": 60,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jig.height_target": {
+   "value": 2000,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "liftload.f_bind": {
+   "value": 300,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.body": {
+   "value": 42,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.bolt_pattern": {
+   "value": 31,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.coupling": {
+   "value": "beam coupling OD 19 x 20, bores 5 (motor) and 8 (screw end), centred on the motor shaft tip (half on each shaft), z 243 to 263 z_A: 2.0 below the block, 12.0 above the pilot",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.coupling_height": {
+   "value": 20,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.coupling_length": {
+   "value": 36,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.coupling_od": {
+   "value": 19,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.holding_torque": {
+   "value": 0.45,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.length": {
+   "value": 48,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.pilot": {
+   "value": [
+    22,
+    2
+   ],
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.plan_rot": {
+   "value": 0,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.position": {
+   "value": "coaxial under the anchor block at (jackscrew.pitch_radius, jackscrew.angle[k]), coupling up to the screw bottom",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.screw_end_d": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.shaft_gap": {
+   "value": 1,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.shaft_length": {
+   "value": 24,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.shaft_od": {
+   "value": 5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.standoff": {
+   "value": "four M3 hex standoffs, liftmotor.coupling_length long, on the liftmotor.bolt_pattern square, motor face to the anchor-block underside",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftmotor.standoff_af": {
+   "value": 5.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.home_switch": {
+   "value": "micro switch under the top-guide arm, body 13 tall x 20 radial x 6, r 190 to 210, top on the guide-block underside, roller lever on the nut-housing top at park",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.lever_free_gap": {
+   "value": 1.16,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.lever_r_tip": {
+   "value": 182,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.method": {
+   "value": "one controller, three drivers, home switch per screw at park; no belt",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.switch_height": {
+   "value": 13,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.switch_r_in": {
+   "value": 190,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.switch_r_out": {
+   "value": 210,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liftsync.switch_width": {
+   "value": 6,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "loads.axial_design": {
+   "value": 1000,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.overall_height": {
+   "value": 56.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.plate_thickness": {
+   "value": 7.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.washer_pocket_depth": {
+   "value": 0.8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "pinion.angle": {
+   "value": [
+    90,
+    210,
+    330
+   ],
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.axis_above_ring_top": {
+   "value": 52,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.hub_length": {
+   "value": 15,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_body": {
+   "value": 57,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_class": {
+   "value": "NEMA 23",
+   "origin": "overlay",
+   "status": "DECLARED"
+  },
+  "pinion.motor_length": {
+   "value": 76,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_r_in": {
+   "value": 142,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_shaft_length": {
+   "value": 21,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.motor_shaft_od": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "pinion.outer_diameter": {
+   "value": 91.24,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.pitch_angle": {
+   "value": 18.435,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.pitch_diameter": {
+   "value": 83.33,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.r_heel": {
+   "value": 125,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.r_toe": {
+   "value": 96.54,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "pinion.tooth_count": {
+   "value": 20,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "profile.height": {
+   "value": 60,
+   "origin": "params.yaml",
+   "status": "VERIFIED"
+  },
+  "profile.width": {
+   "value": 60,
+   "origin": "params.yaml",
+   "status": "VERIFIED"
+  },
+  "receiver.floor_hole_dia": {
+   "value": 80.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "receiver.register_bore_radius": {
+   "value": 67.29,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "receiver.rim_above_floor": {
+   "value": 88.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "receiver.shoulder_od": {
+   "value": 200,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_thickness": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_z": {
+   "value": 12,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "receiver.spigot_od": {
+   "value": 160,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "ring.clearance_bore": {
+   "value": 200,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "ring.motor_mount_height": {
+   "value": 23.5,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "ring.nut_axial_play": {
+   "value": 0.05,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_float": {
+   "value": 0.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_housing_height": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_housing_od": {
+   "value": 50,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw": {
+   "value": "3 x ISO 7379-type shoulder screw d 6, M5, head D10 x 4.5, PCD 32, one on the inboard radial, two at +-60 deg from the outboard radial",
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_head_d": {
+   "value": 10,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_head_height": {
+   "value": 4.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_pcd": {
+   "value": 32,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_shoulder_d": {
+   "value": 6,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_thread_d": {
+   "value": 5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.nut_screw_thread_length": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.od": {
+   "value": 420,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.position_above_tip": {
+   "value": 130,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.thickness": {
+   "value": 12,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "seat.holder_bottom_R": {
+   "value": 13.626,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.collar_top_z": {
+   "value": 159.84,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.g_stop": {
+   "value": 25,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "stop.height_range": {
+   "value": [
+    184.84,
+    315
+   ],
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "stop.height_z": {
+   "value": 184.84,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.start_z": {
+   "value": [
+    834.84,
+    965
+   ],
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "upper.load_clearance": {
+   "value": 50,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "upper.travel_max": {
+   "value": 650,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "washer.thickness": {
+   "value": 1.3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.span": {
+   "value": 230,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.sweep_clear_radius": {
+   "value": 115,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "witness.zone_high": {
+   "value": 8.59,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  }
+ },
+ "reported": {
+  "lift_stroke_mm": 775.0,
+  "park_tip_z_A": 959.84,
+  "start_tip_max_z_A": 834.84,
+  "collar_top_recomputed_z_A": 159.84,
+  "collar_top_params_z_A": 159.84,
+  "load_plane": "core_stop",
+  "entry_plane": "collar_top",
+  "poses": {
+   "load": {
+    "highest_z_S": 1969.8400000000001,
+    "margin_to_soft_target": 30.159999999999854
+   },
+   "start": {
+    "highest_z_S": 1844.8400000000001,
+    "margin_to_soft_target": 155.15999999999985
+   },
+   "capture_end": {
+    "highest_z_S": 1285.0,
+    "margin_to_soft_target": 715.0
+   },
+   "park": {
+    "highest_z_S": 1969.8400000000001,
+    "margin_to_soft_target": 30.159999999999854
+   }
+  },
+  "park_tip_by_plane_z_A": {
+   "core_stop": {
+    "core.length_capture": 884.84,
+    "core.length_install": 884.84,
+    "core.length_optional": "1092.50 + c for c >= 0"
+   },
+   "collar_top": {
+    "core.length_capture": 959.84,
+    "core.length_install": 959.84,
+    "core.length_optional": 1209.84
+   }
+  },
+  "q9_options": {
+   "0.5 m only": {
+    "lengths": [
+     "core.length_capture"
+    ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84
+    },
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84
+    },
+    "park_tip_z_A": 959.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 775.0,
+    "L": {
+     "L_min": 885.0,
+     "at anchor_z": 885.8400000000001
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003
+    },
+    "symbol_terms": {
+     "park": "959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34",
+     "L L_min": "885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34",
+     "L at anchor_z": "885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34"
+    }
+   },
+   "0.5 and 0.75 m": {
+    "lengths": [
+     "core.length_capture",
+     "core.length_install"
+    ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84
+    },
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84
+    },
+    "park_tip_z_A": 959.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 775.0,
+    "L": {
+     "L_min": 885.0,
+     "at anchor_z": 885.8400000000001
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003
+    },
+    "symbol_terms": {
+     "park": "959.84 for 0 <= c <= 117.34; 842.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "775.00 for 0 <= c <= 117.34; 657.66 + c for 117.34 <= c <= 292.34; 950.00 for c >= 292.34",
+     "L L_min": "885.00 for 0 <= c <= 117.34; 767.66 + c for 117.34 <= c <= 292.34; 1060.00 for c >= 292.34",
+     "L at anchor_z": "885.84 for 0 <= c <= 117.34; 768.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34"
+    }
+   },
+   "plus 1 m": {
+    "lengths": [
+     "core.length_capture",
+     "core.length_install",
+     "core.length_optional"
+    ],
+    "stops_z_A": {
+     "core.length_capture": 184.84,
+     "core.length_install": 184.84,
+     "core.length_optional": "392.50 + c for c >= 0"
+    },
+    "starts_z_A": {
+     "core.length_capture": 834.84,
+     "core.length_install": 834.84,
+     "core.length_optional": "1042.50 + c for c >= 0"
+    },
+    "park_tip_z_A": 1209.84,
+    "lowest_stop_z_A": 184.84,
+    "lift_stroke": 1025.0,
+    "L": {
+     "L_min": 1135.0,
+     "at anchor_z": 1135.84
+    },
+    "start_minus_core_top": {
+     "core.length_capture": 292.34000000000003,
+     "core.length_install": 42.34000000000003,
+     "core.length_optional": "c for c >= 0"
+    },
+    "symbol_terms": {
+     "park": "1209.84 for 0 <= c <= 117.34; 1092.50 + c for c >= 117.34",
+     "lowest stop": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "lift stroke": "1025.00 for 0 <= c <= 117.34; 907.66 + c for 117.34 <= c <= 292.34; 1200.00 for c >= 292.34",
+     "L L_min": "1135.00 for 0 <= c <= 117.34; 1017.66 + c for 117.34 <= c <= 292.34; 1310.00 for c >= 292.34",
+     "L at anchor_z": "1135.84 for 0 <= c <= 117.34; 1018.50 + c for c >= 117.34",
+     "stop core.length_capture": "184.84 for 0 <= c <= 292.34; c - 107.50 for c >= 292.34",
+     "stop core.length_install": "184.84 for 0 <= c <= 42.34; 142.50 + c for c >= 42.34",
+     "stop core.length_optional": "392.50 + c for c >= 0",
+     "start core.length_capture": "834.84 for 0 <= c <= 292.34; 542.50 + c for c >= 292.34",
+     "start core.length_install": "834.84 for 0 <= c <= 42.34; 792.50 + c for c >= 42.34",
+     "start core.length_optional": "1042.50 + c for c >= 0",
+     "start_minus_core_top core.length_capture": "292.34 for 0 <= c <= 292.34; c for c >= 292.34",
+     "start_minus_core_top core.length_install": "42.34 for 0 <= c <= 42.34; c for c >= 42.34",
+     "start_minus_core_top core.length_optional": "c for c >= 0"
+    }
+   }
+  },
+  "drawn_symbol_validity": {
+   "lowest stop": 292.34000000000003,
+   "park": 117.34000000000003,
+   "start max": 42.34
+  },
+  "capture_core_length_key": "core.length_install",
+  "start_tip_minus_core_top_mm": 42.34000000000003,
+  "entry_plane_margin_mm": 0.0,
+  "end_tip_plus_advance_z_A": 719.77,
+  "core_top_on_core_stop_z_A": 792.5
+ },
+ "checks": [
+  {
+   "id": "K1",
+   "result": "pass",
+   "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (s3_stub.py)",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 2/2",
+   "source": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)"
+  },
+  {
+   "id": "K2",
+   "result": "pass",
+   "reason": "412 spec keys resolve; 190 overlay leaves sourced, legal status, no shadow; 21 expr leaves agree within 0.05",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 2/2",
+   "b_result": "fired 7/7",
+   "source": "gameplan l.135; Design Notes 6"
+  },
+  {
+   "id": "K3",
+   "result": "pass",
+   "reason": "[section] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image | [inset_plan] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    },
+    "inset_plan": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 4/4",
+   "b_result": "fired 11/11",
+   "source": "gameplan l.136; LLM-PLM 8.4.2"
+  },
+  {
+   "id": "K4",
+   "result": "fail",
+   "reason": "[section] capture_end/wingnut: no annotation label:wingnut; capture_end/core_750: no annotation label:core_750; capture_end/drill_head: no annotation label:drill_head; capture_end/drill_tube: no annotation label:drill_tube; capture_end/drill_top_block: no annotation label:drill_top_block; capture_end/keepout: no annotation label:keepout; ... 14 more | [inset_plan] capture_end/screw_b: no annotation label:screw_b; capture_end/frame_upper_b: no annotation label:frame_upper_b; capture_end/sync_callout: no annotation label:sync_callout",
+   "n_issues": 23,
+   "cause": "content",
+   "measured": 23,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "fail",
+     "n_issues": 20,
+     "cause": "content"
+    },
+    "inset_plan": {
+     "result": "fail",
+     "n_issues": 3,
+     "cause": "content"
+    }
+   },
+   "z_result": "clean 6/6",
+   "b_result": "fired 22/22",
+   "source": "gameplan l.137; LLM-PLM 8.4.2"
+  },
+  {
+   "id": "K5",
+   "result": "pass",
+   "reason": "[section] 1 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] 0 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    },
+    "inset_plan": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 5/5",
+   "b_result": "fired 36/36",
+   "source": "gameplan l.138; LLM-PLM 8.4.1"
+  },
+  {
+   "id": "K6",
+   "result": "fail",
+   "reason": "[section] capture_end/base_frame: z_rule [0.00, 60.00] z_S, nothing drawn; capture_end/base_plate: z_rule [60.00, 72.00] z_S, nothing drawn; capture_end/receiver: z_rule [72.00, 188.50] z_S, nothing drawn; capture_end/collet: z_rule [100.00, 132.00] z_S, nothing drawn; capture_end/core_seat: z_rule [100.00, 102.50] z_S, nothing drawn; capture_end/holder: z_rule [109.09, 205.09] z_S, nothing drawn; ... 41 more | [inset_plan] capture_end/keepout: plan centre from the spec, nothing drawn; capture_end/nut_housing_c: plan centre from the spec, nothing drawn; capture_end/screw_c: plan centre from the spec, nothing drawn; capture_end/anchor_c: plan centre from the spec, nothing drawn; capture_end/frame_upper_c: plan centre from the spec, nothing drawn; capture_end/liftmotor_c: plan centre from the spec, nothing drawn; ... 16 more",
+   "n_issues": 69,
+   "cause": "absent",
+   "measured": 0.0,
+   "threshold": 0.05,
+   "by_axes": {
+    "section": {
+     "result": "fail",
+     "n_issues": 47,
+     "cause": "absent"
+    },
+    "inset_plan": {
+     "result": "fail",
+     "n_issues": 22,
+     "cause": "absent"
+    }
+   },
+   "z_result": "clean 5/5",
+   "b_result": "fired 12/12",
+   "source": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)"
+  },
+  {
+   "id": "K7",
+   "result": "fail",
+   "reason": "[section] capture_end/base_frame|frame_upper_c C: untestable, base_frame/frame_upper_c not drawn; capture_end/base_frame|base_plate F: untestable, base_frame/base_plate not drawn; capture_end/base_plate|receiver C: untestable, base_plate/receiver not drawn; capture_end/base_plate|base_frame F: untestable, base_plate/base_frame not drawn; capture_end/receiver|collet C: untestable, receiver/collet not drawn; capture_end/receiver|core_seat C: untestable, receiver/core_seat not drawn; ... 263 more | [inset_plan] load/keepout|anchor_c G: untestable, keepout/anchor_c not drawn; load/keepout|home_switch_c G: untestable, keepout/home_switch_c not drawn; load/keepout|screw_c G: untestable, keepout/screw_c not drawn; load/keepout|frame_upper_c G: untestable, keepout/frame_upper_c not drawn; load/keepout|liftmotor_c G: untestable, keepout/liftmotor_c not drawn; load/nut_housing_c|frame_upper_c G: untestable, nut_housing_c/frame_upper_c not drawn; ... 38 more",
+   "n_issues": 313,
+   "cause": "absent",
+   "measured": 313,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "fail",
+     "n_issues": 269,
+     "cause": "absent"
+    },
+    "inset_plan": {
+     "result": "fail",
+     "n_issues": 44,
+     "cause": "absent"
+    }
+   },
+   "states": [
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "depth-separated",
+    "z-separated",
+    "N",
+    "z-separated",
+    "z-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "z-separated",
+    "N",
+    "z-separated",
+    "z-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "z-separated",
+    "N",
+    "z-separated",
+    "z-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "z-separated",
+    "N",
+    "z-separated",
+    "z-separated",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated",
+    "swept:z-separated"
+   ],
+   "tests": [
+    [
+     "capture_end",
+     "receiver|wingnut",
+     "N",
+     "N",
+     -215.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "holder|wingnut",
+     "N",
+     "N",
+     -187.04,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "collar|wingnut",
+     "N",
+     "N",
+     -191.2,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|drill_head",
+     "N",
+     "N",
+     -138.9,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|drill_tube",
+     "N",
+     "N",
+     -126.2,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|collet",
+     "N",
+     "N",
+     -117.29,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|holder",
+     "N",
+     "N",
+     -122.04,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|wingnut",
+     "N",
+     "N",
+     -165.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|collar",
+     "N",
+     "N",
+     -126.2,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "core_750|receiver",
+     "N",
+     "N",
+     -150.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "gear|pinion_c",
+     "N",
+     "N",
+     -171.94,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "pinion_c|motor23_c",
+     "N",
+     "N",
+     -74.12,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "pinion_c|motor_shaft_c",
+     "N",
+     "N",
+     -49.62,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "screw_end_c|coupling_c",
+     "N",
+     "N",
+     -13.5,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "liftmotor_pilot_c|liftmotor_shaft_c",
+     "N",
+     "N",
+     -13.5,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "liftmotor_shaft_c|coupling_c",
+     "N",
+     "N",
+     -12.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "liftmotor_shaft_c|liftmotor_pilot_c",
+     "N",
+     "N",
+     -13.5,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "coupling_c|screw_end_c",
+     "N",
+     "N",
+     -13.5,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "coupling_c|liftmotor_shaft_c",
+     "N",
+     "N",
+     -12.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "coupling_c|standoffs_c",
+     "F",
+     "depth-separated",
+     3.25,
+     null,
+     null,
+     "depth band"
+    ],
+    [
+     "load",
+     "nut_housing_c|liftmotor_c",
+     "G",
+     "z-separated",
+     851.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "load",
+     "nut_housing_c|screw_c",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "nut_housing_c|anchor_c",
+     "G",
+     "z-separated",
+     785.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "load",
+     "nut_housing_c|home_switch_c",
+     "G",
+     "z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "load",
+     "screw_c|anchor_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "anchor_c|screw_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "screw_a|anchor_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "screw_a|nut_housing_a",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "nut_housing_a|screw_a",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "anchor_a|screw_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "screw_b|anchor_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "screw_b|nut_housing_b",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "nut_housing_b|screw_b",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "load",
+     "anchor_b|screw_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "nut_housing_c|liftmotor_c",
+     "G",
+     "z-separated",
+     726.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "start",
+     "nut_housing_c|screw_c",
+     "N",
+     "N",
+     -209.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "nut_housing_c|anchor_c",
+     "G",
+     "z-separated",
+     660.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "start",
+     "nut_housing_c|home_switch_c",
+     "G",
+     "z-separated",
+     136.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "start",
+     "screw_c|anchor_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "anchor_c|screw_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "screw_a|anchor_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "screw_a|nut_housing_a",
+     "N",
+     "N",
+     -209.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "nut_housing_a|screw_a",
+     "N",
+     "N",
+     -209.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "anchor_a|screw_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "screw_b|anchor_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "screw_b|nut_housing_b",
+     "N",
+     "N",
+     -209.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "nut_housing_b|screw_b",
+     "N",
+     "N",
+     -209.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "start",
+     "anchor_b|screw_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "nut_housing_c|liftmotor_c",
+     "G",
+     "z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "capture_end",
+     "nut_housing_c|screw_c",
+     "N",
+     "N",
+     -70.84,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "nut_housing_c|anchor_c",
+     "G",
+     "z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "capture_end",
+     "nut_housing_c|home_switch_c",
+     "G",
+     "z-separated",
+     786.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "capture_end",
+     "screw_c|anchor_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "anchor_c|screw_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "screw_a|anchor_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "screw_a|nut_housing_a",
+     "N",
+     "N",
+     -70.84,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "nut_housing_a|screw_a",
+     "N",
+     "N",
+     -70.84,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "anchor_a|screw_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "screw_b|anchor_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "screw_b|nut_housing_b",
+     "N",
+     "N",
+     -70.84,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "nut_housing_b|screw_b",
+     "N",
+     "N",
+     -70.84,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "capture_end",
+     "anchor_b|screw_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "nut_housing_c|liftmotor_c",
+     "G",
+     "z-separated",
+     851.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "park",
+     "nut_housing_c|screw_c",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "nut_housing_c|anchor_c",
+     "G",
+     "z-separated",
+     785.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "park",
+     "nut_housing_c|home_switch_c",
+     "G",
+     "z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "park",
+     "screw_c|anchor_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "anchor_c|screw_c",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "screw_a|anchor_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "screw_a|nut_housing_a",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "nut_housing_a|screw_a",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "anchor_a|screw_a",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "screw_b|anchor_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "screw_b|nut_housing_b",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "nut_housing_b|screw_b",
+     "N",
+     "N",
+     -84.16,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "park",
+     "anchor_b|screw_b",
+     "N",
+     "N",
+     -30.0,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|anchor_c",
+     "G",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|liftmotor_c",
+     "G",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|home_switch_c",
+     "G",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|anchor_a",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|liftmotor_a",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|home_switch_a",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|anchor_b",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|liftmotor_b",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_c|home_switch_b",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|anchor_c",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|liftmotor_c",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|home_switch_c",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|anchor_a",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|liftmotor_a",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|home_switch_a",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|anchor_b",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|liftmotor_b",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_a|home_switch_b",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|anchor_c",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|liftmotor_c",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|home_switch_c",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|anchor_a",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|liftmotor_a",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|home_switch_a",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|anchor_b",
+     "F",
+     "swept:z-separated",
+     10.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|liftmotor_b",
+     "F",
+     "swept:z-separated",
+     76.84,
+     null,
+     null,
+     "z band"
+    ],
+    [
+     "swept capture_end..park",
+     "nut_housing_b|home_switch_b",
+     "F",
+     "swept:z-separated",
+     11.16,
+     null,
+     null,
+     "z band"
+    ]
+   ],
+   "test_fields": [
+    "pose",
+    "pair",
+    "class",
+    "state",
+    "z_gap",
+    "distance",
+    "overlap",
+    "basis"
+   ],
+   "failing": 313,
+   "tests_axes": [
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan",
+    "inset_plan"
+   ],
+   "z_result": "clean 18/18",
+   "b_result": "fired 35/35",
+   "source": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED"
+  },
+  {
+   "id": "K8",
+   "result": "fail",
+   "reason": "[section] capture_end/base_frame section_u: untestable, base_frame not drawn; capture_end/base_plate section_u: untestable, base_plate not drawn; capture_end/collet taper : untestable, collet not drawn; capture_end/wingnut below drill_head: untestable, wingnut not drawn; capture_end/core_750 rests_on core_seat: untestable, core_750 not drawn; capture_end/drill_head projected_x: untestable, drill_head not drawn; ... 68 more | [inset_plan] capture_end/keepout plan_extent: untestable, keepout not drawn; capture_end/nut_housing_c plan_extent: untestable, nut_housing_c not drawn; capture_end/screw_c plan_extent: untestable, screw_c not drawn; capture_end/screw_c azimuth : untestable, screw_c not drawn; capture_end/anchor_c plan_extent: untestable, anchor_c not drawn; capture_end/anchor_c mirror_about_radial : untestable, anchor_c not drawn; ... 44 more",
+   "n_issues": 124,
+   "cause": "absent",
+   "measured": 124,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "fail",
+     "n_issues": 74,
+     "cause": "absent"
+    },
+    "inset_plan": {
+     "result": "fail",
+     "n_issues": 50,
+     "cause": "absent"
+    }
+   },
+   "z_result": "clean 15/15",
+   "b_result": "fired 76/76",
+   "source": "gameplan l.141; ASSEMBLY.md Coordinate frame"
+  },
+  {
+   "id": "K9",
+   "result": "fail",
+   "reason": "[section] capture_end: spec row base_frame has no patch; capture_end: spec row base_plate has no patch; capture_end: spec row receiver has no patch; capture_end: spec row collet has no patch; capture_end: spec row core_seat has no patch; capture_end: spec row holder has no patch; ... 42 more | [inset_plan] capture_end: spec row keepout has no patch; capture_end: spec row nut_housing_c has no patch; capture_end: spec row screw_c has no patch; capture_end: spec row anchor_c has no patch; capture_end: spec row frame_upper_c has no patch; capture_end: spec row liftmotor_c has no patch; ... 17 more",
+   "n_issues": 71,
+   "cause": "content",
+   "measured": 71,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "fail",
+     "n_issues": 48,
+     "cause": "content"
+    },
+    "inset_plan": {
+     "result": "fail",
+     "n_issues": 23,
+     "cause": "content"
+    }
+   },
+   "z_result": "clean 5/5",
+   "b_result": "fired 9/9",
+   "source": "gameplan l.142"
+  },
+  {
+   "id": "S3-1",
+   "result": "fail",
+   "reason": "measured: none; load_cut not drawn",
+   "measured": null,
+   "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
+   "z_result": "clean 1/1",
+   "b_result": "fired 2/2",
+   "source": "[DN23]; gameplan detail 1.3 S3-1"
+  },
+  {
+   "id": "S3-2",
+   "result": "fail",
+   "reason": "measured: none; anchor_bearing_c not drawn",
+   "measured": null,
+   "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
+   "z_result": "clean 2/2",
+   "b_result": "fired 2/2",
+   "source": "[DN23]; Design Notes 31 (SF 3 every case, K 0.7 on L_t, F_bind 300 N); E, d_r, mu, masses ASSUMED"
+  },
+  {
+   "id": "S3-3",
+   "result": "fail",
+   "reason": "measured: none; anchor_c not drawn",
+   "measured": null,
+   "threshold": null,
+   "n_issues": 1,
+   "cause": "absent",
+   "z_result": "clean 1/1",
+   "b_result": "fired 11/11",
+   "source": "SE-2; gameplan detail 1.3 S3-3; 1.3 open O11 (cross-record); Designer 1.3 (a) section 11"
+  },
+  {
+   "id": "X1",
+   "result": "pass",
+   "reason": "70 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2, s3), base_plate plan_poly (only in s2, s3), keepout place (only in s2, s3)",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "compared": 70,
+   "skipped": [
+    "base_frame plan_poly (only in s2, s3)",
+    "base_plate plan_poly (only in s2, s3)",
+    "keepout place (only in s2, s3)"
+   ],
+   "z_result": "clean 1/1",
+   "b_result": "fired 3/3",
+   "source": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)"
+  },
+  {
+   "id": "SYM",
+   "result": "pass",
+   "reason": "18 row pair(s) compared on z_rule, place in 3 spec(s)",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "issues": [],
+   "z_result": "clean 1/1",
+   "b_result": "fired 3/3",
+   "source": "Loftsman 1.3 (b) R1 and (b) sign-off (screw-set symmetry premise of S3-3); 1.3 P4"
+  },
+  {
+   "id": "RPT",
+   "result": "fail",
+   "reason": "reported item tension_segment (screw length in tension below the nut per S1 pose in the cut case): no value (needs drawing); cause absent",
+   "measured": 1,
+   "threshold": 0,
+   "n_issues": 1,
+   "cause": "absent",
+   "z_result": "clean 3/3",
+   "b_result": "fired 6/6",
+   "source": "1.3 open O10; Step 1.2 gate D3; gameplan detail 1.3 Reported (spec reported_items)"
+  },
+  {
+   "id": "SYM-P",
+   "result": "pass",
+   "reason": "keys_read covers every key read by place and z_rule of the SYM rows",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 1/1",
+   "source": "Loftsman 1.3 (b) R1 and (b) sign-off (screw-set symmetry premise of S3-3); 1.3 P4"
+  }
+ ],
+ "reported_drawn": {
+  "id": "reported",
+  "result": "pass",
+  "rows": [
+   [
+    "L_min",
+    "0.5 m only: L_min 885.00, at anchor_z 885.84; 0.5 and 0.75 m: L_min 885.00, at anchor_z 885.84; plus 1 m: L_min 1135.00, at anchor_z 1135.84 (DN23 800 to 900)",
+    "check_stack.reported q9_options, spec screw_length (S1 expressions)"
+   ],
+   [
+    "n_crit",
+    "pinned-pinned 1336 rpm (2.67 x), fixed-pinned 2086 rpm (4.17 x) against 500 rpm at 25 mm/s",
+    "L_t 870.00, d_r 8.5, E, density; fixed-pinned is the drawn end condition (K 0.7)"
+   ],
+   [
+    "pcr_margin",
+    "floating (K 0.7, L 870.00, P_cr 1363.8 N): per screw static 17.20, capture_lift 12.04, retract_bind 7.61, stall_up 3.97; two-screw static 11.47, capture_lift 8.02, retract_bind 5.07 | floating K 1.0 (K 1.0, L 870.00, P_cr 668.2 N): per screw static 8.43, capture_lift 5.90, retract_bind 3.73, stall_up 1.95; two-screw static 5.62, capture_lift 3.93, retract_bind 2.48 | rigid (K 0.5, L 815.84, P_cr 3039.7 N): per screw static 38.33, capture_lift 26.83, retract_bind 16.95, stall_up 8.86; two-screw static 25.55, capture_lift 17.88, retract_bind 11.30 | rigid K 1.0 (K 1.0, L 815.84, P_cr 759.9 N): per screw static 9.58, capture_lift 6.71, retract_bind 4.24, stall_up 2.21; two-screw static 6.39, capture_lift 4.47, retract_bind 2.83",
+    "Euler, I = pi d_r^4 / 64; per-screw forces from load_cases"
+   ],
+   [
+    "f_stall",
+    "mu 0.15: 343.18 per screw, 1029.54 total, both directions; mu 0.2: 282.21 per screw, 846.64 total, both directions",
+    "2 pi T eta / lead, eta over jackscrew.thread_mu"
+   ],
+   [
+    "wob_max",
+    "mu 0.15: 1267.43 N; mu 0.2: 1084.54 N against 1000 N",
+    "F_stall total + W (24.25 kg, 237.89 N)"
+   ],
+   [
+    "lift_torque",
+    "mu 0.15: cut 0.333, capture lift 0.149 N m; mu 0.2: cut 0.405, capture lift 0.181 N m against 0.45 N m",
+    "T = F lead / (2 pi eta), per screw"
+   ],
+   [
+    "kept_axial",
+    "1000 N at the cut; mu 0.15: 1267.43 N at F_stall + W; mu 0.2: 1084.54 N at F_stall + W (collet, holder, receiver, base plate, compression)",
+    "loads.axial_design; F_stall + W (N5)"
+   ],
+   [
+    "backdrive",
+    "lambda 5.20 deg; mu 0.15: phi_n 8.83 deg, back-drive efficiency -0.698 (self-locking); mu 0.2: phi_n 11.70 deg, back-drive efficiency -1.253 (self-locking)",
+    "lambda = atan(lead / (pi d2)), phi_n = atan(mu / cos 15)"
+   ],
+   [
+    "screw_share",
+    "static 79.30 / 118.95; capture_lift 113.31 / 169.96; retract_bind 179.30 / 268.95; cut 254.04 / 381.05; stall_up 343.18",
+    "per screw (load / 3) / two-screw (load / 2), N"
+   ],
+   [
+    "tension_segment",
+    null,
+    "anchor_bearing_c:line not drawn"
+   ]
+  ],
+  "items": {
+   "L_min": {
+    "value": "0.5 m only: L_min 885.00, at anchor_z 885.84; 0.5 and 0.75 m: L_min 885.00, at anchor_z 885.84; plus 1 m: L_min 1135.00, at anchor_z 1135.84 (DN23 800 to 900)",
+    "basis": "check_stack.reported q9_options, spec screw_length (S1 expressions)",
+    "tag": "DERIVED"
+   },
+   "n_crit": {
+    "value": "pinned-pinned 1336 rpm (2.67 x), fixed-pinned 2086 rpm (4.17 x) against 500 rpm at 25 mm/s",
+    "basis": "L_t 870.00, d_r 8.5, E, density; fixed-pinned is the drawn end condition (K 0.7)",
+    "tag": "DERIVED"
+   },
+   "pcr_margin": {
+    "value": "floating (K 0.7, L 870.00, P_cr 1363.8 N): per screw static 17.20, capture_lift 12.04, retract_bind 7.61, stall_up 3.97; two-screw static 11.47, capture_lift 8.02, retract_bind 5.07 | floating K 1.0 (K 1.0, L 870.00, P_cr 668.2 N): per screw static 8.43, capture_lift 5.90, retract_bind 3.73, stall_up 1.95; two-screw static 5.62, capture_lift 3.93, retract_bind 2.48 | rigid (K 0.5, L 815.84, P_cr 3039.7 N): per screw static 38.33, capture_lift 26.83, retract_bind 16.95, stall_up 8.86; two-screw static 25.55, capture_lift 17.88, retract_bind 11.30 | rigid K 1.0 (K 1.0, L 815.84, P_cr 759.9 N): per screw static 9.58, capture_lift 6.71, retract_bind 4.24, stall_up 2.21; two-screw static 6.39, capture_lift 4.47, retract_bind 2.83",
+    "basis": "Euler, I = pi d_r^4 / 64; per-screw forces from load_cases",
+    "tag": "DERIVED"
+   },
+   "f_stall": {
+    "value": "mu 0.15: 343.18 per screw, 1029.54 total, both directions; mu 0.2: 282.21 per screw, 846.64 total, both directions",
+    "basis": "2 pi T eta / lead, eta over jackscrew.thread_mu",
+    "tag": "DERIVED"
+   },
+   "wob_max": {
+    "value": "mu 0.15: 1267.43 N; mu 0.2: 1084.54 N against 1000 N",
+    "basis": "F_stall total + W (24.25 kg, 237.89 N)",
+    "tag": "DERIVED"
+   },
+   "lift_torque": {
+    "value": "mu 0.15: cut 0.333, capture lift 0.149 N m; mu 0.2: cut 0.405, capture lift 0.181 N m against 0.45 N m",
+    "basis": "T = F lead / (2 pi eta), per screw",
+    "tag": "DERIVED"
+   },
+   "kept_axial": {
+    "value": "1000 N at the cut; mu 0.15: 1267.43 N at F_stall + W; mu 0.2: 1084.54 N at F_stall + W (collet, holder, receiver, base plate, compression)",
+    "basis": "loads.axial_design; F_stall + W (N5)",
+    "tag": "DERIVED"
+   },
+   "backdrive": {
+    "value": "lambda 5.20 deg; mu 0.15: phi_n 8.83 deg, back-drive efficiency -0.698 (self-locking); mu 0.2: phi_n 11.70 deg, back-drive efficiency -1.253 (self-locking)",
+    "basis": "lambda = atan(lead / (pi d2)), phi_n = atan(mu / cos 15)",
+    "tag": "DERIVED"
+   },
+   "screw_share": {
+    "value": "static 79.30 / 118.95; capture_lift 113.31 / 169.96; retract_bind 179.30 / 268.95; cut 254.04 / 381.05; stall_up 343.18",
+    "basis": "per screw (load / 3) / two-screw (load / 2), N",
+    "tag": "DERIVED"
+   },
+   "tension_segment": {
+    "value": null,
+    "basis": "anchor_bearing_c:line not drawn",
+    "tag": null
+   }
+  }
+ },
+ "reported_items": [
+  {
+   "id": "L_min",
+   "text": "screw length L_min per Q9 option and at the drawn anchor, against DN23 800 to 900 (885.00 / 885.84 / 1135.00 unchanged)",
+   "source": "check_stack.reported q9_options L (spec screw_length)",
+   "needs_drawing": false
+  },
+  {
+   "id": "n_crit",
+   "text": "critical speed over L_t with the end factor stated, against the rapid traverse",
+   "source": "jackscrew.root_diameter, youngs_modulus, density, anchor_bearing_z, guide_bearing_z; liftload.rapid_speed, jackscrew.lead",
+   "needs_drawing": false
+  },
+  {
+   "id": "pcr_margin",
+   "text": "P_cr / F per compression case (static, capture lift, retract with bind, stall up), per mounting and K, per screw and two-screw",
+   "source": "s3_checks.S3-2 inputs; load_cases",
+   "needs_drawing": false
+  },
+  {
+   "id": "f_stall",
+   "text": "F_stall total and per screw, both directions, mu range",
+   "source": "liftmotor.holding_torque, jackscrew.lead, mean_diameter, thread_mu, thread_half_angle",
+   "needs_drawing": false
+  },
+  {
+   "id": "wob_max",
+   "text": "largest WOB at holding torque (F_stall + W) against loads.axial_design 1000",
+   "source": "F_stall, W (load_cases.W_kg), loads.axial_design",
+   "needs_drawing": false
+  },
+  {
+   "id": "lift_torque",
+   "text": "motor torque per screw for the cut and for capture lift, against liftmotor.holding_torque",
+   "source": "load_cases, jackscrew.lead, eta over thread_mu",
+   "needs_drawing": false
+  },
+  {
+   "id": "kept_axial",
+   "text": "axial force in collet, holder, receiver, base plate at 1000 N and at F_stall + W (N5)",
+   "source": "loads.axial_design; F_stall + W",
+   "needs_drawing": false
+  },
+  {
+   "id": "backdrive",
+   "text": "lead angle against friction angle, back-drive efficiency",
+   "source": "jackscrew.lead, mean_diameter, thread_mu, thread_half_angle",
+   "needs_drawing": false
+  },
+  {
+   "id": "screw_share",
+   "text": "per-screw (load / 3) and two-screw (load / 2) force per case",
+   "source": "load_cases",
+   "needs_drawing": false
+  },
+  {
+   "id": "tension_segment",
+   "text": "screw length in tension below the nut per S1 pose in the cut case",
+   "source": "drawn anchor bearing line (anchor_bearing_c:line) and check_stack nut_z per pose",
+   "needs_drawing": true
+  }
+ ]
+}

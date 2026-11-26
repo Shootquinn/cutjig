@@ -1,15 +1,15 @@
 {
  "run": 1,
- "timestamp": "2026-11-26T01:29:33",
+ "timestamp": "2026-11-26T17:50:57",
  "summary": {
-  "z_clean": 70,
-  "z_total": 70,
-  "b_fired": 191,
-  "b_total": 191,
-  "smoke_ok": 2,
-  "smoke_total": 2,
+  "z_clean": 98,
+  "z_total": 98,
+  "b_fired": 312,
+  "b_total": 312,
+  "smoke_ok": 3,
+  "smoke_total": 3,
   "jobs": 12,
-  "wall_seconds": 111.1
+  "wall_seconds": 225.7
  },
  "controls": [
   {
@@ -20,9 +20,9 @@
    "observed": "clean",
    "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (k1_z_clean.py)",
    "match": "yes",
-   "gameplan_line": 134,
+   "gameplan_line": 135,
    "finding": null,
-   "seconds": 0.144
+   "seconds": 0.175
   },
   {
    "id": "K1-B1",
@@ -32,9 +32,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "k1_b1_literal.py:16 literal 152.4",
    "match": "yes",
-   "gameplan_line": 134,
+   "gameplan_line": 135,
    "finding": null,
-   "seconds": 0.139
+   "seconds": 0.151
   },
   {
    "id": "K1-B2",
@@ -44,9 +44,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "k1_b2_softkey.py:19 comparison with soft key jig.height_target",
    "match": "yes",
-   "gameplan_line": 134,
+   "gameplan_line": 135,
    "finding": null,
-   "seconds": 0.114
+   "seconds": 0.16
   },
   {
    "id": "K2-Z",
@@ -56,9 +56,9 @@
    "observed": "clean",
    "reason": "5 spec keys resolve; 3 overlay leaves sourced, legal status, no shadow; 0 expr leaves agree within 0.05",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": null,
-   "seconds": 0.714
+   "seconds": 0.778
   },
   {
    "id": "K2-B1",
@@ -68,9 +68,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay key drill.tube_od shadows params.yaml",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": null,
-   "seconds": 0.718
+   "seconds": 0.779
   },
   {
    "id": "K2-B2",
@@ -80,9 +80,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay fx.ring_thickness: empty source",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": null,
-   "seconds": 0.677
+   "seconds": 0.757
   },
   {
    "id": "K2-B3",
@@ -92,9 +92,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay fx.ring_od: DECLARED without [CP \u00a7n, mm:ss] or [DN23]",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": null,
-   "seconds": 0.802
+   "seconds": 0.768
   },
   {
    "id": "K3-Z",
@@ -104,9 +104,9 @@
    "observed": "clean",
    "reason": "1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.314
+   "seconds": 0.3
   },
   {
    "id": "K3-B1",
@@ -116,9 +116,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: title 'k3 fixture pose start' lacks view side_xz",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.301
+   "seconds": 0.333
   },
   {
    "id": "K3-B2",
@@ -128,9 +128,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: x label 'x' lacks (mm)",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.179
+   "seconds": 0.32
   },
   {
    "id": "K3-B3",
@@ -140,9 +140,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: aspect 'auto'",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.166
+   "seconds": 0.167
   },
   {
    "id": "K3-B4",
@@ -152,9 +152,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: minor grid off",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.143
+   "seconds": 0.138
   },
   {
    "id": "K3-B5",
@@ -164,9 +164,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: figsize (6.4, 4.8) below (14, 10)",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.285
+   "seconds": 0.328
   },
   {
    "id": "K3-B6",
@@ -176,9 +176,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: dpi 100 not 150",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": null,
-   "seconds": 0.307
+   "seconds": 0.168
   },
   {
    "id": "K3-B7",
@@ -188,9 +188,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: 2 Axes in the figure, spec declares no inset (checks read the first Axes only)",
    "match": "yes",
-   "gameplan_line": 136,
+   "gameplan_line": 137,
    "finding": "TP-7",
-   "seconds": 0.266
+   "seconds": 0.373
   },
   {
    "id": "K4-Z",
@@ -200,9 +200,9 @@
    "observed": "clean",
    "reason": "3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
    "match": "yes",
-   "gameplan_line": 137,
+   "gameplan_line": 138,
    "finding": null,
-   "seconds": 0.898
+   "seconds": 0.924
   },
   {
    "id": "K4-B1",
@@ -212,9 +212,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/drill_tube: label 'tube OD' carries no number (want 152.4 from drill.tube_od)",
    "match": "yes",
-   "gameplan_line": 137,
+   "gameplan_line": 138,
    "finding": null,
-   "seconds": 0.846
+   "seconds": 0.897
   },
   {
    "id": "K4-B2",
@@ -224,9 +224,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/drill_tube: label 'tube OD 150' number differs from drill.tube_od = 152.4",
    "match": "yes",
-   "gameplan_line": 137,
+   "gameplan_line": 138,
    "finding": null,
-   "seconds": 0.9
+   "seconds": 0.934
   },
   {
    "id": "K4-B3",
@@ -236,9 +236,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "capture_end/core_500: label 'core 750' number differs from core.length_capture = 500; capture_end/core_750: label 'core 500' number differs from core.length_install = 750",
    "match": "yes",
-   "gameplan_line": 137,
+   "gameplan_line": 138,
    "finding": "SW-3",
-   "seconds": 0.877
+   "seconds": 0.829
   },
   {
    "id": "K5-Z",
@@ -248,9 +248,9 @@
    "observed": "clean",
    "reason": "2 tagged artist(s) projected per kind, axis and spec projection (view normal Y) || 1 tagged artist(s) projected per kind, axis and spec projection (view normal Z) || 15 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": null,
-   "seconds": 2.668
+   "seconds": 2.636
   },
   {
    "id": "K5-B1",
@@ -260,9 +260,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/drill_tube: cylinder axis Z in side_xz drawn as circle, needs rectangle",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": null,
-   "seconds": 0.845
+   "seconds": 0.959
   },
   {
    "id": "K5-B2",
@@ -272,9 +272,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/pinion_a: gear axis X in side_xz drawn as rectangle, needs trapezoid",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": null,
-   "seconds": 0.859
+   "seconds": 0.942
   },
   {
    "id": "K5-B3",
@@ -284,9 +284,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture: untagged Rectangle",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": null,
-   "seconds": 1.024
+   "seconds": 0.896
   },
   {
    "id": "K5-B4",
@@ -296,9 +296,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/nut_a: prism drawn as polygon, spec projection rectangle",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": "TP-6",
-   "seconds": 1.944
+   "seconds": 1.835
   },
   {
    "id": "K5-B5",
@@ -308,9 +308,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "drill_tube: spec error, cylinder row needs axis X, Y or Z (has None)",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": "TP-6",
-   "seconds": 0.991
+   "seconds": 0.963
   },
   {
    "id": "K6-Z",
@@ -320,9 +320,9 @@
    "observed": "clean",
    "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": null,
-   "seconds": 1.084
+   "seconds": 1.066
   },
   {
    "id": "K6-Z2",
@@ -334,7 +334,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
    "finding": "LF-2",
-   "seconds": 1.119
+   "seconds": 1.034
   },
   {
    "id": "K6-B1",
@@ -344,9 +344,9 @@
    "observed": "fires (3 issue(s), planted 3)",
    "reason": "capture_end/drill_head: drawn z [251.59, 357.96] vs stack [244.84, 351.21] z_S, off 6.75; capture_end/drill_tube: drawn z [357.96, 1051.59] vs stack [351.21, 1044.84] z_S, off 6.75; capture_end/drill_top_block: drawn z [1051.59, 1201.59] vs stack [1044.84, 1194.84] z_S, off 6.75",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": null,
-   "seconds": 1.83
+   "seconds": 1.831
   },
   {
    "id": "K6-B2",
@@ -356,9 +356,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/core_500: drawn z [42.50, 542.50] vs stack [102.50, 602.50] z_S, off 60.00",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": null,
-   "seconds": 1.713
+   "seconds": 1.866
   },
   {
    "id": "K6-B2b",
@@ -370,7 +370,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
    "finding": null,
-   "seconds": 1.722
+   "seconds": 1.895
   },
   {
    "id": "K6-B3",
@@ -380,9 +380,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "import guard: k6_b3_check_stack.py:6 imports stubs",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": null,
-   "seconds": 0.955
+   "seconds": 0.973
   },
   {
    "id": "K6-B4",
@@ -394,7 +394,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
    "finding": "LF-2",
-   "seconds": 1.255
+   "seconds": 1.086
   },
   {
    "id": "K6-Z3",
@@ -406,7 +406,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
    "finding": "LF-16",
-   "seconds": 1.551
+   "seconds": 1.636
   },
   {
    "id": "K6-B5",
@@ -418,7 +418,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
    "finding": "LF-16",
-   "seconds": 1.478
+   "seconds": 1.641
   },
   {
    "id": "K7-Z1",
@@ -428,9 +428,9 @@
    "observed": "clean, states ['F']",
    "reason": "1 pair test(s) clean; states ['F']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.817
+   "seconds": 0.936
   },
   {
    "id": "K7-Z2",
@@ -440,9 +440,9 @@
    "observed": "clean, states ['depth-separated']",
    "reason": "0 pair test(s) clean; states ['depth-separated']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.818
+   "seconds": 0.871
   },
   {
    "id": "K7-Z3",
@@ -452,9 +452,9 @@
    "observed": "clean, states ['C']",
    "reason": "1 pair test(s) clean; states ['C']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.782
+   "seconds": 0.929
   },
   {
    "id": "K7-Z4",
@@ -464,9 +464,9 @@
    "observed": "clean",
    "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.872
+   "seconds": 0.977
   },
   {
    "id": "K7-Z5",
@@ -476,9 +476,9 @@
    "observed": "clean",
    "reason": "0 plan pair test(s) clean over 4 pose(s); states ['swept:z-separated', 'z-separated']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "SW-6",
-   "seconds": 0.888
+   "seconds": 1.034
   },
   {
    "id": "K7-Z6",
@@ -488,9 +488,9 @@
    "observed": "clean",
    "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-3",
-   "seconds": 0.957
+   "seconds": 0.953
   },
   {
    "id": "K7-Z7",
@@ -500,9 +500,9 @@
    "observed": "clean",
    "reason": "0 pair test(s) clean; states ['N', 'undeclared:F']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "TP-5",
-   "seconds": 0.828
+   "seconds": 0.953
   },
   {
    "id": "K7-Z8",
@@ -512,9 +512,9 @@
    "observed": "clean, states ['plan-separated']",
    "reason": "1 pair test(s) clean; states ['plan-separated']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-8 (1.1 b)",
-   "seconds": 1.348
+   "seconds": 1.558
   },
   {
    "id": "K7-Z9",
@@ -524,9 +524,9 @@
    "observed": "clean",
    "reason": "0 pair test(s) clean; states ['undeclared:plan-separated']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-8 (1.1 b)",
-   "seconds": 1.312
+   "seconds": 1.381
   },
   {
    "id": "K7-B1",
@@ -536,9 +536,9 @@
    "observed": "fires (3 issue(s), planted 3)",
    "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap; no placed plan footprints for the plan-contact test; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0, gap - g_min +0.000; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.695
+   "seconds": 0.897
   },
   {
    "id": "K7-B2",
@@ -548,9 +548,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.875
+   "seconds": 0.941
   },
   {
    "id": "K7-B3",
@@ -560,9 +560,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b G: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10, gap - g_min -1.000",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.799
+   "seconds": 0.851
   },
   {
    "id": "K7-B4",
@@ -572,9 +572,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "swept p1..p4/ring|member G: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap, g_min 10, gap - g_min -10.000",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": null,
-   "seconds": 0.896
+   "seconds": 0.986
   },
   {
    "id": "K7-B5",
@@ -584,9 +584,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b C: C pair depth-separated by 490.000 mm (contact needs bands within 0.05)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-1",
-   "seconds": 0.773
+   "seconds": 0.927
   },
   {
    "id": "K7-B6",
@@ -596,9 +596,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b G: band gap 1.000 mm, projected distance 0.000 mm, lower bound 1.000, g_min 10, gap - g_min -9.000",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-1",
-   "seconds": 0.785
+   "seconds": 0.877
   },
   {
    "id": "K7-B7",
@@ -608,9 +608,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "motor: spec depth band [-129.00, -72.00] does not contain the placed projection [-125.18, -37.82]; fixture/motor|post F: distance 0.000 mm, overlap 570.000 mm2, state overlap",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "TP-4, LF-5",
-   "seconds": 0.74
+   "seconds": 0.88
   },
   {
    "id": "K7-B8",
@@ -620,7 +620,7 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "swept p1..p4/ring|member G: swept outline z gap -220.000, plan distance 0.000 mm, overlap 2000.000 mm2, lower bound 0.000, g_min 10, gap - g_min -10.000",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "SW-6",
    "seconds": 0.877
   },
@@ -632,9 +632,9 @@
    "observed": "fires (3 issue(s), planted 3)",
    "reason": "p1/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; p2/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; swept p1..p2/ring|lmember G: swept hull non-convex piece in ['lmember']; split it in the spec",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-4",
-   "seconds": 0.831
+   "seconds": 0.957
   },
   {
    "id": "K7-B10",
@@ -644,9 +644,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b undeclared (F): distance 0.000 mm, overlap 5000.000 mm2, state overlap",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "TP-5",
-   "seconds": 0.785
+   "seconds": 0.861
   },
   {
    "id": "K7-B11",
@@ -656,9 +656,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/a|b G: distance 0.000 mm, overlap 1243.594 mm2, state overlap, g_min 10, gap - g_min -10.000; plan footprints 8.979 mm apart, lower bound 8.979, gap - g_min -1.021",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF-8 (1.1 b)",
-   "seconds": 1.218
+   "seconds": 1.391
   },
   {
    "id": "K8-Z",
@@ -668,9 +668,9 @@
    "observed": "clean",
    "reason": "19 predicate(s) hold, axes not inverted || 8 predicate(s) hold, axes not inverted || 2 predicate(s) hold, axes not inverted",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": null,
-   "seconds": 2.471
+   "seconds": 2.868
   },
   {
    "id": "K8-Z2",
@@ -680,9 +680,9 @@
    "observed": "clean",
    "reason": "18 predicate(s) hold, axes not inverted",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP-9",
-   "seconds": 0.763
+   "seconds": 0.914
   },
   {
    "id": "K8-B1",
@@ -692,9 +692,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 405.2; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": null,
-   "seconds": 1.573
+   "seconds": 1.859
   },
   {
    "id": "K8-B2",
@@ -704,9 +704,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/anchor_a below nut_a: centroid z 440.8 vs 380.8",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": null,
-   "seconds": 1.52
+   "seconds": 1.838
   },
   {
    "id": "K8-B3",
@@ -716,9 +716,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "plan: axis inverted (x False, y True)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": null,
-   "seconds": 0.893
+   "seconds": 1.022
   },
   {
    "id": "K8-B4",
@@ -728,9 +728,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/core_500 rests_on core_seat: bottom minus seat top 1.000 mm",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "SW-4",
-   "seconds": 0.861
+   "seconds": 0.953
   },
   {
    "id": "K8-B5",
@@ -740,21 +740,21 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/gear not mirrored about x = 0.00 (8 unmatched vertices, 2 pieces)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "SW-4",
-   "seconds": 0.851
+   "seconds": 0.959
   },
   {
    "id": "K8-B6",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (1 issue(s), planted 1)",
-   "reason": "plan/screw_b azimuth 270.00 deg vs jackscrew.angle[1] = 150.00",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "plan/screw_b azimuth 270.00 deg vs jackscrew.angle[1] = 150.00; plan/screw_b cover: opaque fill of screw_c drawn above it lies behind it or is no part (z_max screw_c none against screw_b none); an opaque fill hides only what lies behind it (TP1.3-2); plan/screw_b cover: Circle wholly under screw_c drawn solid (linestyle 'solid', fill True, hatch None); a hidden part is dashed, no fill",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "SW-4",
-   "seconds": 0.784
+   "seconds": 1.096
   },
   {
    "id": "K8-B7",
@@ -764,9 +764,9 @@
    "observed": "fires (3 issue(s), planted 3)",
    "reason": "capture_end/motor23_a projected_x: drawn x centre 141.16 vs r_c cos(theta) -141.16 (r_c 163.00, theta 210); capture_end/motor23_a projected_extent: drawn x [94.00, 188.32] outside the spec footprint x [-188.32, -94.00] (by 282.32); capture_end/motor23_a side of drill_tube: centroid x minus drill_tube x 141.16, spec sign -1",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "SW-5, TP-3; r4 TP1.1-11 adds projected_extent",
-   "seconds": 0.808
+   "seconds": 0.965
   },
   {
    "id": "K8-B8",
@@ -776,9 +776,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 405.2; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP-1",
-   "seconds": 1.545
+   "seconds": 1.85
   },
   {
    "id": "K8-B9",
@@ -788,9 +788,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "core_500 rests_on: spec error, non-string key True (YAML 1.1 reads on/off/yes/no as booleans); missing key 'seat'",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "SW-1",
-   "seconds": 0.929
+   "seconds": 1.074
   },
   {
    "id": "K8-B10",
@@ -800,9 +800,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/gear taper narrows down: piece 0: width at bottom 50.00, at top 35.00",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP-2; ruling Design Notes 22",
-   "seconds": 0.762
+   "seconds": 0.99
   },
   {
    "id": "K8-B11",
@@ -812,9 +812,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/collet taper narrows up: piece 0: width at bottom 125.76, at top 134.58",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP-2; ruling Design Notes 22",
-   "seconds": 0.756
+   "seconds": 0.845
   },
   {
    "id": "K8-Z3",
@@ -826,7 +826,7 @@
    "match": "yes",
    "gameplan_line": "141; 237",
    "finding": "TP-9 ring_on_tube",
-   "seconds": 0.817
+   "seconds": 0.828
   },
   {
    "id": "K8-B12",
@@ -838,7 +838,7 @@
    "match": "yes",
    "gameplan_line": "141; 237",
    "finding": "TP-9 ring_on_tube",
-   "seconds": 1.479
+   "seconds": 1.826
   },
   {
    "id": "K8-B13",
@@ -850,7 +850,7 @@
    "match": "yes",
    "gameplan_line": "141; 237",
    "finding": "TP-9 ring_on_tube",
-   "seconds": 1.284
+   "seconds": 1.8
   },
   {
    "id": "K9-Z",
@@ -860,9 +860,9 @@
    "observed": "clean",
    "reason": "every spec row drawn, every tagged artist in the spec (14 rows)",
    "match": "yes",
-   "gameplan_line": 142,
+   "gameplan_line": 143,
    "finding": null,
-   "seconds": 0.691
+   "seconds": 0.962
   },
   {
    "id": "K9-B1",
@@ -872,9 +872,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end: spec row guide_member has no patch",
    "match": "yes",
-   "gameplan_line": 142,
+   "gameplan_line": 143,
    "finding": null,
-   "seconds": 0.798
+   "seconds": 0.917
   },
   {
    "id": "K9-B2",
@@ -884,9 +884,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end: tagged artist spare_bracket has no spec row",
    "match": "yes",
-   "gameplan_line": 142,
+   "gameplan_line": 143,
    "finding": null,
-   "seconds": 0.757
+   "seconds": 0.949
   },
   {
    "id": "K9-B3",
@@ -896,9 +896,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end: spec row guide_member has no patch (a Text carries its gid)",
    "match": "yes",
-   "gameplan_line": 142,
+   "gameplan_line": 143,
    "finding": "TP-6",
-   "seconds": 0.735
+   "seconds": 1.013
   },
   {
    "id": "K9-B4",
@@ -908,9 +908,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "spec error: id anchor_a appears on more than one row",
    "match": "yes",
-   "gameplan_line": 142,
+   "gameplan_line": 143,
    "finding": "TP-8",
-   "seconds": 0.892
+   "seconds": 0.992
   },
   {
    "id": "S1-4-Z",
@@ -922,7 +922,7 @@
    "match": "yes",
    "gameplan_line": 231,
    "finding": "Loftsman FIX 2",
-   "seconds": 2.475
+   "seconds": 2.72
   },
   {
    "id": "S1-4-B1",
@@ -934,7 +934,7 @@
    "match": "yes",
    "gameplan_line": 231,
    "finding": "Loftsman FIX 2",
-   "seconds": 2.278
+   "seconds": 2.619
   },
   {
    "id": "S1-5b-Z",
@@ -946,7 +946,7 @@
    "match": "yes",
    "gameplan_line": 233,
    "finding": "Loftsman FIX 1",
-   "seconds": 2.642
+   "seconds": 3.042
   },
   {
    "id": "S1-5b-B1",
@@ -958,7 +958,7 @@
    "match": "yes",
    "gameplan_line": 233,
    "finding": "Loftsman FIX 1",
-   "seconds": 2.703
+   "seconds": 3.15
   },
   {
    "id": "K7-Z10",
@@ -968,9 +968,9 @@
    "observed": "clean",
    "reason": "618 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:C', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Loftsman FIX 3; Designer F4",
-   "seconds": 11.301
+   "seconds": 13.419
   },
   {
    "id": "K7-B12",
@@ -980,9 +980,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "start/core_750|drill_head undeclared (F): distance 0.000 mm, overlap 1766.000 mm2, state overlap; plan footprints 0.000 mm apart, lower bound 0.000",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Loftsman FIX 3",
-   "seconds": 12.031
+   "seconds": 13.575
   },
   {
    "id": "K7-B13",
@@ -992,9 +992,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "load/frame_upper_a|base_plate C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer F4",
-   "seconds": 11.532
+   "seconds": 12.995
   },
   {
    "id": "K6-B6",
@@ -1006,7 +1006,7 @@
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
    "finding": "LF-16; Loftsman NOTE 1",
-   "seconds": 1.556
+   "seconds": 1.574
   },
   {
    "id": "S1-1-Z",
@@ -1018,7 +1018,7 @@
    "match": "yes",
    "gameplan_line": 228,
    "finding": "H6",
-   "seconds": 2.25
+   "seconds": 2.609
   },
   {
    "id": "S1-1-B1",
@@ -1030,7 +1030,7 @@
    "match": "yes",
    "gameplan_line": 228,
    "finding": "H6",
-   "seconds": 2.122
+   "seconds": 2.668
   },
   {
    "id": "S1-1-B2",
@@ -1042,7 +1042,7 @@
    "match": "yes",
    "gameplan_line": 228,
    "finding": "H6",
-   "seconds": 2.286
+   "seconds": 2.677
   },
   {
    "id": "S1-2-Z",
@@ -1054,7 +1054,7 @@
    "match": "yes",
    "gameplan_line": 229,
    "finding": "H6; SW-10",
-   "seconds": 2.344
+   "seconds": 2.639
   },
   {
    "id": "S1-2-B1",
@@ -1066,7 +1066,7 @@
    "match": "yes",
    "gameplan_line": 229,
    "finding": "H6; SW-10 (replacement, Design Notes 22)",
-   "seconds": 2.328
+   "seconds": 2.521
   },
   {
    "id": "S1-2-B2",
@@ -1078,7 +1078,7 @@
    "match": "yes",
    "gameplan_line": 229,
    "finding": "H6; SW 1.1 (c) FIX 1",
-   "seconds": 2.237
+   "seconds": 2.516
   },
   {
    "id": "S1-3-Z",
@@ -1090,7 +1090,7 @@
    "match": "yes",
    "gameplan_line": 230,
    "finding": "H6; SW-10",
-   "seconds": 2.168
+   "seconds": 2.553
   },
   {
    "id": "S1-3-B1",
@@ -1102,7 +1102,7 @@
    "match": "yes",
    "gameplan_line": 230,
    "finding": "H6; SW-10 (revised at 1.1 (b))",
-   "seconds": 2.262
+   "seconds": 2.531
   },
   {
    "id": "S1-4-B2",
@@ -1114,7 +1114,7 @@
    "match": "yes",
    "gameplan_line": 231,
    "finding": "H6",
-   "seconds": 3.662
+   "seconds": 4.208
   },
   {
    "id": "S1-5a-Z",
@@ -1126,7 +1126,7 @@
    "match": "yes",
    "gameplan_line": 232,
    "finding": "H6",
-   "seconds": 2.42
+   "seconds": 2.704
   },
   {
    "id": "S1-5a-B1",
@@ -1138,7 +1138,7 @@
    "match": "yes",
    "gameplan_line": 232,
    "finding": "H6",
-   "seconds": 2.925
+   "seconds": 3.764
   },
   {
    "id": "S1-6-Z",
@@ -1150,7 +1150,7 @@
    "match": "yes",
    "gameplan_line": 234,
    "finding": "H6",
-   "seconds": 2.366
+   "seconds": 2.642
   },
   {
    "id": "S1-6-B1",
@@ -1162,7 +1162,7 @@
    "match": "yes",
    "gameplan_line": 234,
    "finding": "H6",
-   "seconds": 3.618
+   "seconds": 4.189
   },
   {
    "id": "S1-7-Z",
@@ -1174,7 +1174,7 @@
    "match": "yes",
    "gameplan_line": 235,
    "finding": "H6; G2",
-   "seconds": 2.309
+   "seconds": 2.587
   },
   {
    "id": "S1-7-B1",
@@ -1186,7 +1186,7 @@
    "match": "yes",
    "gameplan_line": 235,
    "finding": "H6; G2",
-   "seconds": 2.079
+   "seconds": 2.61
   },
   {
    "id": "K6-B7",
@@ -1198,7 +1198,7 @@
    "match": "yes",
    "gameplan_line": "139; 223",
    "finding": "LF1.1-1",
-   "seconds": 1.422
+   "seconds": 1.565
   },
   {
    "id": "K8-Z4",
@@ -1208,9 +1208,9 @@
    "observed": "clean",
    "reason": "20 predicate(s) hold, axes not inverted",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.1-1",
-   "seconds": 0.742
+   "seconds": 0.933
   },
   {
    "id": "K8-B14",
@@ -1220,9 +1220,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/gear face_rises outward: piece 0: face from (125.00, 386.84) to (90.00, 401.84), dz +15.00 over d|x| -35.00",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.1-1",
-   "seconds": 0.816
+   "seconds": 1.044
   },
   {
    "id": "K9-Z2",
@@ -1234,7 +1234,7 @@
    "match": "yes",
    "gameplan_line": "142; 237",
    "finding": "TP1.1-2",
-   "seconds": 2.351
+   "seconds": 2.753
   },
   {
    "id": "K9-B5",
@@ -1246,7 +1246,7 @@
    "match": "yes",
    "gameplan_line": "142; 237",
    "finding": "TP1.1-2",
-   "seconds": 2.308
+   "seconds": 2.568
   },
   {
    "id": "K7-B14",
@@ -1256,9 +1256,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "spec error: collet|holder class N between two section rows (declare C, G or F)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "TP1.1-3",
-   "seconds": 11.689
+   "seconds": 12.806
   },
   {
    "id": "K7-B15",
@@ -1268,9 +1268,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; start/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; capture_end/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; park/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "TP1.1-3",
-   "seconds": 11.709
+   "seconds": 12.896
   },
   {
    "id": "K5-Z2",
@@ -1278,11 +1278,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "295 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
+   "reason": "303 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": "TP1.1-3",
-   "seconds": 2.48
+   "seconds": 2.885
   },
   {
    "id": "K5-B6",
@@ -1292,9 +1292,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "capture_end/holder: bore_cone trapezoid z [137.00, 142.00] outside mate collet z [100.00, 132.00]",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": "TP1.1-3",
-   "seconds": 2.631
+   "seconds": 2.542
   },
   {
    "id": "K7-Z11",
@@ -1304,9 +1304,9 @@
    "observed": "clean, states ['plan-contact']",
    "reason": "1 pair test(s) clean; states ['plan-contact']",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer M1 r2 F2",
-   "seconds": 0.785
+   "seconds": 0.892
   },
   {
    "id": "K7-B16",
@@ -1316,9 +1316,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/arm|block C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer M1 r2 F2",
-   "seconds": 0.818
+   "seconds": 0.972
   },
   {
    "id": "K7-B17",
@@ -1328,9 +1328,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "fixture/arm|block C: distance 0.000 mm, overlap 560.385 mm2, state overlap; plan footprints distance 0.000 mm, overlap 8.607 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer M1 r2 F2",
-   "seconds": 0.779
+   "seconds": 0.923
   },
   {
    "id": "K7-B18",
@@ -1340,9 +1340,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; start/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; capture_end/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; park/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer M1 r2 F3",
-   "seconds": 12.114
+   "seconds": 12.845
   },
   {
    "id": "K7-B19",
@@ -1350,11 +1350,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (4 issue(s), planted 4)",
-   "reason": "load/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); park/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
+   "reason": "load/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 739.019 mm2, state overlap; plan footprints distance 1.000 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 739.019 mm2, state overlap; plan footprints distance 1.000 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 739.019 mm2, state overlap; plan footprints distance 1.000 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); park/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 739.019 mm2, state overlap; plan footprints distance 1.000 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer M1 r2 F2",
-   "seconds": 11.652
+   "seconds": 13.235
   },
   {
    "id": "K8-Z5",
@@ -1364,9 +1364,9 @@
    "observed": "clean",
    "reason": "346 predicate(s) hold, axes not inverted",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.1-11",
-   "seconds": 2.536
+   "seconds": 3.004
   },
   {
    "id": "K7-B20",
@@ -1376,9 +1376,9 @@
    "observed": "fires (12 issue(s), planted 12)",
    "reason": "load/guide_tie_b|frame_upper_a C: C pair depth-separated by 3.111 mm (contact needs bands within 0.05); load/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); load/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/guide_tie_b|frame_upper_a C: C pair depth-separated by 3.111 mm (contact needs bands within 0.05); start/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); ... 6 more",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "LF1.1-8 = TP1.1-12; 1.2 (b) fix pass: S1 r5 tie b row adds 4",
-   "seconds": 12.209
+   "seconds": 13.035
   },
   {
    "id": "K8-B15",
@@ -1388,9 +1388,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); start/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); capture_end/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); park/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.1-11",
-   "seconds": 2.612
+   "seconds": 3.097
   },
   {
    "id": "K8-B16",
@@ -1400,9 +1400,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); start/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); capture_end/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); park/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.1-11",
-   "seconds": 2.803
+   "seconds": 2.893
   },
   {
    "id": "K8-B17",
@@ -1412,9 +1412,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); start/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); capture_end/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); park/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "Designer 1.2 (b) FIX 1; detail 1 common (h)",
-   "seconds": 2.766
+   "seconds": 3.012
   },
   {
    "id": "K7-B21",
@@ -1424,9 +1424,9 @@
    "observed": "fires (4 issue(s), planted 4)",
    "reason": "load/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); start/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); park/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Designer 1.2 (b) Correction 1",
-   "seconds": 12.239
+   "seconds": 12.622
   },
   {
    "id": "S1-FULL",
@@ -1451,7 +1451,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "322 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05"
+     "reason": "331 spec keys resolve; 194 overlay leaves sourced, legal status, no shadow; 21 expr leaves agree within 0.05"
     },
     {
      "id": "K3",
@@ -1472,7 +1472,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "295 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
+     "reason": "303 tagged artist(s) projected per kind, axis and spec projection (view normal Y)"
     },
     {
      "id": "K6",
@@ -1562,7 +1562,7 @@
      "reason": "capture-core (core_750) top at start minus end-of-capture tip 607.66 mm, need 534.93 (spare 72.73)"
     }
    ],
-   "seconds": 15.066
+   "seconds": 16.72
   },
   {
    "id": "H1-Z1",
@@ -1574,7 +1574,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 1.607
+   "seconds": 1.958
   },
   {
    "id": "H1-Z2",
@@ -1586,7 +1586,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 1.572
+   "seconds": 2.084
   },
   {
    "id": "H1-B1",
@@ -1598,7 +1598,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 0.829
+   "seconds": 1.042
   },
   {
    "id": "H1-B2",
@@ -1610,7 +1610,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 0.901
+   "seconds": 1.069
   },
   {
    "id": "H1-B3",
@@ -1622,7 +1622,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 2.766
+   "seconds": 3.344
   },
   {
    "id": "H1-B4",
@@ -1634,7 +1634,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 2.115
+   "seconds": 2.716
   },
   {
    "id": "H1-B5",
@@ -1642,11 +1642,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "refused: s1_pose_load_r4.png differs in pixels from C:\\Users\\UR\\AppData\\Local\\Temp\\tmplxavsu2a\\docs\\s1_pose_load_r4.png (drawn geometry moved: new revision)",
+   "reason": "refused: s1_pose_load_r4.png differs in pixels from D:\\Unleashed Robotics\\_scratch\\cutjig\\tmp\\tmp43p9xvey\\docs\\s1_pose_load_r4.png (drawn geometry moved: new revision)",
    "match": "yes",
    "gameplan_line": 124,
    "finding": "DN25 H1",
-   "seconds": 0.864
+   "seconds": 0.936
   },
   {
    "id": "H5-Z",
@@ -1658,7 +1658,7 @@
    "match": "yes",
    "gameplan_line": 650,
    "finding": "DN25 H5",
-   "seconds": 1.509
+   "seconds": 1.452
   },
   {
    "id": "H5-B",
@@ -1670,7 +1670,7 @@
    "match": "yes",
    "gameplan_line": 650,
    "finding": "DN25 H5",
-   "seconds": 1.278
+   "seconds": 1.587
   },
   {
    "id": "K4-Z2",
@@ -1682,7 +1682,7 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer 1.2 (b) FIX 3",
-   "seconds": 7.691
+   "seconds": 10.365
   },
   {
    "id": "K4-B4",
@@ -1694,7 +1694,7 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer 1.2 (b) FIX 3",
-   "seconds": 8.478
+   "seconds": 10.813
   },
   {
    "id": "K4-B5",
@@ -1706,7 +1706,7 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer 1.2 (b) FIX 3",
-   "seconds": 7.436
+   "seconds": 10.577
   },
   {
    "id": "K5-Z3",
@@ -1714,11 +1714,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "99 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "reason": "118 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
    "match": "yes",
    "gameplan_line": 139,
    "finding": "TP-13",
-   "seconds": 7.676
+   "seconds": 8.486
   },
   {
    "id": "K5-B7",
@@ -1730,7 +1730,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "SW-17",
-   "seconds": 7.84
+   "seconds": 8.385
   },
   {
    "id": "K5-B8",
@@ -1742,7 +1742,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "TP-13",
-   "seconds": 7.855
+   "seconds": 8.293
   },
   {
    "id": "K5-B9",
@@ -1754,7 +1754,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "TP-13",
-   "seconds": 7.689
+   "seconds": 8.395
   },
   {
    "id": "K5-B10",
@@ -1766,7 +1766,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "TP-13 premise",
-   "seconds": 7.689
+   "seconds": 8.482
   },
   {
    "id": "K5-B11",
@@ -1778,7 +1778,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "hub admission premise",
-   "seconds": 8.363
+   "seconds": 8.895
   },
   {
    "id": "K6-Z4",
@@ -1786,11 +1786,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "69 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean",
+   "reason": "70 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean",
    "match": "yes",
    "gameplan_line": 140,
    "finding": "K6 plan; LF-16 owner rule",
-   "seconds": 9.348
+   "seconds": 9.589
   },
   {
    "id": "K6-B8",
@@ -1802,7 +1802,7 @@
    "match": "yes",
    "gameplan_line": 140,
    "finding": "K6 plan",
-   "seconds": 9.595
+   "seconds": 10.62
   },
   {
    "id": "K6-B9",
@@ -1814,7 +1814,7 @@
    "match": "yes",
    "gameplan_line": 140,
    "finding": "LF-16 owner rule premise",
-   "seconds": 2.702
+   "seconds": 4.022
   },
   {
    "id": "K7-Z12",
@@ -1826,7 +1826,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8",
-   "seconds": 0.815
+   "seconds": 0.884
   },
   {
    "id": "K7-B22",
@@ -1838,7 +1838,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8",
-   "seconds": 0.783
+   "seconds": 0.921
   },
   {
    "id": "K7-B23",
@@ -1850,7 +1850,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8",
-   "seconds": 0.792
+   "seconds": 0.85
   },
   {
    "id": "K7-B24",
@@ -1862,7 +1862,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8",
-   "seconds": 0.789
+   "seconds": 0.913
   },
   {
    "id": "K7-Z13",
@@ -1874,7 +1874,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "plan C rule (Engineer 1.2 (b) item 4e)",
-   "seconds": 0.794
+   "seconds": 0.893
   },
   {
    "id": "K7-B25",
@@ -1886,7 +1886,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "plan C rule",
-   "seconds": 0.802
+   "seconds": 1.018
   },
   {
    "id": "K7-B26",
@@ -1898,7 +1898,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "plan C rule premise",
-   "seconds": 0.835
+   "seconds": 0.935
   },
   {
    "id": "K7-Z14",
@@ -1910,7 +1910,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "annulus (Engineer 1.2 (b) item 4d)",
-   "seconds": 0.779
+   "seconds": 0.923
   },
   {
    "id": "K7-B27",
@@ -1922,7 +1922,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "annulus",
-   "seconds": 0.795
+   "seconds": 0.917
   },
   {
    "id": "K7-B28",
@@ -1934,7 +1934,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "one-figure premise (Engineer 1.2 (b) item 4f)",
-   "seconds": 0.833
+   "seconds": 0.911
   },
   {
    "id": "K7-B29",
@@ -1946,7 +1946,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8 swept plan form (Loftsman 1.2 (b) section 5)",
-   "seconds": 0.798
+   "seconds": 0.92
   },
   {
    "id": "K7-Z15",
@@ -1954,11 +1954,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "1292 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'plan-contact', 'swept:F', 'swept:G', 'swept:z-separated', 'swept:z-touch', 'undeclared:F', 'undeclared:z-separated', 'undeclared:z-touch', 'z-contact', 'z-separated']",
+   "reason": "1296 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'plan-contact', 'swept:F', 'swept:G', 'swept:z-separated', 'swept:z-touch', 'undeclared:F', 'undeclared:z-separated', 'undeclared:z-touch', 'z-contact', 'z-separated']",
    "match": "yes",
    "gameplan_line": 141,
    "finding": "LF-8",
-   "seconds": 12.285
+   "seconds": 13.122
   },
   {
    "id": "K8-Z6",
@@ -1966,11 +1966,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "185 predicate(s) hold, axes not inverted",
+   "reason": "205 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 142,
    "finding": "K8 plan (4b, 4c, 4g)",
-   "seconds": 14.947
+   "seconds": 12.007
   },
   {
    "id": "K8-B18",
@@ -1982,7 +1982,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "K8-B3 on S2",
-   "seconds": 14.666
+   "seconds": 11.954
   },
   {
    "id": "K8-B19",
@@ -1990,11 +1990,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (6 issue(s), planted 6)",
-   "reason": "load/screw_a plan_extent: drawn point (-138.56, -84.00) outside its plan outline (by 160.00); load/screw_a azimuth 210.00 deg vs jackscrew.angle[1] = 150.00; load/screw_b plan_extent: drawn point (138.56, -84.00) outside its plan outline (by 160.00); load/screw_b azimuth 330.00 deg vs jackscrew.angle[0] = 30.00; load/screw_c plan_extent: drawn point (-0.00, 164.00) outside its plan outline (by 320.00); load/screw_c azimuth 90.00 deg vs jackscrew.angle[2] = 270.00",
+   "reason": "load/screw_a plan_extent: drawn point (-138.56, -86.00) outside its plan outline (by 160.00); load/screw_a azimuth 210.00 deg vs jackscrew.angle[1] = 150.00; load/screw_b plan_extent: drawn point (138.56, -86.00) outside its plan outline (by 160.00); load/screw_b azimuth 330.00 deg vs jackscrew.angle[0] = 30.00; load/screw_c plan_extent: drawn point (-0.00, 166.00) outside its plan outline (by 320.00); load/screw_c azimuth 90.00 deg vs jackscrew.angle[2] = 270.00",
    "match": "yes",
    "gameplan_line": 142,
    "finding": "plan handedness",
-   "seconds": 14.712
+   "seconds": 12.468
   },
   {
    "id": "K8-B20",
@@ -2006,7 +2006,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "plan containment (4g)",
-   "seconds": 14.656
+   "seconds": 12.182
   },
   {
    "id": "K8-B21",
@@ -2018,7 +2018,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "outboard radial (4b)",
-   "seconds": 15.058
+   "seconds": 11.8
   },
   {
    "id": "K8-B22",
@@ -2030,7 +2030,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "taper in plan (4b)",
-   "seconds": 14.916
+   "seconds": 12.77
   },
   {
    "id": "K8-B23",
@@ -2042,7 +2042,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "sector premise (4g; S2-5a reads the drawn sector)",
-   "seconds": 15.101
+   "seconds": 11.858
   },
   {
    "id": "K9-Z3",
@@ -2050,11 +2050,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "every spec row drawn, every tagged artist in the spec (70 rows)",
+   "reason": "every spec row drawn, every tagged artist in the spec (71 rows)",
    "match": "yes",
    "gameplan_line": 143,
    "finding": "one plan figure",
-   "seconds": 7.308
+   "seconds": 8.22
   },
   {
    "id": "X1-Z",
@@ -2066,7 +2066,7 @@
    "match": "yes",
    "gameplan_line": 144,
    "finding": "Loftsman 1.2 (b) section 2",
-   "seconds": 1.368
+   "seconds": 1.551
   },
   {
    "id": "X1-B1",
@@ -2078,7 +2078,7 @@
    "match": "yes",
    "gameplan_line": 144,
    "finding": "Loftsman 1.2 (b) section 2",
-   "seconds": 1.174
+   "seconds": 1.434
   },
   {
    "id": "X1-B2",
@@ -2090,7 +2090,7 @@
    "match": "yes",
    "gameplan_line": 144,
    "finding": "Loftsman 1.2 (b) section 2",
-   "seconds": 1.206
+   "seconds": 1.366
   },
   {
    "id": "S2-1-Z",
@@ -2102,7 +2102,7 @@
    "match": "yes",
    "gameplan_line": 253,
    "finding": "H6",
-   "seconds": 7.823
+   "seconds": 0.068
   },
   {
    "id": "S2-1-B1",
@@ -2114,7 +2114,7 @@
    "match": "yes",
    "gameplan_line": 253,
    "finding": "H6",
-   "seconds": 7.246
+   "seconds": 8.09
   },
   {
    "id": "S2-2-Z",
@@ -2126,7 +2126,7 @@
    "match": "yes",
    "gameplan_line": 254,
    "finding": "H6",
-   "seconds": 0.078
+   "seconds": 8.026
   },
   {
    "id": "S2-2-B1",
@@ -2138,7 +2138,7 @@
    "match": "yes",
    "gameplan_line": 254,
    "finding": "H6",
-   "seconds": 8.865
+   "seconds": 9.532
   },
   {
    "id": "S2-3-Z",
@@ -2150,7 +2150,7 @@
    "match": "yes",
    "gameplan_line": 255,
    "finding": "H6; Engineer 1.2 (b) item 4h",
-   "seconds": 0.055
+   "seconds": 0.06
   },
   {
    "id": "S2-3-B1",
@@ -2162,7 +2162,7 @@
    "match": "yes",
    "gameplan_line": 255,
    "finding": "H6",
-   "seconds": 8.414
+   "seconds": 9.133
   },
   {
    "id": "S2-4-Z",
@@ -2174,7 +2174,7 @@
    "match": "yes",
    "gameplan_line": 256,
    "finding": "H6",
-   "seconds": 0.086
+   "seconds": 0.088
   },
   {
    "id": "S2-4-B1",
@@ -2186,7 +2186,7 @@
    "match": "yes",
    "gameplan_line": 256,
    "finding": "H6",
-   "seconds": 7.326
+   "seconds": 8.435
   },
   {
    "id": "S2-5a-Z",
@@ -2198,7 +2198,7 @@
    "match": "yes",
    "gameplan_line": 257,
    "finding": "H6",
-   "seconds": 3.721
+   "seconds": 11.463
   },
   {
    "id": "S2-5a-B1",
@@ -2206,11 +2206,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (18 issue(s), planted 18)",
-   "reason": "operator_sector|frame_upper_a: distance 0.000, overlap 3238.314 mm2; operator_sector|frame_upper_b: distance 0.000, overlap 3238.314 mm2; operator_sector|liftmotor_a: distance 0.000, overlap 2182.562 mm2; operator_sector|liftmotor_b: distance 0.000, overlap 2182.562 mm2; operator_sector|anchor_a: distance 0.000, overlap 1232.143 mm2; operator_sector|anchor_b: distance 0.000, overlap 1232.143 mm2; ... 12 more",
+   "reason": "operator_sector|frame_upper_a: distance 0.000, overlap 3238.314 mm2; operator_sector|frame_upper_b: distance 0.000, overlap 3238.314 mm2; operator_sector|liftmotor_a: distance 0.000, overlap 2182.562 mm2; operator_sector|liftmotor_b: distance 0.000, overlap 2182.562 mm2; operator_sector|anchor_a: distance 0.000, overlap 1469.924 mm2; operator_sector|anchor_b: distance 0.000, overlap 1469.924 mm2; ... 12 more",
    "match": "yes",
    "gameplan_line": 257,
    "finding": "H6",
-   "seconds": 9.152
+   "seconds": 9.782
   },
   {
    "id": "S2-5b-Z",
@@ -2222,7 +2222,7 @@
    "match": "yes",
    "gameplan_line": 258,
    "finding": "H6",
-   "seconds": 10.267
+   "seconds": 10.955
   },
   {
    "id": "S2-5b-B1",
@@ -2234,7 +2234,7 @@
    "match": "yes",
    "gameplan_line": 258,
    "finding": "H6",
-   "seconds": 9.935
+   "seconds": 10.8
   },
   {
    "id": "S2-6-Z",
@@ -2246,7 +2246,7 @@
    "match": "yes",
    "gameplan_line": 259,
    "finding": "H6",
-   "seconds": 0.023
+   "seconds": 0.043
   },
   {
    "id": "S2-6-B1",
@@ -2258,7 +2258,7 @@
    "match": "yes",
    "gameplan_line": 259,
    "finding": "H6",
-   "seconds": 7.506
+   "seconds": 8.438
   },
   {
    "id": "S2-FULL",
@@ -2283,14 +2283,14 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "420 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05"
+     "reason": "426 spec keys resolve; 194 overlay leaves sourced, legal status, no shadow; 21 expr leaves agree within 0.05"
     },
     {
      "id": "K3",
      "result": "fail",
      "cause": "content",
      "measured": 6,
-     "reason": "load: text 'base plate (open), x 644' runs 84 px outside the saved image; load: text 'slot line C, +X; slot pitch 30' runs 108 px outside the saved image; load: text 'screw frame 30-6060 r 274' runs 32 px outside the saved image; load: text 'rod top tie (Step 2), 30-6060 w 60' runs 65 px outside the saved image; load: text 'load and collet change, half-angle 45' runs 113 px outside the saved image; load: text 'F6 sightline: ring rim r 210 hides the cut at capture_end; e' runs 483 px outside the saved image"
+     "reason": "load: text 'base plate (open), x 644' runs 26 px outside the saved image; load: text 'slot line C, +X; slot pitch 30' runs 50 px outside the saved image; load: text 'rod top tie (Step 2), 30-6060 w 60' runs 16 px outside the saved image; load: text 'load and collet change, half-angle 45' runs 61 px outside the saved image; load: text 'F6 sightline: ring rim r 210 hides the cut at capture_end; e' runs 444 px outside the saved image; load: text 'Not drawn: wing nut, collet, holder (below the drill path, S' runs 305 px outside the saved image"
     },
     {
      "id": "K4",
@@ -2304,35 +2304,35 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "99 tagged artist(s) projected per kind, axis and spec projection (view normal Z)"
+     "reason": "118 tagged artist(s) projected per kind, axis and spec projection (view normal Z)"
     },
     {
      "id": "K6",
      "result": "pass",
      "cause": null,
      "measured": 0.0,
-     "reason": "69 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean"
+     "reason": "70 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean"
     },
     {
      "id": "K7",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "1292 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'plan-contact', 'swept:F', 'swept:G', 'swept:z-separated', 'swept:z-touch', 'undeclared:F', 'undeclared:z-separated', 'undeclared:z-touch', 'z-contact', 'z-separated']"
+     "reason": "1296 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'plan-contact', 'swept:F', 'swept:G', 'swept:z-separated', 'swept:z-touch', 'undeclared:F', 'undeclared:z-separated', 'undeclared:z-touch', 'z-contact', 'z-separated']"
     },
     {
      "id": "K8",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "185 predicate(s) hold, axes not inverted"
+     "reason": "205 predicate(s) hold, axes not inverted"
     },
     {
      "id": "K9",
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "every spec row drawn, every tagged artist in the spec (70 rows)"
+     "reason": "every spec row drawn, every tagged artist in the spec (71 rows)"
     },
     {
      "id": "S2-1",
@@ -2384,7 +2384,7 @@
      "reason": "3 members seated"
     }
    ],
-   "seconds": 28.684
+   "seconds": 28.543
   },
   {
    "id": "K4-B6",
@@ -2392,11 +2392,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "spec error: not_drawn (1) without figure_note",
+   "reason": "spec error: not_drawn (2) without figure_note",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer 1.2 (c) FIX R1",
-   "seconds": 2.237
+   "seconds": 2.858
   },
   {
    "id": "K5-B12",
@@ -2408,7 +2408,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "SW 1.2 (c) FIX 5",
-   "seconds": 2.516
+   "seconds": 3.06
   },
   {
    "id": "K5-B13",
@@ -2420,7 +2420,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "SW 1.2 (c) FIX 5 (TP-13 hub width)",
-   "seconds": 8.047
+   "seconds": 8.635
   },
   {
    "id": "K7-B30",
@@ -2432,7 +2432,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman 1.2 (c) FIX LF-c1",
-   "seconds": 0.63
+   "seconds": 1.009
   },
   {
    "id": "K8-B24",
@@ -2444,7 +2444,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Topologist 1.2 (c) FIX TP1.2-1",
-   "seconds": 2.596
+   "seconds": 3.02
   },
   {
    "id": "K8-B25",
@@ -2456,7 +2456,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "SW 1.2 (c) FIX 1 (raised as K8-B24)",
-   "seconds": 15.079
+   "seconds": 12.177
   },
   {
    "id": "K8-B26",
@@ -2468,7 +2468,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "SW 1.2 (c) FIX 1 (raised as K8-B25)",
-   "seconds": 14.741
+   "seconds": 11.674
   },
   {
    "id": "K8-B27",
@@ -2480,7 +2480,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "SW 1.2 (c) FIX 2 (raised as K8-B26)",
-   "seconds": 14.993
+   "seconds": 11.709
   },
   {
    "id": "K8-B28",
@@ -2492,7 +2492,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "SW 1.2 (c) FIX 5 (raised as K8-B27)",
-   "seconds": 2.572
+   "seconds": 2.975
   },
   {
    "id": "S2-6-B2",
@@ -2504,7 +2504,7 @@
    "match": "yes",
    "gameplan_line": 259,
    "finding": "SW 1.2 (c) FIX 3",
-   "seconds": 7.511
+   "seconds": 8.235
   },
   {
    "id": "H1-Z3",
@@ -2516,7 +2516,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "SW 1.2 (c) FIX 4",
-   "seconds": 0.957
+   "seconds": 1.092
   },
   {
    "id": "H1-B6",
@@ -2528,7 +2528,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "SW 1.2 (c) FIX 4",
-   "seconds": 0.844
+   "seconds": 0.921
   },
   {
    "id": "K7-B31",
@@ -2540,7 +2540,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman 1.2 (c) FIX LF-c1 (side branch)",
-   "seconds": 0.877
+   "seconds": 1.021
   },
   {
    "id": "K3-Z2",
@@ -2552,7 +2552,7 @@
    "match": "yes",
    "gameplan_line": 137,
    "finding": "Designer M1 S1 r5 F1",
-   "seconds": 3.486
+   "seconds": 4.152
   },
   {
    "id": "K3-B8",
@@ -2560,11 +2560,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug)' runs 9 px outside the saved image",
+   "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug); rece' runs 9 px outside the saved image",
    "match": "yes",
    "gameplan_line": 137,
    "finding": "Designer M1 S1 r5 F1",
-   "seconds": 3.34
+   "seconds": 3.778
   },
   {
    "id": "K3-Z3",
@@ -2576,7 +2576,7 @@
    "match": "yes",
    "gameplan_line": 137,
    "finding": "Designer M1 S1 r5 F1 (premise)",
-   "seconds": 5.85
+   "seconds": 6.824
   },
   {
    "id": "K3-B9",
@@ -2584,11 +2584,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug)' runs 9 px outside the saved image",
+   "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug); rece' runs 9 px outside the saved image",
    "match": "yes",
    "gameplan_line": 137,
    "finding": "Designer M1 S1 r5 F1 (premise)",
-   "seconds": 3.523
+   "seconds": 4.0
   },
   {
    "id": "K4-Z3",
@@ -2600,31 +2600,31 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 r1 F4, F5",
-   "seconds": 9.482
+   "seconds": 16.95
   },
   {
    "id": "K4-B7",
    "check": "K4",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (2 issue(s), planted 2)",
-   "reason": "load/sightline_f6: label leader ends at (200.00, 173.21), 86.60 off the drawn part; load: label leaders sightline_f6 and operator_sector cross",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/sightline_f6: label leader ends at (200.00, 173.21), 86.60 off the drawn part; load: label leaders operator_sector and sightline_f6 cross; load/sightline_f6: label leader runs through the text of label:slot_line_c (i1); load/sightline_f6: label leader runs through the text of label:operator_sector (i1)",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 r1 F4",
-   "seconds": 9.39
+   "seconds": 17.398
   },
   {
    "id": "K4-B8",
    "check": "K4",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (3 issue(s), planted 3)",
-   "reason": "load: label leaders drill_tube and keepout cross; load: label leaders drill_tube and drill_head cross; load: label leaders keepout and drill_head cross",
+   "observed": "fires (7 issue(s), planted 7)",
+   "reason": "load: label leaders ring and keepout cross; load: label leaders drill_tube and keepout cross; load: label leaders drill_tube and drill_head 2.85 mm apart (h, least 4); load: label leaders keepout and drill_head 0.71 mm apart (h, least 4); load/keepout: label leader runs through the text of label:drill_tube (i1); load: text label:ring overlaps text label:drill_tube (i2); ... 1 more",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 r1 F5",
-   "seconds": 11.618
+   "seconds": 16.935
   },
   {
    "id": "K5-B14",
@@ -2636,7 +2636,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Designer M1 r1 F1",
-   "seconds": 8.056
+   "seconds": 8.812
   },
   {
    "id": "K5-B15",
@@ -2648,7 +2648,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Designer M1 r1 F1 (premise)",
-   "seconds": 7.927
+   "seconds": 8.494
   },
   {
    "id": "K5-B16",
@@ -2660,7 +2660,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Designer M1 r1 F1",
-   "seconds": 7.727
+   "seconds": 8.366
   },
   {
    "id": "K9-B6",
@@ -2672,7 +2672,7 @@
    "match": "yes",
    "gameplan_line": 143,
    "finding": "Designer M1 r1 F1",
-   "seconds": 7.813
+   "seconds": 8.229
   },
   {
    "id": "K8-B29",
@@ -2684,7 +2684,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Designer M1 r1 F1 (premise B1)",
-   "seconds": 14.424
+   "seconds": 11.819
   },
   {
    "id": "K8-B30",
@@ -2696,7 +2696,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Designer M1 r1 F1 (premise B2)",
-   "seconds": 14.867
+   "seconds": 12.435
   },
   {
    "id": "K8-B31",
@@ -2708,19 +2708,19 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Designer M1 r1 F1 (premise B3)",
-   "seconds": 15.207
+   "seconds": 12.237
   },
   {
    "id": "K8-B32",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (1 issue(s), planted 1)",
-   "reason": "load/nut_a cover: Circle wholly under guide_a, screw_a drawn solid (linestyle 'solid', fill True, hatch None); a hidden part is dashed, no fill",
+   "observed": "fires (5 issue(s), planted 5)",
+   "reason": "load/screw_a cover: opaque fill of nut_a drawn above it lies behind it or is no part (z_max nut_a 1170.84 against screw_a 1225.00); an opaque fill hides only what lies behind it (TP1.3-2); load/screw_a cover: Circle wholly under nut_a drawn solid (linestyle 'solid', fill False, hatch None); a hidden part is dashed, no fill; load/nut_a cover: Circle wholly under guide_a, screw_a drawn solid (linestyle 'solid', fill True, hatch None); a hidden part is dashed, no fill; load/guide_a cover: opaque fill of nut_a drawn above it lies behind it or is no part (z_max nut_a 1170.84 against guide_a 1225.00); an opaque fill hides only what lies behind it (TP1.3-2); load/guide_a cover: Circle wholly under nut_a drawn solid (linestyle 'solid', fill False, hatch None); a hidden part is dashed, no fill",
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Topologist TP1.2-2, TP1.2-9; Designer M1 r1 F2 rule",
-   "seconds": 14.41
+   "seconds": 11.656
   },
   {
    "id": "K8-Z7",
@@ -2732,7 +2732,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-9 cover premise",
-   "seconds": 0.742
+   "seconds": 1.028
   },
   {
    "id": "K8-B33",
@@ -2744,7 +2744,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-9 cover premise (contrast)",
-   "seconds": 0.82
+   "seconds": 1.097
   },
   {
    "id": "K7-Z16",
@@ -2752,11 +2752,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "7334 test entries with pose, pair, class, state, z gap, distance, overlap, basis",
+   "reason": "7590 test entries with pose, pair, class, state, z gap, distance, overlap, basis",
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman LF1.2-1",
-   "seconds": 12.588
+   "seconds": 12.572
   },
   {
    "id": "K7-Z17",
@@ -2768,7 +2768,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman LF1.2-1",
-   "seconds": 12.124
+   "seconds": 13.249
   },
   {
    "id": "K7-B32",
@@ -2780,7 +2780,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman LF1.2-1",
-   "seconds": 12.139
+   "seconds": 5.052
   },
   {
    "id": "K7-B33",
@@ -2792,7 +2792,7 @@
    "match": "yes",
    "gameplan_line": 141,
    "finding": "Loftsman LF1.2-2",
-   "seconds": 12.284
+   "seconds": 13.231
   },
   {
    "id": "S2-5b-B2",
@@ -2804,7 +2804,7 @@
    "match": "yes",
    "gameplan_line": 258,
    "finding": "Topologist TP1.2-3",
-   "seconds": 9.962
+   "seconds": 10.695
   },
   {
    "id": "S2-5b-B3",
@@ -2816,7 +2816,7 @@
    "match": "yes",
    "gameplan_line": 258,
    "finding": "Topologist TP1.2-3 (premise set)",
-   "seconds": 7.568
+   "seconds": 7.887
   },
   {
    "id": "K8-Z8",
@@ -2824,11 +2824,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "190 predicate(s) hold, axes not inverted",
+   "reason": "208 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-13",
-   "seconds": 16.744
+   "seconds": 15.251
   },
   {
    "id": "K8-B34",
@@ -2840,7 +2840,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-13",
-   "seconds": 17.024
+   "seconds": 15.203
   },
   {
    "id": "K8-B35",
@@ -2852,7 +2852,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-13 (stand-in premise)",
-   "seconds": 18.087
+   "seconds": 15.701
   },
   {
    "id": "K8-B36",
@@ -2864,7 +2864,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "TP1.2-13 probe p4",
-   "seconds": 0.667
+   "seconds": 0.943
   },
   {
    "id": "K4-Z4",
@@ -2876,7 +2876,7 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 S1 r6 F1",
-   "seconds": 3.805
+   "seconds": 9.793
   },
   {
    "id": "K4-B9",
@@ -2884,11 +2884,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "capture_end/core_750: label leader ends across the hatch of gear",
+   "reason": "capture_end/core_750: label leader ends across the hatch of gear, screw_b",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 S1 r6 F1",
-   "seconds": 3.219
+   "seconds": 5.011
   },
   {
    "id": "K4-B10",
@@ -2900,19 +2900,19 @@
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 S2 r2 F1",
-   "seconds": 9.315
+   "seconds": 17.204
   },
   {
    "id": "K4-B11",
    "check": "K4",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (1 issue(s), planted 1)",
-   "reason": "load/drill_tube: label anchor (71.60, -26.06) under the area of ring",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/drill_tube: label anchor (76.11, -3.75) under the area of ring; load/drill_tube: label anchor (76.11, -3.75) on hidden ink of a row with visible ink (e1)",
    "match": "yes",
    "gameplan_line": 138,
    "finding": "Designer M1 S2 r2 F1 (anchor premise)",
-   "seconds": 9.502
+   "seconds": 17.415
   },
   {
    "id": "K8-B37",
@@ -2924,7 +2924,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Designer sign-off r3 (B1)",
-   "seconds": 15.103
+   "seconds": 11.396
   },
   {
    "id": "K8-B38",
@@ -2936,7 +2936,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Designer sign-off r3 (B2)",
-   "seconds": 15.174
+   "seconds": 11.784
   },
   {
    "id": "K5-B17",
@@ -2948,7 +2948,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Designer sign-off r3 (B3)",
-   "seconds": 7.983
+   "seconds": 8.145
   },
   {
    "id": "K5-B18",
@@ -2960,7 +2960,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Designer sign-off r3 (B4, premise)",
-   "seconds": 8.139
+   "seconds": 8.575
   },
   {
    "id": "K9-B7",
@@ -2972,19 +2972,19 @@
    "match": "yes",
    "gameplan_line": 143,
    "finding": "Designer sign-off r3",
-   "seconds": 7.572
+   "seconds": 8.454
   },
   {
    "id": "K8-B39",
    "check": "K8",
    "control": "B",
    "expected": "fires",
-   "observed": "fires (1 issue(s), planted 1)",
-   "reason": "load/base_frame cover: Polygon partly visible drawn dashed (672 of 672 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (-33.70, 245.25)); its visible area is drawn solid",
+   "observed": "fires (7 issue(s), planted 7)",
+   "reason": "load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: Polygon partly covered drawn solid (886 of 5670 drawn samples under operator_sector by more than 0.05, e.g. (-234.64, 236.51)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: Polygon partly covered drawn solid (2387 of 2994 drawn samples under operator_sector by more than 0.05, e.g. (-37.87, 239.65)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); ... 1 more",
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Topologist TP1.2-15",
-   "seconds": 17.157
+   "seconds": 15.903
   },
   {
    "id": "K8-B40",
@@ -2996,7 +2996,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Topologist TP1.2-16",
-   "seconds": 16.813
+   "seconds": 15.812
   },
   {
    "id": "K8-B41",
@@ -3008,7 +3008,7 @@
    "match": "yes",
    "gameplan_line": 142,
    "finding": "Topologist TP1.2-17",
-   "seconds": 16.208
+   "seconds": 15.609
   },
   {
    "id": "RUN-Z",
@@ -3020,7 +3020,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "1.3 open O9 (R1)",
-   "seconds": 7.138
+   "seconds": 9.984
   },
   {
    "id": "RUN-B",
@@ -3032,7 +3032,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "1.3 open O9 (R1 e)",
-   "seconds": 6.976
+   "seconds": 9.856
   },
   {
    "id": "K2-Z2",
@@ -3040,11 +3040,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "322 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05",
+   "reason": "331 spec keys resolve; 194 overlay leaves sourced, legal status, no shadow; 21 expr leaves agree within 0.05",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": "1.3 open O2 (R2 b)",
-   "seconds": 1.613
+   "seconds": 2.026
   },
   {
    "id": "K2-B4",
@@ -3054,9 +3054,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay jackscrew.top_guide_z: value 1165 vs expr jackscrew.anchor_z + jackscrew.length = 1215.00, 50.00 apart",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": "1.3 open O2 (R2 b)",
-   "seconds": 1.532
+   "seconds": 2.08
   },
   {
    "id": "K2-B5",
@@ -3066,9 +3066,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "overlay frame_upper.member_length_rail: value 1230 vs expr jackscrew.top_guide_z + profile.height = 1225.00, 5.00 apart",
    "match": "yes",
-   "gameplan_line": 135,
+   "gameplan_line": 136,
    "finding": "1.3 open O2 (R2 b)",
-   "seconds": 1.544
+   "seconds": 1.963
   },
   {
    "id": "K6-B10",
@@ -3078,9 +3078,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "LF-16 stack_tie member_top_a: term top_guide 1165.00 z_A vs frame_upper_a.z_max + offset 1152.00 z_A, 13.00 apart; LF-16 stack_tie member_top_b: term top_guide 1165.00 z_A vs frame_upper_b.z_max + offset 1152.00 z_A, 13.00 apart",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": "Loftsman 1.2 (b) NOTE 2 (R2 c)",
-   "seconds": 1.391
+   "seconds": 1.7
   },
   {
    "id": "K6-B11",
@@ -3090,9 +3090,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "LF-16 stack_tie member_top_c: term top_guide 1165.00 z_A vs frame_upper_c.z_max + offset 1150.00 z_A, 15.00 apart",
    "match": "yes",
-   "gameplan_line": 139,
+   "gameplan_line": 140,
    "finding": "Loftsman 1.2 (b) NOTE 2 (R2 c)",
-   "seconds": 2.837
+   "seconds": 3.207
   },
   {
    "id": "RPT-Z",
@@ -3104,7 +3104,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "1.3 open O10 (R3)",
-   "seconds": 0.092
+   "seconds": 0.111
   },
   {
    "id": "RPT-B1",
@@ -3140,7 +3140,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "1.3 open O10 (R3)",
-   "seconds": 0.799
+   "seconds": 0.936
   },
   {
    "id": "H1-B8",
@@ -3152,7 +3152,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "1.3 open O10 (R3); Software Engineer P0S FIX 2 (re-planted)",
-   "seconds": 0.825
+   "seconds": 1.088
   },
   {
    "id": "K5-B19",
@@ -3162,9 +3162,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "load/drill_tube: zero-area Rectangle (least thickness 0.0000 mm <= 0.05) on a cylinder row (TP1.1-9)",
    "match": "yes",
-   "gameplan_line": 138,
+   "gameplan_line": 139,
    "finding": "TP1.1-9 (R5 a)",
-   "seconds": 2.644
+   "seconds": 2.937
   },
   {
    "id": "K8-B42",
@@ -3174,9 +3174,9 @@
    "observed": "fires (2 issue(s), planted 2)",
    "reason": "load/guide_tie_a cover: spec error, stand_in_owner 'tbd' names no Step id (Step 2) or sketch id (S3, s1 to s6) (TP1.2-18); load/guide_tie_a cover: Polygon partly visible drawn dashed (1242 of 1242 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (257.83, -30.26)); its visible area is drawn solid",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "TP1.2-18 (R5 b)",
-   "seconds": 15.008
+   "seconds": 15.784
   },
   {
    "id": "K8-B43",
@@ -3186,9 +3186,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "motor23_a outboard: spec error, unknown frame 'polar' (known: radial)",
    "match": "yes",
-   "gameplan_line": 141,
+   "gameplan_line": 142,
    "finding": "Topologist 1.2 (c) NOTE 2 (R5 c)",
-   "seconds": 13.13
+   "seconds": 12.384
   },
   {
    "id": "K7-B34",
@@ -3198,9 +3198,9 @@
    "observed": "fires (1 issue(s), planted 1)",
    "reason": "swept p1..p4/ring|member F: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap",
    "match": "yes",
-   "gameplan_line": 140,
+   "gameplan_line": 141,
    "finding": "Loftsman 1.2 (c) NOTE 1 (R5 d)",
-   "seconds": 0.928
+   "seconds": 1.015
   },
   {
    "id": "K2-B6",
@@ -3212,7 +3212,7 @@
    "match": "yes",
    "gameplan_line": 136,
    "finding": "Loftsman P0L FIX 1",
-   "seconds": 1.568
+   "seconds": 2.039
   },
   {
    "id": "K2-B7",
@@ -3224,7 +3224,7 @@
    "match": "yes",
    "gameplan_line": 136,
    "finding": "Loftsman P0L FIX 1",
-   "seconds": 1.643
+   "seconds": 2.088
   },
   {
    "id": "K5-B20",
@@ -3236,7 +3236,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Topologist P0T FIX 1 (a)",
-   "seconds": 3.141
+   "seconds": 3.967
   },
   {
    "id": "K5-B21",
@@ -3248,7 +3248,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Topologist P0T FIX 1 (a)",
-   "seconds": 7.045
+   "seconds": 8.87
   },
   {
    "id": "K5-B22",
@@ -3260,7 +3260,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Topologist P0T FIX 1 (c)",
-   "seconds": 2.503
+   "seconds": 3.122
   },
   {
    "id": "K5-B23",
@@ -3272,7 +3272,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Software Engineer P0S FIX 4",
-   "seconds": 2.413
+   "seconds": 3.066
   },
   {
    "id": "RUN-Z2",
@@ -3284,7 +3284,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "Software Engineer P0S FIX 1",
-   "seconds": 0.002
+   "seconds": 0.003
   },
   {
    "id": "RUN-B2",
@@ -3308,7 +3308,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "Software Engineer P0S FIX 1",
-   "seconds": 0.559
+   "seconds": 1.072
   },
   {
    "id": "RPT-B3",
@@ -3368,7 +3368,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "Software Engineer P0S FIX 3",
-   "seconds": 0.828
+   "seconds": 0.981
   },
   {
    "id": "RPT-B6",
@@ -3380,7 +3380,7 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "Software Engineer P0S FIX 3",
-   "seconds": 0.752
+   "seconds": 0.988
   },
   {
    "id": "K5-B24",
@@ -3392,7 +3392,7 @@
    "match": "yes",
    "gameplan_line": 139,
    "finding": "Topologist P0T re-check FIX 1r; Software Engineer P0S re-check FIX R1",
-   "seconds": 6.928
+   "seconds": 10.842
   },
   {
    "id": "RUN-B4",
@@ -3404,7 +3404,1893 @@
    "match": "yes",
    "gameplan_line": 124,
    "finding": "Software Engineer P0S re-check NOTE 1",
-   "seconds": 0.597
+   "seconds": 1.194
+  },
+  {
+   "id": "K8-Z9",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "6 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (annulus cover); 1.3 P1R R2",
+   "seconds": 1.199
+  },
+  {
+   "id": "K8-B44",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/c cover: Polygon partly covered drawn solid (432 of 1156 drawn samples under u by more than 0.05, e.g. (100.42, -4.58)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (annulus cover); N2",
+   "seconds": 1.046
+  },
+  {
+   "id": "K8-Z10",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "6 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (hollow disk with its bore); 1.3 P1R R2",
+   "seconds": 1.186
+  },
+  {
+   "id": "K8-B45",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/c cover: Polygon partly covered drawn solid (20 of 76 drawn samples under t by more than 0.05, e.g. (45.40, 20.56)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (hollow disk); N2",
+   "seconds": 1.063
+  },
+  {
+   "id": "K8-Z11",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "8 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (union of covers); 1.3 P1R R2",
+   "seconds": 1.011
+  },
+  {
+   "id": "K8-B46",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/c cover: Polygon partly covered drawn solid (1514 of 1732 drawn samples under a, b by more than 0.05, e.g. (101.20, -4.90)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-13 (union); N2",
+   "seconds": 0.979
+  },
+  {
+   "id": "K8-Z12",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "8 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-19 (annulus samples by arc length)",
+   "seconds": 1.163
+  },
+  {
+   "id": "K8-B47",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/ring cover: Annulus partly visible drawn dashed (10 of 10 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (109.45, 8.71)); its visible area is drawn solid",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-19 (annulus samples by arc length)",
+   "seconds": 0.999
+  },
+  {
+   "id": "K8-B48",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/ring cover: Annulus partly covered drawn solid (10494 of 23760 drawn samples under bracket_guide_a, bracket_guide_b, bracket_guide_c, gear, guide_tie_a, guide_tie_b, motor_mount_a, motor_mount_b, motor_mount_c, motor_shaft_a, motor_shaft_b, motor_shaft_c, nut_a, nut_b, nut_c, nut_housing_a, nut_housing_b, nut_housing_c, screw_a, screw_b, screw_c by more than 0.05, e.g. (207.80, 1.24)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "N2 (fresh M1 S2 r3); Engineer 1.2 r4 Correction 3",
+   "seconds": 15.244
+  },
+  {
+   "id": "K8-B49",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (7 issue(s), planted 7)",
+   "reason": "load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: Polygon partly covered drawn solid (886 of 5670 drawn samples under operator_sector by more than 0.05, e.g. (-234.64, 236.51)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: Polygon partly covered drawn solid (2387 of 2994 drawn samples under operator_sector by more than 0.05, e.g. (-37.87, 239.65)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); ... 1 more",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP1.2-19 (alpha rule)",
+   "seconds": 16.114
+  },
+  {
+   "id": "K8-B50",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/operator_sector cover: fill alpha 0.60 between 0.5 and 0.75 (alpha rule premise: a fill is opaque or shows what is under it at half its contrast or more)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P1R alpha rule premise",
+   "seconds": 14.959
+  },
+  {
+   "id": "K4-B12",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/descent_stop: label leader ends inside the outline of guide_tie_b (38.4 mm of its last quarter)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Design Notes 30; 1.3 P1R R3",
+   "seconds": 17.084
+  },
+  {
+   "id": "K4-B13",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/pad: label unplaceable (62 candidate(s), none passes every leader rule; table in the placer record)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "1.3 P1R R3 (no silent fall-back)",
+   "seconds": 0.945
+  },
+  {
+   "id": "K8-Z13",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "6 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-1",
+   "seconds": 1.674
+  },
+  {
+   "id": "K8-B52",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "fixture/ring cover: Annulus partly covered drawn solid (24 of 23760 drawn samples under d by more than 0.05, e.g. (143.00, 0.85)); the covered part is drawn hidden (dashed, no fill) by the renderer (N2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-1",
+   "seconds": 1.235
+  },
+  {
+   "id": "K8-B51",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2); load/base_plate cover: opaque fill of operator_sector drawn above it lies behind it or is no part (z_max operator_sector none against base_plate 72.00); an opaque fill hides only what lies behind it (TP1.3-2)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-2",
+   "seconds": 16.393
+  },
+  {
+   "id": "K4-B14",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load/ring: label anchor (209.75, -10.33) on hidden ink of a row with visible ink (e1); load: label leaders ring and drill_tube cross; load: label leaders ring and keepout cross; load: label leaders ring and drill_head 2.08 mm apart (h, least 4)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer P1Rd FIX D1 (e1); Topologist TP1.3-3",
+   "seconds": 17.522
+  },
+  {
+   "id": "K4-B15",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/drill_head: label of a wholly hidden row lacks 'under <cover>' (g); covers at the anchor: drill-to-ring bearing, ring gear, gear hub, ring structure",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer P1Rd FIX D1 (g)",
+   "seconds": 17.318
+  },
+  {
+   "id": "K4-B16",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/drill_head: label of a wholly hidden row lacks 'under <cover>' (g); covers at the anchor: drill-to-ring bearing, gear hub, ring structure; load/drill_head: label leader ends inside the outline of gear (35.8 mm of its last quarter)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer P1Rd FIX D1 (e2)",
+   "seconds": 17.677
+  },
+  {
+   "id": "K4-B17",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/ring: label leader ends inside the outline of guide_tie_a (41.3 mm of its last quarter)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Topologist TP1.3-8",
+   "seconds": 17.236
+  },
+  {
+   "id": "K4-B18",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "load/guide_tie_a: label anchor (261.70, 31.20) on hidden ink of a row with visible ink (e1); load: label leaders screw_b and guide_tie_a cross; load/guide_tie_a: label leader runs through the text of label:screw_b (i1)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer P1Rf re-check FIX D5",
+   "seconds": 27.74
+  },
+  {
+   "id": "K4-B19",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load: label leaders base_plate and drill_tube 1.87 mm apart (h, least 4); load: label leaders drill_tube and drill_head 1.87 mm apart (h, least 4)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer P1Rf re-check FIX D4",
+   "seconds": 16.755
+  },
+  {
+   "id": "K3-Z4",
+   "check": "K3",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image | [inset_plan] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
+   "match": "yes",
+   "gameplan_line": 137,
+   "finding": "TP-7 (Design Notes 20); 1.3 open O5",
+   "seconds": 5.305
+  },
+  {
+   "id": "K3-B10",
+   "check": "K3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end: 1 Axes without a declared id (checks read declared Axes only) | [section] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image | [inset_plan] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
+   "match": "yes",
+   "gameplan_line": 137,
+   "finding": "TP-7",
+   "seconds": 4.995
+  },
+  {
+   "id": "K4-Z5",
+   "check": "K4",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 1 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "1.3 P4 label value rule (s3_spec label expr, value_from, fmt s)",
+   "seconds": 5.728
+  },
+  {
+   "id": "K4-B20",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/span_lt: label 'S3-2 span, K 0.7; L_t 1150' number differs from expr jackscrew.guide_bearing_z - jackscrew.anchor_bearing_z = 870 | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "1.3 P4 label value rule",
+   "seconds": 6.29
+  },
+  {
+   "id": "K5-Z4",
+   "check": "K5",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "TP-7; O4; 1.3 P4 sub-artists (mark section form, balls, lever)",
+   "seconds": 5.249
+  },
+  {
+   "id": "K5-B25",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] capture_end/screw_a: screw axis Z in plan_xy drawn as rectangle, needs circle",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "TP-7 (mis-projected inset)",
+   "seconds": 4.888
+  },
+  {
+   "id": "K5-B33",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/guide_c:balls: sub-artist balls not declared in guide_c sub_artists | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "1.3 P4 sub-artists",
+   "seconds": 4.972
+  },
+  {
+   "id": "K5-B34",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/anchor_bearing_c:balls: ball at (-179.00, 336.00) outside the drawn anchor_bearing_c (64 points) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "1.3 P4 sub-artists",
+   "seconds": 5.027
+  },
+  {
+   "id": "K5-B35",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/home_switch_c:lever: lever to drawn (-182.00, 1167.00) vs spec (-182.00, 1172.00) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "1.3 P4 sub-artists",
+   "seconds": 5.353
+  },
+  {
+   "id": "K5-Z5",
+   "check": "K5",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "311 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 (fixture Z)",
+   "seconds": 3.49
+  },
+  {
+   "id": "K5-B26",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/anchor_a:line: mark sub-artist without a mark declaration on its row (premise unenforced) (M1)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m1",
+   "seconds": 3.152
+  },
+  {
+   "id": "K5-B27",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/anchor_a:line: mark on anchor_a: parent anchor_a not drawn as an area at this pose (M2)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m2",
+   "seconds": 3.631
+  },
+  {
+   "id": "K5-B28",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/anchor_a:line: mark drawn as a Rectangle, not a Line2D (M3)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m3a",
+   "seconds": 3.249
+  },
+  {
+   "id": "K5-B29",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/anchor_a:line: 2 mark artists on anchor_a (one per row per pose) (M3)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m3b",
+   "seconds": 3.519
+  },
+  {
+   "id": "K5-B30",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/anchor_a:line: mark endpoint (-104.88, 340.00) outside the drawn anchor_a (M4); load/anchor_a:line: mark endpoint (-104.88, 340.00) not on a vertical edge of anchor_a (M5)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m4",
+   "seconds": 3.432
+  },
+  {
+   "id": "K5-B31",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/anchor_a:line: mark at z 342.00 against mark.z 340.00 z_S (jackscrew.anchor_z + jackscrew.anchor_allowance / 2) (M5)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m5a",
+   "seconds": 3.224
+  },
+  {
+   "id": "K5-B32",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/anchor_a:line: mark not normal to the axis: dz 2.00 (M5); load/anchor_a:line: mark at z 341.00 against mark.z 340.00 z_S (jackscrew.anchor_z + jackscrew.anchor_allowance / 2) (M5)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T section 4 B-m5b",
+   "seconds": 3.226
+  },
+  {
+   "id": "K6-Z5",
+   "check": "K6",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 48 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean | [inset_plan] 22 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "O4 (section frame); TP-7",
+   "seconds": 4.804
+  },
+  {
+   "id": "K8-Z14",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP-7; O4; 1.3 P4 section convention, section_u premise, points, look_direction, axes_not_inverted",
+   "seconds": 9.615
+  },
+  {
+   "id": "K8-B53",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] capture_end: axis inverted (x False, y True); capture_end/plan_axes axes_not_inverted: Axes inverted (x False, y True)",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "TP-7 (inverted inset)",
+   "seconds": 9.718
+  },
+  {
+   "id": "K8-B54",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (134 issue(s), planted 134)",
+   "reason": "[section] capture_end/ring section_u: spec piece u [-210.00, -185.00] z [374.84, 386.84] not drawn; capture_end/ring section_u: spec piece u [-135.00, -100.00] z [374.84, 386.84] not drawn; capture_end/ring section_u: spec piece u [100.00, 210.00] z [374.84, 386.84] not drawn; capture_end/ring section_u: drawn piece u [185.00, 210.00] z [374.84, 386.84] is no spec piece; capture_end/ring section_u: drawn piece u [100.00, 135.00] z [374.84, 386.84] is no spec piece; capture_end/ring section_u: drawn piece u [-210.00, -100.00] z [374.84, 386.84] is no spec piece; ... 128 more | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "O4 (section handedness)",
+   "seconds": 9.477
+  },
+  {
+   "id": "K8-B55",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (12 issue(s), planted 12)",
+   "reason": "[section] capture_end/screw_c section_u: spec piece u [-165.00, -155.00] z [325.00, 348.00] not drawn; capture_end/screw_c section_u: spec piece u [-166.00, -154.00] z [348.00, 1195.00] not drawn; capture_end/screw_c section_u: spec piece u [-165.00, -155.00] z [1195.00, 1225.00] not drawn; capture_end/screw_c section_u: drawn piece u [-5.00, 5.00] z [325.00, 348.00] is no spec piece; capture_end/screw_c section_u: drawn piece u [-6.00, 6.00] z [348.00, 1195.00] is no spec piece; capture_end/screw_c section_u: drawn piece u [-5.00, 5.00] z [1195.00, 1225.00] is no spec piece; ... 6 more | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "O4 (plane coordinate)",
+   "seconds": 10.828
+  },
+  {
+   "id": "K8-B56",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/ring: cut row drawn without hatch (section convention 1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 1",
+   "seconds": 9.638
+  },
+  {
+   "id": "K8-B57",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/nut_c: hatch '\\\\\\\\' against material brass '..' (section convention 1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 1",
+   "seconds": 9.993
+  },
+  {
+   "id": "K8-B58",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_c: unsectioned row hatched '//' (section convention 2: outline over the hatch) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 2",
+   "seconds": 9.775
+  },
+  {
+   "id": "K8-B59",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/coupling_c: unsectioned outline at zorder 0.5, not above the cut hatch (1) (section convention 2) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 2",
+   "seconds": 9.717
+  },
+  {
+   "id": "K8-B60",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: beyond piece behind a cut part drawn solid; edges behind a cut part are dashed (section convention 3) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 3",
+   "seconds": 9.23
+  },
+  {
+   "id": "K8-B61",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: visible beyond piece drawn dashed (section convention 3) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 3",
+   "seconds": 9.73
+  },
+  {
+   "id": "K8-B62",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_b_front: drawn in front of the plane (depth x [132.56, 144.56]); omit it and name it in the figure note (section convention 4) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section convention 4",
+   "seconds": 10.393
+  },
+  {
+   "id": "K8-B63",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] capture_end/ring section_u: spec piece u [-210.00, -185.00] z [374.84, 386.84] not drawn; capture_end/ring section_u: drawn piece u [-205.00, -185.00] z [374.84, 386.84] is no spec piece | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "1.3 P4 section_u premise",
+   "seconds": 10.039
+  },
+  {
+   "id": "K9-Z4",
+   "check": "K9",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] every spec row drawn, every tagged artist in the spec (49 rows) | [inset_plan] every spec row drawn, every tagged artist in the spec (23 rows)",
+   "match": "yes",
+   "gameplan_line": 143,
+   "finding": "TP-7",
+   "seconds": 0.002
+  },
+  {
+   "id": "K9-Z5",
+   "check": "K9",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "every spec row drawn, every tagged artist in the spec (58 rows)",
+   "match": "yes",
+   "gameplan_line": 143,
+   "finding": "Topologist P0T section 4 (K9 admits :line with its parent drawn)",
+   "seconds": 3.098
+  },
+  {
+   "id": "K9-B8",
+   "check": "K9",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: tagged artist screw_a has no spec row in this Axes (declared in inset_plan) | [inset_plan] every spec row drawn, every tagged artist in the spec (23 rows)",
+   "match": "yes",
+   "gameplan_line": 143,
+   "finding": "TP-7 (inset row in the main Axes)",
+   "seconds": 4.522
+  },
+  {
+   "id": "K9-B9",
+   "check": "K9",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[inset_plan] declared Axes inset_plan (plan_xy) absent from figure(s) capture_end | [section] every spec row drawn, every tagged artist in the spec (49 rows)",
+   "match": "yes",
+   "gameplan_line": 143,
+   "finding": "TP-7 (declared inset absent)",
+   "seconds": 4.68
+  },
+  {
+   "id": "S3-1-Z",
+   "check": "S3-1",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "tension segment least 25.84 mm (nut bottom above the anchor line in every pose; cut arrow +Z)",
+   "match": "yes",
+   "gameplan_line": 286,
+   "finding": "detail 1.3 S3-1",
+   "seconds": 4.557
+  },
+  {
+   "id": "S3-1-B1",
+   "check": "S3-1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "load: nut bottom 1140.84 not above the anchor line 1210.00 z_S (compression); start: nut bottom 1015.84 not above the anchor line 1210.00 z_S (compression); capture_end: nut bottom 365.84 not above the anchor line 1210.00 z_S (compression); park: nut bottom 1140.84 not above the anchor line 1210.00 z_S (compression)",
+   "match": "yes",
+   "gameplan_line": 286,
+   "finding": "detail 1.3 S3-1 B",
+   "seconds": 4.758
+  },
+  {
+   "id": "S3-1-B2",
+   "check": "S3-1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "cut arrow load_cut: arrow (0.0, 351.2) -> (0.0, 244.8) does not point +Z",
+   "match": "yes",
+   "gameplan_line": 286,
+   "finding": "detail 1.3 S3-1 (cut-case sign)",
+   "seconds": 4.607
+  },
+  {
+   "id": "S3-2-Z",
+   "check": "S3-2",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "P_cr 1363.8 N (K 0.7, L_t 870.00); least margin 3.97 (stall_up) against SF 3",
+   "match": "yes",
+   "gameplan_line": 287,
+   "finding": "Design Notes 31",
+   "seconds": 4.403
+  },
+  {
+   "id": "S3-2-Z2",
+   "check": "S3-2",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "P_cr 103223.7 N (K 0.7, L_t 100.00); least margin 300.79 (stall_up) against SF 3",
+   "match": "yes",
+   "gameplan_line": 287,
+   "finding": "detail 1.3 S3-2 Z",
+   "seconds": 5.62
+  },
+  {
+   "id": "S3-2-B1",
+   "check": "S3-2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "retract_bind: P_cr 404.4 / 185.84 = 2.18 < SF 3; stall_up: P_cr 404.4 / 343.18 = 1.18 < SF 3",
+   "match": "yes",
+   "gameplan_line": 287,
+   "finding": "detail 1.3 S3-2 B (ruling's equivalent)",
+   "seconds": 5.762
+  },
+  {
+   "id": "S3-3-Z",
+   "check": "S3-3",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "48 chain link(s) closed in the cut case; listed: c drill_head|core_750 declared; c base_plate|base_frame face_record; c base_frame|frame_upper_c fastened; c frame_upper_c|bracket_anchor_c fastened; c bracket_anchor_c|anchor_c fastened; c ring|bearing declared; c bearing|drill_tube declared; c drill_tube|drill_head declared; a drill_head|core_750 declared; a base_plate|frame_upper_a fastened; a frame_upper_a|bracket_anchor_a fastened; a bracket_anchor_a|anchor_a fastened; a anchor_a|screw_a by symmetry from c; a screw_a|nut_a by symmetry from c; a nut_a|nut_housing_a by symmetry from c; a nut_housing_a|ring by symmetry from c; a ring|bearing declared; a bearing|drill_tube declared; a drill_tube|drill_head declared; b drill_head|core_750 declared; b base_plate|frame_upper_b fastened; b frame_upper_b|bracket_anchor_b fastened; b bracket_anchor_b|anchor_b fastened; b anchor_b|screw_b by symmetry from c; b screw_b|nut_b by symmetry from c; b nut_b|nut_housing_b by symmetry from c; b nut_housing_b|ring by symmetry from c; b ring|bearing declared; b bearing|drill_tube declared; b drill_tube|drill_head declared",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "detail 1.3 S3-3; O11",
+   "seconds": 10.796
+  },
+  {
+   "id": "S3-3-B1",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_frame|frame_upper_c not certified (S3 section K7 states ['F'])",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "detail 1.3 S3-3 B",
+   "seconds": 10.674
+  },
+  {
+   "id": "S3-3-B2",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_plate|base_frame not certified (S1 s1_checks_r7.json: pair absent; S2 s2_checks_r5.json: pair absent)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "detail 1.3 S3-3 (pair absent from every record)",
+   "seconds": 10.852
+  },
+  {
+   "id": "S3-3-B3",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (7 issue(s), planted 7)",
+   "reason": "chain c: base_plate|base_frame not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: base_plate|frame_upper_a not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: frame_upper_a|bracket_anchor_a not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: bracket_anchor_a|anchor_a not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain b: base_plate|frame_upper_b not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain b: frame_upper_b|bracket_anchor_b not certified (S1 s1_checks_r7.json stale (1 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (1 key(s), e.g. jackscrew.nominal recorded 8, live 12)); ... 1 more",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "detail 1.3 S3-3 (a stale record certifies nothing)",
+   "seconds": 10.877
+  },
+  {
+   "id": "SYM-Z",
+   "check": "SYM",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "18 row pair(s) compared on z_rule, place in 3 spec(s)",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman 1.3 (b) R1 and (b) sign-off",
+   "seconds": 2.339
+  },
+  {
+   "id": "SYM-B1",
+   "check": "SYM",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "s3 anchor_b: x1_exempt on a symmetry row (exemptions certify nothing); 18 row pair(s) compared on z_rule, place in 3 spec(s)",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman (b) sign-off",
+   "seconds": 2.247
+  },
+  {
+   "id": "SYM-B2",
+   "check": "SYM",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "s2 screw_a: place theta 'jackscrew.angle[0]', needs jackscrew.angle[1]; 18 row pair(s) compared on z_rule, place in 3 spec(s)",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman (b) sign-off",
+   "seconds": 2.436
+  },
+  {
+   "id": "SYM-B3",
+   "check": "SYM",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "s2 nut_housing_b z_rule differs from nut_housing_c; 18 row pair(s) compared on z_rule, place in 3 spec(s)",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman (b) sign-off",
+   "seconds": 2.468
+  },
+  {
+   "id": "X1-B3",
+   "check": "X1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "anchor_c z_rule.z_max: s2 and s3 differ; 70 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2, s3), base_plate plan_poly (only in s2, s3), keepout place (only in s2, s3)",
+   "match": "yes",
+   "gameplan_line": 144,
+   "finding": "Loftsman (b) sign-off (x1_exempt narrowed to place)",
+   "seconds": 2.503
+  },
+  {
+   "id": "H1-B9",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: x1_exempt remains on 3 row(s): s3 anchor_c, s3 anchor_a, s3 anchor_b",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Loftsman (b) sign-off (--accept refuses while an exemption remains)",
+   "seconds": 1.914
+  },
+  {
+   "id": "S3-FULL",
+   "check": "ALL",
+   "control": "smoke",
+   "expected": "runs",
+   "observed": "runs",
+   "reason": "K1 pass || K2 pass || K3 pass || K4 fail (content) || K5 pass || K6 pass || K7 pass || K8 pass || K9 pass || S3-1 pass || S3-2 pass || S3-3 fail (content)",
+   "match": "yes",
+   "gameplan_line": "281-290",
+   "finding": "SW-8 for S3",
+   "reported": [
+    {
+     "id": "K1",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (no script)"
+    },
+    {
+     "id": "K2",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "415 spec keys resolve; 194 overlay leaves sourced, legal status, no shadow; 21 expr leaves agree within 0.05"
+    },
+    {
+     "id": "K3",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "[section] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image | [inset_plan] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image"
+    },
+    {
+     "id": "K4",
+     "result": "fail",
+     "cause": "content",
+     "measured": 23,
+     "reason": "[section] capture_end/wingnut: no annotation label:wingnut; capture_end/core_750: no annotation label:core_750; capture_end/drill_head: no annotation label:drill_head; capture_end/drill_tube: no annotation label:drill_tube; capture_end/drill_top_block: no annotation label:drill_top_block; capture_end/keepout: no annotation label:keepout; ... 14 more | [inset_plan] capture_end/screw_b: no annotation label:screw_b; capture_end/frame_upper_b: no annotation label:frame_upper_b; capture_end/sync_callout: no annotation label:sync_callout"
+    },
+    {
+     "id": "K5",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)"
+    },
+    {
+     "id": "K6",
+     "result": "pass",
+     "cause": null,
+     "measured": 0.0,
+     "reason": "[section] 48 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean | [inset_plan] 22 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean"
+    },
+    {
+     "id": "K7",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "[section] 269 pair test(s) clean; states ['C', 'F', 'G', 'N', 'depth-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated'] | [inset_plan] 44 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'swept:F', 'swept:G', 'swept:z-separated', 'undeclared:F', 'undeclared:z-separated', 'z-separated']"
+    },
+    {
+     "id": "K8",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] 75 predicate(s) hold, axes not inverted"
+    },
+    {
+     "id": "K9",
+     "result": "pass",
+     "cause": null,
+     "measured": 0,
+     "reason": "[section] every spec row drawn, every tagged artist in the spec (49 rows) | [inset_plan] every spec row drawn, every tagged artist in the spec (23 rows)"
+    },
+    {
+     "id": "S3-1",
+     "result": "pass",
+     "cause": null,
+     "measured": 25.84,
+     "reason": "tension segment least 25.84 mm (nut bottom above the anchor line in every pose; cut arrow +Z)"
+    },
+    {
+     "id": "S3-2",
+     "result": "pass",
+     "cause": null,
+     "measured": 3.974,
+     "reason": "P_cr 1363.8 N (K 0.7, L_t 870.00); least margin 3.97 (stall_up) against SF 3"
+    },
+    {
+     "id": "S3-3",
+     "result": "fail",
+     "cause": "content",
+     "measured": 7,
+     "reason": "chain c: base_plate|base_frame not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: base_plate|frame_upper_a not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: frame_upper_a|bracket_anchor_a not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain a: bracket_anchor_a|anchor_a not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain b: base_plate|frame_upper_b not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); chain b: frame_upper_b|bracket_anchor_b not certified (S1 s1_checks_r7.json stale (3 key(s), e.g. jackscrew.lead recorded 8, live 3); S2 s2_checks_r5.json stale (2 key(s), e.g. jackscrew.nominal recorded 8, live 12)); ... 1 more"
+    }
+   ],
+   "seconds": 16.216
+  },
+  {
+   "id": "K3-B11",
+   "check": "K3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "capture_end: Axes inset_x is not declared in the spec (insets) | [section] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image | [inset_plan] 1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
+   "match": "yes",
+   "gameplan_line": 137,
+   "finding": "SW P5 FIX 5 (M14)",
+   "seconds": 5.004
+  },
+  {
+   "id": "K4-Z6",
+   "check": "K4",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 1 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "SW P5 FIX 5 (M17)",
+   "seconds": 4.765
+  },
+  {
+   "id": "K4-B21",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/load_tension_c: label 'T per screw, cut 300' lacks the value '247.5' (s3_checks.load_cases.cut.per_screw) | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "SW P5 FIX 5 (M17)",
+   "seconds": 4.99
+  },
+  {
+   "id": "K4-B22",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] 1 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part | [inset_plan] capture_end/keepout: label drawn outside its home Axes section",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "SW P5 FIX 5 (M16)",
+   "seconds": 4.79
+  },
+  {
+   "id": "K5-B36",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/anchor_bearing_c:line: mark endpoint (-160.00, 340.00) not on a vertical edge of anchor_bearing_c (M5) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P5T FIX 5",
+   "seconds": 4.869
+  },
+  {
+   "id": "K7-Z18",
+   "check": "K7",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 269 pair test(s) clean; states ['C', 'F', 'G', 'N', 'depth-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated'] | [inset_plan] 44 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'swept:F', 'swept:G', 'swept:z-separated', 'undeclared:F', 'undeclared:z-separated', 'z-separated']",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "Topologist P5T FIX 7 (F5)",
+   "seconds": 8.124
+  },
+  {
+   "id": "K7-B35",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] screw_a|nut_housing_a: spec error, class_by_axes N in inset_plan with the pair tested in no other Axes at its base class F | [inset_plan] 44 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'swept:F', 'swept:G', 'swept:z-separated', 'undeclared:F', 'undeclared:z-separated', 'z-separated']",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "Topologist P5T FIX 7",
+   "seconds": 7.62
+  },
+  {
+   "id": "K8-B64",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] screw_a below anchor_a: spec error, predicate evaluated in no declared Axes | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 1 = Topologist P5T FIX 1",
+   "seconds": 9.759
+  },
+  {
+   "id": "K8-B65",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] capture_end/section_line look_direction -X: arrow (0.0, -304.0) -> (40.0, -304.0) does not point -X; capture_end/section_line look_direction -X: arrow (0.0, 304.0) -> (40.0, 304.0) does not point -X",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 5 (M22) = Topologist P5T look direction (drawing)",
+   "seconds": 9.616
+  },
+  {
+   "id": "K8-B66",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] section_line look_direction: spec error, toward +X against the section_yz viewer (u x z . toward = -1 needs -X) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 2 (sign check)",
+   "seconds": 9.369
+  },
+  {
+   "id": "K8-B67",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/ring: spec error, section_class None (known: cut, unsectioned, beyond, reference) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M08)",
+   "seconds": 9.716
+  },
+  {
+   "id": "K8-B68",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_a_past: drawn past one profile width behind the plane (depth x [-144.56, -132.56], limit -60); omit it (section convention 4) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M09)",
+   "seconds": 10.766
+  },
+  {
+   "id": "K8-B69",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: beyond piece partly behind a cut part (266 of 532 samples): draw visible and hidden parts as separate pieces (section convention 3) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M10)",
+   "seconds": 9.456
+  },
+  {
+   "id": "K8-B70",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: beyond row hatched '//' (section convention 3) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M11)",
+   "seconds": 9.137
+  },
+  {
+   "id": "K8-B71",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: beyond row reaches in front of the plane (depth x up to 2.75) (section convention 3) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M12)",
+   "seconds": 9.5
+  },
+  {
+   "id": "K8-B72",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/ring: cut row the plane x = 0 does not cut (depth x [-50.00, -40.00]) (section convention 1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "SW P5 FIX 4 (M13)",
+   "seconds": 10.042
+  },
+  {
+   "id": "K8-B73",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/standoffs_c: unsectioned row whose axis is not in the plane (depth x [-18.25, -12.75]) (section convention 2) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 3 (a)",
+   "seconds": 6.078
+  },
+  {
+   "id": "K8-B74",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/coupling_c: plan x [-9.50, 9.50] lies in the section band and is not drawn in the section (section convention 4, converse) | [inset_plan] 77 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 3 (b)",
+   "seconds": 10.177
+  },
+  {
+   "id": "K8-B75",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/load_tension_c points apart: arrows not of opposite senses on one line (P5f, Topologist FIX 4) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 4",
+   "seconds": 9.584
+  },
+  {
+   "id": "K8-Z15",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 6",
+   "seconds": 9.81
+  },
+  {
+   "id": "K8-B76",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] capture_end/frame_upper_b mirror_about_radial: vertex (u 258.09, t -27.56) has no mirror (u, -t) about the radial at theta 30",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist P5T FIX 6",
+   "seconds": 9.944
+  },
+  {
+   "id": "S3-2-B2",
+   "check": "S3-2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "drawn span 880.00 against 870.00 (spec)",
+   "match": "yes",
+   "gameplan_line": 287,
+   "finding": "SW P5 FIX 2 = Loftsman P5L FIX 4",
+   "seconds": 4.877
+  },
+  {
+   "id": "S3-3-B4",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "chain c: nut_c|nut_housing_c not certified (S3 face: no bottom horizontal edge of nut_c at the face z 388.84 z_S (nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness + 1); nut_c must lie above the face and nut_housing_c below it (cut-case sense)); chain a: nut_a|nut_housing_a not certified (none; symmetry: a c link between the counterparts is open); chain b: nut_b|nut_housing_b not certified (none; symmetry: a c link between the counterparts is open)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "SW P5 FIX 3 (a), M02",
+   "seconds": 10.607
+  },
+  {
+   "id": "S3-3-B5",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (8 issue(s), planted 8)",
+   "reason": "chain a: anchor_a|screw_a not certified (none; symmetry premise (SYM) fails: 1 issue(s)); chain a: screw_a|nut_a not certified (none; symmetry premise (SYM) fails: 1 issue(s)); chain a: nut_a|nut_housing_a not certified (none; symmetry premise (SYM) fails: 1 issue(s)); chain a: nut_housing_a|ring not certified (none; symmetry premise (SYM) fails: 1 issue(s)); chain b: anchor_b|screw_b not certified (none; symmetry premise (SYM) fails: 1 issue(s)); chain b: screw_b|nut_b not certified (none; symmetry premise (SYM) fails: 1 issue(s)); ... 2 more",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "SW P5 FIX 3 (b), M03 = Loftsman P5L FIX 5",
+   "seconds": 10.452
+  },
+  {
+   "id": "S3-3-B6",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "chain c: nut_c|nut_housing_c not certified (S3 section K7 states ['F']); chain a: nut_a|nut_housing_a not certified (none; symmetry: a c link between the counterparts is open); chain b: nut_b|nut_housing_b not certified (none; symmetry: a c link between the counterparts is open)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "SW P5 FIX 3 (c), M04 = Loftsman P5L FIX 5 (count 3 under NOTE 1)",
+   "seconds": 10.826
+  },
+  {
+   "id": "S3-3-B7",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_plate|base_frame not certified (S1 s1_checks_r7.json: states ['F']; S2 s2_checks_r5.json: states ['F'])",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "SW P5 FIX 3 (d), M05 = Loftsman P5L FIX 5",
+   "seconds": 11.447
+  },
+  {
+   "id": "S3-3-B8",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_plate|base_frame not certified (S1 s1_checks_r7.json: pair absent; S2 s2_checks_r5.json: pair absent)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "SW P5 NOTE 7, M07",
+   "seconds": 10.617
+  },
+  {
+   "id": "S3-3-B9",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "chain c: receiver|base_plate not certified (S3 section K7 states ['F']); chain a: receiver|base_plate not certified (S3 section K7 states ['F']); chain b: receiver|base_plate not certified (S3 section K7 states ['F'])",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Loftsman P5L FIX 1 (veto per pair)",
+   "seconds": 10.966
+  },
+  {
+   "id": "S3-3-B10",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "bracket_anchor_c: spec error, row of an S3-certified pair not drawn as its true cut through x = 0 (veto premise); chain c: frame_upper_c|bracket_anchor_c not certified (S3 section K7 states ['depth-separated']); chain c: bracket_anchor_c|anchor_c not certified (S3 section K7 states ['depth-separated'])",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Loftsman P5L FIX 3",
+   "seconds": 11.091
+  },
+  {
+   "id": "S3-3-B11",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "chain c: anchor_c|anchor_bearing_c not certified (S3 face: faces of anchor_c and anchor_bearing_c at z 348.00 overlap by no more than 0.05 in u (a corner is no axial seat)); chain a: anchor_a|screw_a not certified (none; symmetry: a c link between the counterparts is open); chain b: anchor_b|screw_b not certified (none; symmetry: a c link between the counterparts is open)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Loftsman P5L FIX 2",
+   "seconds": 11.014
+  },
+  {
+   "id": "SYM-P-Z",
+   "check": "SYM-P",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "keys_read covers every key read by place and z_rule of the SYM rows || keys_read covers every key read by place and z_rule of the SYM rows || keys_read covers every key read by place and z_rule of the SYM rows",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman P5L FIX 6 (F4 ruling premise)",
+   "seconds": 5.565
+  },
+  {
+   "id": "SYM-P-B1",
+   "check": "SYM-P",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "keys_read lacks keys read by SYM rows: screw_c: jackscrew.top_guide_z; screw_a: jackscrew.top_guide_z; screw_b: jackscrew.top_guide_z",
+   "match": "yes",
+   "gameplan_line": 145,
+   "finding": "Loftsman P5L FIX 6",
+   "seconds": 2.046
+  },
+  {
+   "id": "K4-B23",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/drill_tube: label leader runs through the text of 'PLANTED THROUGH' (i1); load/keepout: label leader runs through the text of 'PLANTED THROUGH' (i1)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer M1 S3 r1 F2",
+   "seconds": 17.108
+  },
+  {
+   "id": "K4-B24",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load: text label:base_plate overlaps text 'PLANTED OVERLAP' (i2)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "Designer M1 S3 r1 F3",
+   "seconds": 17.522
+  },
+  {
+   "id": "K5-Z6",
+   "check": "K5",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-15",
+   "seconds": 4.87
+  },
+  {
+   "id": "K5-B37",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_c:root: root line at u -154.00 against -155.75 (u_c -160.00 -+ d_r 8.5 / 2) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-15",
+   "seconds": 4.836
+  },
+  {
+   "id": "K5-B38",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_c:root: root line z 360.00 to 1185.00 against 360.00 to 1180.00 | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-15",
+   "seconds": 4.825
+  },
+  {
+   "id": "K5-B39",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] capture_end/screw_c:root: root line drawn solid (dashed: hidden thread root); capture_end/screw_c:root: root line drawn solid (dashed: hidden thread root) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-15",
+   "seconds": 4.969
+  },
+  {
+   "id": "K5-Z7",
+   "check": "K5",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-13",
+   "seconds": 4.872
+  },
+  {
+   "id": "K5-B40",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] capture_end/plan_axes:arc: arc turns clockwise at point 0 (cross -27.924); theta runs counter-clockwise from +X; capture_end/plan_axes:arc: arc start at 90.00 deg against 0; capture_end/plan_axes:arc: arc end at 0.00 deg against 90",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-13",
+   "seconds": 4.827
+  },
+  {
+   "id": "K5-B41",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] capture_end/plan_axes:arc: arc point (45.00, 0.00) 5.00 off the circle r 40; capture_end/plan_axes:arc: arc head ends off the circle",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-13",
+   "seconds": 4.99
+  },
+  {
+   "id": "K5-B42",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/plan_axes:arc: sub-artist of no spec row plan_axes | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist TP1.3-13",
+   "seconds": 4.95
+  },
+  {
+   "id": "K8-B77",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (14 issue(s), planted 14)",
+   "reason": "[section] capture_end/receiver: drawn solid inside the unsectioned outline of wingnut (362 of 362 samples; section convention 6a, occlusion); capture_end/receiver: drawn solid inside the unsectioned outline of wingnut (362 of 362 samples; section convention 6a, occlusion); capture_end/holder: drawn solid inside the unsectioned outline of wingnut (338 of 338 samples; section convention 6a, occlusion); capture_end/holder: drawn solid inside the unsectioned outline of wingnut (338 of 338 samples; section convention 6a, occlusion); capture_end/holder: drawn solid inside the unsectioned outline of wingnut (412 of 412 samples; section convention 6a, occlusion); capture_end/holder: drawn solid inside the unsectioned outline of wingnut (412 of 412 samples; section convention 6a, occlusion); ... 8 more | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-11",
+   "seconds": 9.596
+  },
+  {
+   "id": "K8-B78",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (14 issue(s), planted 14)",
+   "reason": "[section] capture_end/receiver: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); capture_end/receiver: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); capture_end/holder: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); capture_end/holder: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); capture_end/holder: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); capture_end/holder: hidden inside the unsectioned outline of wingnut with no dashed hidden copy (section convention 6b); ... 8 more | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-11",
+   "seconds": 9.414
+  },
+  {
+   "id": "K8-Z16",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 212 predicate(s) hold, axes not inverted | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-14",
+   "seconds": 9.575
+  },
+  {
+   "id": "K8-B79",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/anchor_c: hatch '//' against material aluminium '||' (section convention 1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-14",
+   "seconds": 9.872
+  },
+  {
+   "id": "K8-B80",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/anchor_c: hatch '||' against material aluminium '//' (section convention 1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-14",
+   "seconds": 9.488
+  },
+  {
+   "id": "K8-B81",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: spec error: section.hatch_alt aluminium '\\\\\\\\' in the line family of material pattern(s) steel (HATCH) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-14",
+   "seconds": 9.38
+  },
+  {
+   "id": "K8-B82",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: anchor_c: hatch_split declared with no section.hatch_alt for aluminium (The Designer, TP1.3-14) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-14",
+   "seconds": 9.479
+  },
+  {
+   "id": "K8-B83",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: not_drawn 'rear nut shoulder screw' (x band 1) plan x [-18.86, -8.86] lies in the section band (0 to -60): draw it as a beyond row or state its convention (TP1.3-12) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-12",
+   "seconds": 9.734
+  },
+  {
+   "id": "K8-B84",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] spec error: not_drawn 'screw a set' without omit (one of off_plane, deferred) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-12",
+   "seconds": 9.997
+  },
+  {
+   "id": "K8-B85",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: not_drawn 'pinions a and b' (s2 pinion_a) plan x [-144.05, -59.66] lies in the section band (0 to -60): draw it as a beyond row or state its convention (TP1.3-12) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist TP1.3-12 (NOTE case)",
+   "seconds": 9.547
+  },
+  {
+   "id": "S3-3-B12",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "chain c: anchor_c|anchor_bearing_c not certified (S3 face: no top horizontal edge of anchor_bearing_c at the face z 332.00 z_S (jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width); anchor_c must lie above the face and anchor_bearing_c below it (cut-case sense)); chain a: anchor_a|screw_a not certified (none; symmetry: a c link between the counterparts is open); chain b: anchor_b|screw_b not certified (none; symmetry: a c link between the counterparts is open)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist TP1.3-10",
+   "seconds": 10.677
+  },
+  {
+   "id": "S3-3-B13",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_frame|frame_upper_c not certified (S3 face: no bottom horizontal edge of base_frame at the face z 60.00 z_S (0); base_frame must lie above the face and frame_upper_c below it (cut-case sense))",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist TP1.3-10",
+   "seconds": 10.821
+  },
+  {
+   "id": "S3-3-B14",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: frame_upper_c|bracket_anchor_c not certified (S3 face: no bottom horizontal edge of frame_upper_c at the face z 325.00 z_S (jackscrew.anchor_z); frame_upper_c must lie above the face and bracket_anchor_c below it (cut-case sense))",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist TP1.3-10",
+   "seconds": 10.908
+  },
+  {
+   "id": "S3-3-B15",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: nut_housing_c|ring spec error, link kind None (one of face, face_record, thread, one_body, fastened, declared)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist TP1.3-10 (lint)",
+   "seconds": 10.51
+  },
+  {
+   "id": "K5-B43",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] 122 tagged artist(s) projected per kind, axis and spec projection (view normal X) | [inset_plan] capture_end/plan_axes:arc: arc head points against theta (clockwise)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist R2-3",
+   "seconds": 5.097
+  },
+  {
+   "id": "K5-B44",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/span_lt:ext: ext on span_lt: at z 345.00, not at a z_rule end (340.00 or 1210.00) (e1) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Designer r2 item 3 (e1)",
+   "seconds": 4.615
+  },
+  {
+   "id": "K5-B45",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/span_lt:ext: ext on span_lt: starts at u -149.00, not on the screw edge -154.00 (e2) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Designer r2 item 3 (e2)",
+   "seconds": 4.822
+  },
+  {
+   "id": "K5-B46",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/span_lt:ext: ext on span_lt: ends 10.00 past the dimension line u -110.00 (0 to 3) (e3) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Designer r2 item 3 (e3)",
+   "seconds": 4.877
+  },
+  {
+   "id": "K5-B47",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/screw_c:ext: ext on screw_c: parent is not a reference line row (e4) | [inset_plan] 33 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Designer r2 item 3 (e4)",
+   "seconds": 4.916
+  },
+  {
+   "id": "K8-B86",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] spec error: not_drawn 'rear nut shoulder screw' deferred with no owner | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist R2-2",
+   "seconds": 10.063
+  },
+  {
+   "id": "K8-B87",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end: spec error: section.hatch_alt aluminium '////' in the line family of material pattern(s) aluminium (HATCH) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Topologist R2-4",
+   "seconds": 9.57
+  },
+  {
+   "id": "S3-3-B16",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: frame_upper_c|bracket_anchor_c not certified (S3 face link names no face z (frame_upper_c -> bracket_anchor_c))",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist R2-1",
+   "seconds": 10.601
+  },
+  {
+   "id": "S3-3-B17",
+   "check": "S3-3",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "chain c: base_plate|base_frame spec error, face link with no S3 certifier (the sense is read in the section only)",
+   "match": "yes",
+   "gameplan_line": 288,
+   "finding": "Topologist R2-1",
+   "seconds": 10.574
+  },
+  {
+   "id": "K8-Z17",
+   "check": "K8",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 218 predicate(s) hold, axes not inverted | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Designer NOTE D-r3-1",
+   "seconds": 12.211
+  },
+  {
+   "id": "K8-B88",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] capture_end/span_lt projected_x: drawn x centre -105.00 vs r_c cos(theta) -110.00 (r_c 110.00, theta -180); capture_end/span_lt projected_extent: drawn x [-105.00, -105.00] outside the spec footprint x [-110.00, -110.00] (by 5.00) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Designer NOTE D-r3-1 (guard)",
+   "seconds": 9.71
+  },
+  {
+   "id": "K8-B89",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] capture_end/span_lt terminator: arrow tail (-100.00, 347.00) 10.00 off the line (D-r3-1); capture_end/span_lt terminator: arrow head (-100.00, 340.00) 10.00 off the line (D-r3-1) | [inset_plan] 75 predicate(s) hold, axes not inverted",
+   "match": "yes",
+   "gameplan_line": 142,
+   "finding": "Designer NOTE D-r3-1",
+   "seconds": 9.643
+  },
+  {
+   "id": "K4-Z7",
+   "check": "K4",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 1 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r4 F1",
+   "seconds": 5.238
+  },
+  {
+   "id": "K4-B25",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/load_comp_c: label 'compression per screw: static 79, capture 120, retract (F_bind 300) 186, stall up 343 N' lacks case static 'static' 86 (load_cases per_screw; K4 cases) | [inset_plan] 0 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r4 F1",
+   "seconds": 5.228
+  },
+  {
+   "id": "K4-Z8",
+   "check": "K4",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "[section] 20 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 Rule 1, Rule 2, F1, F2",
+   "seconds": 21.14
+  },
+  {
+   "id": "K4-B26",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (4 issue(s), planted 4)",
+   "reason": "[section] load_cases static per_screw literal 85.84 against loads() 98.9175 N (W or a load key changed); load_cases capture_lift per_screw literal 119.85 against loads() 132.9255 N (W or a load key changed); load_cases retract_bind per_screw literal 185.84 against loads() 198.9175 N (W or a load key changed); load_cases cut per_screw literal 247.5 against loads() 234.4158 N (W or a load key changed) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 Rule 1 fix",
+   "seconds": 21.669
+  },
+  {
+   "id": "K4-B27",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/anchor_c: label leader ends at [-139.0, 338.0] (ink), not at its label_anchor_frac 0.88 anchor [-139.0, 351.4] (K4 anchor record) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 Rule 2 fix (a)",
+   "seconds": 21.521
+  },
+  {
+   "id": "K4-B28",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (3 issue(s), planted 3)",
+   "reason": "[section] guide_c: spec error, label_anchor_frac 1.5 outside [0, 1]; capture_end/guide_c: label leader runs 31.0 mm along span_lt:ext within 1 mm (K4 collinear); capture_end/span_lt: label leader runs 48.5 mm along gridline z 1200 within 1 mm (K4 collinear) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 Rule 2 fix (c)",
+   "seconds": 21.11
+  },
+  {
+   "id": "K4-B29",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "[section] capture_end/guide_c: label leader runs 31.0 mm along span_lt:ext within 1 mm (K4 collinear); capture_end/span_lt: label leader runs 48.5 mm along gridline z 1200 within 1 mm (K4 collinear) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 Rule 2 fix (b)",
+   "seconds": 21.709
+  },
+  {
+   "id": "K4-B30",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/load_comp_c: label leader runs 539.2 mm along gridline z 400 within 1 mm (K4 collinear) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 F1",
+   "seconds": 20.377
+  },
+  {
+   "id": "K4-B31",
+   "check": "K4",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "[section] capture_end/nut_station_start: label 'nut at start z_S 1020.84' z_S 1020.84 against check_stack nut_z at start 1030.84 (K4 stack_z) | [inset_plan] 3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "M1 S3 r5 F2",
+   "seconds": 20.281
   }
  ]
 }

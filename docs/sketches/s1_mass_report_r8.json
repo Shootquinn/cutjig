@@ -1,0 +1,464 @@
+{
+ "load": {
+  "highest_drawn_z_S": 1969.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 30.159999999999854,
+  "mass_kg": 81.49889038590526,
+  "W_kg": 26.25,
+  "com_z_S": 692.8932815572213,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 189.14338588674093,
+  "tip_force_at_com_N": 350.77443718061267,
+  "ring_bottom_z_S": 1149.8400000000001,
+  "ring_top_z_S": 1161.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1419.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1155.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1258.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "gear hub",
+    0.7,
+    1258.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1213.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "pinions x3",
+    1.5,
+    1213.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1155.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "drill-to-ring bearing",
+    1.5,
+    1149.34,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "guide bushings with housings x2",
+    0.4,
+    1134.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1894.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    536.17,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "Tr12x3 screws x3",
+    2.397,
+    775.0,
+    "DERIVED (d jackscrew.nominal), steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    265.0,
+    "overlay ASSUMED"
+   ]
+  ]
+ },
+ "start": {
+  "highest_drawn_z_S": 1844.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 155.15999999999985,
+  "mass_kg": 81.49889038590526,
+  "W_kg": 26.25,
+  "com_z_S": 641.4017584195547,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 189.14338588674093,
+  "tip_force_at_com_N": 378.9344941356995,
+  "ring_bottom_z_S": 1024.8400000000001,
+  "ring_top_z_S": 1036.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1294.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1030.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1133.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "gear hub",
+    0.7,
+    1133.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1088.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "pinions x3",
+    1.5,
+    1088.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1030.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "drill-to-ring bearing",
+    1.5,
+    1024.34,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "guide bushings with housings x2",
+    0.4,
+    1009.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1769.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    477.5,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "Tr12x3 screws x3",
+    2.397,
+    775.0,
+    "DERIVED (d jackscrew.nominal), steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    265.0,
+    "overlay ASSUMED"
+   ]
+  ]
+ },
+ "capture_end": {
+  "highest_drawn_z_S": 1285.0,
+  "highest_part": "frame_upper_a",
+  "margin": 715.0,
+  "mass_kg": 81.49889038590526,
+  "W_kg": 26.25,
+  "com_z_S": 432.0430798018779,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 189.14338588674093,
+  "tip_force_at_com_N": 562.5579073640463,
+  "ring_bottom_z_S": 374.84000000000003,
+  "ring_top_z_S": 386.84000000000003,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    644.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    380.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    483.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "gear hub",
+    0.7,
+    483.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    438.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "pinions x3",
+    1.5,
+    438.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    380.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "drill-to-ring bearing",
+    1.5,
+    374.34,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "guide bushings with housings x2",
+    0.4,
+    359.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1119.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "0.75 m core",
+    15.6,
+    477.5,
+    "params DERIVED (d 105)"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "Tr12x3 screws x3",
+    2.397,
+    775.0,
+    "DERIVED (d jackscrew.nominal), steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    265.0,
+    "overlay ASSUMED"
+   ]
+  ]
+ },
+ "park": {
+  "highest_drawn_z_S": 1969.8400000000001,
+  "highest_part": "drill_top_block",
+  "margin": 30.159999999999854,
+  "mass_kg": 65.89889038590526,
+  "W_kg": 26.25,
+  "com_z_S": 729.9938029465097,
+  "frame_top_z_S": 1285.0,
+  "tip_force_frame_top_N": 152.93876020580709,
+  "tip_force_at_com_N": 269.2164044012611,
+  "ring_bottom_z_S": 1149.8400000000001,
+  "ring_top_z_S": 1161.8400000000001,
+  "items": [
+   [
+    "drill (head + tube)",
+    8,
+    1419.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring",
+    6,
+    1155.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "ring gear",
+    3,
+    1258.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "gear hub",
+    0.7,
+    1258.96,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "NEMA 23 x3",
+    3.0,
+    1213.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "pinions x3",
+    1.5,
+    1213.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "nuts x3",
+    0.15,
+    1155.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "drill-to-ring bearing",
+    1.5,
+    1149.34,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "guide bushings with housings x2",
+    0.4,
+    1134.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "top-end block",
+    2,
+    1894.84,
+    "W, overlay ASSUMED"
+   ],
+   [
+    "base frame 30-6060",
+    8.234,
+    30.0,
+    "DERIVED (frame.members, catalog kg/m)"
+   ],
+   [
+    "base plate",
+    12.686,
+    66.0,
+    "DERIVED, aluminium ASSUMED"
+   ],
+   [
+    "screw frame members x3",
+    9.363,
+    678.5,
+    "DERIVED (catalog kg/m)"
+   ],
+   [
+    "guide rods x2",
+    5.919,
+    672.0,
+    "DERIVED, steel ASSUMED"
+   ],
+   [
+    "Tr12x3 screws x3",
+    2.397,
+    775.0,
+    "DERIVED (d jackscrew.nominal), steel ASSUMED"
+   ],
+   [
+    "NEMA 17 x3",
+    1.05,
+    265.0,
+    "overlay ASSUMED"
+   ]
+  ]
+ }
+}
