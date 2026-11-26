@@ -31,7 +31,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -160,64 +160,72 @@ s3_checks:
     rule: "every consecutive pair of each screw chain (field chains) is class C, as an axial face contact that carries the cut-case load in its direction (the named face of each S3 certifier, field face) in the section, in at least one certifier named for it (state C, z-contact or plan-contact); a pair whose certifier is 'declared' passes only as declared and is listed; a pair with no certifier fails; the a, b screw-set pairs are certified from screw c only under the symmetry premise lint (P4)"
     source: "SE-2; gameplan detail 1.3 S3-3; Designer 1.3 (a) section 11"
 
-# S3-3 chains, cut case (Designer 1.3 (a) section 11). certifiers: record and K7 pair id as written in that record
+# S3-3 chains, cut case (Designer 1.3 (a) section 11). 1.3 (h) r2 (Topologist TP1.3-10): every link carries a kind.
+#   face: an axial face that carries the cut-case load in its direction; named face {z} on the link or on the neighbour
+#     entry; judged in the section with its sense (x's drawn bottom edge and y's drawn top edge on the face z, overlap in
+#     u above 0.05: x above y, x holds y down under the cut-case loop force); an S3 certifier is required.
+#   face_record: an axial face off the section plane (plate on the base-frame rails); certified by record contact as
+#     before, sense not read in this figure (listed).
+#   thread, one_body: contact certifiers as before.
+#   fastened: the drawn contact is a side face or a face loaded in tension (member feet, bracket arm ends); the link is
+#     carried by fasteners (Step 2 bolt row); contact certifiers as before, listed.
+#   declared: passes as declared and is listed (load application; ring and bearing radial fits, axial seats at S6-5).
+# The base route runs core, core seat (one body with the collet), collet foot on the receiver floor, receiver shoulder on
+# the plate (Topologist TP1.3-10 (a)); the holder carries no cut-case axial load in the drawing. certifiers: record and K7 pair id as written in that record
 # (MEASURED in S1 / S2 at 1.3 (b)); "S3" = this figure's K7 (section Axes); "declared" =
 # declared contact, drawn at S6 (S6-5); "none" = no record certifies it today (listed in step1.3_engineer_spec.md section 5).
 chains:
   c:
-    - {pair: [drill_head, core_750], certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
-    - {pair: [core_750, core_seat], certifiers: ["S3 core_750|core_seat (declared C at capture_end here)"], note: "S1 r7 core_seat|core_750 is undeclared F"}
-    - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
-    - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
-    - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
-    - {pair: [base_plate, base_frame], certifiers: ["S1 base_frame|base_plate C", "S2 base_plate|base_frame z-contact"], note: "not at x = 0 (Designer 1.3 (a) Correction 8)"}
-    - {pair: [base_frame, frame_upper_c], certifiers: ["S2 frame_upper_c|base_frame z-contact", "S3 base_frame|frame_upper_c"]}
-    - {pair: [frame_upper_c, bracket_anchor_c], certifiers: ["S2 bracket_anchor_c|frame_upper_c plan-contact", "S3 bracket_anchor_c|frame_upper_c"]}
-    - {pair: [bracket_anchor_c, anchor_c], certifiers: ["S2 bracket_anchor_c|anchor_c plan-contact (round r 21 block; S2 r9 re-certifies the 42 square)", "S3 anchor_c|bracket_anchor_c"]}
-    - {pair: [anchor_c, anchor_bearing_c], certifiers: ["S3 anchor_c|anchor_bearing_c"], face: "cover underside on the upper outer race, jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width (288), cut case", note: "lifting cases bear on the block shoulder 272"}
-    - {pair: [anchor_bearing_c, anchor_locknut_c], certifiers: ["S3 anchor_locknut_c|anchor_bearing_c"], face: "locknut top under the lower inner race, jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width (272), cut case", note: "Loftsman 1.3 (b) re-sign FIX 8: the cut-case path; the screw shoulder at 288 unloads in the cut case"}
-    - {pair: [anchor_locknut_c, screw_c], certifiers: ["S3 anchor_locknut_c|screw_c"], face: "M10x1 thread", note: "Loftsman 1.3 (b) re-sign FIX 8"}
-    - {pair: [screw_c, nut_c], certifiers: ["S3 screw_c|nut_c"], note: "tension segment (S3-1)"}
-    - {pair: [nut_c, nut_housing_c], certifiers: ["S3 nut_housing_c|nut_c"], face: "counterbore shoulder under the flange, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, cut case", note: "cut case: flange on the counterbore shoulder; lifting cases through nut_screws_c (head on the flange top)"}
-    - {pair: [nut_housing_c, ring], certifiers: ["S3 ring|nut_housing_c"]}
-    - {pair: [ring, bearing], certifiers: ["S1 ring|bearing C", "S2 ring|bearing plan-contact", "S3 ring|bearing"]}
-    - {pair: [bearing, drill_tube], certifiers: ["S1 drill_tube|bearing C", "S2 drill_tube|bearing plan-contact", "declared (S6-5 draws the segment)"]}
-    - {pair: [drill_tube, drill_head], certifiers: ["declared (S3 declares C; S6-5 draws it)"], note: "S1 drill_head|drill_tube undeclared F; S2 drill_tube|drill_head undeclared F (z-touch)"}
+    - {pair: [drill_head, core_750], kind: declared, certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
+    - {pair: [core_750, core_seat], kind: face, face: {z: receiver_floor + collet.core_seat_height, side: core bottom on the core-seat ledge (cut case)}, certifiers: ["S3 core_750|core_seat"]}
+    - {pair: [core_seat, collet], kind: one_body, certifiers: ["declared: one body (the core-seat ledge is the collet bore bottom, collet.core_seat_height)", "S1 collet|core_seat C"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): the seat and collet meet on a vertical edge only in the section; one body"}
+    - {pair: [collet, receiver], kind: face, face: {z: receiver_floor, side: collet foot on the receiver floor (cut case)}, certifiers: ["S3 receiver|collet"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): rerouted; collet|holder (cone opens under the cut load) and holder|receiver (radial fit) carry no cut-case axial load in the drawing"}
+    - {pair: [receiver, base_plate], kind: face, certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
+    - {pair: [base_plate, base_frame], kind: face_record, certifiers: ["S1 base_frame|base_plate C", "S2 base_plate|base_frame z-contact"], note: "not at x = 0 (Designer 1.3 (a) Correction 8)"}
+    - {pair: [base_frame, frame_upper_c], kind: fastened, certifiers: ["S2 frame_upper_c|base_frame z-contact", "S3 base_frame|frame_upper_c"]}
+    - {pair: [frame_upper_c, bracket_anchor_c], kind: fastened, certifiers: ["S2 bracket_anchor_c|frame_upper_c plan-contact", "S3 bracket_anchor_c|frame_upper_c"]}
+    - {pair: [bracket_anchor_c, anchor_c], kind: fastened, certifiers: ["S2 bracket_anchor_c|anchor_c plan-contact (round r 21 block; S2 r9 re-certifies the 42 square)", "S3 anchor_c|bracket_anchor_c"]}
+    - {pair: [anchor_c, anchor_bearing_c], kind: face, certifiers: ["S3 anchor_c|anchor_bearing_c"], face: "cover underside on the upper outer race, jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width (288), cut case", note: "lifting cases bear on the block shoulder 272"}
+    - {pair: [anchor_bearing_c, anchor_locknut_c], kind: face, certifiers: ["S3 anchor_locknut_c|anchor_bearing_c"], face: "locknut top under the lower inner race, jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width (272), cut case", note: "Loftsman 1.3 (b) re-sign FIX 8: the cut-case path; the screw shoulder at 288 unloads in the cut case"}
+    - {pair: [anchor_locknut_c, screw_c], kind: thread, certifiers: ["S3 anchor_locknut_c|screw_c"], face: "M10x1 thread", note: "Loftsman 1.3 (b) re-sign FIX 8"}
+    - {pair: [screw_c, nut_c], kind: thread, certifiers: ["S3 screw_c|nut_c"], note: "tension segment (S3-1)"}
+    - {pair: [nut_c, nut_housing_c], kind: face, certifiers: ["S3 nut_housing_c|nut_c"], face: "counterbore shoulder under the flange, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, cut case", note: "cut case: flange on the counterbore shoulder; lifting cases through nut_screws_c (head on the flange top)"}
+    - {pair: [nut_housing_c, ring], kind: one_body, certifiers: ["S3 ring|nut_housing_c"]}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C", "S2 ring|bearing plan-contact", "S3 ring|bearing"]}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "S2 drill_tube|bearing plan-contact", "declared (S6-5 draws the segment)"]}
+    - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S3 declares C; S6-5 draws it)"], note: "S1 drill_head|drill_tube undeclared F; S2 drill_tube|drill_head undeclared F (z-touch)"}
   a:
-    - {pair: [drill_head, core_750], certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
-    - {pair: [core_750, core_seat], certifiers: ["S3 core_750|core_seat"]}
-    - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
-    - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
-    - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
-    - {pair: [base_plate, frame_upper_a], certifiers: ["S1 frame_upper_a|base_plate C", "S2 frame_upper_a|base_plate z-contact"]}
-    - {pair: [frame_upper_a, bracket_anchor_a], certifiers: ["S1 bracket_anchor_a|frame_upper_a plan-contact", "S2 bracket_anchor_a|frame_upper_a plan-contact"]}
-    - {pair: [bracket_anchor_a, anchor_a], certifiers: ["S1 bracket_anchor_a|anchor_a plan-contact", "S2 bracket_anchor_a|anchor_a plan-contact"]}
-    - {pair: [anchor_a, screw_a], certifiers: ["none"], note: "S1/S2 declare screw_a|anchor_a N; S3 certifies screw c only; 'by symmetry' needs the premise lint (rows a, b, c equal up to theta), not yet written (P4, open item 10)"}
-    - {pair: [screw_a, nut_a], certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
-    - {pair: [nut_a, nut_housing_a], certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
-    - {pair: [nut_housing_a, ring], certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
-    - {pair: [ring, bearing], certifiers: ["S1 ring|bearing C"]}
-    - {pair: [bearing, drill_tube], certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
-    - {pair: [drill_tube, drill_head], certifiers: ["declared (S6-5)"]}
+    - {pair: [drill_head, core_750], kind: declared, certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
+    - {pair: [core_750, core_seat], kind: face, face: {z: receiver_floor + collet.core_seat_height, side: core bottom on the core-seat ledge (cut case)}, certifiers: ["S3 core_750|core_seat"]}
+    - {pair: [core_seat, collet], kind: one_body, certifiers: ["declared: one body (the core-seat ledge is the collet bore bottom, collet.core_seat_height)", "S1 collet|core_seat C"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): the seat and collet meet on a vertical edge only in the section; one body"}
+    - {pair: [collet, receiver], kind: face, face: {z: receiver_floor, side: collet foot on the receiver floor (cut case)}, certifiers: ["S3 receiver|collet"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): rerouted; collet|holder (cone opens under the cut load) and holder|receiver (radial fit) carry no cut-case axial load in the drawing"}
+    - {pair: [receiver, base_plate], kind: face, certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
+    - {pair: [base_plate, frame_upper_a], kind: fastened, certifiers: ["S1 frame_upper_a|base_plate C", "S2 frame_upper_a|base_plate z-contact"]}
+    - {pair: [frame_upper_a, bracket_anchor_a], kind: fastened, certifiers: ["S1 bracket_anchor_a|frame_upper_a plan-contact", "S2 bracket_anchor_a|frame_upper_a plan-contact"]}
+    - {pair: [bracket_anchor_a, anchor_a], kind: fastened, certifiers: ["S1 bracket_anchor_a|anchor_a plan-contact", "S2 bracket_anchor_a|anchor_a plan-contact"]}
+    - {pair: [anchor_a, screw_a], kind: face, certifiers: ["none"], note: "S1/S2 declare screw_a|anchor_a N; S3 certifies screw c only; 'by symmetry' needs the premise lint (rows a, b, c equal up to theta), not yet written (P4, open item 10)"}
+    - {pair: [screw_a, nut_a], kind: thread, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
+    - {pair: [nut_a, nut_housing_a], kind: face, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
+    - {pair: [nut_housing_a, ring], kind: one_body, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C"]}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
+    - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S6-5)"]}
   b:
-    - {pair: [drill_head, core_750], certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
-    - {pair: [core_750, core_seat], certifiers: ["S3 core_750|core_seat"]}
-    - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
-    - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
-    - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
-    - {pair: [base_plate, frame_upper_b], certifiers: ["S1 frame_upper_b|base_plate C", "S2 frame_upper_b|base_plate z-contact"]}
-    - {pair: [frame_upper_b, bracket_anchor_b], certifiers: ["S1 bracket_anchor_b|frame_upper_b plan-contact", "S2 bracket_anchor_b|frame_upper_b plan-contact"]}
-    - {pair: [bracket_anchor_b, anchor_b], certifiers: ["S1 bracket_anchor_b|anchor_b plan-contact", "S2 bracket_anchor_b|anchor_b plan-contact"]}
-    - {pair: [anchor_b, screw_b], certifiers: ["none"], note: "as screw a"}
-    - {pair: [screw_b, nut_b], certifiers: ["none"], note: "as screw a"}
-    - {pair: [nut_b, nut_housing_b], certifiers: ["none"], note: "as screw a"}
-    - {pair: [nut_housing_b, ring], certifiers: ["none"], note: "as screw a"}
-    - {pair: [ring, bearing], certifiers: ["S1 ring|bearing C"]}
-    - {pair: [bearing, drill_tube], certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
-    - {pair: [drill_tube, drill_head], certifiers: ["declared (S6-5)"]}
+    - {pair: [drill_head, core_750], kind: declared, certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
+    - {pair: [core_750, core_seat], kind: face, face: {z: receiver_floor + collet.core_seat_height, side: core bottom on the core-seat ledge (cut case)}, certifiers: ["S3 core_750|core_seat"]}
+    - {pair: [core_seat, collet], kind: one_body, certifiers: ["declared: one body (the core-seat ledge is the collet bore bottom, collet.core_seat_height)", "S1 collet|core_seat C"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): the seat and collet meet on a vertical edge only in the section; one body"}
+    - {pair: [collet, receiver], kind: face, face: {z: receiver_floor, side: collet foot on the receiver floor (cut case)}, certifiers: ["S3 receiver|collet"], note: "1.3 (h) r2 (Topologist TP1.3-10 (a)): rerouted; collet|holder (cone opens under the cut load) and holder|receiver (radial fit) carry no cut-case axial load in the drawing"}
+    - {pair: [receiver, base_plate], kind: face, certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
+    - {pair: [base_plate, frame_upper_b], kind: fastened, certifiers: ["S1 frame_upper_b|base_plate C", "S2 frame_upper_b|base_plate z-contact"]}
+    - {pair: [frame_upper_b, bracket_anchor_b], kind: fastened, certifiers: ["S1 bracket_anchor_b|frame_upper_b plan-contact", "S2 bracket_anchor_b|frame_upper_b plan-contact"]}
+    - {pair: [bracket_anchor_b, anchor_b], kind: fastened, certifiers: ["S1 bracket_anchor_b|anchor_b plan-contact", "S2 bracket_anchor_b|anchor_b plan-contact"]}
+    - {pair: [anchor_b, screw_b], kind: face, certifiers: ["none"], note: "as screw a"}
+    - {pair: [screw_b, nut_b], kind: thread, certifiers: ["none"], note: "as screw a"}
+    - {pair: [nut_b, nut_housing_b], kind: face, certifiers: ["none"], note: "as screw a"}
+    - {pair: [nut_housing_b, ring], kind: one_body, certifiers: ["none"], note: "as screw a"}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C"]}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
+    - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S6-5)"]}
 
 rubric_additions:
   - "V1: floor at the bottom; the NEMA 17 hangs under the anchor block on standoffs, the nut sits in the ring housing (K8 below / above predicates)"
@@ -244,17 +252,17 @@ reported:
   - "the reported_items above (RPT); no threshold, never asserted"
 
 not_drawn:
-  - {part: "screw a set", reason: "beyond the plane past one profile width (x -138.6): screw, nut, housing, anchor, guide, arms, lift motor, member a; inset draws screw a, housing, block, motor, member, switch"}
-  - {part: "screw b set", reason: "in front of the plane (x +138.6); inset draws screw b, housing, block, motor, member, switch"}
-  - {part: "pinions a and b", reason: "pinion a at theta 210 beyond, pinion b at theta 330 in front; drawn in S1, S2"}
-  - {part: "NEMA 23 a and b", reason: "with their pinions, off the plane; drawn in S1, S2"}
-  - {part: "guide rods", reason: "rods at 0 and 180 deg: the 180 rod (x -230) beyond, the 0 rod (x +230) in front; with lugs, LM20UU housings and ties a, b; drawn in S1, S2"}
-  - {part: "descent-stop pad and post", reason: "theta 150, x -173 to -186, beyond the 60 band (Designer 1.3 (a) section 1 row 14); drawn in S1, S2"}
-  - {part: "base-frame end members and plate supports", reason: "at x +-232 and +-112, off the plane; drawn in S2"}
-  - {part: "front M3 standoffs", reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
-  - {part: "receiver shoulder bolts 4 x M5", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
-  - {part: "receiver spigot below the plate top", reason: "z_A 0 to 12 inside the plate hole; drawn at S4-a (z_rule z_min is the plate top, shared with S1 under X1)"}
-  - {part: "two nut shoulder screws", reason: "at +-60 deg from the outboard radial, x +-13.86, off the plane; leaf ring.nut_screw; the inboard screw is row nut_screws_c (Designer 1.3 (b) re-sign FIX A)"}
+  - {part: "screw a set", omit: off_plane, rows: [screw_a, nut_housing_a, anchor_a, liftmotor_a, frame_upper_a], reason: "beyond the plane past one profile width (x -138.6): screw, nut, housing, anchor, guide, arms, lift motor, member a; inset draws screw a, housing, block, motor, member, switch"}
+  - {part: "screw b set", omit: off_plane, rows: [screw_b, nut_housing_b, anchor_b, liftmotor_b, frame_upper_b], reason: "in front of the plane (x +138.6); inset draws screw b, housing, block, motor, member, switch"}
+  - {part: "pinions a and b", omit: off_plane, x: [[-144.05, -65.09], [65.09, 144.05]], x_source: "true trapezoid toe corner 95.22 cos 30 - 34.75 sin 30 = 65.09 (Topologist TP1.3-12, DERIVED; the footprint x1 59.66 enters the band by 0.34); outer end the S2 footprint 144.05 (MEASURED)", reason: "pinion a at theta 210 beyond, pinion b at theta 330 in front; drawn in S1, S2"}
+  - {part: "NEMA 23 a and b", omit: off_plane, rows_s2: [motor23_a, motor23_b, motor_shaft_a, motor_shaft_b], reason: "with their pinions, off the plane; drawn in S1, S2"}
+  - {part: "guide rods", omit: off_plane, rows_s2: [guide_member, guide_member_b, guide_lug_a, guide_bushing_a, guide_lug_b, guide_bushing_b, guide_tie_a, guide_tie_b], reason: "rods at 0 and 180 deg: the 180 rod (x -230) beyond, the 0 rod (x +230) in front; with lugs, LM20UU housings and ties a, b; drawn in S1, S2"}
+  - {part: "descent-stop pad and post", omit: off_plane, rows_s2: [descent_stop, descent_stop_post], reason: "theta 150, x -173 to -186, beyond the 60 band (Designer 1.3 (a) section 1 row 14); drawn in S1, S2"}
+  - {part: "base-frame end members and plate supports", omit: off_plane, x: [[-262, -202], [-142, -82], [82, 142], [202, 262]], x_source: "S2 base_frame plan pieces at capture_end (MEASURED, 1.3 (h) r2)", reason: "at x +-232 and +-112, off the plane; drawn in S2"}
+  - {part: "front M3 standoffs", omit: off_plane, x: [[liftmotor.bolt_pattern / 2 - liftmotor.standoff_af / 2, liftmotor.bolt_pattern / 2 + liftmotor.standoff_af / 2]], reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
+  - {part: "receiver shoulder bolts 4 x M5", omit: deferred, owner: "The Designer (receiver.shoulder_bolts PCD and azimuths, r1 open item D7)", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
+  - {part: "receiver spigot below the plate top", omit: deferred, owner: "S4-a", reason: "z_A 0 to 12 inside the plate hole; drawn at S4-a (z_rule z_min is the plate top, shared with S1 under X1)"}
+  - {part: "two nut shoulder screws", omit: off_plane, x: [["-ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "-ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"], ["ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"]], x_source: "PCD 32 at +-60 deg from the outboard radial, head D10 (Topologist TP1.3-12)", reason: "at +-60 deg from the outboard radial, x +-13.86, off the plane; leaf ring.nut_screw; the inboard screw is row nut_screws_c (Designer 1.3 (b) re-sign FIX A)"}
 figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; two nut shoulder screws (off the plane); receiver shoulder bolts 4 x M5 (layout open); receiver spigot below the plate top (S4-a). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
 
 part_list:
@@ -269,7 +277,7 @@ part_list:
   - {part: "drill-to-ring bearing", row: bearing}
   - {part: "ring gear and hub", row: "gear, gear_hub"}
   - {part: "pinion c, NEMA 23 c, its shaft, its mount, pinion axis c", row: "pinion_c, motor23_c, motor_shaft_c, motor_mount_c, pinion_axis_c"}
-  - {part: "screw c with thread ticks", row: screw_c}
+  - {part: "screw c with thread root lines", row: "screw_c (sub-artist root)"}
   - {part: "screw end into the coupling", row: screw_end_c}
   - {part: "anchor block c", row: anchor_c}
   - {part: "angular-contact bearing pair, balls, bearing line", row: "anchor_bearing_c (sub-artists balls, line)"}
@@ -286,7 +294,7 @@ part_list:
   - {part: "nut stations at start and park; L_t dimension", row: "nut_station_start, nut_station_park, span_lt"}
   - {part: "load arrows (cut, tension, compression)", row: "load_cut, load_tension_c, load_comp_c"}
   - {part: "inset: screws, housings, anchor blocks, lift motors, members, home switches a, b, c", row: "screw_a/_b/_c, nut_housing_a/_b/_c, anchor_a/_b/_c, liftmotor_a/_b/_c, frame_upper_a/_b/_c, home_switch_a/_b/_c"}
-  - {part: "inset: controller callout, ring OD reference, cutting-plane line A-A, axes and theta arc", row: "sync_callout, ring_ref, section_line, plan_axes"}
+  - {part: "inset: controller callout, ring OD reference, cutting-plane line A-A, axes and theta arc", row: "sync_callout, ring_ref, section_line, plan_axes (sub-artist arc)"}
   - {part: "shop floor line (ground hatch)", row: floor}
   - {part: "front standoffs, two nut shoulder screws, off-plane sets", row: not_drawn}
 
@@ -956,7 +964,7 @@ features:
   section_class: reference
 - id: screw_c
   name: Tr12x3 jack screw
-  shape: 'Tr12x3 lead screw cut from d 12 bar, unsectioned outline in three steps (section_u): M10x1 thread and journal 10 from the block underside through the locknut and both anchor bearings (265 to 288); plain d 12 collar from the shoulder on the upper inner race (288) to the thread start (jackscrew.thread_start_z 300); Tr12x3 thread 300 to jackscrew.thread_end_z 1120, thread ticks at the lead 3 over that span only; plain d 12 collar 1120 to the guide-block bottom (1135); journal 10 through the guide bearing to the block top (1165, no axial contact); label ''Tr12x3 screw L 900, lead 3''; power-off hold callout (row hold_callout); circle d 12 in the inset (Designer 1.3 (b) FIX 3, re-sign FIX B; Loftsman 1.3 (b) FIX 1). place half_width nominal / 2 contains every step; K6 reads the z_rule envelope; K5 admission of the stepped outline on an unsectioned row: P4'
+  shape: 'Tr12x3 lead screw cut from d 12 bar, unsectioned outline in three steps (section_u): M10x1 thread and journal 10 from the block underside through the locknut and both anchor bearings (265 to 288); plain d 12 collar from the shoulder on the upper inner race (288) to the thread start (jackscrew.thread_start_z 300); Tr12x3 thread 300 to jackscrew.thread_end_z 1120, drawn as two dashed root lines at d_r jackscrew.root_diameter over that span only (simplified thread, sub-artist screw_c:root; Topologist TP1.3-15, 1.3 (h) r2); plain d 12 collar 1120 to the guide-block bottom (1135); journal 10 through the guide bearing to the block top (1165, no axial contact); label ''Tr12x3 screw L 900, lead 3''; power-off hold callout (row hold_callout); circle d 12 in the inset (Designer 1.3 (b) FIX 3, re-sign FIX B; Loftsman 1.3 (b) FIX 1). place half_width nominal / 2 contains every step; K6 reads the z_rule envelope; K5 admission of the stepped outline on an unsectioned row: P4'
   kind: screw
   axis: Z
   projection: rectangle
@@ -985,7 +993,8 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.journal_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.journal_d / 2', jackscrew.anchor_z, jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nominal / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nominal / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.top_guide_z - jackscrew.guide_allowance]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.journal_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.journal_d / 2', jackscrew.top_guide_z - jackscrew.guide_allowance, jackscrew.top_guide_z]
-  ticks: {from: jackscrew.thread_start_z, to: jackscrew.thread_end_z, pitch: jackscrew.lead, source: Designer 1.3 (b) re-sign FIX B}
+  sub_artists: [root]
+  root: {from: jackscrew.thread_start_z, to: jackscrew.thread_end_z, d: jackscrew.root_diameter, source: 'thread span Designer 1.3 (b) re-sign FIX B; simplified thread as two dashed root lines, Topologist TP1.3-15 (1.3 (e)), replacing the lead-3 ticks (274 ticks at 2.58 px pitch)'}
 - id: screw_end_c
   name: screw end
   shape: screw end d 8 below the anchor thread, from the block underside down into the coupling, 9 engaged, liftmotor.shaft_gap 1 above the motor shaft tip; unsectioned (Designer 1.3 (b) FIX 2)
@@ -1345,8 +1354,8 @@ features:
   place: {r_in: liftsync.switch_r_in, r_out: liftsync.switch_r_out, theta: 'jackscrew.angle[2]', half_width: liftsync.switch_width / 2, footprint: radial}
   sub_artists: [lever]
   lever:
-    from: ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (liftsync.switch_r_in - jackscrew.pitch_radius)', jackscrew.top_guide_z - jackscrew.guide_allowance - liftsync.switch_height]
-    to: ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (liftsync.lever_r_tip - jackscrew.pitch_radius)', park_tip + ring.position_above_tip + ring.thickness / 2 + ring.nut_housing_height / 2 + liftsync.lever_free_gap]
+    from: ['liftsync.switch_r_in * sind(jackscrew.angle[2])', jackscrew.top_guide_z - jackscrew.guide_allowance - liftsync.switch_height]
+    to: ['liftsync.lever_r_tip * sind(jackscrew.angle[2])', park_tip + ring.position_above_tip + ring.thickness / 2 + ring.nut_housing_height / 2 + liftsync.lever_free_gap]
     frame: section (u, z_A)
 - id: screw_a
   name: Tr12x3 jack screw
@@ -1613,6 +1622,8 @@ features:
     - [profile.width, 0]
   - - [0, 0]
     - [0, profile.width]
+  sub_artists: [arc]
+  arc: {r: profile.width * 2 / 3, theta0: 0, theta1: 90, source: 'Topologist TP1.3-13 (1.3 (e)): theta arc counter-clockwise from +X, the sign check of the inset sense'}
 - id: sync_callout
   name: sync method
   shape: callout 'one controller, three drivers, home switch per screw' with leaders to the three lift motors (inset; liftsync.method)

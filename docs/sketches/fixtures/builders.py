@@ -1990,7 +1990,7 @@ S1_SPEC = HERE.parent / "s1_spec.yaml"
 def _script_ctx(s, spec_mut=None, script_paths=None):
     """Live sketch drawn by its own script (s1_side_poses.py or s2_plan.py build), the drawing of record."""
     import importlib
-    name = {"s1": "s1_side_poses", "s2": "s2_plan"}[s]
+    name = {"s1": "s1_side_poses", "s2": "s2_plan", "s3": "s3_jackscrew_section"}[s]
     mod = importlib.import_module(name)
     P = Params()
     spec = load_spec(HERE.parent / f"{s}_spec.yaml")

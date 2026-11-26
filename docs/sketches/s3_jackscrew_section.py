@@ -243,6 +243,12 @@ def draw_subs(ax, pz, spec):
                     w, h = max(xs) - min(xs), max(ys) - min(ys)
                     sc.draw(f"{fid}:balls", Circle(((max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2), min(w, h) / 2 * 0.5,
                                                    fill=False, edgecolor="k", linewidth=1, zorder=2 * 2), ax)
+        rt = row.get("root")
+        if rt and "root" in (row.get("sub_artists") or []):   # 1.3 (h) r2 (TP1.3-15): simplified thread, two dashed root lines
+            uc = pz.ev(f"jackscrew.pitch_radius * sind({row['place']['theta']})") if row.get("place") else 0.0
+            d, z0, z1 = pz.ev(rt["d"]), pz.zs(rt["from"]), pz.zs(rt["to"])
+            for s_ in (-1, 1):
+                sc.draw(f"{fid}:root", Line2D([uc + s_ * d / 2] * 2, [z0, z1], color="k", linestyle=HIDDEN, linewidth=1), ax)
         lv = row.get("lever")
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(pz.ev(e[0]), pz.zs(e[1])) for e in (lv["from"], lv["to"])]
@@ -259,7 +265,9 @@ def _inset_style(fid):
         return {"edgecolor": RING_EDGE, "linewidth": 1, "zorder": sc.LABEL_FONTSIZE - 1}
     if pre == "frame_upper":
         return {"fill": True, "facecolor": "0.85", "edgecolor": "k", "hatch": "xx", "linewidth": 1, "zorder": 2}
-    if pre in ("anchor", "liftmotor", "home_switch"):
+    if pre == "home_switch":                             # F5 (M1 S3 r1): drawn over the A-A line (zorder above it)
+        return {"edgecolor": DARK, "linewidth": 1, "zorder": sc.LABEL_FONTSIZE + 2}
+    if pre in ("anchor", "liftmotor"):
         return {"edgecolor": DARK, "linewidth": 1, "zorder": 2 + 1}
     if fid == "keepout":
         return {"edgecolor": "red", "linestyle": HIDDEN, "linewidth": 1, "zorder": 2 * 2}
@@ -281,7 +289,7 @@ def draw_inset_row(ax, pz, row):
     kw = _inset_style(fid)
     kw.setdefault("fill", False)
     if row.get("kind") == "callout":                     # sync: leaders from the controller mark to the three lift motors
-        hub = (-g("icd.footprint_x") / 2, g("icd.footprint_y") / 2)
+        hub = (g("icd.footprint_x") / 2, g("icd.footprint_y") / 2)   # F4 (M1 S3 r1): on the label-column side; the label anchors here
         for m in row.get("leaders_to") or []:
             pl = pz.feats[m]["place"]
             c = (pl["r_c"] * check_stack.cosd(pl["theta"]), pl["r_c"] * check_stack.sind(pl["theta"]))
@@ -295,13 +303,22 @@ def draw_inset_row(ax, pz, row):
             _arrow(ax, fid, (x0, y), (x0 - L, y), color="k")
             ax.text(x0 - L, y, "A", fontsize="small", ha="right", va="center", fontweight="bold")
         return
-    if fid == "plan_axes":                               # +X, +Y marks (the theta arc lies outside the row's plan_poly: open item)
+    if fid == "plan_axes":                               # +X, +Y marks; theta arc as the admitted sub-artist plan_axes:arc
         for pc in f["plan_pieces"]:
             sc.draw(fid, Line2D([p[0] for p in pc], [p[1] for p in pc], color="k", linewidth=1), ax)
         L = g("profile.width")
         ax.text(L, 0, "+X", fontsize="x-small", ha="left", va="center")
-        ax.text(0, L, "+Y", fontsize="x-small", ha="center", va="bottom")
-        ax.text(L / 2, L / 2, "theta ccw from +X", fontsize="x-small", ha="left", va="bottom")
+        ax.annotate("+Y", (0, L), xytext=(2, 0), textcoords="offset points", fontsize="x-small", ha="left", va="bottom")   # F5: right of the A-A line
+        arc = row.get("arc")
+        if arc and "arc" in (row.get("sub_artists") or []):   # 1.3 (h) r2 (TP1.3-13): ccw from theta0 to theta1
+            r, t0, t1 = pz.ev(str(arc["r"])), float(arc["theta0"]), float(arc["theta1"])
+            n = int(t1 - t0) + 1
+            ts = [t0 + (t1 - t0) * k / (n - 1) for k in range(n)]
+            sc.draw(f"{fid}:arc", Line2D([r * check_stack.cosd(t) for t in ts], [r * check_stack.sind(t) for t in ts], color="k", linewidth=1), ax)
+            tb = t1 - math.degrees(sc.LABEL_FONTSIZE / r)      # head over one label height of arc
+            _arrow(ax, f"{fid}:arc", (r * check_stack.cosd(tb), r * check_stack.sind(tb)), (r * check_stack.cosd(t1), r * check_stack.sind(t1)), color="k")
+            tm = (t0 + t1) / 2
+            ax.text(r * check_stack.cosd(tm), r * check_stack.sind(tm), "theta", fontsize="x-small", ha="left", va="bottom")
         return
     pl = f.get("place")
     if not pl:
@@ -334,7 +351,15 @@ def _inset_right_of_labels(fig, ax, axi):
         if e[1][1] >= p.y0:
             right = max(right, e[1][0])
     gap = sc.LABEL_FONTSIZE / fig.dpi * sc.DPI / fig.get_figwidth() / sc.DPI
-    axi.set_position([right + gap, p.y0, p.width, p.height])
+    tb = inv.transform(axi.get_tightbbox(r))           # 1.3 (h) r2 (F3): the inset's tick labels and y label lie left of it
+    lead = p.x0 - tb[0][0]
+    axi.set_position([right + gap + max(lead, 0.0), p.y0, p.width, p.height])
+
+
+AXIAL_LOOP_NOTE = ("axial loop (cut): head - core 750 - core seat - collet - receiver shoulder - base plate - base frame (off the plane, S1/S2) -\n"
+                   "member c - anchor arm - anchor block - bearing pair - locknut - screw c (tension) - nut c - boss - ring - bearing - drill tube - head")
+# F6 (Designer M1 S3 r1): the loop note; route as in s3_spec chains c after the 1.3 (h) r2 reroute (TP1.3-10: the collet foot
+# seats on the receiver floor; the holder carries no cut-case axial load in the drawing).
 
 
 def build(P, spec, stack):
@@ -367,12 +392,13 @@ def build(P, spec, stack):
                f"{g('jackscrew.pitch_radius') * check_stack.sind(g('jackscrew.angle')[2]):g}); viewer at +X, u = +Y right, z up (z_S plotted)"),
         (None, "hatch by material: aluminium //, extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
                "outline over the hatch; beyond the plane within one profile width (rear standoffs): solid, dashed behind cut parts;\n"
-               "chain: nut stations at start and park; red: loads and the S3-2 span"),
+               "dash-dot: nut stations at start and park; red: loads and the S3-2 span; dashed: hidden edges (inside an unsectioned outline)"),
+        (None, AXIAL_LOOP_NOTE),
         (None, spec["figure_note"].replace("; ", ";\n"), sc.NOTE_GID),
     ]
-    sc.place_plan_labels(ax, sctx, pid, margin=True, stack_pose=pz.feats, notes=notes)
+    sc.place_plan_labels(ax, sctx, pid, margin=True, stack_pose=pz.feats, notes=notes, edge_leaders=True)
     _inset_right_of_labels(fig, ax, axi)
-    sc.place_plan_labels(axi, ictx, pid, margin=True, stack_pose=pz.feats)
+    sc.place_plan_labels(axi, ictx, pid, margin=True, stack_pose=pz.feats, edge_leaders=True)
     return {pid: fig}
 
 

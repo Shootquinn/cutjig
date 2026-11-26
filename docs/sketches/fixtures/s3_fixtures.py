@@ -172,6 +172,13 @@ def _draw_subs(ax, P, spec, stack, pid):
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(check_stack.eval_expr(e[0], P, names), check_stack.eval_expr(e[1], P, names) + shift) for e in (lv["from"], lv["to"])]
             sc.draw(f"{fid}:lever", Line2D([p[0] for p in pts], [p[1] for p in pts]), ax)
+        rt = row.get("root")
+        if rt and "root" in (row.get("sub_artists") or []):   # 1.3 (h) r2 (TP1.3-15)
+            uc = sum(_reflect(pr["features"][fid])["u"]) / 2
+            d = check_stack.eval_expr(rt["d"], P, names)
+            z0, z1 = (check_stack.eval_expr(rt[k], P, names) + shift for k in ("from", "to"))
+            for s_ in (-1, 1):
+                sc.draw(f"{fid}:root", Line2D([uc + s_ * d / 2] * 2, [z0, z1], linestyle="--"), ax)
 
 
 def _draw_inset(ax, P, spec, stack, pid, inset_rows):
@@ -187,10 +194,38 @@ def _draw_inset(ax, P, spec, stack, pid, inset_rows):
         if INSET in pba:
             r2["projection"] = pba[INSET]
         b._s2_draw_row(ax, P, spec, stack, pid, r2)
+        arc = row.get("arc")
+        if arc and "arc" in (row.get("sub_artists") or []):   # 1.3 (h) r2 (TP1.3-13)
+            _draw_arc(ax, P, row)
         if fid == "section_line":
             L = P.get("icd.footprint_y") / 2
             for y in (-L, L):
                 _arrow(ax, fid, (0.0, y), (-40.0, y))
+
+
+def _draw_arc(ax, P, row, reverse=False, dr=0.0, gid=None):
+    arc = row["arc"]
+    r = check_stack.eval_expr(str(arc["r"]), P, {}) + dr
+    t0, t1 = float(arc["theta0"]), float(arc["theta1"])
+    ts = [t0 + (t1 - t0) * k / 90 for k in range(91)]
+    if reverse:
+        ts = ts[::-1]
+    return sc.draw(gid or f"{row['id']}:arc", Line2D([r * math.cos(math.radians(t)) for t in ts], [r * math.sin(math.radians(t)) for t in ts]), ax)
+
+
+# 1.3 (h) r2 scaffolding (remove when The Designer rules): the live spec carries two items pending The Designer, the
+# section.hatch_alt pattern for the anchor cover (TP1.3-14) and the convention for the rear nut shoulder screw in the beyond
+# band (TP1.3-12). The fixtures draw the live spec with these stand-ins (FIXTURE_ALT; the screw entry deferred) so every K8
+# control judges its own plant; pending=False draws the live spec as it stands (the pending reds).
+FIXTURE_ALT = "--"
+
+
+def _designer_pending(spec):
+    spec.setdefault("section", {})
+    spec["section"] = dict(spec["section"], hatch_alt=dict(spec["section"].get("hatch_alt") or {}, aluminium=FIXTURE_ALT))
+    for e in spec.get("not_drawn") or []:
+        if isinstance(e, dict) and str(e.get("part", "")).startswith("two nut shoulder screws"):
+            e["omit"], e["owner"] = "deferred", "fixture stand-in (The Designer, TP1.3-12)"
 
 
 def _ctx_of(P, spec, stack, figs):
@@ -224,7 +259,7 @@ def s3_draw(P, spec, stack, mutate=None, render=True, subs=True, skip=()):
     return figs
 
 
-def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None):
+def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None, pending=True):
     """Live S3 spec drawn faithfully (one figure at section_figure.pose). spec_mut(spec), values {key: value} as the S1/S2
     fixtures (a spec or params decision drawn faithfully); mutate(fig, ax, axi, P, spec, stack, pid) plants a drawing
     defect after the faithful draw. records: directory S3-3 reads; specs: the {name: spec} SYM reads."""
@@ -232,6 +267,8 @@ def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip
     for k, v in (values or {}).items():
         P.leaves[k] = dict(P.leaves[k], value=v)
     spec = copy.deepcopy(spec) if spec is not None else load_spec(S3_SPEC)
+    if pending:
+        _designer_pending(spec)
     if spec_mut:
         spec_mut(spec)
     stack = check_stack.evaluate_spec(P, spec)
@@ -515,22 +552,34 @@ def s3_3_b1():
     return _s3_3_ctx(mutate=m)
 
 
-def s3_3_b2():
-    """S3-3 B: a chain pair absent from every record: the S1 record without its receiver|holder entries (the link
-    holder|receiver in chains c, a, b has no other certifier)."""
+def _drop_pair(pairs):
     def m(rec):
         k7 = next(c for c in rec["checks"] if c["id"] == "K7")
-        keep = [i for i, t in enumerate(k7["tests"]) if t[1] not in ("receiver|holder", "holder|receiver")]
+        keep = [i for i, t in enumerate(k7["tests"]) if t[1] not in pairs]
         k7["tests"] = [k7["tests"][i] for i in keep]
         k7["states"] = [k7["states"][i] for i in keep]
-    return _s3_3_ctx(s1_mut=m)
+    return m
+
+
+BP_BF = ("base_frame|base_plate", "base_plate|base_frame")
+
+
+def s3_3_b2():
+    """S3-3 B: a chain pair absent from every record. 1.3 (h) r2 re-plant (the base route no longer runs through the
+    holder, TP1.3-10): the S1 and S2 records without base_plate|base_frame (chain c link 7, face_record, no other
+    certifier)."""
+    return _s3_3_ctx(s1_mut=_drop_pair(BP_BF), s2_mut=_drop_pair(BP_BF))
 
 
 def s3_3_b3():
-    """S3-3 B: a stale record: the S1 record with jackscrew.lead recorded 8 (the T8x8 value) against the live 3."""
+    """S3-3 B: stale records: the S1 record with jackscrew.lead recorded 8 (the T8x8 value) against the live 3. 1.3 (h) r2
+    re-plant: the S2 record stale too (jackscrew.nominal recorded 8), since every record-certified link of the rerouted
+    chains names both records."""
     def m(rec):
         rec["keys_read"]["jackscrew.lead"]["value"] = 8
-    return _s3_3_ctx(s1_mut=m)
+    def m2(rec):
+        rec["keys_read"]["jackscrew.nominal"]["value"] = 8
+    return _s3_3_ctx(s1_mut=m, s2_mut=m2)
 
 
 # ---------------------------------------------------------------- SYM
@@ -1030,12 +1079,12 @@ def _set_state(pair, pose, state, only_pose=None):
 
 def s3_3_record_not_c():
     """S3-3 B (SW FIX 3 d, M05): the S1 record with collet|holder at capture_end in state F."""
-    return _s3_3_ctx(s1_mut=_set_state(("collet|holder", "holder|collet"), "capture_end", "F"))
+    return _s3_3_ctx(s1_mut=_set_state(BP_BF, "capture_end", "F"), s2_mut=_set_state(BP_BF, "capture_end", "F"))   # 1.3 (h) r2 re-plant
 
 
 def s3_3_pose_only():
     """S3-3 B (SW NOTE 7, M07): the S1 record carrying collet|holder at pose load only (absent at the figure pose)."""
-    return _s3_3_ctx(s1_mut=_set_state(("collet|holder", "holder|collet"), None, None, only_pose="load"))
+    return _s3_3_ctx(s1_mut=_set_state(BP_BF, None, None, only_pose="load"), s2_mut=_set_state(BP_BF, None, None, only_pose="load"))   # 1.3 (h) r2 re-plant
 
 
 def s3_3_veto_pair():
@@ -1048,6 +1097,7 @@ def s3_3_veto_pair():
         for link in sp["s3"]["chains"][ch]:
             if link["pair"] == ["receiver", "base_plate"]:
                 link["certifiers"] = ["S1 base_plate|receiver C"]
+                link["kind"] = "face_record"   # 1.3 (h) r2: a record-only face (the kind lint holds a face link to S3)
     return s3_ctx(spec=sp["s3"], values={"receiver.shoulder_z": 13}, records=_records_dir(t), specs=sp)
 
 
@@ -1104,3 +1154,234 @@ def sym_p_b():
     cs = check_sketch_mod()
     r = cs.sym_keys_premise(*_keys_read("s3", drop_accessed=True, drop_key="jackscrew.top_guide_z"))
     return r
+
+
+# ======================================================================== 1.3 (h) r2 (P9, step1.3_engineer_revision_r2.md)
+# Each B was run on the pre-change harness (D:\Unleashed Robotics\_scratch\cutjig\p9r2\pre) first and read clean there.
+
+def k4_through_text():
+    """K4 (i1) B (Designer M1 S3 r1 F2): live S2, a text planted centred three quarters along the drill_tube leader (the r1
+    hold_callout leader through the span_lt text)."""
+    b = _builders()
+    c = b._script_ctx("s2")
+    ax = b._s2_ax(c)
+    t = next(x for x in ax.texts if x.get_gid() == "label:drill_tube")
+    (x0, y0), (x1, y1) = t.xyann, t.xy
+    ax.text(x0 + (x1 - x0) * 0.75, y0 + (y1 - y0) * 0.75, "PLANTED THROUGH", fontsize=sc.LABEL_FONTSIZE, ha="center", va="center")
+    return c
+
+
+def k4_text_overlap():
+    """K4 (i2) B (Designer M1 S3 r1 F3): live S2, a figure-level text placed on the base_plate label text."""
+    b = _builders()
+    c = b._script_ctx("s2")
+    ax = b._s2_ax(c)
+    t = next(x for x in ax.texts if x.get_gid() == "label:base_plate")
+    x, y = t.xyann
+    ax.annotate("PLANTED OVERLAP", xy=(x, y), xytext=(x, y), fontsize=sc.LABEL_FONTSIZE, ha="left", va="center", annotation_clip=False)
+    return c
+
+
+def occl_undone():
+    """K8 clause (6) B (Topologist TP1.3-11): the r1 renderer state, every split undone (clip paths removed, hidden copies
+    deleted): the 8 occluded rows drawn solid inside the unsectioned outlines."""
+    def m(fig, ax, axi, *a):
+        for art in list(ax.get_children()):
+            if getattr(art, "_sc_hidden_copy", False):
+                art.remove()
+            elif art.get_gid() and art.get_clip_path() is not None and hasattr(art, "get_hatch"):
+                art.set_clip_path(ax.patch)
+                art._clippath = None
+    return s3_ctx(mutate=m)
+
+
+def occl_no_copy():
+    """K8 clause (6b) B: the hidden copies deleted, the splits kept: occluded areas with no dashed hidden edges."""
+    def m(fig, ax, axi, *a):
+        for art in list(ax.get_children()):
+            if getattr(art, "_sc_hidden_copy", False):
+                art.remove()
+    return s3_ctx(mutate=m)
+
+
+def root_z():
+    """K5 Z (TP1.3-15): screw_c:root drawn as declared (fixture drawer)."""
+    return s3_ctx()
+
+
+def _root_mut(fn):
+    def m(fig, ax, axi, *a):
+        arts = sc.tagged(ax)["screw_c:root"]
+        fn(sorted(arts, key=lambda x: x.get_xdata()[0]))
+    return s3_ctx(mutate=m)
+
+
+def root_at_nominal():
+    """K5 B1 (TP1.3-15): the inboard root line at the nominal d / 2 (u -154) instead of d_r / 2."""
+    def f(arts):
+        x = arts[1].get_xdata()
+        arts[1].set_xdata([x[0] + 1.75, x[1] + 1.75])
+    return _root_mut(f)
+
+
+def root_past_end():
+    """K5 B2 (TP1.3-15): the outboard root line runs 5 past thread_end_z."""
+    def f(arts):
+        y = list(arts[0].get_ydata())
+        arts[0].set_ydata([y[0], max(y) + 5] if y[1] > y[0] else [max(y) + 5, y[1]])
+    return _root_mut(f)
+
+
+def root_solid():
+    """K5 B3 (TP1.3-15): both root lines drawn solid."""
+    return _root_mut(lambda arts: [a.set_linestyle("-") for a in arts])
+
+
+def _arc_mut(**kw):
+    def m(fig, ax, axi, P, spec, *a):
+        for art in sc.tagged(axi).get("plan_axes:arc", []):
+            art.remove()
+        _draw_arc(axi, P, _row(spec, "plan_axes"), **kw)
+    return s3_ctx(mutate=m)
+
+
+def arc_z():
+    """K5 Z (TP1.3-13): plan_axes:arc 0 to 90 deg at r profile.width * 2 / 3 (40), counter-clockwise."""
+    return s3_ctx()
+
+
+def arc_reversed():
+    """K5 B1 (TP1.3-13): the arc points reversed (clockwise from 90 to 0)."""
+    return _arc_mut(reverse=True)
+
+
+def arc_radius():
+    """K5 B2 (TP1.3-13): the arc at radius + 5."""
+    return _arc_mut(dr=5.0)
+
+
+def arc_in_section():
+    """K5 B3 (TP1.3-13): the arc drawn in the section Axes."""
+    def m(fig, ax, axi, P, spec, *a):
+        _draw_arc(ax, P, _row(spec, "plan_axes"))
+    return s3_ctx(mutate=m)
+
+
+def hatch_alt_z():
+    """K8 Z (TP1.3-14): anchor_c with the fixture alternate on the cover pieces (above 288 z_A), the material hatch on the
+    block pieces."""
+    return s3_ctx()
+
+
+def _anchor_pieces(ax, above):
+    out = []
+    for art in sc.tagged(ax)["anchor_c"]:
+        if getattr(art, "_sc_hidden_copy", False):
+            continue
+        y0 = min(v[1] for v in sc.artist_polys(art)[0])
+        if (y0 >= 348.0 - 1e-6) == above:
+            out.append(art)
+    return out
+
+
+def hatch_cover_plain():
+    """K8 B1 (TP1.3-14): one cover piece with the plain aluminium hatch."""
+    return s3_ctx(mutate=lambda fig, ax, axi, *a: _anchor_pieces(ax, True)[0].set_hatch(sc.HATCH["aluminium"]))
+
+
+def hatch_block_alt():
+    """K8 B2 (TP1.3-14): one block piece with the alternate."""
+    return s3_ctx(mutate=lambda fig, ax, axi, *a: _anchor_pieces(ax, False)[0].set_hatch(FIXTURE_ALT))
+
+
+def hatch_alt_equal():
+    """K8 B3 (TP1.3-14 lint): section.hatch_alt aluminium equal to the steel pattern."""
+    def sm(sp):
+        sp["section"]["hatch_alt"] = {"aluminium": sc.HATCH["steel"]}
+    return s3_ctx(spec_mut=sm)
+
+
+def hatch_alt_missing():
+    """K8 B4 (TP1.3-14 lint): the live spec as it stands, hatch_split with no alternate (The Designer pending)."""
+    def sm(sp):
+        sp["section"]["hatch_alt"] = {}
+    return s3_ctx(spec_mut=sm)
+
+
+def nd_band_live():
+    """K8 B (TP1.3-12): the live not_drawn entry for the two nut shoulder screws (off_plane, x bands): the rear screw
+    (x -18.86 to -8.86) lies in the section band."""
+    def sm(sp):
+        for e in sp["not_drawn"]:
+            if str(e.get("part", "")).startswith("two nut shoulder screws"):
+                e["omit"] = "off_plane"
+                e.pop("owner", None)
+    return s3_ctx(spec_mut=sm)
+
+
+def nd_no_omit():
+    """K8 B (TP1.3-12 lint): a not_drawn entry without omit."""
+    def sm(sp):
+        sp["not_drawn"][0].pop("omit", None)
+    return s3_ctx(spec_mut=sm)
+
+
+def nd_pinion_footprint():
+    """K8 B (TP1.3-12, NOTE case): pinions a and b read on their footprint (x1 -59.66) instead of the true trapezoid:
+    enters the band by 0.34."""
+    def sm(sp):
+        for e in sp["not_drawn"]:
+            if e.get("part") == "pinions a and b":
+                e.pop("x", None)
+                e["rows_s2"] = ["pinion_a", "pinion_b"]
+    return s3_ctx(spec_mut=sm)
+
+
+def _s33_spec_mut(fn):
+    t = _new_tmp()
+    sp = _live_specs()
+    fn(sp["s3"])
+    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+
+
+def s3_3_face_sense_z():
+    """S3-3 Z (TP1.3-10): the live chains with kinds, fresh records: 48 links closed, face links with their sense."""
+    return _s3_3_ctx()
+
+
+def s3_3_face_below():
+    """S3-3 B12 (TP1.3-10): anchor_c|anchor_bearing_c face named at the block shoulder 272 z_A (332.00 z_S), where the
+    cover's block piece lies below the face: the contact test passes it, the sense opens it."""
+    def fn(s3):
+        for nb in _row(s3, "anchor_c")["neighbours"]:
+            if nb.get("id") == "anchor_bearing_c":
+                nb["face"]["z"] = "jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width"
+    return _s33_spec_mut(fn)
+
+
+def s3_3_member_face():
+    """S3-3 B13 (TP1.3-10): base_frame|frame_upper_c as a face link at the rail top (x below: the member foot face opens
+    under the cut-case loop force)."""
+    def fn(s3):
+        for link in s3["chains"]["c"]:
+            if link["pair"] == ["base_frame", "frame_upper_c"]:
+                link["kind"], link["face"] = "face", {"z": "0", "side": "planted"}
+    return _s33_spec_mut(fn)
+
+
+def s3_3_side_face():
+    """S3-3 B14 (TP1.3-10): frame_upper_c|bracket_anchor_c as a face link (a vertical side face: no horizontal edge)."""
+    def fn(s3):
+        for link in s3["chains"]["c"]:
+            if link["pair"] == ["frame_upper_c", "bracket_anchor_c"]:
+                link["kind"], link["face"] = "face", {"z": "jackscrew.anchor_z", "side": "planted"}
+    return _s33_spec_mut(fn)
+
+
+def s3_3_no_kind():
+    """S3-3 B15 (TP1.3-10 lint): chain c link nut_housing_c|ring without a kind."""
+    def fn(s3):
+        for link in s3["chains"]["c"]:
+            if link["pair"] == ["nut_housing_c", "ring"]:
+                link.pop("kind")
+    return _s33_spec_mut(fn)

@@ -223,29 +223,57 @@ def _pair_ok(tests, x, y, pose):
     return bool(st), bool(st) and all(s in C_STATES for s in st), st
 
 
-def _face_issue(ctx, sec, ax, pose, x, y, face):
+LINK_KINDS = ("face", "face_record", "thread", "one_body", "fastened", "declared")   # 1.3 (h) r2 (Topologist TP1.3-10)
+
+
+def _face_issue(ctx, sec, ax, pose, x, y, face, sense=False):
     """The named face of an S3 certifier (s3_spec chains field face, or the neighbour entry's face z): the drawn pieces of
     x and y each have a horizontal edge at the face z (z_A expression, or the expression in the text before ',') within
-    TOL_Z, overlapping in u: the axial face that carries the cut-case load."""
+    TOL_Z, overlapping in u: the axial face that carries the cut-case load. sense (1.3 (h) r2, Topologist TP1.3-10, a
+    link of kind face written x -> y in chain order): the edge of x is a bottom edge of a drawn piece of x (the piece
+    lies above the face) and the edge of y a top edge of a piece of y (below it), so x holds y down under the cut-case
+    loop force (-Z of x on y); a face with x below it is loaded in tension and opens."""
     expr = face.get("z") if isinstance(face, dict) else None
     if expr is None:
         return None
     names = ctx.stack["poses"][pose]["vars_z_A"]
     z = check_stack.to_shop_floor(check_stack.eval_expr(expr, ctx.P, names), ctx.P)
     spans = []
-    for fid in (x, y):
+    for k, fid in enumerate((x, y)):
         ss = []
         for P in sc.pieces(ax, fid):
+            zmid = sum(sc.extent_z([P])) / 2
             for i in range(len(P)):
                 a, b = P[i], P[(i + 1) % len(P)]
                 if abs(a[1] - b[1]) <= sc.TOL_Z and abs(a[1] - z) <= sc.TOL_Z:
+                    if sense and ((k == 0 and zmid < z) or (k == 1 and zmid > z)):
+                        continue   # x's piece must lie above the face, y's below it
                     ss.append((min(a[0], b[0]), max(a[0], b[0])))
         spans.append(ss)
     if not spans[0] or not spans[1]:
-        return f"no horizontal edge of {x if not spans[0] else y} at the face z {z:.2f} z_S ({expr})"
+        what = "bottom " if sense and not spans[0] else ("top " if sense else "")
+        return (f"no {what}horizontal edge of {x if not spans[0] else y} at the face z {z:.2f} z_S ({expr})"
+                + (f"; {x} must lie above the face and {y} below it (cut-case sense)" if sense else ""))
     if not any(min(a1, b1) - max(a0, b0) > sc.TOL_Z for a0, a1 in spans[0] for b0, b1 in spans[1]):   # P5f (LF FIX 2)
         return f"faces of {x} and {y} at z {z:.2f} overlap by no more than {sc.TOL_Z} in u (a corner is no axial seat)"
     return None
+
+
+def link_kind_issues(chains):
+    """1.3 (h) r2 (Topologist TP1.3-10): spec lint. Every chain link has a kind in LINK_KINDS; a face link names a face
+    {z} on the link (or on the neighbour entry, read by _face_of) and has an S3 certifier, except an a / b link certified
+    by symmetry from c (certifiers ["none"]), whose c counterparts carry the faces."""
+    out = []
+    for ch, lst in (chains or {}).items():
+        for link in lst:
+            k = link.get("kind")
+            x, y = link["pair"]
+            heads = [str(q).split()[0] for q in link.get("certifiers") or [] if str(q).split()]
+            if k not in LINK_KINDS:
+                out.append(f"chain {ch}: {x}|{y} spec error, link kind {k!r} (one of {', '.join(LINK_KINDS)})")
+            elif k == "face" and "S3" not in heads and not (ch in ("a", "b") and heads == ["none"]):
+                out.append(f"chain {ch}: {x}|{y} spec error, face link with no S3 certifier (the sense is read in the section only)")
+    return out
 
 
 def _face_of(ctx, link, x, y):
@@ -312,7 +340,9 @@ def s3_3(ctx):
     b links certified by symmetry from the c chain under SYM (check_sketch.sym_lint) when every c link between the two
     rows' c counterparts passes. P5f: the S3 verdict is per pair (a failing section test opens the pair in every chain),
     a named face needs an overlap in u above TOL_Z, the veto premise is linted (true_cut_issues), the symmetry range is
-    p(x_c) to p(y_c) - 1 along chain c."""
+    p(x_c) to p(y_c) - 1 along chain c. 1.3 (h) r2 (Topologist TP1.3-10): every link has a kind (link_kind_issues); an S3
+    certifier of a face link reads the face with its sense (x above the face, y below: compression under the cut-case
+    loop force); fastened, face_record and declared links are listed."""
     c = _cfg(ctx, "S3-3")
     chains = ctx.spec.get("chains") or {}
     if not chains:
@@ -326,7 +356,7 @@ def s3_3(ctx):
     recs = _records(ctx)
     import check_sketch as cs
     sym = cs.sym_lint(getattr(ctx, "specs", None))
-    issues, listed, n = list(true_cut_issues(ctx)), [], 0
+    issues, listed, n = list(true_cut_issues(ctx)) + link_kind_issues(chains), [], 0
     passed = {}
     # P5f (Loftsman FIX 1): the S3 verdict is per pair. A pair any link certifies with "S3 x|y" is judged once by the
     # section (K7 state, named face); a failing verdict opens that pair in every chain where it occurs.
@@ -339,7 +369,11 @@ def s3_3(ctx):
             key = frozenset((x, y))
             found, good, st = _pair_ok(s3_tests, x, y, pose)
             face = _face_of(ctx, link, x, y)
-            fi = _face_issue(ctx, sec, ax, pose, x, y, face) if face and found and good else None
+            kface = link.get("kind") == "face"
+            if kface and not face:
+                s3v[frozenset((x, y))] = ("fail", f"S3 face link names no face z ({x} -> {y})")
+                continue
+            fi = _face_issue(ctx, sec, ax, pose, x, y, face, sense=kface) if face and found and good else None
             v = ("absent", "S3: pair not tested in the section") if not found else (
                 ("fail", f"S3 section K7 states {sorted(set(st))}") if not good else (("fail", f"S3 face: {fi}") if fi else ("pass", None)))
             if key not in s3v or v[0] == "fail":
@@ -380,9 +414,14 @@ def s3_3(ctx):
             v = s3v.get(frozenset((x, y)))
             if v and v[0] == "fail":   # P5f (LF FIX 1): veto per pair, in every chain
                 veto = v[1]
+            kind = link.get("kind")
+            if kind == "declared":   # 1.3 (h) r2 (TP1.3-10): load application, radial fits with S6-5 seats
+                decl = True
             if not ok and decl:
                 ok = True
                 listed.append(f"{ch} {x}|{y} declared")
+            elif ok and kind in ("fastened", "face_record", "declared"):
+                listed.append(f"{ch} {x}|{y} {kind}")
             if not ok and ch in ("a", "b") and [str(q).split()[0] for q in link.get("certifiers") or []] == ["none"]:
                 xc, yc = (v[:-2] + "_c" if v.endswith(f"_{ch}") else v for v in (x, y))
                 rng = _c_range(chains, xc, yc) if "c" in chains else None
@@ -418,6 +457,18 @@ def reported(ctx):
     items["L_min"] = {"value": "; ".join(f"{k}: " + ", ".join(f"{lk} {check_stack.report_value(v):.2f}" if isinstance(check_stack.report_value(v), float) else f"{lk} {v}" for lk, v in o["L"].items())
                                          for k, o in rep["q9_options"].items()) + " (DN23 800 to 900)",
                       "basis": "check_stack.reported q9_options, spec screw_length (S1 expressions)", "tag": "DERIVED"}
+    try:   # 1.3 (h) r2 (Loftsman LF1.3-1, gameplan detail 1.3 Reported): drawn bar and the shoulder-screw head, from the drawing
+        zb = lambda fid: sc.extent_z(_pieces(ctx, fid))  # noqa: E731
+        bar = zb("guide_c")[1] - zb("screw_end_c")[0]
+        head = zb("nut_screws_c")[1] - zb("nut_housing_c")[1]
+        with_head = "; ".join(f"{k}: " + ", ".join(f"{lk} {check_stack.report_value(v) + head:.2f}" for lk, v in o["L"].items()
+                                                  if isinstance(check_stack.report_value(v), float))
+                              for k, o in rep["q9_options"].items())
+        items["L_min"]["value"] += (f"; drawn bar {bar:.2f} (screw_end_c bottom to guide_c top); with the shoulder-screw head "
+                                    f"{head:.2f} above the housing top: {with_head}")
+        items["L_min"]["basis"] += "; drawn pieces screw_end_c, guide_c, nut_screws_c, nut_housing_c (section Axes, MEASURED)"
+    except (Absent, Content):
+        items["L_min"]["value"] += "; drawn bar: not drawn"
     ncs, rpm = critical_speed(P, Lt)
     items["n_crit"] = {"value": ", ".join(f"{k} {v:.0f} rpm ({v / rpm:.2f} x)" for k, v in ncs.items()) + f" against {rpm:.0f} rpm at {P.get('liftload.rapid_speed'):g} mm/s",
                        "basis": f"L_t {Lt:.2f}, d_r {P.get('jackscrew.root_diameter')}, E, density; fixed-pinned is the drawn end condition (K 0.7)", "tag": "DERIVED"}

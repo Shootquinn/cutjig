@@ -246,6 +246,26 @@ def s2_6(ctx):
                      measured=len(issues), threshold=0, n_issues=len(issues))
 
 
+def accepted_s1_mass_report(ctx):
+    """1.3 (h) r2 (Loftsman LF1.3-3): s1_mass_report_r<k>.json of the latest accepted, unsuperseded S1 record in the records
+    directory (ctx.records_dir, default docs/sketches/; --docs-dir), so the S2 tip force follows the S1 revision Sean
+    accepted. Missing report: an error naming the path."""
+    import json
+    d = Path(getattr(ctx, "records_dir", None) or Path(__file__).resolve().parent)
+    best = None
+    for q in d.glob("s1_checks_r*.json"):
+        rec = json.loads(q.read_text(encoding="utf-8"))
+        if rec.get("accepted") and rec.get("superseded_by") is None:
+            k = int(q.stem.rsplit("_r", 1)[1])
+            best = k if best is None or k > best else best
+    if best is None:
+        raise FileNotFoundError(f"no accepted S1 record in {d}")
+    path = d / f"s1_mass_report_r{best}.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"accepted S1 r{best} has no mass report {path}")
+    return path
+
+
 def reported(ctx):
     """Drawn reported values for the summary (no threshold, never asserted). Outline extents over parts only: rows with
     reference: true and line kinds are out (Designer M1 r1 ruling 3, Loftsman LF1.2-5). Rows: (quantity, value, basis)."""
@@ -311,10 +331,11 @@ def _reported_items(ctx, rows, toe, lm, lm_d):
     items["members_to_plate_edge"] = {"value": f"a, b {ab:.2f} inside the x edge {xe:g}; c {abs(cy + ye):.2f} to the plate y edge -{ye:g}",
                                       "basis": "drawn pieces of frame_upper_a/b/c against the plate edges (icd.footprint_x, icd.footprint_y)",
                                       "tag": "MEASURED"}
-    rep = json.loads((Path(__file__).resolve().parent / "s1_mass_report_r7.json").read_text(encoding="utf-8"))
+    mr = accepted_s1_mass_report(ctx)   # 1.3 (h) r2 (Loftsman LF1.3-3): the latest accepted S1 report, not a fixed r7
+    rep = json.loads(mr.read_text(encoding="utf-8"))
     tips = [rep[k]["tip_force_at_com_N"] for k in ("load", "start", "capture_end", "park")]
     items["tip_force_footprint"] = {"value": " / ".join(f"{t:.0f}" for t in tips) + f" N (load, start, capture_end, park) over lever {ye:g}",
-                                    "basis": "s1_mass_report_r7.json tip_force_at_com_N (accepted S1 report); lever icd.footprint_y / 2",
+                                    "basis": f"{mr.name} tip_force_at_com_N (latest accepted S1 report); lever icd.footprint_y / 2",
                                     "tag": "DERIVED"}
     items["cutter_overhang"] = {"value": f"{P.get('drill.head_od') / 2 - P.get('icd.keepout_radius'):.2f}",
                                 "basis": "drill.head_od / 2 - icd.keepout_radius (drill.head_od ASSUMED, Q2)", "tag": "DERIVED"}

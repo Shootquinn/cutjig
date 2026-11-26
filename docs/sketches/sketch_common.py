@@ -863,13 +863,18 @@ def anchor_candidates(lc, row, column):
     return uniq
 
 
-def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
+def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edge_leaders=False):
     """The plan leader placer (1.3 P1R R3; rules in the block comment above). margin=True: labels in a right column
     (x = right axes limit + one text line, left-aligned) and a left column (left limit - one line, right-aligned),
     stacked in anchor-y order with LABEL_GAP_LINES between boxes, as place_labels(margin=True), no left-column text box
     over a y tick label; notes without an anchor
     go under the right column below the axes. margin=False (fixtures): text 60 right (left column: 60 left) and 20 above
-    the anchor. Call after render_plan and finish_axes. Returns the placer record (also ax._sc_placer)."""
+    the anchor. Call after render_plan and finish_axes. Returns the placer record (also ax._sc_placer).
+    edge_leaders (1.3 (h) r2, Designer M1 S3 r1 F2): the drawn leader leaves the text at the middle of its edge facing the
+    anchor column (relpos (0, 0.5) right column, (1, 0.5) left column), so the drawn leader is the placer's leg from the
+    text position to the anchor; without it matplotlib starts the leader at the text centre and a long label's leader
+    leaves through its bottom edge into the label below (S3 r1 hold_callout through span_lt). S2 r9 keeps the default
+    (K4 (i) passes on its pixels)."""
     spec, P = ctx.spec, ctx.P
     outl, zmx = leader_outlines(ctx, pose)
     vis = row_visibility(ctx, ax, pose) if ctx.view == "plan_xy" and ctx.stack is not None else {}
@@ -993,7 +998,8 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
                                "text": [round(pos[f][0], 2), round(pos[f][1], 2)]}
         kw = {"ha": "left" if col == "right" else "right", "va": "center"} if margin else {}
         ann = ax.annotate(texts[f], xy=anc, xytext=pos[f], fontsize=LABEL_FONTSIZE, zorder=LEADER_ZORDER, annotation_clip=False,
-                          arrowprops={"arrowstyle": "-", "linewidth": 0.4 if margin else 0.5, **({"color": "0.35"} if margin else {})}, **kw)
+                          arrowprops={"arrowstyle": "-", "linewidth": 0.4 if margin else 0.5, **({"color": "0.35"} if margin else {}),
+                                      **({"relpos": (0.0, 0.5) if col == "right" else (1.0, 0.5)} if edge_leaders and margin else {})}, **kw)
         ann.set_gid(f"label:{f}")
     if margin:
         z = zlo - gap
@@ -1950,6 +1956,7 @@ def k4(ctx):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {('expr ' + lab['expr']) if lab.get('expr') else lab['key']} = {want}")
     issues += figure_note_issues(ctx)
     issues += leader_issues(ctx)
+    issues += text_overlap_issues(ctx)   # 1.3 (h) r2: K4 (i), Designer M1 S3 r1 F2, F3
     extra = {}
     for pose, fig in ctx.figs.items():   # 1.3 P1R: the placer's UNPLACEABLE candidate tables go into the record
         for fid, u in ((getattr(fig.axes[0], "_sc_placer", None) or {}).get("unplaceable") or {}).items():
@@ -2039,6 +2046,82 @@ def leader_issues(ctx):
                     d = seg_distance(a0, a1, b0, b1)
                     if d < LEADER_SEP_MIN:
                         out.append(f"{pose}: label leaders {fa} and {fb} {d:.2f} mm apart (h, least {LEADER_SEP_MIN:g})")
+    return out
+
+
+TEXT_TOL_PX = 1.0   # 1.3 (h) r2 (Designer M1 S3 r1 F2, F3): text boxes shrunk by 1 px before a crossing or overlap counts
+
+
+def _fig_texts(fig, r):
+    """[(text artist, window extent)] of every visible, non-empty Text of the figure: Axes texts and annotations, titles,
+    axis labels, tick labels, figure texts (display pixels)."""
+    out = []
+    seen = set()
+    cands = list(fig.texts)
+    for ax in fig.axes:
+        cands += list(ax.texts) + [ax.title, ax._left_title, ax._right_title, ax.xaxis.label, ax.yaxis.label]
+        for axis in (ax.xaxis, ax.yaxis):   # tick labels as drawn: ticks inside the view interval only
+            cands += [lb for tk in axis._update_ticks() for lb in (tk.label1, tk.label2) if lb.get_visible()]
+    for t in cands:
+        if id(t) in seen or not t.get_visible() or not t.get_text().strip():
+            continue
+        seen.add(id(t))
+        e = Text.get_window_extent(t, r)   # the letters only (an Annotation's own extent includes its arrow)
+        if e.width <= 0 or e.height <= 0:
+            continue
+        if not (fig.bbox.x0 - 1e4 < e.x0 < fig.bbox.x1 + 1e4):
+            continue
+        out.append((t, e))
+    return out
+
+
+def _seg_box(a, b, box):
+    """True when segment a-b (display) meets the open box (x0, y0, x1, y1)."""
+    x0, y0, x1, y1 = box
+    if x1 <= x0 or y1 <= y0:
+        return False
+    inside = lambda p: x0 < p[0] < x1 and y0 < p[1] < y1  # noqa: E731
+    if inside(a) or inside(b):
+        return True
+    corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+    return any(_segs_cross(a, b, corners[i], corners[(i + 1) % 4]) for i in range(4))
+
+
+def text_overlap_issues(ctx):
+    """1.3 (h) r2, K4 (i) (Designer M1 S3 r1 F2, F3). Premise of every leader and label rule: a label is read only when
+    no other ink runs through its letters. (i1) The drawn leader of a label annotation (its arrow path as rendered, in
+    display pixels) meets no text box of the figure: no other label, note, tick label, axis label or title, and not its
+    own text (the leader leaves its own box on the side facing its anchor). (i2) No two text boxes of the figure overlap
+    (labels, notes, tick labels of every Axes, titles). Boxes shrunk by TEXT_TOL_PX (1 px). Run once per figure (main
+    Axes context), on a drawing of record: a figure built by a sketch script (ctx.script_paths set); a fixture figure
+    without a script is a plant for another rule, not a layout."""
+    if getattr(ctx, "axes_role", "main") != "main" or not getattr(ctx, "script_paths", None):
+        return []
+    out = []
+    for name, fig in (ctx.figs or {}).items():
+        fig = real_figure(fig)
+        fig.canvas.draw()
+        r = fig.canvas.get_renderer()
+        tx = _fig_texts(fig, r)
+        boxes = [(t, (e.x0 + TEXT_TOL_PX, e.y0 + TEXT_TOL_PX, e.x1 - TEXT_TOL_PX, e.y1 - TEXT_TOL_PX)) for t, e in tx]
+        tname = lambda t: (t.get_gid() or repr(t.get_text().splitlines()[0][:40]))  # noqa: E731
+        for t, _ in tx:
+            g = t.get_gid() or ""
+            ap = getattr(t, "arrow_patch", None)
+            if not g.startswith("label:") or ap is None or not ap.get_visible():
+                continue
+            path = ap.get_path()
+            vs = ap.get_transform().transform(path.vertices)
+            segs = [(tuple(vs[i]), tuple(vs[i + 1])) for i in range(len(vs) - 1)]
+            for t2, b2 in boxes:
+                if any(_seg_box(a, b, b2) for a, b in segs):
+                    who = "its own text" if t2 is t else f"the text of {tname(t2)}"
+                    out.append(f"{name}/{g[len('label:'):]}: label leader runs through {who} (i1)")
+        for i in range(len(boxes)):
+            for j in range(i + 1, len(boxes)):
+                (ta, a), (tb, b) = boxes[i], boxes[j]
+                if min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1]):
+                    out.append(f"{name}: text {tname(ta)} overlaps text {tname(tb)} (i2)")
     return out
 
 
@@ -2401,9 +2484,13 @@ def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
         return mark_issues(ctx, ax, pose, prow, arts)
     if sub not in (prow.get("sub_artists") or []):
         return [f"sub-artist {sub} not declared in {fid} sub_artists"]
+    if sub == "arc":   # 1.3 (h) r2 (Topologist TP1.3-13): the plan theta arc, no parent area needed
+        return arc_issues(ctx, ax, pose, prow, arts)
     own = [x for x in tagged(ax).get(fid, []) if isinstance(x, Patch) and not getattr(x, "_sc_hidden_copy", False)]
     if not own:
         return [f"{sub} on {fid}: parent {fid} not drawn at this pose"]
+    if sub == "root":   # 1.3 (h) r2 (Topologist TP1.3-15): the simplified thread, two dashed root lines
+        return root_issues(ctx, ax, pose, prow, arts, own)
     if sub == "balls":
         polys = [p for x in own for p in artist_polys(x)]
         out = []
@@ -2431,6 +2518,106 @@ def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
                 out.append(f"lever {nm} drawn ({g[0]:.2f}, {g[1]:.2f}) vs spec ({w[0]:.2f}, {w[1]:.2f})")
         return out
     return [f"sub-artist {sub} has no admission rule"]
+
+
+ARC_DEG_TOL = 0.1   # deg: the arc ends at theta0 and theta1 within this
+
+
+def arc_issues(ctx, ax, pose, prow, arts):
+    """1.3 (h) r2 (Topologist TP1.3-13). Admission of <row>:arc, the theta-sense arc of a plan axes mark. Premise: the arc
+    is the one artist that states the theta sense, counter-clockwise from +X seen from +Z (ASSEMBLY.md Coordinate frame),
+    so its sense is a sign check. Spec: row field arc {r, theta0, theta1} (r an expression). (a1) plan_xy only. (a2) one
+    Line2D; every point on the circle about the origin at r within TOL_Z. (a3) consecutive points turn counter-clockwise:
+    cross(p_i, p_i+1) > 0. (a4) first point at theta0, last at theta1 within ARC_DEG_TOL, theta1 > theta0. (a5) an optional
+    FancyArrowPatch head: both ends on the circle within TOL_Z, the head end at theta1 within 5 deg, and (head - tail) .
+    (-sin theta1, cos theta1) > 0. K8 plan_extent reads the parent row only (the gid <row>:arc is not the row)."""
+    import check_stack as _cs
+    if ctx.view != "plan_xy":
+        return [f"arc on {prow['id']} admitted in plan_xy only (view {ctx.view})"]
+    spec_arc = prow.get("arc") or {}
+    if not all(k in spec_arc for k in ("r", "theta0", "theta1")):
+        return [f"arc on {prow['id']} without arc.r / theta0 / theta1 in the spec"]
+    r = float(_cs.eval_expr(str(spec_arc["r"]), ctx.P, {}))
+    t0, t1 = float(spec_arc["theta0"]), float(spec_arc["theta1"])
+    out = []
+    if not t1 > t0:
+        out.append(f"arc theta1 {t1:g} not above theta0 {t0:g}")
+    lines = [a for a in arts if isinstance(a, Line2D)]
+    heads = [a for a in arts if isinstance(a, FancyArrowPatch)]
+    if len(lines) != 1 or len(lines) + len(heads) != len(arts) or len(heads) > 1:
+        return out + [f"arc on {prow['id']}: needs one Line2D and at most one FancyArrowPatch head ({len(arts)} artists)"]
+    pts = artist_polys(lines[0])[0]
+    for x, y in pts:
+        d = abs(math.hypot(x, y) - r)
+        if d > TOL_Z:
+            out.append(f"arc point ({x:.2f}, {y:.2f}) {d:.2f} off the circle r {r:g}")
+            break
+    for i in range(len(pts) - 1):
+        (xa, ya), (xb, yb) = pts[i], pts[i + 1]
+        if xa * yb - ya * xb <= 0:
+            out.append(f"arc turns clockwise at point {i} (cross {xa * yb - ya * xb:.3f}); theta runs counter-clockwise from +X")
+            break
+    ang = lambda q: math.degrees(math.atan2(q[1], q[0]))  # noqa: E731
+    for nm, q, want in (("start", pts[0], t0), ("end", pts[-1], t1)):
+        dd = (ang(q) - want + 180) % 360 - 180
+        if abs(dd) > ARC_DEG_TOL:
+            out.append(f"arc {nm} at {ang(q):.2f} deg against {want:g}")
+    for h in heads:
+        tail, head = arrow_ends(h)
+        if any(abs(math.hypot(*q) - r) > TOL_Z for q in (tail, head)):
+            out.append("arc head ends off the circle")
+        tx, ty = -math.sin(math.radians(t1)), math.cos(math.radians(t1))
+        if (head[0] - tail[0]) * tx + (head[1] - tail[1]) * ty <= 0:
+            out.append("arc head points against theta (clockwise)")
+        if abs((ang(head) - t1 + 180) % 360 - 180) > 5:
+            out.append(f"arc head at {ang(head):.2f} deg, not at theta1 {t1:g}")
+    return out
+
+
+def root_issues(ctx, ax, pose, prow, arts, own):
+    """1.3 (h) r2 (Topologist TP1.3-15). Admission of <row>:root, the simplified thread of a screw drawn in a side or
+    section view: two dashed root lines. Spec: row field root {from, to, d} (z_A expressions; d the root diameter).
+    Premise: the lead is in the label; the lines state where the thread runs and its root, nothing else. (r1) side or
+    section view. (r2) exactly two Line2D, each two vertices, vertical (|dx| <= TOL_Z), dashed. (r3) the two lines at
+    u_c - d / 2 and u_c + d / 2 within TOL_Z, u_c the centre of the parent's drawn pieces over the thread span. (r4) each
+    runs from `from` to `to` (z_S) within TOL_Z. (r5) every vertex inside the drawn parent pieces."""
+    import check_stack as _cs
+    if ctx.view not in SIDE_VIEWS:
+        return [f"root on {prow['id']} admitted in a side or section view only (view {ctx.view})"]
+    rt = prow.get("root") or {}
+    if not all(k in rt for k in ("from", "to", "d")):
+        return [f"root on {prow['id']} without root.from / to / d in the spec"]
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    z0 = _cs.to_shop_floor(_cs.eval_expr(str(rt["from"]), ctx.P, names), ctx.P)
+    z1 = _cs.to_shop_floor(_cs.eval_expr(str(rt["to"]), ctx.P, names), ctx.P)
+    d = float(_cs.eval_expr(str(rt["d"]), ctx.P, names))
+    polys = [q for x in own for q in artist_polys(x) if len(q) >= 3]
+    span = [q for q in polys if min(v[1] for v in q) <= z0 + TOL_Z and max(v[1] for v in q) >= z1 - TOL_Z]
+    if not span:
+        return [f"root on {prow['id']}: no drawn piece of {prow['id']} spans z {z0:.2f} to {z1:.2f}"]
+    xs = [v[0] for v in span[0]]
+    uc = (min(xs) + max(xs)) / 2
+    out = []
+    if len(arts) != 2 or not all(isinstance(a, Line2D) and len(artist_polys(a)[0]) == 2 for a in arts):
+        return [f"root on {prow['id']}: needs two two-vertex Line2D ({len(arts)} artists)"]
+    got = []
+    for a in arts:
+        (xa, ya), (xb, yb) = artist_polys(a)[0]
+        if abs(xa - xb) > TOL_Z:
+            out.append(f"root line not vertical (dx {xb - xa:.2f})")
+        if a.get_linestyle() in SOLID_STYLES:
+            out.append("root line drawn solid (dashed: hidden thread root)")
+        lo, hi = sorted((ya, yb))
+        if abs(lo - z0) > TOL_Z or abs(hi - z1) > TOL_Z:
+            out.append(f"root line z {lo:.2f} to {hi:.2f} against {z0:.2f} to {z1:.2f}")
+        if not all(_in_any(v, polys) for v in ((xa, ya), (xb, yb))):
+            out.append(f"root line at u {xa:.2f} leaves the drawn {prow['id']}")
+        got.append((xa + xb) / 2)
+    want = sorted((uc - d / 2, uc + d / 2))
+    for w, g in zip(want, sorted(got)):
+        if abs(w - g) > TOL_Z:
+            out.append(f"root line at u {g:.2f} against {w:.2f} (u_c {uc:.2f} -+ d_r {d:g} / 2)")
+    return out
 
 
 def zero_area_issue(row, a):
@@ -4079,6 +4266,7 @@ def k8(ctx):
             issues += section_look_issues(ctx.parent.spec, ctx.view)   # P5f (Topologist FIX 2)
             if ctx.parent.stack:
                 issues += omitted_row_issues(ctx, ctx.parent)   # P5f (Topologist FIX 3 b)
+                issues += not_drawn_band_issues(ctx, ctx.parent)   # 1.3 (h) r2 (Topologist TP1.3-12)
     side, plan = ctx.view in SIDE_VIEWS, ctx.view == "plan_xy"
     # TP1.2-1: the radial outboard form reads the plan centroid (x, y) in the drill-axis frame; in a side view the
     # centroid is (x, z) and its hypot is no radius. frame: radial outside plan_xy is a spec error, reported once.
@@ -4387,7 +4575,7 @@ def render_section(ctx, ax, pose):
     for r in rows:
         if r.get("section_class") == "cut":
             for a in _area_artists(ax, r["id"]):
-                a.set_hatch(HATCH.get(r.get("hatch") or "steel"))
+                a.set_hatch(cut_hatch(sctx, pose, r, a))
                 a.set_zorder(1)
     for r in rows:
         if r.get("section_class") == "unsectioned":
@@ -4401,6 +4589,160 @@ def render_section(ctx, ax, pose):
                 a.set_hatch(None)
                 ins, outs = _behind(a, cut)
                 a.set_linestyle("--" if ins and not outs else "-")
+    render_occlusion(sctx, ax)
+
+
+def _solid(a):
+    return a.get_linestyle() in SOLID_STYLES
+
+
+def unsectioned_occluders(ctx, ax):
+    """[(row id, artist, ring)] of the solid unsectioned area artists of a section Axes (convention clause 2: a solid of
+    revolution with its axis in the plane, drawn whole; its front half lies at x > 0 and hides every area of the section
+    inside its outline). Hidden copies and dashed pieces (sweep envelopes) are no occluders."""
+    out = []
+    for r in ctx.spec.get("features", []):
+        if r.get("section_class") != "unsectioned":
+            continue
+        for a in _area_artists(ax, r["id"]):
+            if getattr(a, "_sc_hidden_copy", False) or not _solid(a):
+                continue
+            for q in artist_polys(a):
+                if len(q) >= 3:
+                    out.append((r["id"], a, q))
+    return out
+
+
+def _occluded_by(fid, a, occ):
+    """Occluder rings of other rows whose overlap with artist a exceeds TOL_AREA."""
+    polys = [q for q in artist_polys(a) if len(q) >= 3]
+    return [(g, q) for g, oa, q in occ if g != fid and oa is not a and any(overlap_area(p, q) > TOL_AREA for p in polys)]
+
+
+def render_occlusion(ctx, ax):
+    """1.3 (h) r2 (Topologist TP1.3-11): section convention clause (2) occlusion. Every solid area artist of another row
+    that overlaps a solid unsectioned piece by more than TOL_AREA is split as the plan renderer splits (render_plan): the
+    artist keeps its style with the region outside the unsectioned pieces as its clip path, and a hidden copy (dashed, no
+    fill, no hatch) gets the region inside them, inserted in the draw order right after it. Occluders are taken before any
+    split (an unsectioned piece inside another, e.g. a shaft end inside the coupling, is split and still occludes)."""
+    occ = unsectioned_occluders(ctx, ax)
+    if not occ:
+        return {}
+    out = {}
+    for r in ctx.spec.get("features", []):
+        if r.get("kind") in NO_AREA_KINDS or r.get("reference"):
+            continue
+        fid = r["id"]
+        for a in list(_area_artists(ax, fid)):
+            if getattr(a, "_sc_hidden_copy", False) or a.get_clip_path() is not None or not _solid(a):
+                continue
+            hits = _occluded_by(fid, a, occ)
+            if not hits:
+                continue
+            polys = [q for q in artist_polys(a) if len(q) >= 3]
+            x0, x1, y0, y1 = bbox(polys)
+            shapes = [[q] for _, q in hits]
+            xs = [v[0] for sh in shapes for ring in sh for v in ring] + [x0, x1]
+            ys = [v[1] for sh in shapes for ring in sh for v in ring] + [y0, y1]
+            box = (min(xs) - RENDER_MARGIN, max(xs) + RENDER_MARGIN, min(ys) - RENDER_MARGIN, max(ys) + RENDER_MARGIN)
+            hid, vis = region_split(shapes, box)
+            cp = _patch_copy(a)
+            cp.set_edgecolor(a.get_edgecolor())
+            cp.set_linewidth(a.get_linewidth())
+            cp.set_linestyle("--")
+            cp.set_fill(False)
+            cp.set_hatch(None)
+            cp.set_zorder(a.get_zorder())
+            cp._sc_hidden_copy = True
+            a.set_clip_path(region_path(vis), ax.transData)
+            draw(fid, cp, ax)
+            cp.set_clip_path(region_path(hid), ax.transData)
+            kids = ax._children
+            kids.remove(cp)
+            kids.insert(kids.index(a) + 1, cp)
+            out[a] = (fid, sorted({g for g, _ in hits}))
+    return out
+
+
+def occlusion_issues(ctx, ax, pose):
+    """1.3 (h) r2, section convention clause (6) (Topologist TP1.3-11). Premise of clause (2): an unsectioned row has its
+    axis in the plane and is drawn whole, so its front surface over u lies at x = +sqrt(R^2 - (u - u_c)^2) > 0 and any area
+    of the section at x <= 0 inside its outline lies behind it. (6a) No interior sample of a solid area artist of another
+    row, inside that artist's drawn region (its clip region, if any), lies inside a solid unsectioned piece deeper than
+    TOL_Z. (6b) An artist whose samples lie there has a dashed hidden copy (same row, no hatch, no fill) whose drawn region
+    holds them: its hidden edges are drawn."""
+    occ = unsectioned_occluders(ctx, ax)
+    out = []
+    for r in ctx.spec.get("features", []):
+        if r.get("kind") in NO_AREA_KINDS or r.get("reference"):
+            continue
+        fid = r["id"]
+        arts = _area_artists(ax, fid)
+        copies = [c for c in arts if getattr(c, "_sc_hidden_copy", False) and not _solid(c) and not c.get_hatch()]
+        for a in arts:
+            if getattr(a, "_sc_hidden_copy", False) or not _solid(a):
+                continue
+            hits = _occluded_by(fid, a, occ)
+            if not hits:
+                continue
+            reg = drawn_region(a)
+            ins = [p for p in _cover_samples(a) if any(_inside(p, q) and _edge_depth(p, [q]) > TOL_Z for _, q in hits)]
+            vis_in = [p for p in ins if reg is None or reg.contains(p)]
+            names = ", ".join(sorted({g for g, _ in hits}))
+            if vis_in:
+                out.append(f"{pose}/{fid}: drawn solid inside the unsectioned outline of {names} ({len(vis_in)} of {len(ins)} "
+                           f"samples; section convention 6a, occlusion)")
+                continue
+            held = lambda c: all((drawn_region(c) is None or drawn_region(c).contains(p)) for p in ins)  # noqa: E731
+            if ins and not any(held(c) for c in copies):
+                out.append(f"{pose}/{fid}: hidden inside the unsectioned outline of {names} with no dashed hidden copy "
+                           f"(section convention 6b)")
+    return out
+
+
+def hatch_alt_table(spec):
+    """section.hatch_alt {material: pattern} (1.3 (h) r2, Topologist TP1.3-14): the alternate pattern a hatch_split row
+    carries on its pieces above the split. Values are The Designer's."""
+    return dict(((spec or {}).get("section") or {}).get("hatch_alt") or {})
+
+
+def hatch_split_z(ctx, pose, row):
+    """z_S of a row's hatch_split.at, or None."""
+    hs = row.get("hatch_split") or {}
+    if not hs.get("at"):
+        return None
+    import check_stack as _cs
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    return _cs.to_shop_floor(_cs.eval_expr(str(hs["at"]), ctx.P, names), ctx.P)
+
+
+def cut_hatch(ctx, pose, row, a):
+    """Hatch a cut artist carries: HATCH[material]; on a hatch_split row, a piece wholly above the split carries
+    section.hatch_alt[material] (when declared)."""
+    mat = row.get("hatch") or "steel"
+    zs = hatch_split_z(ctx, pose, row)
+    alt = hatch_alt_table(ctx.spec).get(mat)
+    if zs is not None and alt:
+        polys = [q for q in artist_polys(a) if len(q) >= 3]
+        if polys and min(v[1] for q in polys for v in q) >= zs - TOL_Z:
+            return alt
+    return HATCH.get(mat)
+
+
+def hatch_alt_issues(spec):
+    """Lint (TP1.3-14): every section.hatch_alt value differs from every HATCH value and from every other alternate; a
+    row with hatch_split names a material that has an alternate."""
+    alt = hatch_alt_table(spec)
+    out = []
+    for m, v in alt.items():
+        if v in HATCH.values():
+            out.append(f"spec error: section.hatch_alt {m} {v!r} equals a material pattern (HATCH)")
+        if list(alt.values()).count(v) > 1:
+            out.append(f"spec error: section.hatch_alt {m} {v!r} equals another alternate")
+    for r in (spec or {}).get("features", []):
+        if r.get("hatch_split") and r.get("section_class") == "cut" and not alt.get(r.get("hatch") or "steel"):
+            out.append(f"{r['id']}: hatch_split declared with no section.hatch_alt for {r.get('hatch') or 'steel'} (The Designer, TP1.3-14)")
+    return out
 
 
 SECTION_LOOK = {"section_yz": ("-X", (0.0, 1.0, 0.0))}   # P5f (TP FIX 2): u_view = +Y; u x z = +X; look = -(u x z)
@@ -4438,6 +4780,91 @@ def omitted_row_issues(ctx, parent):
                 continue
             if not (xb[0] > TOL_Z or xb[1] < -pw - TOL_Z):
                 out.append(f"{pose}/{r['id']}: plan x [{xb[0]:.2f}, {xb[1]:.2f}] lies in the section band and is not drawn in the section (section convention 4, converse)")
+    return out
+
+
+ND_OMIT = ("off_plane", "deferred")
+_OTHER_STACKS = {}
+
+
+def _other_sketch_bands(P, sketch, ids, pose):
+    """{row id: (x0, x1)} plan x extent of rows of another sketch's spec at pose (its true plan outline: plan_outline)."""
+    import check_stack as _cs
+    from sketch_loader import load_spec as _ls
+    key = (id(P), sketch)
+    if key not in _OTHER_STACKS:
+        sp = _ls(HERE / f"{sketch}_spec.yaml")
+        _OTHER_STACKS[key] = (sp, _cs.evaluate_spec(P, sp))
+    sp, st = _OTHER_STACKS[key]
+    rows = {r["id"]: r for r in sp.get("features", [])}
+    c = Ctx(P=P, spec=sp, figs={}, stack=st, view=sp.get("view"))
+    out = {}
+    pz = pose if pose in st["poses"] else next(iter(st["poses"]))
+    for i in ids:
+        if i not in rows:
+            out[i] = None
+            continue
+        po = plan_outline(c, rows[i], pz)
+        if po is None:
+            f = st["poses"][pz]["features"].get(i) or {}
+            xb = (f.get("place") or {}).get("x") or f.get("plan_x")
+            out[i] = tuple(xb) if xb else None
+        elif po[0] == "annulus":
+            out[i] = (-po[1][1], po[1][1])
+        else:
+            xs = [v[0] for q in po[1] for v in q]
+            out[i] = (min(xs), max(xs))
+    return out
+
+
+def not_drawn_band_issues(ctx, parent):
+    """1.3 (h) r2 (Topologist TP1.3-12): the not_drawn converse of the section convention. Premise of omitting a part
+    from a section: it lies wholly in front of the plane or wholly past one profile width behind it (clause 4), or its
+    omission is deferred to a named owner. Every not_drawn entry carries omit: off_plane (with rows: S3 row ids,
+    rows_s2: S2 row ids read on their true plan outline, or x: plan x bands [lo, hi], expressions allowed) or omit:
+    deferred (with owner). An off_plane band that meets the section band (x0 <= 0.05 and x1 >= -profile.width - 0.05)
+    is an issue: draw the part (beyond row) or state its convention. Deferred entries are listed, not judged."""
+    import check_stack as _cs
+    spec = parent.spec or {}
+    pw = ctx.P.get("profile.width") if ctx.P is not None and ctx.P.has("profile.width") else 60.0
+    out = []
+    pose = next(iter(ctx.figs), None) or (spec.get("section_figure") or {}).get("pose", "capture_end")
+    feats = parent.stack["poses"][pose]["features"] if parent.stack and pose in parent.stack["poses"] else {}
+    for e in spec.get("not_drawn") or []:
+        e = e if isinstance(e, dict) else {"part": e}
+        head = part_head(e.get("part"))
+        om = e.get("omit")
+        if om not in ND_OMIT:
+            out.append(f"spec error: not_drawn {head!r} without omit (one of {', '.join(ND_OMIT)})")
+            continue
+        if om == "deferred":
+            if not e.get("owner"):
+                out.append(f"spec error: not_drawn {head!r} deferred with no owner")
+            continue
+        bands = []
+        for i in e.get("rows") or []:
+            f = feats.get(i) or {}
+            xb = (f.get("place") or {}).get("x") or f.get("plan_x")
+            if not xb:
+                out.append(f"spec error: not_drawn {head!r} names S3 row {i} with no plan x band")
+                continue
+            bands.append((i, tuple(xb)))
+        if e.get("rows_s2"):
+            for i, xb in _other_sketch_bands(ctx.P, "s2", e["rows_s2"], pose).items():
+                if xb is None:
+                    out.append(f"spec error: not_drawn {head!r} names S2 row {i} with no plan outline")
+                else:
+                    bands.append((f"s2 {i}", xb))
+        for k, b in enumerate(e.get("x") or []):
+            lo, hi = sorted(float(_cs.eval_expr(str(v), ctx.P, {})) for v in b)
+            bands.append((f"x band {k + 1}", (lo, hi)))
+        if not bands:
+            out.append(f"spec error: not_drawn {head!r} off_plane with no rows, rows_s2 or x band")
+            continue
+        for nm, (lo, hi) in bands:
+            if not (lo > TOL_Z or hi < -pw - TOL_Z):
+                out.append(f"{pose}: not_drawn {head!r} ({nm}) plan x [{lo:.2f}, {hi:.2f}] lies in the section band "
+                           f"(0 to -{pw:g}): draw it as a beyond row or state its convention (TP1.3-12)")
     return out
 
 
@@ -4516,10 +4943,12 @@ def section_convention_issues(ctx, ax, pose):
                 out.append(f"{pose}/{fid}: drawn past one profile width behind the plane (depth x [{dep[0]:.2f}, {dep[1]:.2f}], limit -{pw:g}); omit it (section convention 4)")
                 continue
         for a in arts:
+            if getattr(a, "_sc_hidden_copy", False):   # 1.3 (h) r2: judged by clause (6b)
+                continue
             n += 1
             h = a.get_hatch()
             if cls == "cut":
-                want = HATCH.get(r.get("hatch") or "steel")
+                want = cut_hatch(ctx, pose, r, a)   # 1.3 (h) r2: hatch_split pieces above the split carry the alternate
                 if not h:
                     out.append(f"{pose}/{fid}: cut row drawn without hatch (section convention 1)")
                 elif h != want:
@@ -4546,6 +4975,8 @@ def section_convention_issues(ctx, ax, pose):
             out.append(f"{pose}/{fid}: unsectioned row whose axis is not in the plane (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 2)")
         if cls == "cut" and dep and drawn and not (dep[0] <= TOL_Z and dep[1] >= -TOL_Z):
             out.append(f"{pose}/{fid}: cut row the plane x = 0 does not cut (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 1)")
+    out += occlusion_issues(ctx, ax, pose)   # 1.3 (h) r2: clause (6), Topologist TP1.3-11
+    out += [f"{pose}: {m}" for m in hatch_alt_issues(ctx.spec)]   # 1.3 (h) r2: TP1.3-14
     return n, out
 
 
