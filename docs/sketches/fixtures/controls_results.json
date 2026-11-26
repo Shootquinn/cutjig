@@ -1,13 +1,15 @@
 {
  "run": 1,
- "timestamp": "2026-11-25T21:32:46",
+ "timestamp": "2026-11-26T01:29:33",
  "summary": {
-  "z_clean": 64,
-  "z_total": 64,
-  "b_fired": 164,
-  "b_total": 164,
+  "z_clean": 70,
+  "z_total": 70,
+  "b_fired": 191,
+  "b_total": 191,
   "smoke_ok": 2,
-  "smoke_total": 2
+  "smoke_total": 2,
+  "jobs": 12,
+  "wall_seconds": 111.1
  },
  "controls": [
   {
@@ -19,7 +21,8 @@
    "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (k1_z_clean.py)",
    "match": "yes",
    "gameplan_line": 134,
-   "finding": null
+   "finding": null,
+   "seconds": 0.144
   },
   {
    "id": "K1-B1",
@@ -30,7 +33,8 @@
    "reason": "k1_b1_literal.py:16 literal 152.4",
    "match": "yes",
    "gameplan_line": 134,
-   "finding": null
+   "finding": null,
+   "seconds": 0.139
   },
   {
    "id": "K1-B2",
@@ -41,7 +45,8 @@
    "reason": "k1_b2_softkey.py:19 comparison with soft key jig.height_target",
    "match": "yes",
    "gameplan_line": 134,
-   "finding": null
+   "finding": null,
+   "seconds": 0.114
   },
   {
    "id": "K2-Z",
@@ -49,10 +54,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "5 spec keys resolve; 3 overlay leaves sourced, legal status, no shadow",
+   "reason": "5 spec keys resolve; 3 overlay leaves sourced, legal status, no shadow; 0 expr leaves agree within 0.05",
    "match": "yes",
    "gameplan_line": 135,
-   "finding": null
+   "finding": null,
+   "seconds": 0.714
   },
   {
    "id": "K2-B1",
@@ -63,7 +69,8 @@
    "reason": "overlay key drill.tube_od shadows params.yaml",
    "match": "yes",
    "gameplan_line": 135,
-   "finding": null
+   "finding": null,
+   "seconds": 0.718
   },
   {
    "id": "K2-B2",
@@ -74,7 +81,8 @@
    "reason": "overlay fx.ring_thickness: empty source",
    "match": "yes",
    "gameplan_line": 135,
-   "finding": null
+   "finding": null,
+   "seconds": 0.677
   },
   {
    "id": "K2-B3",
@@ -85,7 +93,8 @@
    "reason": "overlay fx.ring_od: DECLARED without [CP \u00a7n, mm:ss] or [DN23]",
    "match": "yes",
    "gameplan_line": 135,
-   "finding": null
+   "finding": null,
+   "seconds": 0.802
   },
   {
    "id": "K3-Z",
@@ -96,7 +105,8 @@
    "reason": "1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.314
   },
   {
    "id": "K3-B1",
@@ -107,7 +117,8 @@
    "reason": "fixture: title 'k3 fixture pose start' lacks view side_xz",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.301
   },
   {
    "id": "K3-B2",
@@ -118,7 +129,8 @@
    "reason": "fixture: x label 'x' lacks (mm)",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.179
   },
   {
    "id": "K3-B3",
@@ -129,7 +141,8 @@
    "reason": "fixture: aspect 'auto'",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.166
   },
   {
    "id": "K3-B4",
@@ -140,7 +153,8 @@
    "reason": "fixture: minor grid off",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.143
   },
   {
    "id": "K3-B5",
@@ -151,7 +165,8 @@
    "reason": "fixture: figsize (6.4, 4.8) below (14, 10)",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.285
   },
   {
    "id": "K3-B6",
@@ -162,7 +177,8 @@
    "reason": "fixture: dpi 100 not 150",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": null
+   "finding": null,
+   "seconds": 0.307
   },
   {
    "id": "K3-B7",
@@ -173,7 +189,8 @@
    "reason": "fixture: 2 Axes in the figure, spec declares no inset (checks read the first Axes only)",
    "match": "yes",
    "gameplan_line": 136,
-   "finding": "TP-7"
+   "finding": "TP-7",
+   "seconds": 0.266
   },
   {
    "id": "K4-Z",
@@ -184,7 +201,8 @@
    "reason": "3 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": null
+   "finding": null,
+   "seconds": 0.898
   },
   {
    "id": "K4-B1",
@@ -195,7 +213,8 @@
    "reason": "capture_end/drill_tube: label 'tube OD' carries no number (want 152.4 from drill.tube_od)",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": null
+   "finding": null,
+   "seconds": 0.846
   },
   {
    "id": "K4-B2",
@@ -206,7 +225,8 @@
    "reason": "capture_end/drill_tube: label 'tube OD 150' number differs from drill.tube_od = 152.4",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": null
+   "finding": null,
+   "seconds": 0.9
   },
   {
    "id": "K4-B3",
@@ -217,7 +237,8 @@
    "reason": "capture_end/core_500: label 'core 750' number differs from core.length_capture = 500; capture_end/core_750: label 'core 500' number differs from core.length_install = 750",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": "SW-3"
+   "finding": "SW-3",
+   "seconds": 0.877
   },
   {
    "id": "K5-Z",
@@ -228,7 +249,8 @@
    "reason": "2 tagged artist(s) projected per kind, axis and spec projection (view normal Y) || 1 tagged artist(s) projected per kind, axis and spec projection (view normal Z) || 15 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": null
+   "finding": null,
+   "seconds": 2.668
   },
   {
    "id": "K5-B1",
@@ -239,7 +261,8 @@
    "reason": "fixture/drill_tube: cylinder axis Z in side_xz drawn as circle, needs rectangle",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": null
+   "finding": null,
+   "seconds": 0.845
   },
   {
    "id": "K5-B2",
@@ -250,7 +273,8 @@
    "reason": "fixture/pinion_a: gear axis X in side_xz drawn as rectangle, needs trapezoid",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": null
+   "finding": null,
+   "seconds": 0.859
   },
   {
    "id": "K5-B3",
@@ -261,7 +285,8 @@
    "reason": "fixture: untagged Rectangle",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": null
+   "finding": null,
+   "seconds": 1.024
   },
   {
    "id": "K5-B4",
@@ -272,7 +297,8 @@
    "reason": "capture_end/nut_a: prism drawn as polygon, spec projection rectangle",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "TP-6"
+   "finding": "TP-6",
+   "seconds": 1.944
   },
   {
    "id": "K5-B5",
@@ -283,7 +309,8 @@
    "reason": "drill_tube: spec error, cylinder row needs axis X, Y or Z (has None)",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "TP-6"
+   "finding": "TP-6",
+   "seconds": 0.991
   },
   {
    "id": "K6-Z",
@@ -294,7 +321,8 @@
    "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": null
+   "finding": null,
+   "seconds": 1.084
   },
   {
    "id": "K6-Z2",
@@ -305,7 +333,8 @@
    "reason": "14 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
-   "finding": "LF-2"
+   "finding": "LF-2",
+   "seconds": 1.119
   },
   {
    "id": "K6-B1",
@@ -316,7 +345,8 @@
    "reason": "capture_end/drill_head: drawn z [251.59, 357.96] vs stack [244.84, 351.21] z_S, off 6.75; capture_end/drill_tube: drawn z [357.96, 1051.59] vs stack [351.21, 1044.84] z_S, off 6.75; capture_end/drill_top_block: drawn z [1051.59, 1201.59] vs stack [1044.84, 1194.84] z_S, off 6.75",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": null
+   "finding": null,
+   "seconds": 1.83
   },
   {
    "id": "K6-B2",
@@ -327,7 +357,8 @@
    "reason": "capture_end/core_500: drawn z [42.50, 542.50] vs stack [102.50, 602.50] z_S, off 60.00",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": null
+   "finding": null,
+   "seconds": 1.713
   },
   {
    "id": "K6-B2b",
@@ -338,7 +369,8 @@
    "reason": "capture_end/core_500: drawn z [2.50, 502.50] vs stack [102.50, 602.50] z_S, off 100.00",
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
-   "finding": null
+   "finding": null,
+   "seconds": 1.722
   },
   {
    "id": "K6-B3",
@@ -349,7 +381,8 @@
    "reason": "import guard: k6_b3_check_stack.py:6 imports stubs",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": null
+   "finding": null,
+   "seconds": 0.955
   },
   {
    "id": "K6-B4",
@@ -360,7 +393,8 @@
    "reason": "stack anchors: to_shop_floor(0) = -60.00, want +60; floor_z_S -120.00, hand 0; datum_a_z_S -60.00, hand 60; receiver_floor_z_S -20.00, hand 100; collar_top_z_S 99.84, hand 219.84",
    "match": "yes",
    "gameplan_line": "139; Design Notes 17",
-   "finding": "LF-2"
+   "finding": "LF-2",
+   "seconds": 1.255
   },
   {
    "id": "K6-Z3",
@@ -371,7 +405,8 @@
    "reason": "0 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
-   "finding": "LF-16"
+   "finding": "LF-16",
+   "seconds": 1.551
   },
   {
    "id": "K6-B5",
@@ -382,7 +417,8 @@
    "reason": "LF-16 load_plane: term core_stop 42.50 z_A vs wingnut.z_max + offset 159.84 z_A, 117.34 apart",
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
-   "finding": "LF-16"
+   "finding": "LF-16",
+   "seconds": 1.478
   },
   {
    "id": "K7-Z1",
@@ -393,7 +429,8 @@
    "reason": "1 pair test(s) clean; states ['F']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.817
   },
   {
    "id": "K7-Z2",
@@ -404,7 +441,8 @@
    "reason": "0 pair test(s) clean; states ['depth-separated']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.818
   },
   {
    "id": "K7-Z3",
@@ -415,7 +453,8 @@
    "reason": "1 pair test(s) clean; states ['C']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.782
   },
   {
    "id": "K7-Z4",
@@ -426,7 +465,8 @@
    "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.872
   },
   {
    "id": "K7-Z5",
@@ -437,7 +477,8 @@
    "reason": "0 plan pair test(s) clean over 4 pose(s); states ['swept:z-separated', 'z-separated']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "SW-6"
+   "finding": "SW-6",
+   "seconds": 0.888
   },
   {
    "id": "K7-Z6",
@@ -448,7 +489,8 @@
    "reason": "5 pair test(s) clean; states ['F', 'swept:F']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-3"
+   "finding": "LF-3",
+   "seconds": 0.957
   },
   {
    "id": "K7-Z7",
@@ -459,7 +501,8 @@
    "reason": "0 pair test(s) clean; states ['N', 'undeclared:F']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "TP-5"
+   "finding": "TP-5",
+   "seconds": 0.828
   },
   {
    "id": "K7-Z8",
@@ -470,7 +513,8 @@
    "reason": "1 pair test(s) clean; states ['plan-separated']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-8 (1.1 b)"
+   "finding": "LF-8 (1.1 b)",
+   "seconds": 1.348
   },
   {
    "id": "K7-Z9",
@@ -481,7 +525,8 @@
    "reason": "0 pair test(s) clean; states ['undeclared:plan-separated']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-8 (1.1 b)"
+   "finding": "LF-8 (1.1 b)",
+   "seconds": 1.312
   },
   {
    "id": "K7-B1",
@@ -492,7 +537,8 @@
    "reason": "fixture/a|b C: distance 0.000 mm, overlap 100.000 mm2, state overlap; no placed plan footprints for the plan-contact test; fixture/c|d G: distance 0.000 mm, overlap 100.000 mm2, state overlap, g_min 0, gap - g_min +0.000; fixture/e|f F: distance 0.000 mm, overlap 100.000 mm2, state overlap",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.695
   },
   {
    "id": "K7-B2",
@@ -503,7 +549,8 @@
    "reason": "fixture/a|b C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.875
   },
   {
    "id": "K7-B3",
@@ -514,7 +561,8 @@
    "reason": "fixture/a|b G: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10, gap - g_min -1.000",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.799
   },
   {
    "id": "K7-B4",
@@ -525,7 +573,8 @@
    "reason": "swept p1..p4/ring|member G: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap, g_min 10, gap - g_min -10.000",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": null
+   "finding": null,
+   "seconds": 0.896
   },
   {
    "id": "K7-B5",
@@ -536,7 +585,8 @@
    "reason": "fixture/a|b C: C pair depth-separated by 490.000 mm (contact needs bands within 0.05)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-1"
+   "finding": "LF-1",
+   "seconds": 0.773
   },
   {
    "id": "K7-B6",
@@ -547,7 +597,8 @@
    "reason": "fixture/a|b G: band gap 1.000 mm, projected distance 0.000 mm, lower bound 1.000, g_min 10, gap - g_min -9.000",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-1"
+   "finding": "LF-1",
+   "seconds": 0.785
   },
   {
    "id": "K7-B7",
@@ -558,7 +609,8 @@
    "reason": "motor: spec depth band [-129.00, -72.00] does not contain the placed projection [-125.18, -37.82]; fixture/motor|post F: distance 0.000 mm, overlap 570.000 mm2, state overlap",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "TP-4, LF-5"
+   "finding": "TP-4, LF-5",
+   "seconds": 0.74
   },
   {
    "id": "K7-B8",
@@ -569,7 +621,8 @@
    "reason": "swept p1..p4/ring|member G: swept outline z gap -220.000, plan distance 0.000 mm, overlap 2000.000 mm2, lower bound 0.000, g_min 10, gap - g_min -10.000",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "SW-6"
+   "finding": "SW-6",
+   "seconds": 0.877
   },
   {
    "id": "K7-B9",
@@ -580,7 +633,8 @@
    "reason": "p1/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; p2/ring|lmember G: non-convex piece in ['lmember']; split it in the spec; swept p1..p2/ring|lmember G: swept hull non-convex piece in ['lmember']; split it in the spec",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-4"
+   "finding": "LF-4",
+   "seconds": 0.831
   },
   {
    "id": "K7-B10",
@@ -591,7 +645,8 @@
    "reason": "fixture/a|b undeclared (F): distance 0.000 mm, overlap 5000.000 mm2, state overlap",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "TP-5"
+   "finding": "TP-5",
+   "seconds": 0.785
   },
   {
    "id": "K7-B11",
@@ -602,7 +657,8 @@
    "reason": "fixture/a|b G: distance 0.000 mm, overlap 1243.594 mm2, state overlap, g_min 10, gap - g_min -10.000; plan footprints 8.979 mm apart, lower bound 8.979, gap - g_min -1.021",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-8 (1.1 b)"
+   "finding": "LF-8 (1.1 b)",
+   "seconds": 1.218
   },
   {
    "id": "K8-Z",
@@ -613,7 +669,8 @@
    "reason": "19 predicate(s) hold, axes not inverted || 8 predicate(s) hold, axes not inverted || 2 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": null
+   "finding": null,
+   "seconds": 2.471
   },
   {
    "id": "K8-Z2",
@@ -624,7 +681,8 @@
    "reason": "18 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP-9"
+   "finding": "TP-9",
+   "seconds": 0.763
   },
   {
    "id": "K8-B1",
@@ -635,7 +693,8 @@
    "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 405.2; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": null
+   "finding": null,
+   "seconds": 1.573
   },
   {
    "id": "K8-B2",
@@ -646,7 +705,8 @@
    "reason": "capture_end/anchor_a below nut_a: centroid z 440.8 vs 380.8",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": null
+   "finding": null,
+   "seconds": 1.52
   },
   {
    "id": "K8-B3",
@@ -657,7 +717,8 @@
    "reason": "plan: axis inverted (x False, y True)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": null
+   "finding": null,
+   "seconds": 0.893
   },
   {
    "id": "K8-B4",
@@ -668,7 +729,8 @@
    "reason": "capture_end/core_500 rests_on core_seat: bottom minus seat top 1.000 mm",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-4"
+   "finding": "SW-4",
+   "seconds": 0.861
   },
   {
    "id": "K8-B5",
@@ -679,7 +741,8 @@
    "reason": "capture_end/gear not mirrored about x = 0.00 (8 unmatched vertices, 2 pieces)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-4"
+   "finding": "SW-4",
+   "seconds": 0.851
   },
   {
    "id": "K8-B6",
@@ -690,7 +753,8 @@
    "reason": "plan/screw_b azimuth 270.00 deg vs jackscrew.angle[1] = 150.00",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-4"
+   "finding": "SW-4",
+   "seconds": 0.784
   },
   {
    "id": "K8-B7",
@@ -701,7 +765,8 @@
    "reason": "capture_end/motor23_a projected_x: drawn x centre 141.16 vs r_c cos(theta) -141.16 (r_c 163.00, theta 210); capture_end/motor23_a projected_extent: drawn x [94.00, 188.32] outside the spec footprint x [-188.32, -94.00] (by 282.32); capture_end/motor23_a side of drill_tube: centroid x minus drill_tube x 141.16, spec sign -1",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-5, TP-3; r4 TP1.1-11 adds projected_extent"
+   "finding": "SW-5, TP-3; r4 TP1.1-11 adds projected_extent",
+   "seconds": 0.808
   },
   {
    "id": "K8-B8",
@@ -712,7 +777,8 @@
    "reason": "capture_end/drill_head below gear: centroid z 1141.7 vs 405.2; capture_end/drill_head below drill_top_block: centroid z 1141.7 vs 319.8",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP-1"
+   "finding": "TP-1",
+   "seconds": 1.545
   },
   {
    "id": "K8-B9",
@@ -723,7 +789,8 @@
    "reason": "core_500 rests_on: spec error, non-string key True (YAML 1.1 reads on/off/yes/no as booleans); missing key 'seat'",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "SW-1"
+   "finding": "SW-1",
+   "seconds": 0.929
   },
   {
    "id": "K8-B10",
@@ -734,7 +801,8 @@
    "reason": "capture_end/gear taper narrows down: piece 0: width at bottom 50.00, at top 35.00",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP-2; ruling Design Notes 22"
+   "finding": "TP-2; ruling Design Notes 22",
+   "seconds": 0.762
   },
   {
    "id": "K8-B11",
@@ -745,7 +813,8 @@
    "reason": "fixture/collet taper narrows up: piece 0: width at bottom 125.76, at top 134.58",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP-2; ruling Design Notes 22"
+   "finding": "TP-2; ruling Design Notes 22",
+   "seconds": 0.756
   },
   {
    "id": "K8-Z3",
@@ -756,7 +825,8 @@
    "reason": "5 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": "141; 237",
-   "finding": "TP-9 ring_on_tube"
+   "finding": "TP-9 ring_on_tube",
+   "seconds": 0.817
   },
   {
    "id": "K8-B12",
@@ -767,7 +837,8 @@
    "reason": "capture_end/bearing clears_above drill_head: z_min minus drill_head z_max -5.00, needs > 0",
    "match": "yes",
    "gameplan_line": "141; 237",
-   "finding": "TP-9 ring_on_tube"
+   "finding": "TP-9 ring_on_tube",
+   "seconds": 1.479
   },
   {
    "id": "K8-B13",
@@ -778,7 +849,8 @@
    "reason": "capture_end/gear top_within drill_tube: drill_tube z_max minus z_max -5.00, needs > 0",
    "match": "yes",
    "gameplan_line": "141; 237",
-   "finding": "TP-9 ring_on_tube"
+   "finding": "TP-9 ring_on_tube",
+   "seconds": 1.284
   },
   {
    "id": "K9-Z",
@@ -789,7 +861,8 @@
    "reason": "every spec row drawn, every tagged artist in the spec (14 rows)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": null
+   "finding": null,
+   "seconds": 0.691
   },
   {
    "id": "K9-B1",
@@ -800,7 +873,8 @@
    "reason": "capture_end: spec row guide_member has no patch",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": null
+   "finding": null,
+   "seconds": 0.798
   },
   {
    "id": "K9-B2",
@@ -811,7 +885,8 @@
    "reason": "capture_end: tagged artist spare_bracket has no spec row",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": null
+   "finding": null,
+   "seconds": 0.757
   },
   {
    "id": "K9-B3",
@@ -822,7 +897,8 @@
    "reason": "capture_end: spec row guide_member has no patch (a Text carries its gid)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP-6"
+   "finding": "TP-6",
+   "seconds": 0.735
   },
   {
    "id": "K9-B4",
@@ -833,7 +909,8 @@
    "reason": "spec error: id anchor_a appears on more than one row",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP-8"
+   "finding": "TP-8",
+   "seconds": 0.892
   },
   {
    "id": "S1-4-Z",
@@ -844,7 +921,8 @@
    "reason": "nut inside travel at every pose, least margin 0.84 mm",
    "match": "yes",
    "gameplan_line": 231,
-   "finding": "Loftsman FIX 2"
+   "finding": "Loftsman FIX 2",
+   "seconds": 2.475
   },
   {
    "id": "S1-4-B1",
@@ -855,7 +933,8 @@
    "reason": "load/screw a: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); load/screw b: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); park/screw a: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84); park/screw b: nut z 1155.84 outside [380.00, 1150.00] (low margin +775.84, high margin -5.84)",
    "match": "yes",
    "gameplan_line": 231,
-   "finding": "Loftsman FIX 2"
+   "finding": "Loftsman FIX 2",
+   "seconds": 2.278
   },
   {
    "id": "S1-5b-Z",
@@ -866,7 +945,8 @@
    "reason": "91 pairs, least certified clearance 142.00 mm",
    "match": "yes",
    "gameplan_line": 233,
-   "finding": "Loftsman FIX 1"
+   "finding": "Loftsman FIX 1",
+   "seconds": 2.642
   },
   {
    "id": "S1-5b-B1",
@@ -877,7 +957,8 @@
    "reason": "bearing|collar: distance 9.000 mm, overlap 0.000 mm2, state F, g_min 10, gap - g_min -1.000",
    "match": "yes",
    "gameplan_line": 233,
-   "finding": "Loftsman FIX 1"
+   "finding": "Loftsman FIX 1",
+   "seconds": 2.703
   },
   {
    "id": "K7-Z10",
@@ -885,10 +966,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "617 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:C', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
+   "reason": "618 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:C', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Loftsman FIX 3; Designer F4"
+   "finding": "Loftsman FIX 3; Designer F4",
+   "seconds": 11.301
   },
   {
    "id": "K7-B12",
@@ -899,7 +981,8 @@
    "reason": "start/core_750|drill_head undeclared (F): distance 0.000 mm, overlap 1766.000 mm2, state overlap; plan footprints 0.000 mm apart, lower bound 0.000",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Loftsman FIX 3"
+   "finding": "Loftsman FIX 3",
+   "seconds": 12.031
   },
   {
    "id": "K7-B13",
@@ -910,7 +993,8 @@
    "reason": "load/frame_upper_a|base_plate C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer F4"
+   "finding": "Designer F4",
+   "seconds": 11.532
   },
   {
    "id": "K6-B6",
@@ -921,7 +1005,8 @@
    "reason": "LF-16 entry_plane: term collar_top 159.84 z_A vs core_seat.z_max + offset 42.50 z_A, 117.34 apart",
    "match": "yes",
    "gameplan_line": "139; Design Notes 20 LF-16",
-   "finding": "LF-16; Loftsman NOTE 1"
+   "finding": "LF-16; Loftsman NOTE 1",
+   "seconds": 1.556
   },
   {
    "id": "S1-1-Z",
@@ -932,7 +1017,8 @@
    "reason": "drawn start tip minus end-of-capture tip 650.00 mm against [534.93, 650]",
    "match": "yes",
    "gameplan_line": 228,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.25
   },
   {
    "id": "S1-1-B1",
@@ -943,7 +1029,8 @@
    "reason": "drawn start tip minus end-of-capture tip 650.00 mm against [534.93, 500]",
    "match": "yes",
    "gameplan_line": 228,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.122
   },
   {
    "id": "S1-1-B2",
@@ -954,7 +1041,8 @@
    "reason": "drawn start tip minus end-of-capture tip 533.93 mm against [534.93, 650]",
    "match": "yes",
    "gameplan_line": 228,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.286
   },
   {
    "id": "S1-2-Z",
@@ -965,7 +1053,8 @@
    "reason": "park tip above the highest class start by 125.00 mm",
    "match": "yes",
    "gameplan_line": 229,
-   "finding": "H6; SW-10"
+   "finding": "H6; SW-10",
+   "seconds": 2.344
   },
   {
    "id": "S1-2-B1",
@@ -976,7 +1065,8 @@
    "reason": "park: drawn tip 894.84 not above the highest class start 894.84 z_S",
    "match": "yes",
    "gameplan_line": 229,
-   "finding": "H6; SW-10 (replacement, Design Notes 22)"
+   "finding": "H6; SW-10 (replacement, Design Notes 22)",
+   "seconds": 2.328
   },
   {
    "id": "S1-2-B2",
@@ -987,7 +1077,8 @@
    "reason": "load: drawn tip 894.84 not above the highest class start 894.84 z_S",
    "match": "yes",
    "gameplan_line": 229,
-   "finding": "H6; SW 1.1 (c) FIX 1"
+   "finding": "H6; SW 1.1 (c) FIX 1",
+   "seconds": 2.237
   },
   {
    "id": "S1-3-Z",
@@ -998,7 +1089,8 @@
    "reason": "margins over core_stop {'core.length_capture': 367.34, 'core.length_install': 117.34}",
    "match": "yes",
    "gameplan_line": 230,
-   "finding": "H6; SW-10"
+   "finding": "H6; SW-10",
+   "seconds": 2.168
   },
   {
    "id": "S1-3-B1",
@@ -1009,7 +1101,8 @@
    "reason": "core.length_install: park tip - load_clearance - (core_stop + length) = -1.00",
    "match": "yes",
    "gameplan_line": 230,
-   "finding": "H6; SW-10 (revised at 1.1 (b))"
+   "finding": "H6; SW-10 (revised at 1.1 (b))",
+   "seconds": 2.262
   },
   {
    "id": "S1-4-B2",
@@ -1020,7 +1113,8 @@
    "reason": "park/screw a: nut z 1325.00 outside [380.00, 1170.00] (low margin +945.00, high margin -155.00)",
    "match": "yes",
    "gameplan_line": 231,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 3.662
   },
   {
    "id": "S1-5a-Z",
@@ -1031,7 +1125,8 @@
    "reason": "bore ceiling minus capture-core (core_750) top at end of capture 192.34 mm, need 25",
    "match": "yes",
    "gameplan_line": 232,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.42
   },
   {
    "id": "S1-5a-B1",
@@ -1042,7 +1137,8 @@
    "reason": "bore ceiling minus capture-core (core_750) top at end of capture -73.73 mm, need 25",
    "match": "yes",
    "gameplan_line": 232,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.925
   },
   {
    "id": "S1-6-Z",
@@ -1053,7 +1149,8 @@
    "reason": "8 screw projections at r cos(theta), depth r sin(theta)",
    "match": "yes",
    "gameplan_line": 234,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 2.366
   },
   {
    "id": "S1-6-B1",
@@ -1064,7 +1161,8 @@
    "reason": "load/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); start/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); capture_end/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30); park/screw_b: drawn x 160.00, r cos(theta) 138.56 (theta 30)",
    "match": "yes",
    "gameplan_line": 234,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 3.618
   },
   {
    "id": "S1-7-Z",
@@ -1075,7 +1173,8 @@
    "reason": "capture-core (core_750) top at start minus end-of-capture tip 607.66 mm, need 534.93 (spare 72.73)",
    "match": "yes",
    "gameplan_line": 235,
-   "finding": "H6; G2"
+   "finding": "H6; G2",
+   "seconds": 2.309
   },
   {
    "id": "S1-7-B1",
@@ -1086,7 +1185,8 @@
    "reason": "capture-core (core_750) top at start minus end-of-capture tip 357.66 mm, need 534.93 (short 177.27)",
    "match": "yes",
    "gameplan_line": 235,
-   "finding": "H6; G2"
+   "finding": "H6; G2",
+   "seconds": 2.079
   },
   {
    "id": "K6-B7",
@@ -1097,7 +1197,8 @@
    "reason": "LF-16 stack_tie holder_flange: term collar_top 159.84 z_A vs holder.z_max + offset 151.84 z_A, 8.00 apart",
    "match": "yes",
    "gameplan_line": "139; 223",
-   "finding": "LF1.1-1"
+   "finding": "LF1.1-1",
+   "seconds": 1.422
   },
   {
    "id": "K8-Z4",
@@ -1108,7 +1209,8 @@
    "reason": "20 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP1.1-1"
+   "finding": "TP1.1-1",
+   "seconds": 0.742
   },
   {
    "id": "K8-B14",
@@ -1119,7 +1221,8 @@
    "reason": "capture_end/gear face_rises outward: piece 0: face from (125.00, 386.84) to (90.00, 401.84), dz +15.00 over d|x| -35.00",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP1.1-1"
+   "finding": "TP1.1-1",
+   "seconds": 0.816
   },
   {
    "id": "K9-Z2",
@@ -1130,7 +1233,8 @@
    "reason": "every spec row drawn, every tagged artist in the spec (58 rows)",
    "match": "yes",
    "gameplan_line": "142; 237",
-   "finding": "TP1.1-2"
+   "finding": "TP1.1-2",
+   "seconds": 2.351
   },
   {
    "id": "K9-B5",
@@ -1141,7 +1245,8 @@
    "reason": "park: core_750 drawn at a pose outside its poses ['load', 'start', 'capture_end']",
    "match": "yes",
    "gameplan_line": "142; 237",
-   "finding": "TP1.1-2"
+   "finding": "TP1.1-2",
+   "seconds": 2.308
   },
   {
    "id": "K7-B14",
@@ -1152,7 +1257,8 @@
    "reason": "spec error: collet|holder class N between two section rows (declare C, G or F)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "TP1.1-3"
+   "finding": "TP1.1-3",
+   "seconds": 11.689
   },
   {
    "id": "K7-B15",
@@ -1163,7 +1269,8 @@
    "reason": "load/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; start/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; capture_end/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test; park/collet|holder C: distance 0.000 mm, overlap 626.239 mm2, state overlap; no placed plan footprints for the plan-contact test",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "TP1.1-3"
+   "finding": "TP1.1-3",
+   "seconds": 11.709
   },
   {
    "id": "K5-Z2",
@@ -1174,7 +1281,8 @@
    "reason": "295 tagged artist(s) projected per kind, axis and spec projection (view normal Y)",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "TP1.1-3"
+   "finding": "TP1.1-3",
+   "seconds": 2.48
   },
   {
    "id": "K5-B6",
@@ -1185,7 +1293,8 @@
    "reason": "capture_end/holder: bore_cone trapezoid z [137.00, 142.00] outside mate collet z [100.00, 132.00]",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "TP1.1-3"
+   "finding": "TP1.1-3",
+   "seconds": 2.631
   },
   {
    "id": "K7-Z11",
@@ -1196,7 +1305,8 @@
    "reason": "1 pair test(s) clean; states ['plan-contact']",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer M1 r2 F2"
+   "finding": "Designer M1 r2 F2",
+   "seconds": 0.785
   },
   {
    "id": "K7-B16",
@@ -1207,7 +1317,8 @@
    "reason": "fixture/arm|block C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer M1 r2 F2"
+   "finding": "Designer M1 r2 F2",
+   "seconds": 0.818
   },
   {
    "id": "K7-B17",
@@ -1218,7 +1329,8 @@
    "reason": "fixture/arm|block C: distance 0.000 mm, overlap 560.385 mm2, state overlap; plan footprints distance 0.000 mm, overlap 8.607 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer M1 r2 F2"
+   "finding": "Designer M1 r2 F2",
+   "seconds": 0.779
   },
   {
    "id": "K7-B18",
@@ -1229,7 +1341,8 @@
    "reason": "load/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; start/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; capture_end/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F; park/descent_stop_post|descent_stop C: distance 1.000 mm, overlap 0.000 mm2, state F",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer M1 r2 F3"
+   "finding": "Designer M1 r2 F3",
+   "seconds": 12.114
   },
   {
    "id": "K7-B19",
@@ -1240,7 +1353,8 @@
    "reason": "load/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01); park/bracket_anchor_a|anchor_a C: distance 0.000 mm, overlap 508.423 mm2, state overlap; plan footprints distance 0.994 mm, overlap 0.000 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer M1 r2 F2"
+   "finding": "Designer M1 r2 F2",
+   "seconds": 11.652
   },
   {
    "id": "K8-Z5",
@@ -1251,7 +1365,8 @@
    "reason": "346 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP1.1-11"
+   "finding": "TP1.1-11",
+   "seconds": 2.536
   },
   {
    "id": "K7-B20",
@@ -1262,7 +1377,8 @@
    "reason": "load/guide_tie_b|frame_upper_a C: C pair depth-separated by 3.111 mm (contact needs bands within 0.05); load/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); load/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/guide_tie_b|frame_upper_a C: C pair depth-separated by 3.111 mm (contact needs bands within 0.05); start/bracket_anchor_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); start/bracket_guide_a|frame_upper_a C: distance 0.000 mm, overlap 772.848 mm2, state overlap; plan footprints distance 0.000 mm, overlap 154.416 mm2 (plan-contact needs <= 0.05, <= 0.01); ... 6 more",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF1.1-8 = TP1.1-12; 1.2 (b) fix pass: S1 r5 tie b row adds 4"
+   "finding": "LF1.1-8 = TP1.1-12; 1.2 (b) fix pass: S1 r5 tie b row adds 4",
+   "seconds": 12.209
   },
   {
    "id": "K8-B15",
@@ -1273,7 +1389,8 @@
    "reason": "load/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); start/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); capture_end/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00); park/bracket_anchor_a projected_extent: drawn x [-246.31, -121.75] outside the spec footprint x [-226.31, -141.75] (by 20.00)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP1.1-11"
+   "finding": "TP1.1-11",
+   "seconds": 2.612
   },
   {
    "id": "K8-B16",
@@ -1284,7 +1401,8 @@
    "reason": "load/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); start/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); capture_end/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); park/motor_shaft_a projected_extent: drawn x [-139.98, -87.79] outside the spec footprint x [-124.98, -102.79] (by 15.00)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "TP1.1-11"
+   "finding": "TP1.1-11",
+   "seconds": 2.803
   },
   {
    "id": "K8-B17",
@@ -1295,7 +1413,8 @@
    "reason": "load/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); start/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); capture_end/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00); park/guide_tie_a projected_extent: drawn x [188.45, 275.04] outside the plan_poly x [198.45, 265.04] (by 10.00)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Designer 1.2 (b) FIX 1; detail 1 common (h)"
+   "finding": "Designer 1.2 (b) FIX 1; detail 1 common (h)",
+   "seconds": 2.766
   },
   {
    "id": "K7-B21",
@@ -1306,7 +1425,8 @@
    "reason": "load/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); start/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); capture_end/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01); park/guide_tie_a|frame_upper_b C: distance 0.000 mm, overlap 4128.029 mm2, state overlap; plan footprints distance 0.000 mm, overlap 1655.177 mm2 (plan-contact needs <= 0.05, <= 0.01)",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "Designer 1.2 (b) Correction 1"
+   "finding": "Designer 1.2 (b) Correction 1",
+   "seconds": 12.239
   },
   {
    "id": "S1-FULL",
@@ -1331,7 +1451,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "322 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow"
+     "reason": "322 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05"
     },
     {
      "id": "K3",
@@ -1366,7 +1486,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "617 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:C', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
+     "reason": "618 pair test(s) clean; states ['C', 'F', 'N', 'depth-separated', 'plan-contact', 'plan-separated', 'swept:C', 'swept:F', 'swept:depth-separated', 'swept:plan-separated', 'undeclared:C', 'undeclared:F', 'undeclared:depth-separated', 'undeclared:plan-separated']"
     },
     {
      "id": "K8",
@@ -1441,7 +1561,8 @@
      "measured": 607.66,
      "reason": "capture-core (core_750) top at start minus end-of-capture tip 607.66 mm, need 534.93 (spare 72.73)"
     }
-   ]
+   ],
+   "seconds": 15.066
   },
   {
    "id": "H1-Z1",
@@ -1452,7 +1573,8 @@
    "reason": "accepted; flag, note set; --stale 1 record, 0 differences; 4 message(s)",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 1.607
   },
   {
    "id": "H1-Z2",
@@ -1463,7 +1585,8 @@
    "reason": "docs record keeps accepted after a re-run to wip/; --stale reads it",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 1.572
   },
   {
    "id": "H1-B1",
@@ -1474,7 +1597,8 @@
    "reason": "refused: s1_checks_r4.json has checks not pass: S1-4 fail",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 0.829
   },
   {
    "id": "H1-B2",
@@ -1485,7 +1609,8 @@
    "reason": "refused: empty note (--note \"<Design Notes ref>\")",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 0.901
   },
   {
    "id": "H1-B3",
@@ -1496,7 +1621,8 @@
    "reason": "docs/s1_checks_r4.json: jackscrew.anchor_z recorded 265, live 266",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 2.766
   },
   {
    "id": "H1-B4",
@@ -1507,7 +1633,8 @@
    "reason": "docs/s1_checks_r5.json: ring.thickness recorded 999, live 12",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 2.115
   },
   {
    "id": "H1-B5",
@@ -1515,10 +1642,11 @@
    "control": "B",
    "expected": "fires",
    "observed": "fires (1 issue(s), planted 1)",
-   "reason": "refused: s1_pose_load_r4.png differs in pixels from C:\\Users\\UR\\AppData\\Local\\Temp\\tmp_9gequ75\\docs\\s1_pose_load_r4.png (drawn geometry moved: new revision)",
+   "reason": "refused: s1_pose_load_r4.png differs in pixels from C:\\Users\\UR\\AppData\\Local\\Temp\\tmplxavsu2a\\docs\\s1_pose_load_r4.png (drawn geometry moved: new revision)",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "DN25 H1"
+   "finding": "DN25 H1",
+   "seconds": 0.864
   },
   {
    "id": "H5-Z",
@@ -1529,7 +1657,8 @@
    "reason": "1 m terms in c; 0.5/0.75 m and drawn values unchanged",
    "match": "yes",
    "gameplan_line": 650,
-   "finding": "DN25 H5"
+   "finding": "DN25 H5",
+   "seconds": 1.509
   },
   {
    "id": "H5-B",
@@ -1540,7 +1669,8 @@
    "reason": "start max depends on symbol c (1042.50 + c for c >= 0); a drawn value needs it constant",
    "match": "yes",
    "gameplan_line": 650,
-   "finding": "DN25 H5"
+   "finding": "DN25 H5",
+   "seconds": 1.278
   },
   {
    "id": "K4-Z2",
@@ -1551,7 +1681,8 @@
    "reason": "14 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer 1.2 (b) FIX 3"
+   "finding": "Designer 1.2 (b) FIX 3",
+   "seconds": 7.691
   },
   {
    "id": "K4-B4",
@@ -1562,7 +1693,8 @@
    "reason": "load: drawn figure note lacks not_drawn part 'LM20UU bushing'",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer 1.2 (b) FIX 3"
+   "finding": "Designer 1.2 (b) FIX 3",
+   "seconds": 8.478
   },
   {
    "id": "K4-B5",
@@ -1573,7 +1705,8 @@
    "reason": "spec figure_note lacks not_drawn part 'power-off brake'; load: drawn figure note lacks not_drawn part 'power-off brake'",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer 1.2 (b) FIX 3"
+   "finding": "Designer 1.2 (b) FIX 3",
+   "seconds": 7.436
   },
   {
    "id": "K5-Z3",
@@ -1584,7 +1717,8 @@
    "reason": "99 tagged artist(s) projected per kind, axis and spec projection (view normal Z)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "TP-13"
+   "finding": "TP-13",
+   "seconds": 7.676
   },
   {
    "id": "K5-B7",
@@ -1595,7 +1729,8 @@
    "reason": "load/drill_tube: cylinder axis Z in plan_xy drawn as rectangle, needs circle",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "SW-17"
+   "finding": "SW-17",
+   "seconds": 7.84
   },
   {
    "id": "K5-B8",
@@ -1606,7 +1741,8 @@
    "reason": "load/motor23_a: cylinder axis X in plan_xy drawn as circle, needs rectangle",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "TP-13"
+   "finding": "TP-13",
+   "seconds": 7.855
   },
   {
    "id": "K5-B9",
@@ -1617,7 +1753,8 @@
    "reason": "load/motor23_a: rectangle not radial: no edge pair across the radial direction at theta 210 (TP-13)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "TP-13"
+   "finding": "TP-13",
+   "seconds": 7.689
   },
   {
    "id": "K5-B10",
@@ -1628,7 +1765,8 @@
    "reason": "motor23_a: spec error, radial-axis cylinder row in plan_xy needs a radial place footprint (TP-13; has 'round')",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "TP-13 premise"
+   "finding": "TP-13 premise",
+   "seconds": 7.689
   },
   {
    "id": "K5-B11",
@@ -1639,7 +1777,8 @@
    "reason": "load/pinion_a: hub rectangle u [130.00, 145.00], half-width 22.81 not on the heel of the toothed piece (u 125.00, half-width 45.62)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "hub admission premise"
+   "finding": "hub admission premise",
+   "seconds": 8.363
   },
   {
    "id": "K6-Z4",
@@ -1650,7 +1789,8 @@
    "reason": "69 plan centre(s) on the spec within 0.05 mm (z not drawn in plan); check_stack imports and anchors clean",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "K6 plan; LF-16 owner rule"
+   "finding": "K6 plan; LF-16 owner rule",
+   "seconds": 9.348
   },
   {
    "id": "K6-B8",
@@ -1661,7 +1801,8 @@
    "reason": "load/frame_upper_c: drawn centre u 274.00, t 6.75 vs r_c 274.00, t 0 at theta 270, off 6.75",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "K6 plan"
+   "finding": "K6 plan",
+   "seconds": 9.595
   },
   {
    "id": "K6-B9",
@@ -1672,7 +1813,8 @@
    "reason": "LF-16 load_plane: feature 'core_seat' is not a row of this spec and no other spec with that row carries an equal load_plane",
    "match": "yes",
    "gameplan_line": 140,
-   "finding": "LF-16 owner rule premise"
+   "finding": "LF-16 owner rule premise",
+   "seconds": 2.702
   },
   {
    "id": "K7-Z12",
@@ -1683,7 +1825,8 @@
    "reason": "1 plan pair test(s) clean over 1 pose(s); states ['F']",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8"
+   "finding": "LF-8",
+   "seconds": 0.815
   },
   {
    "id": "K7-B22",
@@ -1694,7 +1837,8 @@
    "reason": "fixture/a|b F: plan distance 0.000 mm, overlap 60.000 mm2, z gap -100.000, state overlap",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8"
+   "finding": "LF-8",
+   "seconds": 0.783
   },
   {
    "id": "K7-B23",
@@ -1705,7 +1849,8 @@
    "reason": "fixture/a|b G: z gap -100.000, plan distance 9.000 mm, overlap 0.000 mm2, lower bound 9.000, g_min 10, gap - g_min -1.000",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8"
+   "finding": "LF-8",
+   "seconds": 0.792
   },
   {
    "id": "K7-B24",
@@ -1716,7 +1861,8 @@
    "reason": "fixture/a|b C: C pair z-separated by 100.000 mm (contact needs z bands within 0.05)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8"
+   "finding": "LF-8",
+   "seconds": 0.789
   },
   {
    "id": "K7-Z13",
@@ -1727,7 +1873,8 @@
    "reason": "1 plan pair test(s) clean over 1 pose(s); states ['z-contact']",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "plan C rule (Engineer 1.2 (b) item 4e)"
+   "finding": "plan C rule (Engineer 1.2 (b) item 4e)",
+   "seconds": 0.794
   },
   {
    "id": "K7-B25",
@@ -1738,7 +1885,8 @@
    "reason": "fixture/pad|post C: z bands overlap 1.000 mm, plan overlap 900.000 mm2 (interference)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "plan C rule"
+   "finding": "plan C rule",
+   "seconds": 0.802
   },
   {
    "id": "K7-B26",
@@ -1749,7 +1897,8 @@
    "reason": "fixture/motor|plate C: z-contact (plan overlap 2771.444 mm2) needs true plan sections; a circumscribing outline certifies F and G only",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "plan C rule premise"
+   "finding": "plan C rule premise",
+   "seconds": 0.835
   },
   {
    "id": "K7-Z14",
@@ -1760,7 +1909,8 @@
    "reason": "2 plan pair test(s) clean over 1 pose(s); states ['plan-contact', 'undeclared:F']",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "annulus (Engineer 1.2 (b) item 4d)"
+   "finding": "annulus (Engineer 1.2 (b) item 4d)",
+   "seconds": 0.779
   },
   {
    "id": "K7-B27",
@@ -1771,7 +1921,8 @@
    "reason": "fixture/ring|bearing C: z bands overlap 12.000 mm, plan overlap 631.460 mm2 (interference)",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "annulus"
+   "finding": "annulus",
+   "seconds": 0.795
   },
   {
    "id": "K7-B28",
@@ -1782,7 +1933,8 @@
    "reason": "arm: plan outline at p2 differs from p1 by 15.00 mm; one plan figure needs pose-invariant plan positions",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "one-figure premise (Engineer 1.2 (b) item 4f)"
+   "finding": "one-figure premise (Engineer 1.2 (b) item 4f)",
+   "seconds": 0.833
   },
   {
    "id": "K7-B29",
@@ -1793,7 +1945,8 @@
    "reason": "swept p1..p4/ring|bar G: swept outline z gap -210.000, plan distance 0.000 mm, overlap 400.000 mm2, lower bound 0.000, g_min 10, gap - g_min -10.000",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8 swept plan form (Loftsman 1.2 (b) section 5)"
+   "finding": "LF-8 swept plan form (Loftsman 1.2 (b) section 5)",
+   "seconds": 0.798
   },
   {
    "id": "K7-Z15",
@@ -1804,7 +1957,8 @@
    "reason": "1292 plan pair test(s) clean over 4 pose(s); states ['G', 'N', 'plan-contact', 'swept:F', 'swept:G', 'swept:z-separated', 'swept:z-touch', 'undeclared:F', 'undeclared:z-separated', 'undeclared:z-touch', 'z-contact', 'z-separated']",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "LF-8"
+   "finding": "LF-8",
+   "seconds": 12.285
   },
   {
    "id": "K8-Z6",
@@ -1815,7 +1969,8 @@
    "reason": "185 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "K8 plan (4b, 4c, 4g)"
+   "finding": "K8 plan (4b, 4c, 4g)",
+   "seconds": 14.947
   },
   {
    "id": "K8-B18",
@@ -1826,7 +1981,8 @@
    "reason": "load: axis inverted (x False, y True)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "K8-B3 on S2"
+   "finding": "K8-B3 on S2",
+   "seconds": 14.666
   },
   {
    "id": "K8-B19",
@@ -1837,7 +1993,8 @@
    "reason": "load/screw_a plan_extent: drawn point (-138.56, -84.00) outside its plan outline (by 160.00); load/screw_a azimuth 210.00 deg vs jackscrew.angle[1] = 150.00; load/screw_b plan_extent: drawn point (138.56, -84.00) outside its plan outline (by 160.00); load/screw_b azimuth 330.00 deg vs jackscrew.angle[0] = 30.00; load/screw_c plan_extent: drawn point (-0.00, 164.00) outside its plan outline (by 320.00); load/screw_c azimuth 90.00 deg vs jackscrew.angle[2] = 270.00",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "plan handedness"
+   "finding": "plan handedness",
+   "seconds": 14.712
   },
   {
    "id": "K8-B20",
@@ -1848,7 +2005,8 @@
    "reason": "load/motor23_a plan_extent: drawn point (-142.23, -37.66) outside its plan outline (by 10.00)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "plan containment (4g)"
+   "finding": "plan containment (4g)",
+   "seconds": 14.656
   },
   {
    "id": "K8-B21",
@@ -1859,7 +2017,8 @@
    "reason": "load/motor23_c outboard of pinion_c (radial): centroid radius 58.00 vs 115.61, needs greater",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "outboard radial (4b)"
+   "finding": "outboard radial (4b)",
+   "seconds": 15.058
   },
   {
    "id": "K8-B22",
@@ -1870,7 +2029,8 @@
    "reason": "load/pinion_a taper narrows inward (radial frame): piece 0: height at inner end 91.24, at outer end 69.50",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "taper in plan (4b)"
+   "finding": "taper in plan (4b)",
+   "seconds": 14.916
   },
   {
    "id": "K8-B23",
@@ -1881,7 +2041,8 @@
    "reason": "load/operator_sector sector: drawn wedge differs from the spec wedge (theta 90, half-angle 45, r 400): 0.00 outside, spec boundary 34.86 outside the drawing",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "sector premise (4g; S2-5a reads the drawn sector)"
+   "finding": "sector premise (4g; S2-5a reads the drawn sector)",
+   "seconds": 15.101
   },
   {
    "id": "K9-Z3",
@@ -1892,7 +2053,8 @@
    "reason": "every spec row drawn, every tagged artist in the spec (70 rows)",
    "match": "yes",
    "gameplan_line": 143,
-   "finding": "one plan figure"
+   "finding": "one plan figure",
+   "seconds": 7.308
   },
   {
    "id": "X1-Z",
@@ -1903,7 +2065,8 @@
    "reason": "47 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2), base_plate plan_poly (only in s2), keepout place (only in s2)",
    "match": "yes",
    "gameplan_line": 144,
-   "finding": "Loftsman 1.2 (b) section 2"
+   "finding": "Loftsman 1.2 (b) section 2",
+   "seconds": 1.368
   },
   {
    "id": "X1-B1",
@@ -1914,7 +2077,8 @@
    "reason": "frame_upper_b place.r_in: s1 and s2 differ; 47 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2), base_plate plan_poly (only in s2), keepout place (only in s2)",
    "match": "yes",
    "gameplan_line": 144,
-   "finding": "Loftsman 1.2 (b) section 2"
+   "finding": "Loftsman 1.2 (b) section 2",
+   "seconds": 1.174
   },
   {
    "id": "X1-B2",
@@ -1925,7 +2089,8 @@
    "reason": "nut_a z_rule.z_max: s1 and s2 differ; 47 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2), base_plate plan_poly (only in s2), keepout place (only in s2)",
    "match": "yes",
    "gameplan_line": 144,
-   "finding": "Loftsman 1.2 (b) section 2"
+   "finding": "Loftsman 1.2 (b) section 2",
+   "seconds": 1.206
   },
   {
    "id": "S2-1-Z",
@@ -1936,7 +2101,8 @@
    "reason": "screws [30.0, 150.0, 270.0], pinions [90.0, 210.0, 330.0], phase 60 within 0.000",
    "match": "yes",
    "gameplan_line": 253,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 7.823
   },
   {
    "id": "S2-1-B1",
@@ -1947,7 +2113,8 @@
    "reason": "screw spacing 40.00 deg, want 120 +- 0.1; screw spacing 200.00 deg, want 120 +- 0.1; pinion_a - screw_b = 100.00 deg, phase mod 120 off 60 by +40.00; pinion_b - screw_b = 220.00 deg, phase mod 120 off 60 by +40.00; pinion_c - screw_b = 340.00 deg, phase mod 120 off 60 by +40.00",
    "match": "yes",
    "gameplan_line": 253,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 7.246
   },
   {
    "id": "S2-2-Z",
@@ -1958,7 +2125,8 @@
    "reason": "least margin 52.80 mm over g_min 10",
    "match": "yes",
    "gameplan_line": 254,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 0.078
   },
   {
    "id": "S2-2-B1",
@@ -1969,7 +2137,8 @@
    "reason": "screw_a: 86.20 - 21.00 - 86.20 = -21.00 < 10; screw_b: 86.20 - 21.00 - 86.20 = -21.00 < 10; screw_c: 86.20 - 21.00 - 86.20 = -21.00 < 10",
    "match": "yes",
    "gameplan_line": 254,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 8.865
   },
   {
    "id": "S2-3-Z",
@@ -1980,7 +2149,8 @@
    "reason": "pitch points {'pinion_a': 125.0, 'pinion_b': 125.0, 'pinion_c': 125.0} at the gear pitch radius 125.00 within 0.000",
    "match": "yes",
    "gameplan_line": 255,
-   "finding": "H6; Engineer 1.2 (b) item 4h"
+   "finding": "H6; Engineer 1.2 (b) item 4h",
+   "seconds": 0.055
   },
   {
    "id": "S2-3-B1",
@@ -1991,7 +2161,8 @@
    "reason": "pinion_a: pitch point r 126.32 vs gear pitch radius 125.00 (off +1.32); pinion_b: pitch point r 126.32 vs gear pitch radius 125.00 (off +1.32); pinion_c: pitch point r 126.32 vs gear pitch radius 125.00 (off +1.32)",
    "match": "yes",
    "gameplan_line": 255,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 8.414
   },
   {
    "id": "S2-4-Z",
@@ -2002,7 +2173,8 @@
    "reason": "4 centres within 0.000 mm",
    "match": "yes",
    "gameplan_line": 256,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 0.086
   },
   {
    "id": "S2-4-B1",
@@ -2013,7 +2185,8 @@
    "reason": "collet_axis centre (2.00, 0.00) is 2.00 from drill_tube",
    "match": "yes",
    "gameplan_line": 256,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 7.326
   },
   {
    "id": "S2-5a-Z",
@@ -2024,7 +2197,8 @@
    "reason": "27 fixed parts clear of the sector, least 11.71 mm",
    "match": "yes",
    "gameplan_line": 257,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 3.721
   },
   {
    "id": "S2-5a-B1",
@@ -2035,7 +2209,8 @@
    "reason": "operator_sector|frame_upper_a: distance 0.000, overlap 3238.314 mm2; operator_sector|frame_upper_b: distance 0.000, overlap 3238.314 mm2; operator_sector|liftmotor_a: distance 0.000, overlap 2182.562 mm2; operator_sector|liftmotor_b: distance 0.000, overlap 2182.562 mm2; operator_sector|anchor_a: distance 0.000, overlap 1232.143 mm2; operator_sector|anchor_b: distance 0.000, overlap 1232.143 mm2; ... 12 more",
    "match": "yes",
    "gameplan_line": 257,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 9.152
   },
   {
    "id": "S2-5b-Z",
@@ -2046,7 +2221,8 @@
    "reason": "10 moving parts in the sector, least 19.84 mm above the hand band (drill_head)",
    "match": "yes",
    "gameplan_line": 258,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 10.267
   },
   {
    "id": "S2-5b-B1",
@@ -2057,7 +2233,8 @@
    "reason": "motor23_c: lowest z 930.00 z_A, -10.00 above the hand band top 940, need 10",
    "match": "yes",
    "gameplan_line": 258,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 9.935
   },
   {
    "id": "S2-6-Z",
@@ -2068,7 +2245,8 @@
    "reason": "3 members seated",
    "match": "yes",
    "gameplan_line": 259,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 0.023
   },
   {
    "id": "S2-6-B1",
@@ -2079,7 +2257,8 @@
    "reason": "frame_upper_c: 1560.00 mm2 of 3600.00 outside base_frame",
    "match": "yes",
    "gameplan_line": 259,
-   "finding": "H6"
+   "finding": "H6",
+   "seconds": 7.506
   },
   {
    "id": "S2-FULL",
@@ -2104,7 +2283,7 @@
      "result": "pass",
      "cause": null,
      "measured": 0,
-     "reason": "420 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow"
+     "reason": "420 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05"
     },
     {
      "id": "K3",
@@ -2204,7 +2383,8 @@
      "measured": 0,
      "reason": "3 members seated"
     }
-   ]
+   ],
+   "seconds": 28.684
   },
   {
    "id": "K4-B6",
@@ -2215,7 +2395,8 @@
    "reason": "spec error: not_drawn (1) without figure_note",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer 1.2 (c) FIX R1"
+   "finding": "Designer 1.2 (c) FIX R1",
+   "seconds": 2.237
   },
   {
    "id": "K5-B12",
@@ -2226,7 +2407,8 @@
    "reason": "capture_end/holder: bore_cone trapezoid z [90.00, 95.00] outside mate collet z [100.00, 132.00]",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "SW 1.2 (c) FIX 5"
+   "finding": "SW 1.2 (c) FIX 5",
+   "seconds": 2.516
   },
   {
    "id": "K5-B13",
@@ -2237,7 +2419,8 @@
    "reason": "load/pinion_a: hub rectangle u [125.00, 140.00], half-width 50.62 not on the heel of the toothed piece (u 125.00, half-width 45.62)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "SW 1.2 (c) FIX 5 (TP-13 hub width)"
+   "finding": "SW 1.2 (c) FIX 5 (TP-13 hub width)",
+   "seconds": 8.047
   },
   {
    "id": "K7-B30",
@@ -2248,7 +2431,8 @@
    "reason": "swept p1..p4/ring|bar F: swept outline plan distance 0.000 mm, overlap 400.000 mm2, z gap -210.000, state overlap",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman 1.2 (c) FIX LF-c1"
+   "finding": "Loftsman 1.2 (c) FIX LF-c1",
+   "seconds": 0.63
   },
   {
    "id": "K8-B24",
@@ -2259,7 +2443,8 @@
    "reason": "motor23_a outboard of pinion_a: spec error, frame radial needs plan_xy (view side_xz)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Topologist 1.2 (c) FIX TP1.2-1"
+   "finding": "Topologist 1.2 (c) FIX TP1.2-1",
+   "seconds": 2.596
   },
   {
    "id": "K8-B25",
@@ -2270,7 +2455,8 @@
    "reason": "load/gear plan_extent: drawn point (131.32, 0.00) outside its plan outline (by 5.00)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "SW 1.2 (c) FIX 1 (raised as K8-B24)"
+   "finding": "SW 1.2 (c) FIX 1 (raised as K8-B24)",
+   "seconds": 15.079
   },
   {
    "id": "K8-B26",
@@ -2281,7 +2467,8 @@
    "reason": "load/bearing plan_extent: drawn point (-13.89, 69.83) outside its plan outline (by 5.00)",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "SW 1.2 (c) FIX 1 (raised as K8-B25)"
+   "finding": "SW 1.2 (c) FIX 1 (raised as K8-B25)",
+   "seconds": 14.741
   },
   {
    "id": "K8-B27",
@@ -2292,7 +2479,8 @@
    "reason": "load/operator_sector sector: drawn wedge differs from the spec wedge (theta 90, half-angle 45, r 400): 34.86 outside, spec boundary 0.00 outside the drawing",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "SW 1.2 (c) FIX 2 (raised as K8-B26)"
+   "finding": "SW 1.2 (c) FIX 2 (raised as K8-B26)",
+   "seconds": 14.993
   },
   {
    "id": "K8-B28",
@@ -2303,7 +2491,8 @@
    "reason": "load/motor_shaft_a projected_x: drawn x centre -121.38 vs r_c cos(theta) -113.88 (r_c 131.50, theta 210); load/motor_shaft_a projected_extent: drawn x [-139.98, -102.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); start/motor_shaft_a projected_x: drawn x centre -121.38 vs r_c cos(theta) -113.88 (r_c 131.50, theta 210); start/motor_shaft_a projected_extent: drawn x [-139.98, -102.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); capture_end/motor_shaft_a projected_x: drawn x centre -121.38 vs r_c cos(theta) -113.88 (r_c 131.50, theta 210); capture_end/motor_shaft_a projected_extent: drawn x [-139.98, -102.79] outside the spec footprint x [-124.98, -102.79] (by 15.00); ... 2 more",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "SW 1.2 (c) FIX 5 (raised as K8-B27)"
+   "finding": "SW 1.2 (c) FIX 5 (raised as K8-B27)",
+   "seconds": 2.572
   },
   {
    "id": "S2-6-B2",
@@ -2314,7 +2503,8 @@
    "reason": "frame_upper_c: 3.00 from the plate edge in the notch, want 5",
    "match": "yes",
    "gameplan_line": 259,
-   "finding": "SW 1.2 (c) FIX 3"
+   "finding": "SW 1.2 (c) FIX 3",
+   "seconds": 7.511
   },
   {
    "id": "H1-Z3",
@@ -2325,7 +2515,8 @@
    "reason": "accepted; controls results and baseline copied up byte-equal",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "SW 1.2 (c) FIX 4"
+   "finding": "SW 1.2 (c) FIX 4",
+   "seconds": 0.957
   },
   {
    "id": "H1-B6",
@@ -2336,7 +2527,8 @@
    "reason": "refused: wip/ controls results: 1 mismatched (fixtures/controls_results.json; re-run --controls)",
    "match": "yes",
    "gameplan_line": 124,
-   "finding": "SW 1.2 (c) FIX 4"
+   "finding": "SW 1.2 (c) FIX 4",
+   "seconds": 0.844
   },
   {
    "id": "K7-B31",
@@ -2347,7 +2539,8 @@
    "reason": "swept p1..p4/ring|member F: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman 1.2 (c) FIX LF-c1 (side branch)"
+   "finding": "Loftsman 1.2 (c) FIX LF-c1 (side branch)",
+   "seconds": 0.877
   },
   {
    "id": "K3-Z2",
@@ -2358,7 +2551,8 @@
    "reason": "1 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": "Designer M1 S1 r5 F1"
+   "finding": "Designer M1 S1 r5 F1",
+   "seconds": 3.486
   },
   {
    "id": "K3-B8",
@@ -2369,7 +2563,8 @@
    "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug)' runs 9 px outside the saved image",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": "Designer M1 S1 r5 F1"
+   "finding": "Designer M1 S1 r5 F1",
+   "seconds": 3.34
   },
   {
    "id": "K3-Z3",
@@ -2380,7 +2575,8 @@
    "reason": "4 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": "Designer M1 S1 r5 F1 (premise)"
+   "finding": "Designer M1 S1 r5 F1 (premise)",
+   "seconds": 5.85
   },
   {
    "id": "K3-B9",
@@ -2391,7 +2587,8 @@
    "reason": "park: text 'Not drawn: LM20UU bushing (inside the housing and lug)' runs 9 px outside the saved image",
    "match": "yes",
    "gameplan_line": 137,
-   "finding": "Designer M1 S1 r5 F1 (premise)"
+   "finding": "Designer M1 S1 r5 F1 (premise)",
+   "seconds": 3.523
   },
   {
    "id": "K4-Z3",
@@ -2402,7 +2599,8 @@
    "reason": "14 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 r1 F4, F5"
+   "finding": "Designer M1 r1 F4, F5",
+   "seconds": 9.482
   },
   {
    "id": "K4-B7",
@@ -2413,7 +2611,8 @@
    "reason": "load/sightline_f6: label leader ends at (200.00, 173.21), 86.60 off the drawn part; load: label leaders sightline_f6 and operator_sector cross",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 r1 F4"
+   "finding": "Designer M1 r1 F4",
+   "seconds": 9.39
   },
   {
    "id": "K4-B8",
@@ -2424,7 +2623,8 @@
    "reason": "load: label leaders drill_tube and keepout cross; load: label leaders drill_tube and drill_head cross; load: label leaders keepout and drill_head cross",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 r1 F5"
+   "finding": "Designer M1 r1 F5",
+   "seconds": 11.618
   },
   {
    "id": "K5-B14",
@@ -2435,7 +2635,8 @@
    "reason": "load/gear:ticks: tick sub-artist must be a LineCollection (drawn as Line2D)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "Designer M1 r1 F1"
+   "finding": "Designer M1 r1 F1",
+   "seconds": 8.056
   },
   {
    "id": "K5-B15",
@@ -2446,7 +2647,8 @@
    "reason": "load/gear:ticks: tick sub-artist without the K8 ticks_radial predicate on its row (premise unenforced)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "Designer M1 r1 F1 (premise)"
+   "finding": "Designer M1 r1 F1 (premise)",
+   "seconds": 7.927
   },
   {
    "id": "K5-B16",
@@ -2457,7 +2659,8 @@
    "reason": "load/gear:ticks: 2 tick sub-artists, one admitted; load/gear:ticks: 2 tick sub-artists, one admitted",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "Designer M1 r1 F1"
+   "finding": "Designer M1 r1 F1",
+   "seconds": 7.727
   },
   {
    "id": "K9-B6",
@@ -2468,7 +2671,8 @@
    "reason": "load: tagged artist gear2:ticks has no spec row",
    "match": "yes",
    "gameplan_line": 143,
-   "finding": "Designer M1 r1 F1"
+   "finding": "Designer M1 r1 F1",
+   "seconds": 7.813
   },
   {
    "id": "K8-B29",
@@ -2479,7 +2683,8 @@
    "reason": "load/gear ticks_radial: tick 0 not radial: its line passes 110.77 from the drill axis",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Designer M1 r1 F1 (premise B1)"
+   "finding": "Designer M1 r1 F1 (premise B1)",
+   "seconds": 14.424
   },
   {
    "id": "K8-B30",
@@ -2490,7 +2695,8 @@
    "reason": "load/gear ticks_radial: tick 0 r [96.54, 130.00] outside [96.54, 125.00]",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Designer M1 r1 F1 (premise B2)"
+   "finding": "Designer M1 r1 F1 (premise B2)",
+   "seconds": 14.867
   },
   {
    "id": "K8-B31",
@@ -2501,7 +2707,8 @@
    "reason": "load/gear ticks_radial: 59 ticks drawn, count gear.tooth_count = 60",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Designer M1 r1 F1 (premise B3)"
+   "finding": "Designer M1 r1 F1 (premise B3)",
+   "seconds": 15.207
   },
   {
    "id": "K8-B32",
@@ -2512,7 +2719,8 @@
    "reason": "load/nut_a cover: Circle wholly under guide_a, screw_a drawn solid (linestyle 'solid', fill True, hatch None); a hidden part is dashed, no fill",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Topologist TP1.2-2, TP1.2-9; Designer M1 r1 F2 rule"
+   "finding": "Topologist TP1.2-2, TP1.2-9; Designer M1 r1 F2 rule",
+   "seconds": 14.41
   },
   {
    "id": "K8-Z7",
@@ -2523,7 +2731,8 @@
    "reason": "5 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-9 cover premise"
+   "finding": "TP1.2-9 cover premise",
+   "seconds": 0.742
   },
   {
    "id": "K8-B33",
@@ -2534,7 +2743,8 @@
    "reason": "fixture/pad cover: Polygon wholly under motor drawn solid (linestyle 'solid', fill False, hatch None); a hidden part is dashed, no fill",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-9 cover premise (contrast)"
+   "finding": "TP1.2-9 cover premise (contrast)",
+   "seconds": 0.82
   },
   {
    "id": "K7-Z16",
@@ -2545,7 +2755,8 @@
    "reason": "7334 test entries with pose, pair, class, state, z gap, distance, overlap, basis",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman LF1.2-1"
+   "finding": "Loftsman LF1.2-1",
+   "seconds": 12.588
   },
   {
    "id": "K7-Z17",
@@ -2553,10 +2764,11 @@
    "control": "Z",
    "expected": "clean",
    "observed": "clean",
-   "reason": "5556 test entries with pose, pair, class, state, z gap, distance, overlap, basis",
+   "reason": "5557 test entries with pose, pair, class, state, z gap, distance, overlap, basis",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman LF1.2-1"
+   "finding": "Loftsman LF1.2-1",
+   "seconds": 12.124
   },
   {
    "id": "K7-B32",
@@ -2567,7 +2779,8 @@
    "reason": "K7 record: entry 0 lacks ['pair']",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman LF1.2-1"
+   "finding": "Loftsman LF1.2-1",
+   "seconds": 12.139
   },
   {
    "id": "K7-B33",
@@ -2578,7 +2791,8 @@
    "reason": "load/gear_hub|pinion_a G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; load/gear_hub|pinion_b G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; load/gear_hub|pinion_c G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; start/gear_hub|pinion_a G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; start/gear_hub|pinion_b G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; start/gear_hub|pinion_c G: z gap -17.390, plan distance 5.222 mm, overlap 0.000 mm2, lower bound 5.222, g_min 6, gap - g_min -0.778; ... 6 more",
    "match": "yes",
    "gameplan_line": 141,
-   "finding": "Loftsman LF1.2-2"
+   "finding": "Loftsman LF1.2-2",
+   "seconds": 12.284
   },
   {
    "id": "S2-5b-B2",
@@ -2589,7 +2803,8 @@
    "reason": "drill_head: lowest z 945.00 z_A, 5.00 above the hand band top 940, need 10",
    "match": "yes",
    "gameplan_line": 258,
-   "finding": "Topologist TP1.2-3"
+   "finding": "Topologist TP1.2-3",
+   "seconds": 9.962
   },
   {
    "id": "S2-5b-B3",
@@ -2600,7 +2815,8 @@
    "reason": "S2-5b: spec parts must be 'moves' (every moving row; a hand list misses rows, TP1.2-3)",
    "match": "yes",
    "gameplan_line": 258,
-   "finding": "Topologist TP1.2-3 (premise set)"
+   "finding": "Topologist TP1.2-3 (premise set)",
+   "seconds": 7.568
   },
   {
    "id": "K8-Z8",
@@ -2611,7 +2827,8 @@
    "reason": "190 predicate(s) hold, axes not inverted",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-13"
+   "finding": "TP1.2-13",
+   "seconds": 16.744
   },
   {
    "id": "K8-B34",
@@ -2622,7 +2839,8 @@
    "reason": "load/base_frame cover: Polygon partly visible drawn dashed (672 of 672 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (-33.70, 245.25)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-13"
+   "finding": "TP1.2-13",
+   "seconds": 17.024
   },
   {
    "id": "K8-B35",
@@ -2633,7 +2851,8 @@
    "reason": "load/guide_tie_a cover: Polygon partly visible drawn dashed (1242 of 1242 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (257.83, -30.26)); its visible area is drawn solid; load/guide_tie_b cover: Polygon partly visible drawn dashed (1242 of 1242 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (-199.11, -27.14)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-13 (stand-in premise)"
+   "finding": "TP1.2-13 (stand-in premise)",
+   "seconds": 18.087
   },
   {
    "id": "K8-B36",
@@ -2644,7 +2863,8 @@
    "reason": "fixture/c cover: Polygon partly visible drawn dashed (864 of 864 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (120.42, -4.58)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "TP1.2-13 probe p4"
+   "finding": "TP1.2-13 probe p4",
+   "seconds": 0.667
   },
   {
    "id": "K4-Z4",
@@ -2655,7 +2875,8 @@
    "reason": "55 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 S1 r6 F1"
+   "finding": "Designer M1 S1 r6 F1",
+   "seconds": 3.805
   },
   {
    "id": "K4-B9",
@@ -2666,7 +2887,8 @@
    "reason": "capture_end/core_750: label leader ends across the hatch of gear",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 S1 r6 F1"
+   "finding": "Designer M1 S1 r6 F1",
+   "seconds": 3.219
   },
   {
    "id": "K4-B10",
@@ -2677,7 +2899,8 @@
    "reason": "load/drill_tube: label leader runs under the area of ring",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 S2 r2 F1"
+   "finding": "Designer M1 S2 r2 F1",
+   "seconds": 9.315
   },
   {
    "id": "K4-B11",
@@ -2688,7 +2911,8 @@
    "reason": "load/drill_tube: label anchor (71.60, -26.06) under the area of ring",
    "match": "yes",
    "gameplan_line": 138,
-   "finding": "Designer M1 S2 r2 F1 (anchor premise)"
+   "finding": "Designer M1 S2 r2 F1 (anchor premise)",
+   "seconds": 9.502
   },
   {
    "id": "K8-B37",
@@ -2699,7 +2923,8 @@
    "reason": "load/base_plate outline_matches: outline has 4 vertices, the union boundary 12",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Designer sign-off r3 (B1)"
+   "finding": "Designer sign-off r3 (B1)",
+   "seconds": 15.103
   },
   {
    "id": "K8-B38",
@@ -2710,7 +2935,8 @@
    "reason": "load/base_plate outline_matches: outline vertices off the union boundary by 5.00",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Designer sign-off r3 (B2)"
+   "finding": "Designer sign-off r3 (B2)",
+   "seconds": 15.174
   },
   {
    "id": "K5-B17",
@@ -2721,7 +2947,8 @@
    "reason": "load/base_plate:outline: 2 outline sub-artists, one admitted; load/base_plate:outline: 2 outline sub-artists, one admitted",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "Designer sign-off r3 (B3)"
+   "finding": "Designer sign-off r3 (B3)",
+   "seconds": 7.983
   },
   {
    "id": "K5-B18",
@@ -2732,7 +2959,8 @@
    "reason": "load/base_plate:outline: outline sub-artist without the K8 outline_matches predicate on its row (premise unenforced)",
    "match": "yes",
    "gameplan_line": 139,
-   "finding": "Designer sign-off r3 (B4, premise)"
+   "finding": "Designer sign-off r3 (B4, premise)",
+   "seconds": 8.139
   },
   {
    "id": "K9-B7",
@@ -2743,7 +2971,8 @@
    "reason": "load: tagged artist base_plate2:outline has no spec row",
    "match": "yes",
    "gameplan_line": 143,
-   "finding": "Designer sign-off r3"
+   "finding": "Designer sign-off r3",
+   "seconds": 7.572
   },
   {
    "id": "K8-B39",
@@ -2754,7 +2983,8 @@
    "reason": "load/base_frame cover: Polygon partly visible drawn dashed (672 of 672 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (-33.70, 245.25)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Topologist TP1.2-15"
+   "finding": "Topologist TP1.2-15",
+   "seconds": 17.157
   },
   {
    "id": "K8-B40",
@@ -2765,7 +2995,8 @@
    "reason": "load/base_frame cover: Polygon partly visible drawn dashed (96 of 96 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (-33.70, -302.75)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Topologist TP1.2-16"
+   "finding": "Topologist TP1.2-16",
+   "seconds": 16.813
   },
   {
    "id": "K8-B41",
@@ -2776,7 +3007,404 @@
    "reason": "load/guide_tie_a cover: spec error, plan_style stand_in without stand_in_owner (TP1.2-17); load/guide_tie_a cover: Polygon partly visible drawn dashed (1242 of 1242 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (257.83, -30.26)); its visible area is drawn solid",
    "match": "yes",
    "gameplan_line": 142,
-   "finding": "Topologist TP1.2-17"
+   "finding": "Topologist TP1.2-17",
+   "seconds": 16.208
+  },
+  {
+   "id": "RUN-Z",
+   "check": "RUN",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "--jobs 2: exit 0, K1-Z and K2-Z match yes in manifest order",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O9 (R1)",
+   "seconds": 7.138
+  },
+  {
+   "id": "RUN-B",
+   "check": "RUN",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "--jobs 2: exit 1; mismatched ['K2-Z']; printed ['K2-Z      Z expected fires            observed clean (0 issue(s), planted 1); reason la match NO']",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O9 (R1 e)",
+   "seconds": 6.976
+  },
+  {
+   "id": "K2-Z2",
+   "check": "K2",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "322 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05",
+   "match": "yes",
+   "gameplan_line": 135,
+   "finding": "1.3 open O2 (R2 b)",
+   "seconds": 1.613
+  },
+  {
+   "id": "K2-B4",
+   "check": "K2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "overlay jackscrew.top_guide_z: value 1165 vs expr jackscrew.anchor_z + jackscrew.length = 1215.00, 50.00 apart",
+   "match": "yes",
+   "gameplan_line": 135,
+   "finding": "1.3 open O2 (R2 b)",
+   "seconds": 1.532
+  },
+  {
+   "id": "K2-B5",
+   "check": "K2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "overlay frame_upper.member_length_rail: value 1230 vs expr jackscrew.top_guide_z + profile.height = 1225.00, 5.00 apart",
+   "match": "yes",
+   "gameplan_line": 135,
+   "finding": "1.3 open O2 (R2 b)",
+   "seconds": 1.544
+  },
+  {
+   "id": "K6-B10",
+   "check": "K6",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "LF-16 stack_tie member_top_a: term top_guide 1165.00 z_A vs frame_upper_a.z_max + offset 1152.00 z_A, 13.00 apart; LF-16 stack_tie member_top_b: term top_guide 1165.00 z_A vs frame_upper_b.z_max + offset 1152.00 z_A, 13.00 apart",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Loftsman 1.2 (b) NOTE 2 (R2 c)",
+   "seconds": 1.391
+  },
+  {
+   "id": "K6-B11",
+   "check": "K6",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "LF-16 stack_tie member_top_c: term top_guide 1165.00 z_A vs frame_upper_c.z_max + offset 1150.00 z_A, 15.00 apart",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Loftsman 1.2 (b) NOTE 2 (R2 c)",
+   "seconds": 2.837
+  },
+  {
+   "id": "RPT-Z",
+   "check": "RPT",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "2 reported item(s) declared, every one has a value",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O10 (R3)",
+   "seconds": 0.092
+  },
+  {
+   "id": "RPT-B1",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "reported item F_stall (stall thrust, three lift motors): no value (needs drawing); cause content",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O10 (R3)",
+   "seconds": 0.0
+  },
+  {
+   "id": "RPT-B2",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "spec declares no reported_items (s3_checks_r1.json is not a record accepted before RPT)",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O10 (R3, exemption premise)",
+   "seconds": 0.0
+  },
+  {
+   "id": "H1-B7",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: s1_checks_r4.json has checks not pass: RPT fail",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O10 (R3)",
+   "seconds": 0.799
+  },
+  {
+   "id": "H1-B8",
+   "check": "H1",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "refused: s1_checks_r4.json has checks not pass: RPT absent",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "1.3 open O10 (R3); Software Engineer P0S FIX 2 (re-planted)",
+   "seconds": 0.825
+  },
+  {
+   "id": "K5-B19",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/drill_tube: zero-area Rectangle (least thickness 0.0000 mm <= 0.05) on a cylinder row (TP1.1-9)",
+   "match": "yes",
+   "gameplan_line": 138,
+   "finding": "TP1.1-9 (R5 a)",
+   "seconds": 2.644
+  },
+  {
+   "id": "K8-B42",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (2 issue(s), planted 2)",
+   "reason": "load/guide_tie_a cover: spec error, stand_in_owner 'tbd' names no Step id (Step 2) or sketch id (S3, s1 to s6) (TP1.2-18); load/guide_tie_a cover: Polygon partly visible drawn dashed (1242 of 1242 uncovered samples not shown by a solid piece of the row under no opaque fill, e.g. (257.83, -30.26)); its visible area is drawn solid",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "TP1.2-18 (R5 b)",
+   "seconds": 15.008
+  },
+  {
+   "id": "K8-B43",
+   "check": "K8",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "motor23_a outboard: spec error, unknown frame 'polar' (known: radial)",
+   "match": "yes",
+   "gameplan_line": 141,
+   "finding": "Topologist 1.2 (c) NOTE 2 (R5 c)",
+   "seconds": 13.13
+  },
+  {
+   "id": "K7-B34",
+   "check": "K7",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "swept p1..p4/ring|member F: swept hull distance 0.000 mm, overlap 2000.000 mm2, state overlap",
+   "match": "yes",
+   "gameplan_line": 140,
+   "finding": "Loftsman 1.2 (c) NOTE 1 (R5 d)",
+   "seconds": 0.928
+  },
+  {
+   "id": "K2-B6",
+   "check": "K2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "overlay jackscrew.top_guide_z: expr required (jackscrew.anchor_z + jackscrew.length) (Loftsman P0L FIX 1)",
+   "match": "yes",
+   "gameplan_line": 136,
+   "finding": "Loftsman P0L FIX 1",
+   "seconds": 1.568
+  },
+  {
+   "id": "K2-B7",
+   "check": "K2",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "overlay jackscrew.top_guide_z: expr altered, has 'jackscrew.anchor_z + 900', required 'jackscrew.anchor_z + jackscrew.length' (Loftsman P0L FIX 1)",
+   "match": "yes",
+   "gameplan_line": 136,
+   "finding": "Loftsman P0L FIX 1",
+   "seconds": 1.643
+  },
+  {
+   "id": "K5-B20",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (8 issue(s), planted 8)",
+   "reason": "load/anchor_a: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); load/anchor_b: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); start/anchor_a: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); start/anchor_b: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); capture_end/anchor_a: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); capture_end/anchor_b: zero-area Rectangle (least thickness 0.0010 mm <= 0.05) on a prism row (TP1.1-9); ... 2 more",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T FIX 1 (a)",
+   "seconds": 3.141
+  },
+  {
+   "id": "K5-B21",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/screw_a: zero-area Circle (least thickness 0.0000 mm <= 0.05) on a screw row (TP1.1-9)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T FIX 1 (a)",
+   "seconds": 7.045
+  },
+  {
+   "id": "K5-B22",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/nut_a: Line2D on a prism row draws no area (TP1.1-9)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T FIX 1 (c)",
+   "seconds": 2.503
+  },
+  {
+   "id": "K5-B23",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/drill_tube: zero-area Polygon (least thickness 0.0000 mm <= 0.05) on a cylinder row (TP1.1-9)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Software Engineer P0S FIX 4",
+   "seconds": 2.413
+  },
+  {
+   "id": "RUN-Z2",
+   "check": "RUN",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "full live manifest routes to record fixtures/controls_results.json",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 1",
+   "seconds": 0.002
+  },
+  {
+   "id": "RUN-B2",
+   "check": "RUN",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "not a record: --only routes to partial fixtures/controls_results_partial.json",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 1",
+   "seconds": 0.002
+  },
+  {
+   "id": "RUN-B3",
+   "check": "RUN",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "--only 'K2-b4': exit 1; no control selected by --only 'K2-b4'; partial file unchanged",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 1",
+   "seconds": 0.559
+  },
+  {
+   "id": "RPT-B3",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "reported item F_stall (stall thrust, three lift motors): no value (needs drawing); cause absent",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.0
+  },
+  {
+   "id": "RPT-B4",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "reported item L_min (screw length L_min per Q9 option): no value; cause content",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.0
+  },
+  {
+   "id": "RPT-B5",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "reported item F_stall (stall thrust, three lift motors): no value (needs drawing); cause content",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.0
+  },
+  {
+   "id": "RPT-Z2",
+   "check": "RPT",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "not declared, exempt (accepted before RPT): s1_checks_r7.json, S1 r7 accepted 2026-11-25 (Design Notes 13)",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.0
+  },
+  {
+   "id": "RPT-Z3",
+   "check": "RPT",
+   "control": "Z",
+   "expected": "clean",
+   "observed": "clean",
+   "reason": "Reported items table: L_min and F_stall rows with value, basis, tag",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.828
+  },
+  {
+   "id": "RPT-B6",
+   "check": "RPT",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "summary row F_stall reads ABSENT",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S FIX 3",
+   "seconds": 0.752
+  },
+  {
+   "id": "K5-B24",
+   "check": "K5",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "load/drill_tube: zero-area Annulus (least thickness 0.0010 mm <= 0.05) on a cylinder row (TP1.1-9)",
+   "match": "yes",
+   "gameplan_line": 139,
+   "finding": "Topologist P0T re-check FIX 1r; Software Engineer P0S re-check FIX R1",
+   "seconds": 6.928
+  },
+  {
+   "id": "RUN-B4",
+   "check": "RUN",
+   "control": "B",
+   "expected": "fires",
+   "observed": "fires (1 issue(s), planted 1)",
+   "reason": "partial run: exit 0; partial file written True; full-results path written False",
+   "match": "yes",
+   "gameplan_line": 124,
+   "finding": "Software Engineer P0S re-check NOTE 1",
+   "seconds": 0.597
   }
  ]
 }

@@ -135,13 +135,46 @@ Expected: exit 0. "replace s2_checks_r5.json: 5 differing field(s): accepted_at;
 3. Topologist NOTE 1 (line-kind rows named at the S3 sign-off), NOTE 3 (`frame` admitted only on outboard when S3 adds sense rows).
 4. `gear.pitch_angle` without expr (no atan in `eval_expr`).
 
+## P0f addendum
+
+Orchestrator ruling after the P0T and P0S re-checks (`step1.3_topologist_step0_recheck.md` FIX 1r; `step1.3_software_engineer_step0_recheck.md` FIX R1, NOTE 1, NOTE 3). Loop cap applies: the raisers sign from this dry-run table. Before the first edit the tree was copied to scratchpad `p0f2/pre`; its 57 SHA-256 equal the P0f "After" column.
+
+Changes:
+1. K5-B24 (Topologist FIX 1r, which is the same gap as Software Engineer FIX R1). Builder `k5_b24`: the S2 script drawing (`_script_ctx("s2")`) with the drill_tube Annulus wall set to 0.001 at load, outer radius kept. Planted 1. Reason substrings "load/drill_tube: zero-area Annulus (least thickness 0.0010" and "on a cylinder row (TP1.1-9)". This follows the Topologist's spec (wall 0.001, script drawing). The Software Engineer's variant (fixture drawing, wall 0.01) tests the same branch and is not added.
+2. RUN-B4 (Software Engineer NOTE 1, taken as a fix). Fixture `run_b4` runs `controls()` in process, on a temporary one-row manifest (K1-Z) set as `cs.MANIFEST`, with `cs.output_path` pointed at a temporary directory. Both are restored in a `finally` block. It fires ("partial run") when an `--only` run writes the partial file and does not write the full-results path.
+3. `zero_area_issue` docstring now states the thickness rule (least 2A/P in data coordinates, Annulus radial width, <= TOL_Z 0.05 mm) and the non-Patch clause (Topologist NOTE 1, Software Engineer NOTE 3).
+
+Dry-run table (MEASURED; scratchpad `p0f2/red.py`; each case is a copy of the named code with the new fixtures and manifest added, run through that copy's `run_control` and `compare`):
+
+| Case | K5-B24 | RUN-B4 |
+|---|---|---|
+| P0 code (`p0f/pre`) | clean, 0 issues, "105 tagged artist(s) projected"; **mismatch (red)** | fires, matched (the call site was correct at P0; RUN-B4 guards it) |
+| P0f code before this addendum (`p0f2/pre`) | fires 1, matched (the branch exists; K5-B24 guards it) | fires, matched |
+| fixed code with the Annulus branch disabled (`if False:`) | clean, 0 issues, "105 tagged artist(s) projected"; **mismatch (red)**. This reproduces the Topologist's `ann` row | fires, matched |
+| fixed code with the call `controls_dst(man_path, None)` | fires, matched | clean: "partial file written False; full-results path written True"; **mismatch (red)** |
+| fixed code (live tree) | fires 1, "load/drill_tube: zero-area Annulus (least thickness 0.0010 mm <= 0.05) on a cylinder row (TP1.1-9)"; matched | fires, "partial run: exit 0; partial file written True; full-results path written False"; matched |
+
+Runs from `docs/sketches/` (MEASURED):
+
+| Command | Exit | Result |
+|---|---|---|
+| check_sketch.py --controls (default jobs 12) | 0 | 263/263 matched: Z 70/70, B 191/191, smoke 2/2; 111.1 s |
+| s2_plan.py --rev 5, check_sketch.py s2 --rev 5 | 0 | 17/17 + RPT pass (exempt); wip/s2_plan_r5.png SHA-256 and pixel-equal to docs/sketches/s2_plan_r5.png |
+| check_sketch.py --stale | 0 | 2 records, 0 differences; X1 pass |
+
+Counts: 261 + 2 = 263 (Z 70, B 189 + 2 = 191, smoke 2).
+
+SHA-256 of committed files (57): before this addendum they equal the P0f "After" column. Changed: sketch_common.py (docstring only) 79f7f8de9577994e to 2e47d3615b4e879a; fixtures/builders.py 47eb9356aec759be to 3f15ad86870f851e; fixtures/step0_fixtures.py b11457a84fe01921 to 886e3d8b75d357ae; fixtures/manifest.yaml 591de03b2e9a23eb to ec8f6d28096ae715. Unexpected differences: 0. check_sketch.py is unchanged by the addendum.
+
+The ORCH-A command in section 8 stands as written: `wip/fixtures/controls_results.json` is from the 263-control run, with every control matched.
+
 ## Gameplan lines to change
 
 Old texts are the current gameplan (P0 lines applied). Each Old fragment is unique in its line.
 
 **l.124** (detail 1.0, check_sketch.py bullet; the Software Engineer's hold released, FIX 2 landed).
 Old: `` `--only <id globs or check ids>` writes `wip/fixtures/controls_results_partial.json`, "PARTIAL, not a record", never read by control_tally or `--accept`; runs of record use the full set.``
-New: `` `--only <id globs or check ids>` writes `wip/fixtures/controls_results_partial.json`, "PARTIAL, not a record", never read by control_tally or `--accept` (destination from the pure function `controls_dst`, RUN-Z2, RUN-B2); an `--only` that selects nothing exits 1 (RUN-B3); runs of record use the full set; per-control equality between job counts excludes the temporary-directory path in the H1-B5 reason (Software Engineer P0S).``
+New: `` `--only <id globs or check ids>` writes `wip/fixtures/controls_results_partial.json`, "PARTIAL, not a record", never read by control_tally or `--accept` (destination from the pure function `controls_dst`, RUN-Z2, RUN-B2; its call site in `controls()`, RUN-B4); an `--only` that selects nothing exits 1 (RUN-B3); runs of record use the full set; per-control equality between job counts excludes the temporary-directory path in the H1-B5 reason (Software Engineer P0S).``
 Old: `` `--accept` refuses through RPT and refuses a record declaring reported_items without an RPT row (RPT-Z, RPT-B1, RPT-B2, H1-B7, H1-B8; 1.3 open O10).``
 New: `` `--accept` refuses through RPT and refuses any record without an RPT row; the RPT reason states its cause (RPT-Z, RPT-Z2, RPT-Z3, RPT-B1 to RPT-B6, H1-B7, H1-B8; 1.3 open O10; Software Engineer P0S FIX 2, FIX 3).``
 
@@ -155,11 +188,11 @@ New: `B4 jackscrew.length 950 with top_guide_z 1165; B5 member_length_rail 1230;
 Old: `1.3 step 0: a Rectangle of zero width or height, or a Polygon of area <= 0.01 mm², on a row whose kind is not line, arrow or callout fails (TP1.1-9) |`
 New: `1.3 step 0: on a row whose kind is not line, arrow or callout, a patch whose least drawn thickness 2A/P (Annulus: radial width) is <= 0.05 mm fails, and a Line2D or Collection under the row's own id fails (TP1.1-9; Topologist P0T FIX 1) |`
 Old: `K5-B19 zero-height Rectangle on the drill tube (TP1.1-9) |`
-New: `K5-B19 zero-height Rectangle on the drill tube (TP1.1-9); K5-B20 S1 anchor line 0.001 high; K5-B21 S2 screw circle radius 0; K5-B22 prism row without projection drawn as a Line2D; K5-B23 collinear Polygon on the drill tube (Software Engineer P0S FIX 4) |`
+New: `K5-B19 zero-height Rectangle on the drill tube (TP1.1-9); K5-B20 S1 anchor line 0.001 high; K5-B21 S2 screw circle radius 0; K5-B22 prism row without projection drawn as a Line2D; K5-B23 collinear Polygon on the drill tube (Software Engineer P0S FIX 4); K5-B24 S2 drill tube Annulus wall 0.001 (Topologist P0T re-check FIX 1r; Software Engineer P0S re-check FIX R1) |`
 
 **l.146** (K table control pointer).
 Old: `(246 controls: Z 67, B 177, smoke 2; 113 s at --jobs 12, 804.3 s at --jobs 1).`
-New: `(246 controls: Z 67, B 177, smoke 2; 113 s at --jobs 12, 804.3 s at --jobs 1). Step 1.3 P0f (`research/sean/cr_scratch/step1.3_engineer_step0_fixes.md`) added K2-B6, K2-B7, K5-B20 to B23, RUN-Z2, RUN-B2, RUN-B3, RPT-Z2, RPT-Z3, RPT-B3 to B6 and re-planted H1-B8 (261 controls: Z 70, B 189, smoke 2; 110 s at --jobs 12).`
+New: `(246 controls: Z 67, B 177, smoke 2; 113 s at --jobs 12, 804.3 s at --jobs 1). Step 1.3 P0f (`research/sean/cr_scratch/step1.3_engineer_step0_fixes.md`) and its addendum added K2-B6, K2-B7, K5-B20 to B24, RUN-Z2, RUN-B2, RUN-B3, RUN-B4, RPT-Z2, RPT-Z3, RPT-B3 to B6 and re-planted H1-B8 (263 controls: Z 70, B 191, smoke 2; 111 s at --jobs 12).`
 
 **l.665** (Design Notes 25, TP1.2-18/19 row).
 Old: `stand_in_owner accepts any non-empty string;`

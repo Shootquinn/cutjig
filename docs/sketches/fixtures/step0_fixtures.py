@@ -478,3 +478,36 @@ def rpt_b6():
     c = (rows or {}).get("F_stall")
     fired = bool(c) and c[2] == "ABSENT"
     return _res("RPT", fired, f"summary row F_stall reads {c[2] if c else 'no row'}", 1 if fired else 0)
+
+
+# 1.3 P0f addendum: the controls_dst call site in controls() (Software Engineer P0S re-check NOTE 1, taken as a fix).
+
+def run_b4():
+    """B: an --only run on the live manifest writes the partial file and leaves the full-results path untouched. Runs
+    controls() in process on a temporary one-row manifest (K1-Z) set as cs.MANIFEST, with cs.output_path pointed at a
+    temporary directory; both are restored before return. Fires ("partial run") when only the partial file is written;
+    if the call site passed None for --only, the record would be written and the control reads clean."""
+    import argparse
+    import contextlib
+    import io
+    man = {e["id"]: e for e in yaml.safe_load((SK / "fixtures" / "manifest.yaml").read_text(encoding="utf-8"))["controls"]}
+    old_man, old_out = cs.MANIFEST, cs.output_path
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        mp = tmp / "manifest.yaml"
+        mp.write_text(yaml.safe_dump({"controls": [dict(man["K1-Z"])]}, sort_keys=False), encoding="utf-8")
+
+        def out_path(name, wip=True):
+            p = tmp / "wip" / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            return p
+        try:
+            cs.MANIFEST, cs.output_path = mp, out_path
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = cs.controls(argparse.Namespace(only="K1-Z", manifest=None, jobs=1))
+        finally:
+            cs.MANIFEST, cs.output_path = old_man, old_out
+        rec = (tmp / "wip" / cs.CONTROLS_RESULTS).is_file()
+        part = (tmp / "wip" / cs.CONTROLS_PARTIAL).is_file()
+    fired = rc == 0 and part and not rec
+    return _res("RUN", fired, f"partial run: exit {rc}; partial file written {part}; full-results path written {rec}", 1 if fired else 0)

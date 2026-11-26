@@ -1,7 +1,7 @@
 {
  "sketch": "s2",
  "rev": 5,
- "timestamp": "2026-11-25T21:19:39",
+ "timestamp": "2026-11-26T01:30:14",
  "spec": "s2_spec.yaml",
  "spec_status": "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) signed by the Designer (sign-off r3); r4 edits (outline_matches on base_plate, stand_in_owner on the ties, label_side left on descent_stop) signed by the Designer (sign-off r4); r5 edit (label_theta 150 on descent_stop, Designer sign-off r4 FIX D4-1; step1.2_engineer_revision_r5.md)",
  "script": "s2_plan.py",
@@ -9,7 +9,7 @@
  "frame": "z_S = z_A + jig.datum_a_above_floor",
  "files_sha256": {
   "params.yaml": "9469288a75c2dc57536e2a37f4e18db32e5da2a10d3bf8139cedfe006811c7b7",
-  "proposed_params.yaml": "d647105fe3d3a89da36201410f03add8bf2c05819d7bf4a3f73f4eb6c78e47aa"
+  "proposed_params.yaml": "3bb83d7f7819b17494f2cbe8ad07284234a3531f4e8a665903913d35f1132525"
  },
  "keys_read": {
   "base.column_notch": {
@@ -890,13 +890,13 @@
   {
    "id": "K2",
    "result": "pass",
-   "reason": "420 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow",
+   "reason": "420 spec keys resolve; 121 overlay leaves sourced, legal status, no shadow; 17 expr leaves agree within 0.05",
    "measured": 0,
    "threshold": 0,
    "n_issues": 0,
    "cause": null,
-   "z_result": "clean 1/1",
-   "b_result": "fired 3/3",
+   "z_result": "clean 2/2",
+   "b_result": "fired 7/7",
    "source": "gameplan l.135; Design Notes 6"
   },
   {
@@ -932,7 +932,7 @@
    "n_issues": 0,
    "cause": null,
    "z_result": "clean 3/3",
-   "b_result": "fired 18/18",
+   "b_result": "fired 24/24",
    "source": "gameplan l.138; LLM-PLM 8.4.1"
   },
   {
@@ -944,7 +944,7 @@
    "n_issues": 0,
    "cause": null,
    "z_result": "clean 4/4",
-   "b_result": "fired 10/10",
+   "b_result": "fired 12/12",
    "source": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)"
   },
   {
@@ -81645,7 +81645,7 @@
     ]
    ],
    "z_result": "clean 17/17",
-   "b_result": "fired 33/33",
+   "b_result": "fired 34/34",
    "source": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED"
   },
   {
@@ -81657,7 +81657,7 @@
    "n_issues": 0,
    "cause": null,
    "z_result": "clean 8/8",
-   "b_result": "fired 41/41",
+   "b_result": "fired 43/43",
    "source": "gameplan l.141; ASSEMBLY.md Coordinate frame"
   },
   {
@@ -81773,6 +81773,19 @@
    "z_result": "clean 1/1",
    "b_result": "fired 2/2",
    "source": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)"
+  },
+  {
+   "id": "RPT",
+   "result": "pass",
+   "reason": "not declared, exempt (accepted before RPT): s2_checks_r5.json, S2 r5 accepted 2026-11-25 (Design Notes 13)",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "exempt": true,
+   "z_result": "clean 3/3",
+   "b_result": "fired 6/6",
+   "source": "1.3 open O10; Step 1.2 gate D3; gameplan detail 1.3 Reported (spec reported_items)"
   }
  ],
  "reported_drawn": {
@@ -81826,6 +81839,6 @@
    ]
   ]
  },
- "accepted_note": "Design Notes 13 S2-r5",
- "accepted_at": "2026-11-25T22:06:00"
+ "accepted_note": "Design Notes 13 S2-r5; records refreshed at 1.3 step 0",
+ "accepted_at": "2026-11-26T01:31:27"
 }

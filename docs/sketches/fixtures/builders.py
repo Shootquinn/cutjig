@@ -2538,3 +2538,16 @@ def k5_b23():
     z = c.stack["poses"]["load"]["features"]["drill_tube"]["z_min"]
     sc.draw("drill_tube", Polygon([(-10, z), (0, z), (10, z)], closed=True, fill=False), ax)
     return c
+
+
+# 1.3 P0f addendum (orchestrator ruling after the P0T / P0S re-checks): the Annulus branch of least_thickness.
+
+def k5_b24():
+    """Topologist P0T re-check FIX 1r (= Software Engineer P0S re-check FIX R1): the S2 script drawing with the
+    drill_tube Annulus wall set to 0.001 at load (outer radius kept). 2A/P per ring would read about 38 mm; the radial
+    width reads 0.001."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("drill_tube", []):
+        if isinstance(a, Annulus):
+            a.set_width(0.001)
+    return c

@@ -344,3 +344,7 @@ controls:
   - {id: RPT-Z2, check: RPT, control: Z, expected: clean, fixture: "step0_fixtures.py::rpt_z2", finding: "Software Engineer P0S FIX 3", gameplan_line: 124, desc: "no reported_items under s1_checks_r7.json: pass, exempt"}
   - {id: RPT-Z3, check: RPT, control: Z, expected: clean, fixture: "step0_fixtures.py::rpt_z3", finding: "Software Engineer P0S FIX 3", gameplan_line: 124, desc: "write_summary Reported items table: two rows with value, basis, tag"}
   - {id: RPT-B6, check: RPT, control: B, expected: fires, fixture: "step0_fixtures.py::rpt_b6", reason: ["summary row F_stall reads ABSENT"], finding: "Software Engineer P0S FIX 3", gameplan_line: 124, desc: "write_summary with F_stall missing: its row reads ABSENT"}
+
+  # 1.3 P0f addendum (orchestrator ruling; P0T re-check FIX 1r, P0S re-check FIX R1 and NOTE 1).
+  - {id: K5-B24, check: K5, control: B, expected: fires, fixture: "builders.py::k5_b24", reason: ["load/drill_tube: zero-area Annulus (least thickness 0.0010", "on a cylinder row (TP1.1-9)"], finding: "Topologist P0T re-check FIX 1r; Software Engineer P0S re-check FIX R1", gameplan_line: 139, desc: "S2 script drawing, drill_tube Annulus wall 0.001 at load"}
+  - {id: RUN-B4, check: RUN, control: B, expected: fires, fixture: "step0_fixtures.py::run_b4", reason: ["partial run: exit 0", "partial file written True", "full-results path written False"], finding: "Software Engineer P0S re-check NOTE 1", gameplan_line: 124, desc: "controls() with --only on a temporary live manifest writes only the partial file"}

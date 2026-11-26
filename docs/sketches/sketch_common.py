@@ -1622,8 +1622,10 @@ def expected_projection(kind, axis, normal):
 
 
 def zero_area_issue(row, a):
-    """TP1.1-9 (1.3 step 0 R5 a): a Rectangle of zero width or height, or a Polygon of area <= TOL_AREA (0.01 mm2) in
-    data coordinates, on a row whose kind draws an area (not line, arrow or callout), is no projection of a solid part."""
+    """TP1.1-9 (1.3 step 0 R5 a; Topologist P0T FIX 1): on a row whose kind draws an area (not line, arrow or callout),
+    (1) a non-Patch artist (Line2D, Collection) under the row's own id draws no area and fails; (2) a Patch whose least
+    drawn thickness (least_thickness: least 2A/P over its pieces in data coordinates, transform chain applied; Annulus:
+    radial width of the transformed rings) is <= TOL_Z (0.05 mm) is no projection of a solid part and fails."""
     kind = row.get("kind")
     if kind in NO_AREA_KINDS:
         return None
