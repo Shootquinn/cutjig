@@ -4,8 +4,10 @@ One figure through sketch_common.setup_figure("plan_xy"); every artist through s
 Every plan position comes from check_stack (place, plan_pieces, sector) or from the params named below. Shapes follow
 each row's `shape` field as far as the K checks admit: a round row is a circle or annulus, a radial row a rectangle
 or a toothed trapezoid along its azimuth, a plan_poly row its convex pieces. Hidden parts dashed, no fill
-(r2, Designer M1 r1 F2 rule: a row wholly under a higher row's true plan section, sketch_common.hidden_rows; the pinion
-toothed piece under the gear). The gear teeth face down: dashed radial ticks on the underside face (sub-artist
+(r2, Designer M1 r1 F2 rule; r3 per drawn piece, sketch_common.style_hidden: a piece wholly under higher rows' true
+plan sections is dashed; a piece drawn dashed that is partly visible gets a solid copy under the covering fills, so
+its visible area reads solid and its hidden area dashed (TP1.2-13): the base-frame rail top in the +Y notch, the
+pinion toothed pieces under the gear). The gear teeth face down: dashed radial ticks on the underside face (sub-artist
 gear:ticks, Designer M1 r1 F1). The geometry rules are those of the S2 fixture drawing (fixtures/builders.py
 _s2_draw_row); this script adds line styles, fills, the datum B signifiers inside the tube bore, part tags and the
 margin labels.
@@ -55,10 +57,24 @@ def _hidden(kw):
     return out
 
 
-def _style(row, hidden=()):
-    """Draw keywords per row (shape field: dashed where hidden, light fill on the sector)."""
-    kw = _style_visible(row)
-    return _hidden(kw) if row["id"] in hidden and "linestyle" not in kw else kw
+def _style(row):
+    """Draw keywords per row (shape field; hidden pieces restyled after drawing, _hidden_lines)."""
+    return _style_visible(row)
+
+
+def _hidden_lines(ax, ctx, pid, spec):
+    """Hidden-line pass over the drawn plan (r3): sketch_common.style_hidden dashes every piece wholly under higher
+    rows' true sections; each dashed piece that is partly visible (not a Step 2 stand-in, plan_style: stand_in) gets a
+    solid copy just under the lowest covering fill, so the fill hides its covered part and the dashed piece above
+    shows it."""
+    stand_in = {r["id"] for r in spec["features"] if r.get("plan_style") == "stand_in"}
+    drawn = sc.tagged(ax)
+    for a, (fid, st, by, op) in sc.style_hidden(ctx, ax, pid).items():
+        if st != "partial" or sc.is_solid(a) or fid in stand_in:
+            continue
+        zc = min((b.get_zorder() for g in by for b in drawn.get(g, []) if sc.is_area(b)), default=a.get_zorder())
+        sc.draw(fid, Polygon(sc.artist_polys(a)[0], closed=True, fill=False, edgecolor=a.get_edgecolor(),
+                             linewidth=a.get_linewidth(), zorder=zc - 0.5), ax)
 
 
 def _style_visible(row):
@@ -175,12 +191,12 @@ def _gear_ticks(ax, P, row, kw):
     sc.draw(row["id"] + sc.TICKS_SUFFIX, lc, ax)
 
 
-def draw_row(ax, P, stack, pid, row, hidden=()):
+def draw_row(ax, P, stack, pid, row):
     fid = row["id"]
     f = stack["poses"][pid]["features"].get(fid, {})
     names = stack["poses"][pid]["vars_z_A"]
     ev = lambda e: check_stack.eval_expr(e, P, names)  # noqa: E731
-    kw = _style(row, hidden)
+    kw = _style(row)
     if f.get("sector"):
         sec = f["sector"]   # wedge: apex and arc of the spec boundary (its edge sample points dropped)
         wedge = [p for p in sc.sector_boundary(sec) if math.hypot(*p) <= sc.TOL_Z or abs(math.hypot(*p) - sec["r"]) <= sc.TOL_Z]
@@ -236,18 +252,23 @@ def draw_row(ax, P, stack, pid, row, hidden=()):
 
 
 def _tags(ax, P, feats):
-    """Untagged part tags: screw set letter and azimuth outboard of each frame member; pinion letter and azimuth
-    outboard of each NEMA 23 (letter map in the spec header)."""
+    """Untagged part tags: screw set letter and azimuth outboard of each frame member; pinion letter and azimuth beside
+    each NEMA 23, on the side farther from the guide rods and the F6 sightline (Designer M1 S2 r2 N1: off slot line C;
+    letter map in the spec header)."""
     t = {"fontsize": "x-small", "ha": "center", "va": "center", "zorder": Z_SIGN,
          "bbox": {"boxstyle": "round", "facecolor": "white", "edgecolor": "none", "alpha": 0.5}}
     off = P.get("profile.width")
+    avoid = [p for g in ("guide_member", "guide_member_b", "sightline_f6") for p in sc.pieces(ax, g)]
     for s in ("a", "b", "c"):
         pl = feats[f"frame_upper_{s}"]["place"]
         r = pl["r_out"] + off / 2
         ax.text(r * check_stack.cosd(pl["theta"]), r * check_stack.sind(pl["theta"]), f"screw {s}\n{pl['theta']:g} deg", **t)
         pl = feats[f"motor23_{s}"]["place"]
-        r = pl["r_out"] + off / 2
-        ax.text(r * check_stack.cosd(pl["theta"]), r * check_stack.sind(pl["theta"]), f"pinion {s}\n{pl['theta']:g} deg", **t)
+        c, sn = check_stack.cosd(pl["theta"]), check_stack.sind(pl["theta"])
+        u = (pl["r_in"] + pl["r_out"]) / 2
+        sides = [(u * c - v * sn, u * sn + v * c) for v in (pl["half_width"] + off, -(pl["half_width"] + off))]
+        x, y = max(sides, key=lambda q: min(sc.min_distance([q], a) for a in avoid))
+        ax.text(x, y, f"pinion {s}\n{pl['theta']:g} deg", **t)
 
 
 def build(P, spec, stack):
@@ -258,10 +279,10 @@ def build(P, spec, stack):
     feats = pr["features"]
     title = f"S2 plan seen from +Z, pose {pid} (ring at {feats['ring']['z_min']:.2f} to {feats['ring']['z_max']:.2f} z_S)"
     fig, ax = sc.setup_figure(spec["view"], title=title)
-    hidden = sc.hidden_rows(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid)
     for row in spec["features"]:
         if sc.applies(row, pid):
-            draw_row(ax, P, stack, pid, row, hidden)
+            draw_row(ax, P, stack, pid, row)
+    _hidden_lines(ax, sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid, spec)
     _tags(ax, P, feats)
     s21 = spec["s2_checks"]["S2-1"]
     ang = lambda k, ids: ", ".join(f"{i[-1]} {feats[i]['place']['theta']:g}" for i in ids)  # noqa: E731
@@ -271,7 +292,7 @@ def build(P, spec, stack):
                f"(datum B cross, +X / +Y arrows and theta arc inside the drill tube bore)"),
         (None, f"screws {ang('s', s21['screws'])}; pinions {ang('p', s21['pinions'])} deg;\n"
                f"pinion phase {s21['phase_deg']:g} deg from the screws (Design Notes 27, O1-B)"),
-        (None, "dashed, no fill: under a nearer part (base frame, pockets, lift motors, anchor arms and blocks, nuts, descent-stop\n"
+        (None, "dashed, no fill: under a nearer part (base frame, pockets, lift motors, anchor arms and blocks, nut flanges under the guide blocks, descent-stop\n"
                "pad, motor mounts, guide lugs and rods, bushings, bearing, pinion teeth under the gear); dotted: cutter rim, descent-stop post\n"
                "dashed: Step 2 stand-in (rod top ties)\n"
                "dashed radial ticks: gear teeth on the underside face (teeth face down); chain: slot lines, pinion axes"),

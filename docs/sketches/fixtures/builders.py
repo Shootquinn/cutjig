@@ -1442,17 +1442,14 @@ def _ticks(P, pr, n=None, r_in=None, r_out=None, turn=None, start=0.0):
 def _s2_draw(P, spec, stack, skip=(), note=None):
     pid = _s2_pose(spec)
     fig, ax = sc.setup_figure(spec["view"], title=f"S2 plan fixture, pose {pid}")
-    hidden = sc.hidden_rows(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid)
     for row in spec["features"]:
         if row["id"] in skip or not sc.applies(row, pid):
             continue
         _s2_draw_row(ax, P, spec, stack, pid, row)
-        if row["id"] in hidden:   # 1.2 (h): hidden rows dashed, no fill (Designer M1 r1 F2 rule; K8 cover)
-            for a in sc.tagged(ax).get(row["id"], []):
-                a.set_linestyle("--")
         tk = next((p for p in row.get("sense") or [] if p.get("pred") == "ticks_radial"), None)
         if tk:   # 1.2 (h): gear tooth ticks (Designer M1 r1 F1), from the predicate's own fields
             sc.draw(row["id"] + sc.TICKS_SUFFIX, _ticks(P, tk), ax)
+    sc.style_hidden(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), ax, pid)   # r3: hidden pieces dashed (K8 cover)
     sc.finish_axes(ax)
     sc.place_labels(ax, spec, P, pid)
     txt = (spec.get("plan_figure") or {}).get("figure_note") if note is None else note
@@ -2186,3 +2183,79 @@ def s2_5b_b3():
         spec["s2_checks"]["S2-5b"].pop("parts", None)
         spec["s2_checks"]["S2-5b"]["ring_parts"] = ["ring", "bearing", "gear"]
     return _s2_ctx(spec_mut=mut)
+
+
+# ---------------------------------------------------------------- 1.2 (h) r3 (research/sean/cr_scratch/step1.2_engineer_revision_r3.md)
+# Topologist TP1.2-13 (cover over-cover; converse: partly visible drawn dashed), Designer M1 S2 r2 F1 and S1 r6 F1
+# (anchor under another row's area; leader under an area).
+
+def k8_z8():
+    """Live S2 drawn by s2_plan.py: hidden pieces dashed, partly visible dashed pieces split (solid copy under the fills)."""
+    return _script_ctx("s2")
+
+
+def k8_b34():
+    """Partly visible part drawn dashed: live S2 script drawing with the base-frame solid copy removed (the +Y rail top in
+    the column notch, 70 x 60, visible from +Z, drawn dashed only, as at r2)."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("base_frame", []):
+        if sc.is_solid(a):
+            a.remove()
+    return c
+
+
+def k8_b35():
+    """Stand-in premise: the ties without plan_style: stand_in are partly visible (topmost) and drawn dashed: fires."""
+    def mut(spec):
+        for r in spec["features"]:
+            r.pop("plan_style", None)
+    return _script_ctx("s2", spec_mut=mut)
+
+
+def k8_b36():
+    """TP1.2-13 probe p4: bar c (r 100 to 200, z 0 to 10) whose ends lie under a (r 95 to 120) and b (r 180 to 205), both
+    z 0 to 100, middle 60 open, drawn dashed. On r2 (vertex samples) it read hidden; the interior grid finds the gap."""
+    c = _k7_plan([("c", _rad(100, 200, 0, 5), (0, 10), [("a", "F", 0), ("b", "F", 0)], {}),
+                  ("a", _rad(95, 120, 0, 10), (0, 100), None, {}),
+                  ("b", _rad(180, 205, 0, 10), (0, 100), None, {})])
+    for a in sc.tagged(next(iter(c.figs.values())).axes[0]).get("c", []):
+        a.set_linestyle("--")
+    return c
+
+
+def k4_z4():
+    """Live S1 drawn by s1_side_poses.py: every anchor on ink no other area covers, no leader under an area."""
+    return _script_ctx("s1")
+
+
+def k4_b9():
+    """S1 r6 F1: the core 750 label at capture_end anchored where r6 put it, (max x, mid z) of the core: the end of its
+    leader runs through the pinion and gear hatch."""
+    c = _script_ctx("s1")
+    ax = c.figs["capture_end"].axes[0]
+    t = next(t for t in ax.texts if t.get_gid() == "label:core_750")
+    pts = [p for poly in sc.pieces(ax, "core_750") for p in poly]
+    t.xy = (max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2)
+    c.figs = {"capture_end": c.figs["capture_end"]}
+    return c
+
+
+def k4_b11():
+    """Anchor premise: a filled area of another row (gid ring, 4 x 4, z order between the tube and the leaders) drawn
+    over the tube OD label anchor."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    t = next(t for t in ax.texts if t.get_gid() == "label:drill_tube")
+    x, y = t.xy
+    sc.draw("ring", Rectangle((x - 2, y - 2), 4, 4, fill=True, facecolor="white", zorder=sc.LEADER_ZORDER / 2), ax)
+    return c
+
+
+def k4_b10():
+    """S2 r2 F1: a filled area (gid ring, 10 x 10) drawn above the leaders at the midpoint of the tube OD leader."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    t = next(t for t in ax.texts if t.get_gid() == "label:drill_tube")
+    mx, my = (t.xy[0] + t.xyann[0]) / 2, (t.xy[1] + t.xyann[1]) / 2
+    sc.draw("ring", Rectangle((mx - 5, my - 5), 10, 10, fill=True, facecolor="white", zorder=sc.LEADER_ZORDER * 2), ax)
+    return c

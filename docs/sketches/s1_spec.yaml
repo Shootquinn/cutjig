@@ -679,7 +679,9 @@ features:
     section: ["drill.tube_od / 2", "gear.bore / 2"]
     depth: ["-gear.bore / 2", "gear.bore / 2"]
     label: null
-    neighbours: []
+    neighbours:
+      - {id: pinion_a, class: G, g_min: 3, source: "Designer M1 r1 ruling: toe to hub is set by pinion.r_toe and gear.bore; g_min 3 ASSUMED for toe runout; hub clamp screw heads (Step 2) must stay below r 90 or be re-checked (Loftsman 1.2 (e) LF1.2-2; S1 r7 per Loftsman re-check r2 NOTE R2-1)"}
+      - {id: pinion_b, class: G, g_min: 3, source: "Designer M1 r1 ruling: toe to hub is set by pinion.r_toe and gear.bore; g_min 3 ASSUMED for toe runout; hub clamp screw heads (Step 2) must stay below r 90 or be re-checked (Loftsman 1.2 (e) LF1.2-2; S1 r7 per Loftsman re-check r2 NOTE R2-1)"}
     sense: []
     chain: []
     moves: true

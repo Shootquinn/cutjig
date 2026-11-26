@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) awaiting the Designer re-sign and the raisers' re-check (step1.2_engineer_revision_r2.md)"
+status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) awaiting the Designer re-sign (step1.2_engineer_revision_r3.md)"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -955,7 +955,7 @@ features:
 
   - id: gear
     name: "ring gear"
-    shape: "bevel ring gear seen from above: annulus r 90 to 126.32 with dashed tooth ticks on the underside face, toe r 95.2 to heel r 125 (teeth face down), clamp hub on the tube (row gear_hub)"
+    shape: "bevel ring gear seen from above: annulus r 90 to 126.32 with dashed tooth ticks on the underside face, toe r 96.54 to heel r 125 along the gear pitch cone (teeth face down), clamp hub on the tube (row gear_hub)"
     kind: gear
     axis: Z
     projection: circle
@@ -975,7 +975,7 @@ features:
       - {id: pinion_b, class: "N", source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
       - {id: pinion_c, class: "N", source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
     sense:
-      - {pred: ticks_radial, r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "gear.pitch_diameter / 2", count: gear.tooth_count, source: "Designer M1 r1 F1 rule (raised and signed): dashed radial tooth ticks on the underside face, toe (pinion toe tip r 95.22, the pinion place r_in) to heel (pitch radius 125), gear.tooth_count of them; premise check for the K5 tick admission"}
+      - {pred: ticks_radial, r_in: pinion.r_toe, r_out: "gear.pitch_diameter / 2", count: gear.tooth_count, source: "Designer M1 r1 F1 rule (raised and signed): dashed radial tooth ticks on the underside face, gear.tooth_count of them; toe pitch point r 96.54 (pinion.r_toe, on the gear pitch cone) to heel pitch radius 125 (Loftsman FIX R2-1; orchestrator ruling, Design Notes 29); premise check for the K5 tick admission"}
     chain: []
     moves: true
     notes:
@@ -1222,6 +1222,7 @@ features:
     sense: []
     chain: [torque]
     moves: false
+    plan_style: stand_in   # r3: Step 2 stand-in, dashed by convention although topmost (K8 cover converse exempt; Designer M1 r1 addendum, TP1.2-2 legend)
     notes:
       - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 
@@ -1259,6 +1260,7 @@ features:
     sense: []
     chain: [torque]
     moves: false
+    plan_style: stand_in   # r3: Step 2 stand-in, dashed by convention although topmost (K8 cover converse exempt; Designer M1 r1 addendum, TP1.2-2 legend)
     notes:
       - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 
