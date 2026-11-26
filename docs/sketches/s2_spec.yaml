@@ -18,7 +18,7 @@ script: s2_plan.py
 view: plan_xy
 z_rule_frame: z_A
 plot_frame: z_S
-plan_figure: {name: s2_plan, pose: load, note: "one plan figure (PNG s2_plan_r<k>.png); z bands per pose for the plan K7 and the swept case; the moving parts' plan positions do not change with pose", figure_note: "Not drawn: wing nut, collet, holder (below the drill path, S1); power-off hold device (Step 2); LM20UU bushing (inside housing and lug); descent-stop pads at 30 and 270 (one pad, Design Notes 27)"}
+plan_figure: {name: s2_plan, pose: load, note: "one plan figure (PNG s2_plan_r<k>.png); z bands per pose for the plan K7 and the swept case; the moving parts' plan positions do not change with pose", figure_note: "Not drawn: wing nut, collet, holder (below the drill path, S1); power-off hold device (Step 2); LM20UU bushing (inside housing and lug); descent-stop pads at 30 and 270 (one pad, Design Notes 27); receiver shoulder bolts 4 x M5 (layout open)"}
 # figure_note (detail 1 common (b), second clause; Designer 1.2 (b) FIX 3): s2_plan.py prints it on the figure; it names
 # every not_drawn part. At 1.2 (c) K4 (or a label check) verifies the drawn text against not_drawn, with Z and B.
 question: >-
@@ -118,6 +118,7 @@ not_drawn:
   - {part: "power-off hold device", reason: "Step 2 decides (N7, T2-c); none drawn in S1 either"}
   - {part: "descent-stop pads at jackscrew.angle[0] and [2]", reason: "declined by Sean (STOP S2-A, Design Notes 27): one pad"}
   - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; concealed in plan by both; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2)"}
+  - {part: "receiver shoulder bolts 4 x M5", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups).
 neighbour_groups:
@@ -161,12 +162,14 @@ part_list:
   - {part: "plate notch outline round member c", row: base_plate}
   - {part: "end member under members a, b", row: base_frame}
   - {part: "rail top under member c", row: base_frame}
-  - {part: "T8 screws", row: "screw_a, screw_b, screw_c"}
+  - {part: "Tr12x3 screws", row: "screw_a, screw_b, screw_c"}
   - {part: "nut flanges", row: "nut_a, nut_b, nut_c"}
   - {part: "nut-housing bosses", row: "nut_housing_a, nut_housing_b, nut_housing_c"}
   - {part: "anchor bracket arms", row: "bracket_anchor_a, _b, _c"}
   - {part: "top-guide bracket arms", row: "bracket_guide_a, _b, _c"}
-  - {part: "anchor blocks (block circle r 21)", row: "anchor_a, anchor_b, anchor_c"}
+  - {part: "anchor blocks (42 square, faces radial)", row: "anchor_a, anchor_b, anchor_c"}
+  - {part: "receiver shoulder (seat footprint on the plate)", row: receiver_shoulder}
+  - {part: "receiver shoulder bolts 4 x M5", row: not_drawn}
   - {part: "top-guide blocks", row: "guide_a, guide_b, guide_c"}
   - {part: "descent-stop pad (one)", row: descent_stop}
   - {part: "descent-stop post", row: descent_stop_post}
@@ -196,6 +199,10 @@ part_list:
   - {part: "LM20UU bushing (OD 32 x 42) inside the housing", row: not_drawn}
 
 # Row fields per gameplan l.130-131. z_rule in z_A (check_stack converts to z_S once).
+# r9 edits (The Engineer, 1.3 P6, research/sean/cr_scratch/step1.3_engineer_draw_r1.md): Tr12x3 names (Design Notes
+# 31); anchor_a/_b/_c to the 42-square radial place of s3_spec.yaml, kind prism, projection rectangle (Loftsman 1.3 (b)
+# section 7 ruling; x1_exempt removed from s3_spec.yaml); row receiver_shoulder D200 x 8 on the plate top (Design Notes
+# 32; Designer 1.3 receiver shoulder section 2, OD 200 per Sean).
 features:
   - id: base_plate
     name: "base plate"
@@ -258,6 +265,23 @@ features:
     moves: false
     notes:
       - "hole outline (kind line: a void, no K7 area)"
+
+  - id: receiver_shoulder
+    name: "receiver shoulder"
+    shape: "receiver shoulder D200 x 8 on the plate top, circle at the origin over the spigot hole (seat footprint; Design Notes 32); 4 x M5 into the plate not drawn (layout open)"
+    kind: cylinder
+    axis: Z
+    projection: circle
+    keys: [receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]
+    z_rule: {z_min: receiver.shoulder_z, z_max: "receiver.shoulder_z + receiver.shoulder_thickness"}
+    place: {r_in: 0, theta: 0, half_width: "receiver.shoulder_od / 2", footprint: round}
+    neighbours:
+      - {id: base_plate, class: C, source: "shoulder underside on the plate top (Design Notes 32); the S3 section certifies the seat face (S3-3)"}
+    sense: []
+    chain: [axial]
+    moves: false
+    notes:
+      - "the receiver body above the shoulder is not drawn in S2 (S1, S3 draw it); the row stands for the seat footprint on the plate"
 
   - id: base_slots
     name: "plate fastener slots"
@@ -401,8 +425,8 @@ features:
       - "plan footprint y -304 to -244, x -30 to 30 at radius 274: the rail strip exactly; 5 clear of the notch sides (x +-35) and of its inner edge (y -239) (S2-6, Designer 1.2 (a) Correction 2)"
 
   - id: screw_a
-    name: "T8 jack screw"
-    shape: "T8 lead screw seen end-on: circle d 8 at the pitch radius, inside its nut flange circle d 42 (row nut_a) and nut-housing boss d 50 (row nut_housing_a)"
+    name: "Tr12x3 jack screw"
+    shape: "Tr12x3 lead screw seen end-on: circle d 12 at the pitch radius, inside its nut flange circle d 42 (row nut_a) and nut-housing boss d 50 (row nut_housing_a)"
     kind: screw
     axis: Z
     projection: circle
@@ -433,13 +457,13 @@ features:
 
   - id: anchor_a
     name: "bottom anchor"
-    shape: "anchor thrust-bearing block, circle r 21 at the screw (round by declaration, LF1.1-9), on the anchor bracket arm"
-    kind: cylinder
-    axis: Z
-    projection: circle
-    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od]
+    shape: "fixed-anchor block 42 square at the screw, faces radial and tangential (Design Notes 31), outer face on the anchor bracket arm end at r 181"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od, jackscrew.anchor_block_width]
     z_rule: {z_min: jackscrew.anchor_z, z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius - jackscrew.anchor_block_width / 2, r_out: jackscrew.pitch_radius + jackscrew.anchor_block_width / 2, theta: 'jackscrew.angle[1]', half_width: jackscrew.anchor_block_width / 2, footprint: radial}
     neighbours: []
     sense: []
     chain: [axial]
@@ -461,7 +485,7 @@ features:
 
   - id: bracket_anchor_a
     name: "anchor bracket arm"
-    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_a, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block circle r 21 at the screw (row anchor_a); dashed where a nearer part covers it"
+    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_a, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block square 42 at the screw (row anchor_a); dashed where a nearer part covers it"
     kind: prism
     axis: null
     projection: rectangle
@@ -508,8 +532,8 @@ features:
       - "place: the S1 circumscribing circle r 29.70 (FIX 4b), admitted for F and G relief; the drawn 42 square lies inside it (narrower than its footprint: TP-n, left to M1)"
 
   - id: screw_b
-    name: "T8 jack screw"
-    shape: "T8 lead screw seen end-on: circle d 8 at the pitch radius, inside its nut flange circle d 42 (row nut_b) and nut-housing boss d 50 (row nut_housing_b)"
+    name: "Tr12x3 jack screw"
+    shape: "Tr12x3 lead screw seen end-on: circle d 12 at the pitch radius, inside its nut flange circle d 42 (row nut_b) and nut-housing boss d 50 (row nut_housing_b)"
     kind: screw
     axis: Z
     projection: circle
@@ -541,13 +565,13 @@ features:
 
   - id: anchor_b
     name: "bottom anchor"
-    shape: "anchor thrust-bearing block, circle r 21 at the screw (round by declaration, LF1.1-9), on the anchor bracket arm"
-    kind: cylinder
-    axis: Z
-    projection: circle
-    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od]
+    shape: "fixed-anchor block 42 square at the screw, faces radial and tangential (Design Notes 31), outer face on the anchor bracket arm end at r 181"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od, jackscrew.anchor_block_width]
     z_rule: {z_min: jackscrew.anchor_z, z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius - jackscrew.anchor_block_width / 2, r_out: jackscrew.pitch_radius + jackscrew.anchor_block_width / 2, theta: 'jackscrew.angle[0]', half_width: jackscrew.anchor_block_width / 2, footprint: radial}
     neighbours: []
     sense: []
     chain: [axial]
@@ -569,7 +593,7 @@ features:
 
   - id: bracket_anchor_b
     name: "anchor bracket arm"
-    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_b, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block circle r 21 at the screw (row anchor_b); dashed where a nearer part covers it"
+    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_b, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block square 42 at the screw (row anchor_b); dashed where a nearer part covers it"
     kind: prism
     axis: null
     projection: rectangle
@@ -616,8 +640,8 @@ features:
       - "place: the S1 circumscribing circle r 29.70 (FIX 4b), admitted for F and G relief; the drawn 42 square lies inside it (narrower than its footprint: TP-n, left to M1)"
 
   - id: screw_c
-    name: "T8 jack screw"
-    shape: "T8 lead screw seen end-on: circle d 8 at the pitch radius, inside its nut flange circle d 42 (row nut_c) and nut-housing boss d 50 (row nut_housing_c)"
+    name: "Tr12x3 jack screw"
+    shape: "Tr12x3 lead screw seen end-on: circle d 12 at the pitch radius, inside its nut flange circle d 42 (row nut_c) and nut-housing boss d 50 (row nut_housing_c)"
     kind: screw
     axis: Z
     projection: circle
@@ -648,13 +672,13 @@ features:
 
   - id: anchor_c
     name: "bottom anchor"
-    shape: "anchor thrust-bearing block, circle r 21 at the screw (round by declaration, LF1.1-9), on the anchor bracket arm"
-    kind: cylinder
-    axis: Z
-    projection: circle
-    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od]
+    shape: "fixed-anchor block 42 square at the screw, faces radial and tangential (Design Notes 31), outer face on the anchor bracket arm end at r 181"
+    kind: prism
+    axis: null
+    projection: rectangle
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od, jackscrew.anchor_block_width]
     z_rule: {z_min: jackscrew.anchor_z, z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[2]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius - jackscrew.anchor_block_width / 2, r_out: jackscrew.pitch_radius + jackscrew.anchor_block_width / 2, theta: 'jackscrew.angle[2]', half_width: jackscrew.anchor_block_width / 2, footprint: radial}
     neighbours: []
     sense: []
     chain: [axial]
@@ -676,7 +700,7 @@ features:
 
   - id: bracket_anchor_c
     name: "anchor bracket arm"
-    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_c, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block circle r 21 at the screw (row anchor_c); dashed where a nearer part covers it"
+    shape: "anchor bracket arm (shares its plan footprint with bracket_guide_c, z apart): radial 60-wide strip from the block face r 181 to the member face (r 244 at frame_upper.radius 274), with the block square 42 at the screw (row anchor_c); dashed where a nearer part covers it"
     kind: prism
     axis: null
     projection: rectangle

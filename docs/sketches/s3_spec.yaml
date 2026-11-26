@@ -6,8 +6,12 @@
 # switch per screw). No drawing before the signed spec. Report: research/sean/cr_scratch/step1.3_engineer_spec.md.
 #
 # Shared rows (X1: place, z_rule, plan_poly equal to s1_spec.yaml / s2_spec.yaml after whitespace normalisation) are copied
-# unchanged in those fields; S3 adds shape, neighbours, section_u, axes, section_class. anchor_a/_b/_c carry x1_exempt
-# (42-square place, Design Notes 31) until S1 r8 / S2 r9 adopt it at P6.
+# unchanged in those fields; S3 adds shape, neighbours, section_u, axes, section_class. anchor_a/_b/_c: the 42-square
+# place (Design Notes 31) is in all three specs from 1.3 P6 (S1 r8, S2 r9); no x1_exempt remains.
+# 1.3 P6 edits (The Engineer, research/sean/cr_scratch/step1.3_engineer_draw_r1.md, orchestrator-named exceptions):
+# x1_exempt removed (a); P4 findings F2 (nut_c, guide_c projection rectangle) and F3 (motor_shaft_c outboard side form)
+# and the Topologist mirror_about_radial declaration on the 12 radial inset rows (e); receiver shoulder D200 x 8 on the
+# plate top, base_plate|receiver face, chains a, b, c certified by the S3 section alone (Design Notes 32) (f).
 #
 # New spec fields at 1.3 (b) (declared here; check_stack ignores them today; K3 to K9 read them from P4 (c)):
 #   view section_yz: section plane x = 0, figure u = +Y (right), z up, plotted z_S; viewer at +X looking toward -X;
@@ -27,7 +31,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -166,7 +170,7 @@ chains:
     - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
     - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
     - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S1 base_plate|receiver C", "S3 base_plate|receiver"]}
+    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
     - {pair: [base_plate, base_frame], certifiers: ["S1 base_frame|base_plate C", "S2 base_plate|base_frame z-contact"], note: "not at x = 0 (Designer 1.3 (a) Correction 8)"}
     - {pair: [base_frame, frame_upper_c], certifiers: ["S2 frame_upper_c|base_frame z-contact", "S3 base_frame|frame_upper_c"]}
     - {pair: [frame_upper_c, bracket_anchor_c], certifiers: ["S2 bracket_anchor_c|frame_upper_c plan-contact", "S3 bracket_anchor_c|frame_upper_c"]}
@@ -186,7 +190,7 @@ chains:
     - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
     - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
     - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S1 base_plate|receiver C"]}
+    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
     - {pair: [base_plate, frame_upper_a], certifiers: ["S1 frame_upper_a|base_plate C", "S2 frame_upper_a|base_plate z-contact"]}
     - {pair: [frame_upper_a, bracket_anchor_a], certifiers: ["S1 bracket_anchor_a|frame_upper_a plan-contact", "S2 bracket_anchor_a|frame_upper_a plan-contact"]}
     - {pair: [bracket_anchor_a, anchor_a], certifiers: ["S1 bracket_anchor_a|anchor_a plan-contact", "S2 bracket_anchor_a|anchor_a plan-contact"]}
@@ -203,7 +207,7 @@ chains:
     - {pair: [core_seat, collet], certifiers: ["S1 collet|core_seat C"]}
     - {pair: [collet, holder], certifiers: ["S1 collet|holder C"]}
     - {pair: [holder, receiver], certifiers: ["S1 receiver|holder C"]}
-    - {pair: [receiver, base_plate], certifiers: ["S1 base_plate|receiver C"]}
+    - {pair: [receiver, base_plate], certifiers: ["S3 base_plate|receiver"], note: "shoulder underside on the plate top (Design Notes 32); S1 base_plate|receiver C struck: S1 draws the plate without its hole (Loftsman 1.3 (c) P5L F1)"}
     - {pair: [base_plate, frame_upper_b], certifiers: ["S1 frame_upper_b|base_plate C", "S2 frame_upper_b|base_plate z-contact"]}
     - {pair: [frame_upper_b, bracket_anchor_b], certifiers: ["S1 bracket_anchor_b|frame_upper_b plan-contact", "S2 bracket_anchor_b|frame_upper_b plan-contact"]}
     - {pair: [bracket_anchor_b, anchor_b], certifiers: ["S1 bracket_anchor_b|anchor_b plan-contact", "S2 bracket_anchor_b|anchor_b plan-contact"]}
@@ -248,8 +252,10 @@ not_drawn:
   - {part: "descent-stop pad and post", reason: "theta 150, x -173 to -186, beyond the 60 band (Designer 1.3 (a) section 1 row 14); drawn in S1, S2"}
   - {part: "base-frame end members and plate supports", reason: "at x +-232 and +-112, off the plane; drawn in S2"}
   - {part: "front M3 standoffs", reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
+  - {part: "receiver shoulder bolts 4 x M5", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
+  - {part: "receiver spigot below the plate top", reason: "z_A 0 to 12 inside the plate hole; drawn at S4-a (z_rule z_min is the plate top, shared with S1 under X1)"}
   - {part: "two nut shoulder screws", reason: "at +-60 deg from the outboard radial, x +-13.86, off the plane; leaf ring.nut_screw; the inboard screw is row nut_screws_c (Designer 1.3 (b) re-sign FIX A)"}
-figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; two nut shoulder screws (off the plane). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
+figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; two nut shoulder screws (off the plane); receiver shoulder bolts 4 x M5 (layout open); receiver spigot below the plate top (S4-a). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
 
 part_list:
   - {part: "base frame rails (cut across, slot notches, centre bore lines)", row: base_frame}
@@ -406,7 +412,10 @@ features:
     - [base.column_notch_x, '-(icd.footprint_y / 2 - base.column_notch[1])']
   label: null
   neighbours:
-  - {id: receiver, class: C, source: receiver.spigot_od in base.spigot_hole_dia (S1)}
+  - id: receiver
+    class: C
+    source: 'receiver shoulder underside on the plate top, annulus r 80.2 to 100 either side of the spigot hole: the cut-case seat (Design Notes 32; Designer 1.3 receiver shoulder; OD 200 per Sean); spigot r 80 in the hole r 80.2 is the radial fit, drawn at S4-a'
+    face: {z: receiver.shoulder_z, side: shoulder underside on the plate top (cut case)}
   - {id: base_frame, class: F, source: contact off the plane; certified by S1/S2 (Loftsman 1.3 (b) FIX 5)}
   sense: []
   chain: [axial]
@@ -420,16 +429,17 @@ features:
   hatch: aluminium
 - id: receiver
   name: receiver
-  shape: 'receiver cup in section: walls to the rim, floor at icd.floor_above_datum_a with the debris-hole gap, spigot into the plate, thread ticks on the outer wall'
+  shape: 'receiver cup in section: walls to the rim, floor at icd.floor_above_datum_a with the debris-hole gap, shoulder D200 x 8 resting on the plate top either side of the spigot hole (seat face at receiver.shoulder_z, the cut-case seat; Design Notes 32), 4 x M5 into the plate not drawn (layout open), spigot below the plate top not drawn (S4-a), thread ticks on the outer wall'
   kind: cylinder
   axis: Z
   projection: rectangle
-  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius]
+  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]
   z_rule: {z_min: base.plate_thickness, z_max: receiver_floor + receiver.rim_above_floor}
   section:
   - [receiver.floor_hole_dia / 2, receiver.register_bore_radius, base.plate_thickness, receiver_floor]
   - [receiver.register_bore_radius, receiver.spigot_od / 2]
-  depth: [-receiver.spigot_od / 2, receiver.spigot_od / 2]
+  - [receiver.spigot_od / 2, receiver.shoulder_od / 2, receiver.shoulder_z, receiver.shoulder_z + receiver.shoulder_thickness]
+  depth: [-receiver.shoulder_od / 2, receiver.shoulder_od / 2]
   label: null
   neighbours:
   - {id: collet, class: C, g_min: 0, source: 'R6: collet foot on the receiver floor, outer edge at the register bore (TP1.1-3: section rows, N refused)'}
@@ -736,7 +746,7 @@ features:
   shape: 'brass flange nut D22 body, D42 x 8 flange, 30 long, hatched either side of the screw: body from the thread (nominal / 2) to nut_body_od / 2, flange step to nut_flange_od / 2 at the top with three D7 holes on PCD 32 (one cut by the plane, inboard), seated on the counterbore shoulder; shoulder screws (row nut_screws_c) through the holes, 0.5 radial and 0.05 axial play; floating = radial float only, axially located with 0.05 play (Design Notes 31 as re-ruled); rotation located by the screws (Designer 1.3 (a) section 7, 1.3 (b) FIX 1, re-sign FIX A)'
   kind: cylinder
   axis: Z
-  projection: circle
+  projection: rectangle
   keys: [jackscrew.nut_length, jackscrew.nut_flange_od, jackscrew.nut_body_od, jackscrew.nut_flange_thickness, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, ring.thickness, ring.nut_screw_pcd, ring.nut_screw_shoulder_d, ring.nut_float]
   z_rule: {z_min: nut_z - jackscrew.nut_length / 2, z_max: nut_z + jackscrew.nut_length / 2}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: jackscrew.nut_flange_od / 2, footprint: round}
@@ -904,7 +914,7 @@ features:
   - *id002
   - {id: motor23_c, class: C, source: shaft from the motor flange face r 142 (S1)}
   sense:
-  - {pred: outboard, of: pinion_c, frame: radial}
+  - {pred: outboard, of: pinion_c, source: 'side form in the section frame (P4 finding F3; frame radial is a plan form, TP1.2-1)'}
   chain: []
   moves: true
   axes: [section]
@@ -1013,6 +1023,7 @@ features:
     face: {z: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, side: cover underside on the upper outer race (cut case)}
   - {id: anchor_locknut_c, class: F, source: locknut r 9 inside the shoulder bore r 10}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: below, of: nut_c}
   - {pred: below, of: guide_c}
   chain: [axial]
@@ -1028,7 +1039,6 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.anchor_block_width / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.anchor_cover_bore / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.anchor_z + jackscrew.anchor_allowance]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_cover_bore / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_block_width / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.anchor_z + jackscrew.anchor_allowance]
   hatch: aluminium
-  x1_exempt: {reason: '1.3 (b): anchor block 42 square (Sean STOP S3-A, Design Notes 31); s1_spec.yaml anchor_a/_b and s2_spec.yaml anchor_a/_b/_c take this place at P6 with their script redraw (S1 r8, S2 r9), when the exemption is removed; a spec-only edit now turns 17 live S1/S2 controls red (P2 dry run)'}
   label: {text: 'fixed anchor (2 x angular contact, back-to-back), block', key: jackscrew.anchor_block_width, fmt: .0f}
   hatch_split: {at: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, above: reversed hatch (cover), joint_line: true, source: 'Designer 1.3 (b) re-sign FIX C; the cover pieces stay in anchor_c.section_u so the row extent matches the shared z_rule (X1, K6)'}
 - id: anchor_bearing_c
@@ -1093,7 +1103,7 @@ features:
   shape: 'top-guide block D42 x 30 hatched, one radial bearing (row guide_bearing_c), journal through with no shoulder: radial support only (Designer 1.3 (a) section 7)'
   kind: cylinder
   axis: Z
-  projection: circle
+  projection: rectangle
   keys: [jackscrew.top_guide_z, jackscrew.guide_allowance, jackscrew.guide_block_od, jackscrew.guide_bearing_od, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_od]
   z_rule: {z_min: jackscrew.top_guide_z - jackscrew.guide_allowance, z_max: jackscrew.top_guide_z}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: jackscrew.nut_flange_od / 2, footprint: round}
@@ -1190,6 +1200,7 @@ features:
   neighbours:
   - {id: base_frame, class: C, source: member c foot on the -Y rail top inside base.column_notch (S2 r5 z-contact; Design Notes 27)}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[2]', tol_deg: 0.1}
   - {pred: side, of: drill_tube, sign: -1, axes: section, source: u -304 to -244 < 0 (Designer 1.3 (b) FIX 6)}
   chain: [axial]
@@ -1214,6 +1225,7 @@ features:
   - {id: standoffs_c, class: C, source: standoffs on the motor face}
   - {id: liftmotor_pilot_c, class: C, source: pilot on the motor face}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: below, of: anchor_c}
   - {pred: azimuth, expr: 'jackscrew.angle[2]', tol_deg: 0.1, axes: inset_plan}
   chain: []
@@ -1323,6 +1335,7 @@ features:
   - {id: bracket_guide_c, class: C, source: switch body top on the arm underside}
   - {id: nut_screws_c, class: G, g_min: 10, source: 'g_min seed l.148; head top at park 1115.39 to switch, off radially (Designer re-sign dry run 41.53)'}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[2]', tol_deg: 0.1, axes: inset_plan}
   chain: []
   moves: false
@@ -1379,11 +1392,11 @@ features:
   neighbours:
   - {id: screw_a, class: N, source: screw bottom in the anchor bearings}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[1]', tol_deg: 0.1, axes: inset_plan}
   chain: [axial]
   moves: false
   axes: [inset_plan]
-  x1_exempt: {reason: '1.3 (b): anchor block 42 square (Sean STOP S3-A, Design Notes 31); s1_spec.yaml anchor_a/_b and s2_spec.yaml anchor_a/_b/_c take this place at P6 with their script redraw (S1 r8, S2 r9), when the exemption is removed; a spec-only edit now turns 17 live S1/S2 controls red (P2 dry run)'}
 - id: liftmotor_a
   name: NEMA 17 lift motor
   shape: NEMA 17 42 square under the anchor block, dashed (inset)
@@ -1395,6 +1408,7 @@ features:
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[1]', half_width: liftmotor.body / 2 * sqrt(2), footprint: round}
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[1]', tol_deg: 0.1}
   chain: []
   moves: false
@@ -1411,6 +1425,7 @@ features:
   place: {r_in: frame_upper.radius - profile.width / 2, r_out: frame_upper.radius + profile.width / 2, theta: 'jackscrew.angle[1]', half_width: profile.width / 2, footprint: radial}
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[1]', tol_deg: 0.1}
   chain: [axial]
   moves: false
@@ -1426,6 +1441,7 @@ features:
   label: null
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[1]', tol_deg: 0.1, axes: inset_plan}
   chain: []
   moves: false
@@ -1479,11 +1495,11 @@ features:
   neighbours:
   - {id: screw_b, class: N, source: screw bottom in the anchor bearings}
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[0]', tol_deg: 0.1, axes: inset_plan}
   chain: [axial]
   moves: false
   axes: [inset_plan]
-  x1_exempt: {reason: '1.3 (b): anchor block 42 square (Sean STOP S3-A, Design Notes 31); s1_spec.yaml anchor_a/_b and s2_spec.yaml anchor_a/_b/_c take this place at P6 with their script redraw (S1 r8, S2 r9), when the exemption is removed; a spec-only edit now turns 17 live S1/S2 controls red (P2 dry run)'}
 - id: liftmotor_b
   name: NEMA 17 lift motor
   shape: NEMA 17 42 square under the anchor block, dashed (inset)
@@ -1495,6 +1511,7 @@ features:
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[0]', half_width: liftmotor.body / 2 * sqrt(2), footprint: round}
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[0]', tol_deg: 0.1}
   chain: []
   moves: false
@@ -1512,6 +1529,7 @@ features:
   label: {text: screw frame 30-6060 r, key: frame_upper.radius, fmt: .0f}
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[0]', tol_deg: 0.1}
   chain: [axial]
   moves: false
@@ -1527,6 +1545,7 @@ features:
   label: null
   neighbours: []
   sense:
+  - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: azimuth, expr: 'jackscrew.angle[0]', tol_deg: 0.1, axes: inset_plan}
   chain: []
   moves: false

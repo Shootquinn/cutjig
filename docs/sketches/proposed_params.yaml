@@ -221,3 +221,9 @@ operator:
 
 collet:
   core_stop_z: {value: 42.5, unit: mm, source: "G4 (gameplan Design Notes 21), Designer 1.1 (a): z_A of the core-seat ledge top = receiver floor icd.floor_above_datum_a 40 (ASSEMBLY.md Coordinate frame) + collet.core_seat_height 2.5 (build_parts/collet_family.py dims()), collet foot ring on the receiver floor seat (ASSEMBLY.md Relations base|collet C; Load path); 4a promotion list", status: ASSUMED}
+
+receiver:
+  shoulder_od: {value: 200, unit: mm, source: "receiver shoulder on the plate top around base.spigot_hole_dia 160.4: seat annulus r 80.2 to 100 (19.8 wide); OD 200 chosen by Sean over the Designer's 180 so four M5 hold the uplift in retract-with-bind and stall up (up to 1029.5 N) (gameplan Design Notes 32; research/sean/cr_scratch/step1.3_designer_receiver_shoulder.md section 5 option (ii)); tray.hole_r 81.2 to 101 with it (Quinn, B2-10)", status: ASSUMED}
+  shoulder_thickness: {value: 8, unit: mm, source: "shoulder flange thickness: top z_A 20, below the receiver floor 40 and the keep-out band (z_min 40) (Design Notes 32, Sean approved; Designer 1.3 receiver shoulder section 1)", status: ASSUMED}
+  shoulder_z: {value: 12, expr: "base.plate_thickness", unit: mm, source: "seat face z_A: shoulder underside on the plate top (Design Notes 32, Sean approved)", status: DERIVED}
+  shoulder_bolts: {value: "4 x M5 through the shoulder into tapped holes in the base plate; PCD and azimuths open (The Designer); not drawn in S1, S2, S3 (figure notes, not_drawn)", unit: "", source: "Sean, Design Notes 32: OD 200 with 4 x M5 into the plate (uplift hold in retract-with-bind and stall up, anti-rotation beside the foot flat; Designer 1.3 receiver shoulder section 5 option (ii))", status: ASSUMED}

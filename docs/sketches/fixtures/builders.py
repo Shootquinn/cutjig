@@ -2513,15 +2513,17 @@ def k2_b7():
 
 
 def k5_b20():
-    """Topologist P0T FIX 1 B (sliver): the S1 r7 script drawing with the anchor bearing lines raised from height 0 to
-    0.001 (area 42 x 0.001 = 0.042 mm2, above the P0 absolute 0.01 threshold): the thickness test fires at 2 anchors x 4
-    poses."""
+    """Topologist P0T FIX 1 B (sliver): the live S1 script drawing with each anchor bearing line drawn as a rectangle of
+    its own row 0.001 high (the r7 form raised from height 0; area over 40 x 0.001 mm2, above the P0 absolute 0.01
+    threshold): the thickness test fires at 2 anchors x 4 poses. Re-planted at 1.3 P6: S1 r8 draws the line as the mark
+    sub-artist anchor_<s>:line, so the sliver is added on that line."""
     c = _script_ctx("s1")
     for fig in c.figs.values():
+        ax = fig.axes[0]
         for gid in ("anchor_a", "anchor_b"):
-            for a in sc.tagged(fig.axes[0]).get(gid, []):
-                if isinstance(a, Rectangle) and a.get_height() == 0:
-                    a.set_height(0.001)
+            for a in sc.tagged(ax).get(f"{gid}:line", []):
+                (x0, z), (x1, _) = sc.artist_polys(a)[0][:2]
+                sc.draw_rect(ax, gid, x0, x1, z, z + 0.001)
     return c
 
 

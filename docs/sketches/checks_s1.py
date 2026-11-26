@@ -212,3 +212,43 @@ CHECKS = [("S1-1", s1_1), ("S1-2", s1_2), ("S1-3", s1_3), ("S1-4", s1_4), ("S1-5
 
 def run(ctx):
     return [_run(cid, fn, ctx) for cid, fn in CHECKS]
+
+
+# ---------------------------------------------------------------- reported (RPT items; no threshold, never asserted)
+
+def reported(ctx):
+    """{id: {value, basis, tag}} for the spec's reported_items (1.3 P6; Designer 1.3 (b) sign-off section 8). Drawn
+    highest point per pose, ring position, anchor and guide heights with the S1-4 least margin, park rule, lift stroke and
+    screw length per Q9 option (check_stack.reported), CoM height and tip force (s1_mass_report.pose_data, same revision)."""
+    import s1_mass_report as mr
+    P, spec, stack = ctx.P, ctx.spec, ctx.stack
+    g = P.get
+    rep = check_stack.reported(P, spec, stack)
+    data, half_a = mr.pose_data(P, spec, stack, ctx.figs)
+    items = {}
+    items["highest_point"] = {"value": "; ".join(f"{p} {d['highest_drawn_z_S']:.2f} z_S ({d['highest_part']}), margin {d['margin']:.2f}" for p, d in data.items()),
+                              "basis": f"drawn extents over parts per pose, reference rows out; soft target jig.height_target {g('jig.height_target')}", "tag": "MEASURED"}
+    items["ring_position"] = {"value": f"ring underside {g('ring.position_above_tip')} above the tip, thickness {g('ring.thickness')}; " +
+                              "; ".join(f"{p} {pr['vars_z_A']['ring_bottom']:.2f} to {pr['vars_z_A']['ring_top']:.2f} z_A" for p, pr in stack["poses"].items()),
+                              "basis": "ring.position_above_tip, ring.thickness; check_stack pose vars ring_bottom, ring_top", "tag": "DERIVED"}
+    s14 = s1_4(ctx)
+    items["anchor_guide_heights"] = {"value": f"anchor block {g('jackscrew.anchor_z')} to {g('jackscrew.anchor_z') + g('jackscrew.anchor_allowance')} z_A, "
+                                     f"top-guide block {g('jackscrew.top_guide_z') - g('jackscrew.guide_allowance')} to {g('jackscrew.top_guide_z')} z_A, "
+                                     f"bearing lines {g('jackscrew.anchor_bearing_z')} and {g('jackscrew.guide_bearing_z')} z_A, L_t {g('jackscrew.guide_bearing_z') - g('jackscrew.anchor_bearing_z'):.2f}; "
+                                     f"S1-4 least margin {s14.get('measured')}",
+                                     "basis": "jackscrew.anchor_z, anchor_allowance, top_guide_z, guide_allowance, anchor_bearing_z, guide_bearing_z; S1-4 on the drawing", "tag": "DERIVED / MEASURED"}
+    items["park_rule"] = {"value": f"{spec['park_rule']['for_step4']}; park {rep['park_tip_z_A']:.2f} z_A; by plane and core length {rep['park_tip_by_plane_z_A']}; "
+                          f"c validity {rep.get('drawn_symbol_validity')}",
+                          "basis": "spec park_rule; check_stack.reported", "tag": "DERIVED"}
+    items["lift_stroke_q9"] = {"value": "; ".join(f"{k}: {o['lift_stroke']}" + (f" ({o['symbol_terms']['lift stroke']})" if 'lift stroke' in o.get('symbol_terms', {}) else "")
+                                                  for k, o in rep["q9_options"].items()),
+                               "basis": "check_stack.reported q9_options lift_stroke, symbol_terms", "tag": "DERIVED"}
+    items["screw_length_q9"] = {"value": "; ".join(f"{k}: " + ", ".join(f"{lk} {v}" for lk, v in o["L"].items()) for k, o in rep["q9_options"].items()) +
+                                f"; drawn jackscrew.length {g('jackscrew.length')}; DN23 800 to 900",
+                                "basis": "check_stack.reported q9_options L (spec screw_length)", "tag": "DERIVED"}
+    items["com_height"] = {"value": "; ".join(f"{p} {d['com_z_S']:.1f} z_S (mass {d['mass_kg']:.2f} kg, W {d['W_kg']:.2f} kg)" for p, d in data.items()),
+                           "basis": "s1_mass_report.pose_data: overlay masses ASSUMED, structure DERIVED", "tag": "DERIVED"}
+    items["tip_force"] = {"value": "; ".join(f"{p} {d['tip_force_frame_top_N']:.0f} N at the frame top {d['frame_top_z_S']:.2f} z_S, {d['tip_force_at_com_N']:.0f} N at the CoM" for p, d in data.items()),
+                          "basis": f"s1_mass_report.pose_data: lever {half_a:.0f} (min footprint / 2), g {mr.G}; icd.tipover_statement is the old reference", "tag": "DERIVED"}
+    rows = [(k, v["value"], v["basis"]) for k, v in items.items()]
+    return {"id": "reported", "result": "pass", "rows": rows, "items": items}

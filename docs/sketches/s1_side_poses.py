@@ -18,6 +18,7 @@ if str(HERE) not in sys.path:
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
 from sketch_loader import Params, load_spec, output_path  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Polygon  # noqa: E402
 
 GREY = "0.8"
@@ -117,6 +118,9 @@ def draw_pose(P, spec, stack, pose):
     r_reg, r_out = g("receiver.register_bore_radius"), g("receiver.spigot_od") / 2
     _sides(ax, "receiver", g("receiver.floor_hole_dia") / 2, r_reg, z0, zf, hatch="//")
     _sides(ax, "receiver", r_reg, r_out, z0, z1, hatch="//")
+    # r8 (Design Notes 32): shoulder on the plate top, seat face at receiver.shoulder_z (spec section piece)
+    zs = check_stack.to_shop_floor(check_stack.eval_expr("receiver.shoulder_z", P, pr["vars_z_A"]), P)
+    _sides(ax, "receiver", r_out, g("receiver.shoulder_od") / 2, zs, zs + g("receiver.shoulder_thickness"), hatch="//")
 
     # collet cone (bore at the core OD) and the core-seat ledge inside its bore bottom
     z0, z1 = z("collet")
@@ -227,7 +231,9 @@ def draw_pose(P, spec, stack, pose):
         z0, z1 = z(f"anchor_{s}")
         x0, x1 = px(f"anchor_{s}")
         sc.draw_rect(ax, f"anchor_{s}", x0, x1, z0, z1, hatch="xx")
-        sc.draw_rect(ax, f"anchor_{s}", x0, x1, (z0 + z1) / 2, (z0 + z1) / 2, linewidth=2)
+        # r8 (K5 mark admission, Topologist P0T section 4): bearing line anchor_<s>:line at the spec mark z across the block
+        zm = check_stack.to_shop_floor(check_stack.eval_expr(rows[f"anchor_{s}"]["mark"]["z"], P, pr["vars_z_A"]), P)
+        sc.draw(f"anchor_{s}:{sc.MARK_SUB}", Line2D([x0, x1], [zm, zm], color="k", linewidth=2, solid_capstyle="butt"), ax)
         z0, z1 = z(f"guide_{s}")
         x0, x1 = px(f"guide_{s}")
         sc.draw_rect(ax, f"guide_{s}", x0, x1, z0, z1, hatch="..")
@@ -262,7 +268,7 @@ def draw_pose(P, spec, stack, pose):
     sc.draw_rect(ax, "descent_stop_post", x0, x1, z0, z1, fill=True, facecolor=DARK)
 
     # V9 (F2, F5): the axial loop, named along the drawn members (margin note under the axes)
-    notes.append((None, "axial loop: ring nut - T8 screw - anchor and guide blocks - bracket arms -\n"
+    notes.append((None, "axial loop: ring nut - Tr12x3 screw - anchor and guide blocks - bracket arms -\n"
                         "screw frame 30-6060 - base plate - base frame - floor"))
     # F4: on the park figure, the lift stroke and the park rule (spec park_rule.park)
     if pid == "park":

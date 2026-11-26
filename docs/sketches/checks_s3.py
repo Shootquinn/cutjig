@@ -457,12 +457,12 @@ def reported(ctx):
 # floor-only stub; the content evidence is the S3-x B fixtures in run 1 (1.3 (c)).
 _ABS = ("absent", "red (absent, fail-closed; content evidence run 1, S3-x B fixtures 1.3 (c))")
 _ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
-STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1", "SYM-P"],
-               "red": ["K4", "K6", "K7", "K8", "K9", "S3-1", "S3-2", "S3-3", "RPT", "SYM"]}
-STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "RPT": _ABS_K,
-              "K8": ("content", "red (content: spec error motor_shaft_c outboard frame radial in the section, P4 finding F3; every other K8 issue absent)"),
-              **{k: _ABS for k in ("S3-1", "S3-2", "S3-3")},
-              "SYM": ("content", "red (content: S3 anchor rows carry x1_exempt; clears at P6, S1 r8 / S2 r9)")}
+# 1.3 P6: F3 landed (motor_shaft_c outboard in the side form), so the stub K8 reads absent; the S3 anchor exemptions are
+# gone, so SYM (a spec lint, no drawing) is a guard on the stub.
+STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1", "SYM-P", "SYM"],
+               "red": ["K4", "K6", "K7", "K8", "K9", "S3-1", "S3-2", "S3-3", "RPT"]}
+STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "K8": _ABS_K, "RPT": _ABS_K,
+              **{k: _ABS for k in ("S3-1", "S3-2", "S3-3")}}
 SOURCES = {
     "S3-1": "[DN23]; gameplan detail 1.3 S3-1",
     "S3-2": "[DN23]; Design Notes 31 (SF 3 every case, K 0.7 on L_t, F_bind 300 N); E, d_r, mu, masses ASSUMED",

@@ -7,8 +7,9 @@ section frame (u = plan y, the place / plan_poly y extent; section_u pieces as d
 u = 0), the plan inset with the S2 fixture's plan drawer, the bearing line (mark), the balls and the switch lever, and the
 renderer section convention (sketch_common.render_section) and plan renderer (render_plan) applied. Each B plants one
 defect on top of that drawing, or edits the spec / params and draws faithfully (a spec or params decision drawn).
-Figures are built with the pre-P4 API where the new one is missing (inset fallback below), so the B controls can be run
-on the pre-change code for the red-first evidence.
+1.3 P6: the P4/P5f scaffolding is gone (p4_spec_findings, _receiver_cert, _plate_g, _post_p6_specs, the pre-P4 figure
+fallback): the live specs carry F2, F3, the mirror_about_radial declaration, the receiver shoulder (Design Notes 32) and
+the 42-square anchors in all three specs, so every fixture draws the live specs.
 """
 import copy
 import json
@@ -45,24 +46,7 @@ def _builders():
 # ---------------------------------------------------------------- figure (with a pre-P4 fallback for red-first runs)
 
 def _figure(spec, title):
-    try:
-        return sc.setup_figure(spec["view"], title=title, insets=spec.get("insets"))
-    except TypeError:   # pre-P4 code: one Axes from setup_figure; the inset is added here as P4's add_inset does
-        fig, ax = sc.setup_figure(spec["view"], title=title)
-        ax.sketch_axes = MAIN
-        for d in spec.get("insets") or []:
-            ai = fig.add_axes([0.60, 0.50, 0.36, 0.42])
-            ai.set_title(f"{d['view']}: {d.get('title', d['id'])}", fontsize=8)
-            ai.set_xlabel("x (mm)", fontsize=7)
-            ai.set_ylabel("y (mm)", fontsize=7)
-            ai.set_aspect("equal")
-            ai.minorticks_on()
-            ai.grid(True, which="major", linewidth=0.6)
-            ai.grid(True, which="minor", linewidth=0.3, alpha=0.5)
-            ai.set_xlim(*d["extent"]["x"])
-            ai.set_ylim(*d["extent"]["y"])
-            ai.sketch_view, ai.sketch_axes = d["view"], d["id"]
-        return fig, ax
+    return sc.setup_figure(spec["view"], title=title, insets=spec.get("insets"))
 
 
 def _axes(fig, aid):
@@ -232,14 +216,15 @@ def s3_draw(P, spec, stack, mutate=None, render=True, subs=True, skip=()):
         if ic is not None and axi is not None:
             sc.render_plan(ic, axi, pid)
     if spec.get("figure_note"):
-        ax.text(0, -0.06, spec["figure_note"], transform=ax.transAxes, fontsize=5).set_gid(sc.NOTE_GID)
+        # 1.3 P6: one note line per not_drawn part, inside the Axes (the fixture is held to the canvas; the P6 note is longer)
+        ax.text(0, 0, spec["figure_note"].replace("; ", ";\n"), transform=ax.transAxes, fontsize=5, va="bottom").set_gid(sc.NOTE_GID)
     sc.finish_axes(ax)
     if mutate:
         mutate(fig, ax, axi, P, spec, stack, pid)
     return figs
 
 
-def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None, findings=True):
+def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None):
     """Live S3 spec drawn faithfully (one figure at section_figure.pose). spec_mut(spec), values {key: value} as the S1/S2
     fixtures (a spec or params decision drawn faithfully); mutate(fig, ax, axi, P, spec, stack, pid) plants a drawing
     defect after the faithful draw. records: directory S3-3 reads; specs: the {name: spec} SYM reads."""
@@ -247,8 +232,6 @@ def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip
     for k, v in (values or {}).items():
         P.leaves[k] = dict(P.leaves[k], value=v)
     spec = copy.deepcopy(spec) if spec is not None else load_spec(S3_SPEC)
-    if findings:   # every fixture but s3_live draws the signed spec with the P4 spec findings applied (p4_spec_findings)
-        p4_spec_findings(spec)
     if spec_mut:
         spec_mut(spec)
     stack = check_stack.evaluate_spec(P, spec)
@@ -261,23 +244,10 @@ def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip
     return c
 
 
-def p4_spec_findings(spec):
-    """The three signed-spec findings of P4 applied (step1.3_engineer_redfirst.md section 1, findings F2, F3; for P6):
-    nut_c and guide_c are drawn in the section only, where their projection is a rectangle (the spec says circle);
-    motor_shaft_c outboard of pinion_c in the side form (frame radial is a plan form, TP1.2-1)."""
-    rows = {r["id"]: r for r in spec["features"]}
-    for fid in ("nut_c", "guide_c"):
-        rows[fid]["projection"] = "rectangle"
-    for pr in rows["motor_shaft_c"].get("sense") or []:
-        if pr.get("pred") == "outboard":
-            pr.pop("frame", None)
-
-
 def s3_fixed():
-    """Z for K5 and K8 per Axes: the signed spec with the P4 spec findings applied, drawn faithfully."""
-    if "f" not in _LIVE:
-        _LIVE["f"] = s3_ctx()
-    return _LIVE["f"]
+    """Z for K5, K8, S3-1, S3-2 per Axes: the live spec drawn faithfully (1.3 P6: the P4 findings F2, F3 are in the spec,
+    so this is the s3_live drawing)."""
+    return s3_live()
 
 
 _LIVE = {}
@@ -286,7 +256,7 @@ _LIVE = {}
 def s3_live():
     """Z: the signed S3 spec drawn faithfully (section Axes, inset, renderer section convention)."""
     if "c" not in _LIVE:
-        _LIVE["c"] = s3_ctx(findings=False)
+        _LIVE["c"] = s3_ctx()
     return _LIVE["c"]
 
 
@@ -473,22 +443,11 @@ def s3_2_b1():
     return s3_ctx(values={"jackscrew.root_diameter": 6.2, "jackscrew.guide_bearing_z": P.get("jackscrew.anchor_bearing_z") + 850})
 
 
-# ---- S3-3: records and specs as they stand after P6 (S1 r8, S2 r9 accepted with the 42-square anchors)
+# ---- S3-3: records and the live specs (1.3 P6: the 42-square anchors in all three specs, no x1_exempt)
 
-def _post_p6_specs():
-    """The three specs with the S3 anchor place on S1/S2 anchor rows and x1_exempt removed, key lists as signed: the
-    state SYM certifies after P6."""
-    sp = {n: load_spec(SK / f"{n}_spec.yaml") for n in ("s1", "s2", "s3")}
-    s3rows = {r["id"]: r for r in sp["s3"]["features"]}
-    for n, spec in sp.items():
-        rows = {r["id"]: r for r in spec["features"]}
-        for fam in ("anchor", "anchor_locknut", "screw", "nut", "nut_housing"):   # check_sketch.SYM_FAMILIES
-            have = {l: rows[f"{fam}_{l}"] for l in "abc" if f"{fam}_{l}" in rows}
-            for l, r in have.items():
-                r.pop("x1_exempt", None)
-                if fam == "anchor" and f"anchor_{l}" in s3rows:
-                    r["place"] = copy.deepcopy(s3rows[f"anchor_{l}"]["place"])
-    return sp   # P5f (Loftsman F4 ruling): key lists as signed (SYM compares z_rule and place only)
+def _live_specs():
+    """The three live specs (the state SYM certifies from 1.3 P6), fresh copies a fixture may edit."""
+    return {n: load_spec(SK / f"{n}_spec.yaml") for n in ("s1", "s2", "s3")}
 
 
 def check_sketch_mod():
@@ -536,19 +495,9 @@ import atexit  # noqa: E402
 atexit.register(_cleanup_tmp)
 
 
-def _receiver_cert(spec):
-    """Finding F1 (P4): the signed section draws the receiver spigot 0.2 clear of the plate hole (spigot_od 160 in
-    spigot_hole_dia 160.4) and no seat face, so the S3 certifier of receiver|base_plate reads F and vetoes the link; the
-    S3-3 fixtures drop that certifier (S1 base_plate|receiver C certifies the link), pending the P6 spec decision."""
-    for link in spec["chains"]["c"]:
-        if link["pair"] == ["receiver", "base_plate"]:
-            link["certifiers"] = [c for c in link["certifiers"] if not str(c).startswith("S3 ")]
-
-
 def _s3_3_ctx(s1_mut=None, s2_mut=None, mutate=None):
     t = _new_tmp()
-    sp = _post_p6_specs()
-    _receiver_cert(sp["s3"])
+    sp = _live_specs()
     return s3_ctx(spec=sp["s3"], mutate=mutate, records=_records_dir(t, s1_mut, s2_mut), specs=sp)
 
 
@@ -588,26 +537,26 @@ def s3_3_b3():
 
 def sym_z():
     """SYM Z: the three specs in the post-P6 state (no exemption, anchor place and key lists equal across a, b, c)."""
-    return check_sketch_mod().sym_lint(_post_p6_specs())
+    return check_sketch_mod().sym_lint(_live_specs())
 
 
 def sym_b1():
     """SYM B: x1_exempt on S3 anchor_b."""
-    sp = _post_p6_specs()
+    sp = _live_specs()
     next(r for r in sp["s3"]["features"] if r["id"] == "anchor_b")["x1_exempt"] = {"reason": "planted"}
     return check_sketch_mod().sym_lint(sp)
 
 
 def sym_b2():
     """SYM B: S2 screw_a placed at jackscrew.angle[0] (the b index)."""
-    sp = _post_p6_specs()
+    sp = _live_specs()
     next(r for r in sp["s2"]["features"] if r["id"] == "screw_a")["place"]["theta"] = "jackscrew.angle[0]"
     return check_sketch_mod().sym_lint(sp)
 
 
 def sym_b3():
     """SYM B: S2 nut_housing_b z_max 1 higher than nut_housing_c."""
-    sp = _post_p6_specs()
+    sp = _live_specs()
     r = next(r for r in sp["s2"]["features"] if r["id"] == "nut_housing_b")
     r["z_rule"]["z_max"] = r["z_rule"]["z_max"] + " + 1"
     return check_sketch_mod().sym_lint(sp)
@@ -630,13 +579,19 @@ def x1_b3():
 
 
 def h1_b_exempt():
-    """H1 B: --accept with a spec in docs/ carrying x1_exempt (the live s3_spec.yaml copied): refused, nothing written."""
+    """H1 B: --accept with a spec in docs/ carrying x1_exempt (the live s3_spec.yaml copied with x1_exempt planted on
+    anchor_a, anchor_b, anchor_c; re-planted at 1.3 P6, the live spec has none): refused, nothing written."""
     import step0_fixtures as s0
     cs = check_sketch_mod()
     rec = s0._template()
     with tempfile.TemporaryDirectory() as t:
         docs, wip = s0._dirs(t)
-        (Path(docs) / "s3_spec.yaml").write_text(S3_SPEC.read_text(encoding="utf-8"), encoding="utf-8")
+        txt = S3_SPEC.read_text(encoding="utf-8")
+        for fid in ("anchor_a", "anchor_b", "anchor_c"):   # 1.3 P6: the exemption planted (the live spec has none)
+            i = txt.index(f"\n- id: {fid}\n")
+            j = txt.index("\n  kind:", i)
+            txt = txt[:j] + "\n  x1_exempt: {reason: planted}" + txt[j:]
+        (Path(docs) / "s3_spec.yaml").write_text(txt, encoding="utf-8")
         s0._write(wip, rec)
         rc, msgs = cs.accept("s1", 4, s0.NOTE, docs, wip, out=s0._quiet)
         flagged = json.loads((Path(wip) / "s1_checks_r4.json").read_text(encoding="utf-8")).get("accepted")
@@ -797,7 +752,7 @@ def k4_expr_b():
 
 
 def s3_full_draw():
-    """Smoke (SW-8 for S3): every S3 row drawn faithfully (P4 spec findings applied); K1 to K9 and S3-1 to S3-3 run;
+    """Smoke (SW-8 for S3): every S3 row of the live spec drawn faithfully; K1 to K9 and S3-1 to S3-3 run;
     none errors, none fails closed on an absent part."""
     import checks_s3
     return s3_fixed(), checks_s3.run
@@ -984,14 +939,10 @@ MIRROR_ROWS = ("anchor_a", "anchor_b", "anchor_c", "liftmotor_a", "liftmotor_b",
                "frame_upper_c", "home_switch_a", "home_switch_b", "home_switch_c")
 
 
-def _mirror_preds(sp):
-    for fid in MIRROR_ROWS:
-        _row(sp, fid).setdefault("sense", []).append({"pred": "mirror_about_radial", "axes": INSET})
-
-
 def mirror_z():
-    """K8 Z (TP FIX 6): mirror_about_radial declared on the twelve radial inset rows (the P6 spec edit), drawn faithfully."""
-    return s3_ctx(spec_mut=_mirror_preds)
+    """K8 Z (TP FIX 6): mirror_about_radial declared on the twelve radial inset rows (in the live spec from 1.3 P6),
+    drawn faithfully."""
+    return s3_ctx()
 
 
 def mirror_b():
@@ -1002,29 +953,21 @@ def mirror_b():
         cx, cy = sum(x for x, _ in P) / len(P), sum(y for _, y in P) / len(P)
         c, s_ = math.cos(math.radians(15)), math.sin(math.radians(15))
         art.set_xy([(cx + 0.75 * ((x - cx) * c - (y - cy) * s_), cy + 0.75 * ((x - cx) * s_ + (y - cy) * c)) for x, y in P])
-    return s3_ctx(spec_mut=_mirror_preds, mutate=m)
+    return s3_ctx(mutate=m)
 
 
 # ---- class_by_axes (TP FIX 7, F5)
 
-def _plate_g(sp):
-    """Fixture-only: base_plate|receiver G 0.10 (the Loftsman's P6 remedy item 1 for F1, pending Sean), so K7 can read
-    clean in both Axes; the spec itself keeps C until P6."""
-    for nb in _row(sp, "base_plate")["neighbours"]:
-        if nb.get("id") == "receiver":
-            nb.update({"class": "G", "g_min": 0.10})
-
-
 def cba_z():
     """K7 Z (TP FIX 7): the spec's class_by_axes N on screw_c|nut_housing_c and screw_c|anchor_c in the inset (F kept in
-    the section): inset K7 clear of the 13 F overlaps; section K7 clean with the fixture-only F1 declaration."""
-    return s3_ctx(spec_mut=_plate_g)
+    the section): inset K7 clear of the 13 F overlaps; section K7 clean (1.3 P6: the receiver shoulder seats on the plate
+    top, Design Notes 32)."""
+    return s3_ctx()
 
 
 def cba_b():
     """K7 B (TP FIX 7): screw_a|nut_housing_a with class_by_axes N in the inset, a pair no other Axes draws."""
     def sm(sp):
-        _plate_g(sp)
         _row(sp, "screw_a").setdefault("neighbours", []).append({"id": "nut_housing_a", "class": "F", "class_by_axes": {INSET: "N"}})
     return s3_ctx(spec_mut=sm)
 
@@ -1044,8 +987,7 @@ def s3_2_b2():
 def s3_3_face_off():
     """S3-3 B (SW FIX 3 a, M02): the nut face named 1 above the counterbore shoulder (spec neighbour face z + 1)."""
     t = _new_tmp()
-    sp = _post_p6_specs()
-    _receiver_cert(sp["s3"])
+    sp = _live_specs()
     for nb in _row(sp["s3"], "nut_housing_c")["neighbours"]:
         if nb.get("id") == "nut_c" and isinstance(nb.get("face"), dict):
             nb["face"]["z"] = nb["face"]["z"] + " + 1"
@@ -1055,8 +997,7 @@ def s3_3_face_off():
 def s3_3_sym_fail():
     """S3-3 B (SW FIX 3 b, M03): x1_exempt left on S3 anchor_b: SYM fails, no a, b link certifies by symmetry."""
     t = _new_tmp()
-    sp = _post_p6_specs()
-    _receiver_cert(sp["s3"])
+    sp = _live_specs()
     _row(sp["s3"], "anchor_b")["x1_exempt"] = {"reason": "planted"}
     return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
 
@@ -1098,19 +1039,23 @@ def s3_3_pose_only():
 
 
 def s3_3_veto_pair():
-    """S3-3 B (LF FIX 1): the signed chains (S3 receiver certifier kept on chain c only), fresh records: the section reads
-    receiver|base_plate open, so the pair is open in chains c, a and b."""
+    """S3-3 B (LF FIX 1; redefined at 1.3 P6 for Design Notes 32, Designer receiver shoulder section 2): the shoulder seat
+    face 1 above the plate top (receiver.shoulder_z 13) with chains a and b certified by "S1 base_plate|receiver C" only,
+    fresh records: the section reads receiver|base_plate open (F), so the pair is open in chains c, a and b."""
     t = _new_tmp()
-    sp = _post_p6_specs()
-    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+    sp = _live_specs()
+    for ch in ("a", "b"):
+        for link in sp["s3"]["chains"][ch]:
+            if link["pair"] == ["receiver", "base_plate"]:
+                link["certifiers"] = ["S1 base_plate|receiver C"]
+    return s3_ctx(spec=sp["s3"], values={"receiver.shoulder_z": 13}, records=_records_dir(t), specs=sp)
 
 
 def s3_3_true_cut():
     """S3-3 B (LF FIX 3): bracket_anchor_c, a row of an S3-certified pair, placed at jackscrew.angle[1] (150): off the
     plane, not its true cut (drawn faithfully)."""
     t = _new_tmp()
-    sp = _post_p6_specs()
-    _receiver_cert(sp["s3"])
+    sp = _live_specs()
     _row(sp["s3"], "bracket_anchor_c")["place"]["theta"] = "jackscrew.angle[1]"
     return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
 

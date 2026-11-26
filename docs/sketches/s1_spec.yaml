@@ -1,5 +1,5 @@
 # S1 spec, side XZ, whole jig, four poses (contributor gameplan (sean) detail 1.1, lines 207-239).
-status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
+status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25); r8 edits at 1.3 P6 under the orchestrator-named exceptions (a) to (f)"
 # r2 edits (The Engineer, 2026-11-25, step1.1_engineer_revision_r2.md), re-sign due (Designer; Loftsman for placement):
 # stack_ties (LF1.1-1), holder z_max + flange (LF1.1-1), section on receiver, collet, core_seat, holder, collar and
 # bore_cone on holder (TP1.1-3), N -> C/F between section rows (TP1.1-3), gear face_rises (TP1.1-1), rubric line (TP1.1-2).
@@ -23,6 +23,11 @@ status: "signed (Designer, Loftsman; pose table confirmed by Sean 2026-11-25)"
 # dimensions are the Designer's ASSUMED values (M1 r2 section 6).
 # Revision 1.1 (b), The Engineer, 2026-11-25, from sean scratch step1.1_designer_params_review.md and
 # Sean's rulings (gameplan Design Notes 21 G1-G7, Design Notes 22 option R). No drawing before the signed spec.
+# r8 edits (The Engineer, 1.3 P6, research/sean/cr_scratch/step1.3_engineer_draw_r1.md): Tr12x3 names and labels
+# (Design Notes 31); anchor_a/_b to the 42-square radial place of s3_spec.yaml (Loftsman 1.3 (b) section 7 ruling; no
+# x1_exempt left in any spec); bearing line drawn as anchor_<s>:line (K5 mark admission, Topologist P0T section 4);
+# receiver shoulder D200 x 8 on the plate top (Design Notes 32; Designer 1.3 receiver shoulder); reported_items (8 ids,
+# Designer 1.3 (b) sign-off section 8).
 sketch: s1
 script: s1_side_poses.py          # K1 scans this file at 1.1 (d) (check_sketch.py run_sketch, SW-18)
 view: side_xz
@@ -156,13 +161,23 @@ reported:
   - re-derived park rule as an expression for Step 4 (park_rule.for_step4)
   - lift stroke and screw length L (screw_length expressions) for each Q9 option (q9_options)
   - centre-of-mass height per pose and unbolted tip force at the frame top (overlay masses ASSUMED; icd.tipover_statement is the old reference)
+reported_items:   # 1.3 (b) Designer sign-off section 8; gameplan detail 1.1 Reported; RPT reads checks_s1.reported(ctx) items (1.3 P6)
+  - {id: highest_point, text: "Highest point at each pose and its margin to the 2000 mm soft target (jig.height_target), parts only, reference rows excluded (LF1.2-5)", source: "drawn extents over parts per pose (checks_s1.reported); spec value check_stack.reported poses highest_z_S, margin_to_soft_target", needs_drawing: true}
+  - {id: ring_position, text: "Ring position along the drill (N1): ring underside above the cutter tip, and ring underside and top per pose", source: "ring.position_above_tip, ring.thickness; check_stack pose vars ring_bottom, ring_top", needs_drawing: false}
+  - {id: anchor_guide_heights, text: "Anchor and top-guide heights the ring position sets: anchor block, top-guide block, bearing lines and span L_t, with the S1-4 least margin", source: "jackscrew.anchor_z, anchor_allowance, top_guide_z, guide_allowance, anchor_bearing_z, guide_bearing_z; S1-4 measured", needs_drawing: false}
+  - {id: park_rule, text: "Re-derived park rule as an expression for Step 4, with the park tip by plane and core length and the symbol c validity ranges (N11)", source: "spec park_rule; check_stack.reported park_tip_z_A, park_tip_by_plane_z_A, drawn_symbol_validity", needs_drawing: false}
+  - {id: lift_stroke_q9, text: "Lift stroke per Q9 option (0.5 m only; 0.5 and 0.75 m; plus 1 m), with the c terms", source: "check_stack.reported q9_options lift_stroke, symbol_terms", needs_drawing: false}
+  - {id: screw_length_q9, text: "Screw length L_min and L at the drawn anchor per Q9 option (detail 1.3 expression), against the drawn jackscrew.length 900 and DN23 800 to 900", source: "check_stack.reported q9_options L (spec screw_length); jackscrew.length", needs_drawing: false}
+  - {id: com_height, text: "Centre-of-mass height per pose (overlay masses, ASSUMED)", source: "s1_mass_report.py logic, same revision: com_z_S per pose", needs_drawing: false}
+  - {id: tip_force, text: "Unbolted tip force at the frame top and at the CoM height per pose (icd.tipover_statement is the old-design reference)", source: "s1_mass_report.py logic: tip_force_frame_top_N, tip_force_at_com_N", needs_drawing: false}
 descent_stop: "drawn: row descent_stop, metal pad on post descent_stop_post on bracket arm bracket_anchor_a at jackscrew.angle[1], under the ring rim (N7 stand-in, upper.metal_stop DECLARED gate B5); Step 2 rules"
 # r5 (detail 1 common (b)): parts a shape string names that have no row.
 not_drawn:
   - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2, as S2)"}
+  - {part: "receiver shoulder bolts 4 x M5", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
 # r5 (Designer 1.2 (c) FIX R1): detail 1 common (b) second clause; s1_side_poses.py draws it on each pose figure as
 # Text gid note:figure_note, and K4 checks both against not_drawn.
-figure_note: "Not drawn: LM20UU bushing (inside the housing and lug)"
+figure_note: "Not drawn: LM20UU bushing (inside the housing and lug); receiver shoulder bolts 4 x M5 (layout open)"
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups): {use: <group>} in a row's neighbours expands to these.
 neighbour_groups:
@@ -232,24 +247,25 @@ features:
     depth: ["-icd.footprint_y / 2", "icd.footprint_y / 2"]
     label: null
     neighbours:
-      - {id: receiver, class: C, g_min: 0, source: "receiver.spigot_od in base.spigot_hole_dia"}
+      - {id: receiver, class: C, g_min: 0, source: "receiver shoulder underside on the plate top (Design Notes 32); S1 draws the plate without its spigot hole, so this C is a slab simplification and not an S3-3 certifier (struck from s3_spec.yaml chains)"}
     sense: []
     chain: [axial]
     moves: false
 
   - id: receiver
     name: receiver
-    shape: "receiver cup in section: walls to the rim, floor at icd.floor_above_datum_a with the debris-hole gap, spigot into the plate, thread ticks on the outer wall"
+    shape: "receiver cup in section: walls to the rim, floor at icd.floor_above_datum_a with the debris-hole gap, shoulder D200 x 8 on the plate top (seat face, Design Notes 32; 4 x M5 into the plate not drawn), spigot into the plate below it (not drawn: S1 draws the plate without its hole), thread ticks on the outer wall"
     kind: cylinder
     axis: Z
     projection: rectangle
-    keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius]
+    keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]
     z_rule: {z_min: "base.plate_thickness", z_max: "receiver_floor + receiver.rim_above_floor"}
     # cup in section (TP1.1-3): floor either side of the debris hole up to the receiver floor; wall register bore to spigot OD
     section:
       - ["receiver.floor_hole_dia / 2", "receiver.register_bore_radius", "base.plate_thickness", receiver_floor]
       - ["receiver.register_bore_radius", "receiver.spigot_od / 2"]
-    depth: ["-receiver.spigot_od / 2", "receiver.spigot_od / 2"]
+      - ["receiver.spigot_od / 2", "receiver.shoulder_od / 2", "receiver.shoulder_z", "receiver.shoulder_z + receiver.shoulder_thickness"]
+    depth: ["-receiver.shoulder_od / 2", "receiver.shoulder_od / 2"]
     label: null
     neighbours:
       - {id: collet, class: C, g_min: 0, source: "R6: collet foot on the receiver floor, outer edge at the register bore (TP1.1-3: section rows, N refused)"}
@@ -765,15 +781,15 @@ features:
     moves: true
 
   - id: screw_a
-    name: T8 jack screw
-    shape: "T8 jack screw: rectangle 8 wide from the anchor to the top guide, lead ticks at jackscrew.lead; label 'T8 screw L'"
+    name: Tr12x3 jack screw
+    shape: "Tr12x3 jack screw: rectangle 12 wide from the anchor to the top guide, lead ticks at jackscrew.lead; label 'Tr12x3 screw L'"
     kind: screw
     axis: Z
     projection: rectangle
     keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, jackscrew.length, jackscrew.lead]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.top_guide_z"}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nominal / 2", footprint: round}
-    label: {text: "T8 screw L", key: jackscrew.length, fmt: ".0f"}
+    label: {text: "Tr12x3 screw L", key: jackscrew.length, fmt: ".0f"}
     neighbours:
       - {id: nut_a, class: N, source: "R6: screw in its nut"}
       - {id: anchor_a, class: N, source: "R6: screw bottom in the anchor thrust bearing"}
@@ -783,8 +799,8 @@ features:
     moves: false
 
   - id: screw_b
-    name: T8 jack screw
-    shape: "T8 jack screw: rectangle 8 wide from the anchor to the top guide, lead ticks at jackscrew.lead"
+    name: Tr12x3 jack screw
+    shape: "Tr12x3 jack screw: rectangle 12 wide from the anchor to the top guide, lead ticks at jackscrew.lead"
     kind: screw
     axis: Z
     projection: rectangle
@@ -832,13 +848,13 @@ features:
 
   - id: anchor_a
     name: bottom anchor
-    shape: "bottom anchor: thrust-bearing block anchor_allowance tall on a bracket arm from the screw frame member, bearing line marked; coupling and lift motor below"
+    shape: "bottom anchor: fixed-end block 42 square (two angular-contact bearings back-to-back, Design Notes 31), anchor_allowance tall, faces radial, outer face on the bracket arm end at r 181; bearing line marked at jackscrew.anchor_bearing_z (anchor_<s>:line); coupling and lift motor below"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.anchor_block_width, jackscrew.pitch_radius, jackscrew.angle]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[1]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius - jackscrew.anchor_block_width / 2, r_out: jackscrew.pitch_radius + jackscrew.anchor_block_width / 2, theta: 'jackscrew.angle[1]', half_width: jackscrew.anchor_block_width / 2, footprint: radial}
     mark: {sub: line, z: "jackscrew.anchor_z + jackscrew.anchor_allowance / 2", source: "Topologist P0T section 4 (K5 mark admission, signed in advance; clause and controls land at P4, drawn at P6 in S1 r8): back-to-back bearing contact plane at block mid-height, 280 z_A (= jackscrew.anchor_bearing_z)"}
     label: null
     neighbours: []
@@ -848,13 +864,13 @@ features:
 
   - id: anchor_b
     name: bottom anchor
-    shape: "bottom anchor: thrust-bearing block anchor_allowance tall on a bracket arm from the screw frame member, bearing line marked; coupling and lift motor below"
+    shape: "bottom anchor: fixed-end block 42 square (two angular-contact bearings back-to-back, Design Notes 31), anchor_allowance tall, faces radial, outer face on the bracket arm end at r 181; bearing line marked at jackscrew.anchor_bearing_z (anchor_<s>:line); coupling and lift motor below"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance]
+    keys: [jackscrew.anchor_z, jackscrew.anchor_allowance, jackscrew.anchor_block_width, jackscrew.pitch_radius, jackscrew.angle]
     z_rule: {z_min: "jackscrew.anchor_z", z_max: "jackscrew.anchor_z + jackscrew.anchor_allowance"}
-    place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nut_flange_od / 2", footprint: round}
+    place: {r_in: jackscrew.pitch_radius - jackscrew.anchor_block_width / 2, r_out: jackscrew.pitch_radius + jackscrew.anchor_block_width / 2, theta: 'jackscrew.angle[0]', half_width: jackscrew.anchor_block_width / 2, footprint: radial}
     mark: {sub: line, z: "jackscrew.anchor_z + jackscrew.anchor_allowance / 2", source: "Topologist P0T section 4 (K5 mark admission, signed in advance; clause and controls land at P4, drawn at P6 in S1 r8): back-to-back bearing contact plane at block mid-height, 280 z_A (= jackscrew.anchor_bearing_z)"}
     label: {text: "anchor", key: jackscrew.anchor_z, fmt: ".0f", z_S: true}   # r3 F4: dimensioned, right-hand instance
     neighbours: []
