@@ -298,7 +298,7 @@ def main(argv=None):
     out = []
     for pid, fig in build(P, spec, stack).items():
         path = output_path(f"s1_pose_{pid}_r{a.rev}.png")   # wip/ (sketch_loader output rule)
-        fig.savefig(path)
+        fig.savefig(path, bbox_inches="tight")   # every text inside the saved image (1.2 (h), Designer M1 S1 r5 F1; K3)
         out.append(path)
     for p in out:
         print(p)

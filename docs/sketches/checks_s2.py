@@ -191,26 +191,38 @@ def s2_5a(ctx):
                      measured=None if worst is None else round(worst, 3), threshold="F", n_issues=len(issues))
 
 
+def moving_parts(spec):
+    """S2-5b premise set (Topologist 1.2 (e) FIX TP1.2-3): every row with moves: true that is not a reference row and not
+    of a line kind (sketch_common.NO_AREA_KINDS). A hand list is refused: the set is read from the spec."""
+    return [r["id"] for r in spec.get("features", [])
+            if r.get("moves") and not r.get("reference") and r.get("kind") not in sc.NO_AREA_KINDS]
+
+
 def s2_5b(ctx):
-    """Premise of the S2-5a relief: at the load pose every ring-mounted part whose plan outline enters the drawn
+    """Premise of the S2-5a relief: at the load pose every moving row (moving_parts) whose plan outline enters the drawn
     sector has its lowest z (check_stack, z_A) at least g_min above the top of operator.hand_band."""
     c = _cfg(ctx, "S2-5b")
+    if c.get("parts") != "moves":
+        raise Content("S2-5b: spec parts must be 'moves' (every moving row; a hand list misses rows, TP1.2-3)")
     S = ("polys", _pieces(ctx, c["sector"]), True)
     top = ctx.P.get(c["band"])[1]
     feats = ctx.stack["poses"][c["pose"]]["features"]
-    issues, worst, n = [], None, 0
-    for f in c["ring_parts"]:
+    issues, worst, n, least = [], None, 0, None
+    for f in moving_parts(ctx.spec):
+        if f not in feats or "z_min" not in feats[f]:
+            continue
         if sc.outline_measure(S, _outline(ctx, f), sc.TOL_C)[1] <= sc.TOL_AREA:
             continue
         n += 1
         z = check_stack.from_shop_floor(feats[f]["z_min"], ctx.P)
         m = z - top
-        worst = m if worst is None else min(worst, m)
+        if worst is None or m < worst:
+            worst, least = m, f
         if m < c["g_min"] - sc.TOL_C:
             issues.append(f"{f}: lowest z {z:.2f} z_A, {m:.2f} above the hand band top {top}, need {c['g_min']}")
     if n == 0:
-        raise Content("S2-5b: no ring-mounted part enters the drawn sector (premise untested)")
-    return sc.result("S2-5b", not issues, sc._summ(issues) if issues else f"{n} ring parts in the sector, least {worst:.2f} mm above the hand band",
+        raise Content("S2-5b: no moving part enters the drawn sector (premise untested)")
+    return sc.result("S2-5b", not issues, sc._summ(issues) if issues else f"{n} moving parts in the sector, least {worst:.2f} mm above the hand band ({least})",
                      measured=round(worst, 3), threshold=c["g_min"], n_issues=len(issues))
 
 
@@ -234,6 +246,51 @@ def s2_6(ctx):
                      measured=len(issues), threshold=0, n_issues=len(issues))
 
 
+def reported(ctx):
+    """Drawn reported values for the summary (no threshold, never asserted). Outline extents over parts only: rows with
+    reference: true and line kinds are out (Designer M1 r1 ruling 3, Loftsman LF1.2-5). Rows: (quantity, value, basis)."""
+    pose = _fig_pose(ctx)
+    ax = ctx.figs[pose].axes[0]
+    rows = {r["id"]: r for r in ctx.spec["features"]}
+    feats = ctx.stack["poses"][pose]["features"]
+    parts = [f for f, r in rows.items() if not r.get("reference") and r.get("kind") not in sc.NO_AREA_KINDS and sc.pieces(ax, f)]
+    plate_bottom = feats["base_plate"]["z_min"]   # parts standing on the plate or on the frame top in the notch
+
+    def ext(ids):
+        b = sc.bbox([p for f in ids for p in sc.pieces(ax, f)])
+        return f"x {b[0]:.2f} to {b[1]:.2f}, y {b[2]:.2f} to {b[3]:.2f}"
+    above = [f for f in parts if f not in ("base_plate", "base_frame") and feats.get(f, {}).get("z_min", -1e9) >= plate_bottom - sc.TOL_Z]
+    out = [("Outline extents, every drawn part (reference rows excluded: " + ", ".join(f for f, r in rows.items() if r.get("reference")) + ")",
+            ext(parts), "MEASURED (drawn pieces)"),
+           ("Outline extents, parts above the plate", ext(above), "MEASURED (drawn pieces)")]
+    # highest point over parts at every pose (check_stack, reference rows out)
+    ref = [f for f, r in rows.items() if r.get("reference")]
+    for pid, pr in ctx.stack["poses"].items():
+        tops = [(v["z_max"], k) for k, v in pr["features"].items() if k not in ref and "z_max" in v]
+        z, k = max(tops)
+        out.append((f"Highest point over parts, {pid}", f"{z:.2f} z_S ({k})", "MEASURED (check_stack)"))
+    # tight spots
+    hub = _outline(ctx, "gear_hub")
+    toe = min(sc.outline_measure(_outline(ctx, p), hub, sc.TOL_C)[0] for p in ("pinion_a", "pinion_b", "pinion_c"))
+    out.append(("Tight spot: pinion toe to gear hub (plan, G g_min 3 ASSUMED)", f"{toe:.2f}", "MEASURED; basis circumscribed outline (pinion radial footprint) against the hub annulus; the toe edge midpoint is on the drawn trapezoid, so the bound equals the drawn gap (DERIVED 95.22 - 90.00)"))
+    S = ("polys", _pieces(ctx, "operator_sector"), True)
+    lm = min(sc.outline_measure(S, _outline(ctx, f), sc.TOL_C)[0] for f in ("liftmotor_a", "liftmotor_b"))
+    lm_d = min(min(sc.min_distance(p, q) for p in _pieces(ctx, f) for q in S[1]) for f in ("liftmotor_a", "liftmotor_b"))
+    out.append(("Tight spot: lift motors to the sector edge", f"{lm:.2f} (bound) / {lm_d:.2f} (drawn square)", "MEASURED: circumscribed outline (S2-5a) / drawn pieces"))
+    # S2-5b strike list
+    c = _cfg(ctx, "S2-5b")
+    top = ctx.P.get(c["band"])[1]
+    lf = ctx.stack["poses"][c["pose"]]["features"]
+    strike = []
+    for f in moving_parts(ctx.spec):
+        if f in lf and "z_min" in lf[f] and sc.outline_measure(S, _outline(ctx, f), sc.TOL_C)[1] > sc.TOL_AREA:
+            z = check_stack.from_shop_floor(lf[f]["z_min"], ctx.P)
+            strike.append((z - top, f, lf[f]["z_min"], lf[f]["z_max"]))
+    out.append((f"S2-5b strike list at {c['pose']} (z_S band; margin over the hand-band top {top} z_A)",
+                "; ".join(f"{f} {a:.2f} to {b:.2f} ({m:.2f})" for m, f, a, b in sorted(strike)), "MEASURED (check_stack)"))
+    return {"id": "reported", "result": "pass", "rows": out}
+
+
 # Per-sketch tables (1.2 (c); check_sketch.sketch_table reads them). Every S2 check reads drawn patches and fails closed
 # (absent) on the floor-only stub; the content evidence is the S2-x B fixtures in run 1 (fixtures/manifest.yaml).
 _ABS = ("absent", "red (absent, fail-closed; content evidence run 1, S2-x B fixtures 1.2 (c))")
@@ -248,7 +305,7 @@ SOURCES = {
     "S2-3": "overlay gear.*, pinion.r_heel ASSUMED/DERIVED; drawn pitch point = heel-edge midpoint (1.2 (c))",
     "S2-4": "R13 ASSUMED [CP §14]; nominal only",
     "S2-5a": "sector ASSUMED (operator.*, Designer 1.2 (a) section 5; Design Notes 27 O1-B)",
-    "S2-5b": "hand band ASSUMED (operator.hand_band); premise of S2-5a (detail 1 common (h))",
+    "S2-5b": "hand band ASSUMED (operator.hand_band); premise of S2-5a (detail 1 common (h)); every moves: true row (TP1.2-3)",
     "S2-6": "params base.*, overlay frame_upper.foot, frame_upper.radius 274 (Design Notes 27)",
 }
 

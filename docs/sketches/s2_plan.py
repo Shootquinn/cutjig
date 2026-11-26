@@ -3,9 +3,12 @@
 One figure through sketch_common.setup_figure("plan_xy"); every artist through sc.draw with gid = spec row id.
 Every plan position comes from check_stack (place, plan_pieces, sector) or from the params named below. Shapes follow
 each row's `shape` field as far as the K checks admit: a round row is a circle or annulus, a radial row a rectangle
-or a toothed trapezoid along its azimuth, a plan_poly row its convex pieces. Hidden parts (below a nearer part) dashed.
-The geometry rules are those of the S2 fixture drawing (fixtures/builders.py _s2_draw_row); this script adds line
-styles, fills, the gear pitch circle, the datum B signifiers inside the tube bore, part tags and the margin labels.
+or a toothed trapezoid along its azimuth, a plan_poly row its convex pieces. Hidden parts dashed, no fill
+(r2, Designer M1 r1 F2 rule: a row wholly under a higher row's true plan section, sketch_common.hidden_rows; the pinion
+toothed piece under the gear). The gear teeth face down: dashed radial ticks on the underside face (sub-artist
+gear:ticks, Designer M1 r1 F1). The geometry rules are those of the S2 fixture drawing (fixtures/builders.py
+_s2_draw_row); this script adds line styles, fills, the datum B signifiers inside the tube bore, part tags and the
+margin labels.
 
   python s2_plan.py [--rev k]   writes s2_plan_r<k>.png to wip/ (sketch_loader output rule; default rev 1)
 """
@@ -20,6 +23,7 @@ if str(HERE) not in sys.path:
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
 from sketch_loader import Params, load_spec, output_path  # noqa: E402
+from matplotlib.collections import LineCollection  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Annulus, Circle, Polygon  # noqa: E402
 
@@ -34,7 +38,8 @@ DARK = "0.3"
 HIDDEN = "--"
 DOTTED = ":"
 CHAIN = "-."
-HATCH_GEAR, HATCH_PINION = "////", "\\\\\\\\"
+HATCH_PAD = "////"
+GEAR_FILL = "#eeeeee"
 
 # z order bands: plate, sector, base detail, fixed parts, ring, ring-mounted parts, drive, drill, signifiers
 Z_PLATE, Z_SECTOR, Z_BASE, Z_FIXED, Z_RING, Z_ON_RING, Z_DRIVE, Z_DRILL, Z_SIGN = (
@@ -43,8 +48,20 @@ Z_PLATE, Z_SECTOR, Z_BASE, Z_FIXED, Z_RING, Z_ON_RING, Z_DRIVE, Z_DRILL, Z_SIGN 
 RING_MOUNTED = ("nut_housing", "motor_mount", "guide_lug", "guide_bushing")
 
 
-def _style(row):
-    """Draw keywords per row (shape field: dashed where hidden, metal hatch on the pad, light fill on the sector)."""
+def _hidden(kw):
+    """Hidden-line form of a row's keywords: dashed outline, no fill, no hatch (Designer M1 r1 F2 rule)."""
+    out = {k: v for k, v in kw.items() if k not in ("fill", "facecolor", "hatch", "alpha")}
+    out.update(fill=False, linestyle=HIDDEN)
+    return out
+
+
+def _style(row, hidden=()):
+    """Draw keywords per row (shape field: dashed where hidden, light fill on the sector)."""
+    kw = _style_visible(row)
+    return _hidden(kw) if row["id"] in hidden and "linestyle" not in kw else kw
+
+
+def _style_visible(row):
     fid = row["id"]
     pre = fid.rsplit("_", 1)[0] if fid[-2:] in ("_a", "_b", "_c") else fid
     if fid == "base_plate":
@@ -63,12 +80,14 @@ def _style(row):
         return {"color": GREY, "linestyle": CHAIN, "linewidth": 0.5, "zorder": Z_BASE}
     if pre == "frame_upper":
         return {"fill": True, "facecolor": "0.85", "edgecolor": "k", "hatch": "xx", "linewidth": 1, "zorder": Z_FIXED}
-    if pre in ("liftmotor", "bracket_anchor", "anchor"):
+    if pre == "liftmotor":   # Designer M1 r1 N1: line weight of the bracket outlines
+        return {"edgecolor": DARK, "linestyle": HIDDEN, "linewidth": 1, "zorder": Z_FIXED}
+    if pre in ("bracket_anchor", "anchor"):
         return {"edgecolor": DARK, "linestyle": HIDDEN, "linewidth": 0.5, "zorder": Z_FIXED}
     if pre in ("bracket_guide", "guide"):
         return {"edgecolor": "k", "linewidth": 1, "zorder": Z_FIXED + Z_RING}
     if fid == "descent_stop":
-        return {"edgecolor": "k", "hatch": HATCH_GEAR, "linewidth": 1, "zorder": Z_FIXED}
+        return {"edgecolor": "k", "hatch": HATCH_PAD, "linewidth": 1, "zorder": Z_FIXED}
     if fid == "descent_stop_post":
         return {"edgecolor": DARK, "linestyle": DOTTED, "linewidth": 1, "zorder": Z_FIXED}
     if pre == "screw":
@@ -87,12 +106,12 @@ def _style(row):
         return {"edgecolor": RING_EDGE, "linewidth": 1, "zorder": Z_ON_RING}
     if fid == "bearing":
         return {"edgecolor": DARK, "linestyle": HIDDEN, "linewidth": 0.5, "zorder": Z_ON_RING}
-    if fid == "gear":
-        return {"edgecolor": "k", "hatch": HATCH_GEAR, "linewidth": 1, "zorder": Z_DRIVE}
+    if fid == "gear":   # light plain fill so the dashed tooth ticks read (Designer M1 r1 F1)
+        return {"fill": True, "facecolor": GEAR_FILL, "edgecolor": "k", "linewidth": 1, "zorder": Z_DRIVE}
     if fid == "gear_hub":
         return {"edgecolor": "k", "linewidth": 1, "zorder": Z_DRIVE}
-    if pre == "pinion":
-        return {"edgecolor": "k", "hatch": HATCH_PINION, "linewidth": 1, "zorder": Z_DRIVE}
+    if pre == "pinion":   # hub solid; the toothed piece under the gear is drawn hidden (draw_row)
+        return {"edgecolor": "k", "linewidth": 1, "zorder": Z_DRIVE + 1}
     if pre == "motor23":
         return {"fill": True, "facecolor": GREY, "edgecolor": "k", "alpha": 0.5, "linewidth": 1, "zorder": Z_DRIVE}
     if pre == "motor_shaft":
@@ -142,12 +161,26 @@ def _datum_b(ax, P, kw):
     ax.text(ra * math.cos(math.pi / 2 / 2), ra * math.sin(math.pi / 2 / 2), "theta", ha="left", va="bottom", **t)
 
 
-def draw_row(ax, P, stack, pid, row):
+def _gear_ticks(ax, P, row, kw):
+    """Dashed radial tooth ticks on the gear's underside face (Designer M1 r1 F1): one per tooth, from the toe to the
+    heel radius of the row's ticks_radial predicate, evenly spaced from +X; LineCollection gid <row>:ticks."""
+    pr = next(p for p in row["sense"] if p["pred"] == "ticks_radial")
+    r0, r1 = (check_stack.eval_expr(pr[k], P, {}) for k in ("r_in", "r_out"))
+    n = int(round(check_stack.eval_expr(pr["count"], P, {})))
+    segs = []
+    for i in range(n):
+        a = 2 * math.pi * i / n
+        segs.append([(r0 * math.cos(a), r0 * math.sin(a)), (r1 * math.cos(a), r1 * math.sin(a))])
+    lc = LineCollection(segs, colors="k", linestyles=HIDDEN, linewidths=0.5, zorder=kw.get("zorder", Z_DRIVE) + 1)
+    sc.draw(row["id"] + sc.TICKS_SUFFIX, lc, ax)
+
+
+def draw_row(ax, P, stack, pid, row, hidden=()):
     fid = row["id"]
     f = stack["poses"][pid]["features"].get(fid, {})
     names = stack["poses"][pid]["vars_z_A"]
     ev = lambda e: check_stack.eval_expr(e, P, names)  # noqa: E731
-    kw = _style(row)
+    kw = _style(row, hidden)
     if f.get("sector"):
         sec = f["sector"]   # wedge: apex and arc of the spec boundary (its edge sample points dropped)
         wedge = [p for p in sc.sector_boundary(sec) if math.hypot(*p) <= sc.TOL_Z or abs(math.hypot(*p) - sec["r"]) <= sc.TOL_Z]
@@ -160,9 +193,8 @@ def draw_row(ax, P, stack, pid, row):
     if row.get("section") and not f.get("place"):
         a, b = sorted(ev(e) for e in row["section"])
         sc.draw(fid, Annulus((0, 0), b, b - a, **kw) if a > 0 else Circle((0, 0), b, **kw), ax)
-        if row["kind"] == "gear":   # drafting convention: pitch circle chain-dashed inside the OD (shape: tooth ticks, open item)
-            sc.draw(fid, Circle((0, 0), P.get("gear.pitch_diameter") / 2, fill=False, edgecolor="k", linestyle=CHAIN,
-                                linewidth=0.5, zorder=Z_DRIVE), ax)
+        if row["kind"] == "gear" and any(p.get("pred") == "ticks_radial" for p in row.get("sense") or []):
+            _gear_ticks(ax, P, row, kw)
         return
     if f.get("plan_pieces"):
         for pc in f["plan_pieces"]:
@@ -186,11 +218,9 @@ def draw_row(ax, P, stack, pid, row):
             else:
                 sc.draw(fid, Line2D([r0 * c, r1 * c], [r0 * s, r1 * s], **lk), ax)
         elif row["kind"] == "gear":
-            heel = P.get("pinion.r_heel")
-            sc.draw(fid, Polygon(_radial_poly(r0, heel, th, w * r0 / heel, w), closed=True, **kw), ax)
-            hub = dict(kw)
-            hub.pop("hatch", None)
-            sc.draw(fid, Polygon(_radial_poly(heel, r1, th, w / 2), closed=True, **hub), ax)
+            heel = P.get("pinion.r_heel")   # toothed piece under the gear annulus: hidden (Designer M1 r1 F2)
+            sc.draw(fid, Polygon(_radial_poly(r0, heel, th, w * r0 / heel, w), closed=True, **_hidden(kw)), ax)
+            sc.draw(fid, Polygon(_radial_poly(heel, r1, th, w / 2), closed=True, **kw), ax)
         else:
             sc.draw(fid, Polygon(check_stack.radial_corners(r0, r1, th, w, pl.get("rot", 0)), closed=True, **kw), ax)
         return
@@ -228,9 +258,10 @@ def build(P, spec, stack):
     feats = pr["features"]
     title = f"S2 plan seen from +Z, pose {pid} (ring at {feats['ring']['z_min']:.2f} to {feats['ring']['z_max']:.2f} z_S)"
     fig, ax = sc.setup_figure(spec["view"], title=title)
+    hidden = sc.hidden_rows(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid)
     for row in spec["features"]:
         if sc.applies(row, pid):
-            draw_row(ax, P, stack, pid, row)
+            draw_row(ax, P, stack, pid, row, hidden)
     _tags(ax, P, feats)
     s21 = spec["s2_checks"]["S2-1"]
     ang = lambda k, ids: ", ".join(f"{i[-1]} {feats[i]['place']['theta']:g}" for i in ids)  # noqa: E731
@@ -240,8 +271,10 @@ def build(P, spec, stack):
                f"(datum B cross, +X / +Y arrows and theta arc inside the drill tube bore)"),
         (None, f"screws {ang('s', s21['screws'])}; pinions {ang('p', s21['pinions'])} deg;\n"
                f"pinion phase {s21['phase_deg']:g} deg from the screws (Design Notes 27, O1-B)"),
-        (None, "dashed: under a nearer part (base frame, pockets, lift motors, anchor arms and blocks, bushings,\n"
-               "bearing, ties); dotted: cutter rim, descent-stop post; chain: slot lines, pinion axes, gear pitch circle"),
+        (None, "dashed, no fill: under a nearer part (base frame, pockets, lift motors, anchor arms and blocks, nuts, descent-stop\n"
+               "pad, motor mounts, guide lugs and rods, bushings, bearing, pinion teeth under the gear); dotted: cutter rim, descent-stop post\n"
+               "dashed: Step 2 stand-in (rod top ties)\n"
+               "dashed radial ticks: gear teeth on the underside face (teeth face down); chain: slot lines, pinion axes"),
         (None, f"plan at pose {pid}; plan positions do not change with pose (z bands per pose in the checks)"),
     ]
     if pf.get("figure_note"):

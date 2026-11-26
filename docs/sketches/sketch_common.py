@@ -21,7 +21,7 @@ matplotlib.use("Agg")
 import numpy as np  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.backends.backend_agg import FigureCanvasAgg  # noqa: E402
-from matplotlib.collections import Collection  # noqa: E402
+from matplotlib.collections import Collection, LineCollection  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Annulus, Circle, Ellipse, Patch, Polygon, Rectangle  # noqa: E402
@@ -167,11 +167,65 @@ LABEL_LINESPACING = 1.2
 LABEL_GAP_LINES = 0.5      # free space between stacked label boxes, in text lines (Designer M1 r2 F4)
 
 
-def _right_anchor(ax, fid):
-    pts = [p for poly in pieces(ax, fid) for p in poly]
-    if not pts:
+def ink_pieces(ax, gid):
+    """Drawn pieces of a row as (points, closed): a Patch is a closed outline, a Line2D or a Collection path an open
+    polyline (1.2 (h), Designer M1 r1 F4: a leader ends on ink)."""
+    out = []
+    for a in tagged(ax).get(gid, []):
+        closed = isinstance(a, Patch)
+        out += [(poly, closed) for poly in artist_polys(a)]
+    return out
+
+
+def ink_distance(p, ink):
+    """Distance from p to the nearest ink of a row (0 inside a closed outline)."""
+    best = None
+    for poly, closed in ink:
+        if closed and len(poly) >= 3 and _inside(p, poly):
+            return 0.0
+        segs = _edges(poly) if closed else ([(poly[i], poly[i + 1]) for i in range(len(poly) - 1)] or [(poly[0], poly[0])])
+        d = min(_pt_seg(p, a, b) for a, b in segs)
+        best = d if best is None else min(best, d)
+    return float("inf") if best is None else best
+
+
+def _ray_hit(ink, theta):
+    """Farthest point of a row's ink on the ray from the drill axis at theta (deg); None when the ray misses."""
+    c, s = math.cos(math.radians(theta)), math.sin(math.radians(theta))
+    best = None
+    for poly, closed in ink:
+        segs = _edges(poly) if closed else [(poly[i], poly[i + 1]) for i in range(len(poly) - 1)]
+        for a, b in segs:
+            ex, ey = b[0] - a[0], b[1] - a[1]
+            den = c * ey - s * ex
+            if abs(den) < 1e-12:
+                continue
+            t = (a[0] * ey - a[1] * ex) / den        # distance along the ray
+            u = (a[0] * s - a[1] * c) / den          # position along the edge
+            if t >= 0 and -1e-9 <= u <= 1 + 1e-9 and (best is None or t > best):
+                best = t
+    return None if best is None else (best * c, best * s)
+
+
+def label_anchor(ax, row):
+    """Leader end of a row's label, on the row's ink (1.2 (h), Designer M1 r1 F4 and F5). A row with label_theta (deg,
+    spec field; concentric circles) anchors where the ray from the drill axis at that azimuth leaves its ink. Otherwise
+    (max x, mid y) of the drawn pieces when that point is on the ink (a rectangle's or circle's right edge), else the
+    drawn vertex of greatest x (nearest mid y among equals): the observer end of a slanted line, the corner of a wedge."""
+    ink = ink_pieces(ax, row["id"])
+    if not ink:
         return None
-    return max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
+    if row.get("label_theta") is not None:
+        hit = _ray_hit(ink, float(row["label_theta"]))
+        if hit is not None:
+            return hit
+    pts = [p for poly, _ in ink for p in poly]
+    xm = max(p[0] for p in pts)
+    ym = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
+    if ink_distance((xm, ym), ink) <= TOL_Z:
+        return xm, ym
+    cand = [p for p in pts if p[0] >= xm - TOL_Z]
+    return min(cand, key=lambda p: abs(p[1] - ym))
 
 
 def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()):
@@ -184,7 +238,7 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
     for row in spec.get("features", []):
         if not row.get("label") or (pose and row.get("poses") and pose not in row["poses"]):
             continue
-        anc = _right_anchor(ax, row["id"])
+        anc = label_anchor(ax, row)
         if anc is None:
             continue
         rec = (stack_pose or {}).get(row["id"])
@@ -871,7 +925,8 @@ def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 # ======================================================================== spec lint (SW-1, TP-6, TP-8)
 
 PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
-               "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward"}
+               "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward",
+               "ticks_radial": "count"}
 
 
 def sense_lint(rows):
@@ -1003,8 +1058,43 @@ def k3(ctx):
             issues.append(f"{name}: figsize ({w:.1f}, {h:.1f}) below {need}")
         if abs(fig.dpi - DPI) > 1e-9:
             issues.append(f"{name}: dpi {fig.dpi:g} not {DPI}")
-    return result("K3", not issues, _summ(issues) if issues else f"{len(ctx.figs)} figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi {DPI}",
+    issues += text_clip_issues(ctx)
+    return result("K3", not issues, _summ(issues) if issues else f"{len(ctx.figs)} figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi {DPI}; every text inside the saved image",
                   measured=len(issues), threshold=0, n_issues=len(issues))
+
+
+def saves_tight(paths):
+    """True when every savefig call in the scripts passes bbox_inches="tight" (and there is at least one)."""
+    calls = []
+    for path in paths:
+        tree = ast.parse(Path(path).read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "savefig":
+                calls.append(any(kw.arg == "bbox_inches" and isinstance(kw.value, ast.Constant) and kw.value.value == "tight"
+                                 for kw in node.keywords))
+    return bool(calls) and all(calls)
+
+
+def text_clip_issues(ctx):
+    """1.2 (h), Designer M1 S1 r5 F1: every Text of the figure (labels, notes, tags, title) lies inside the saved image.
+    The saved image is the figure canvas, or the tight bounding box of every artist when every savefig call of the
+    script passes bbox_inches="tight" (premise read from the script source; a fixture without a script is held to the
+    canvas). Window extents in pixels, tolerance half a pixel."""
+    out = []
+    tight = saves_tight(ctx.script_paths) if ctx.script_paths else False
+    for name, fig in ctx.figs.items():
+        r = fig.canvas.get_renderer()
+        box = fig.get_tightbbox(r).transformed(fig.dpi_scale_trans) if tight else fig.bbox
+        texts = [t for ax in fig.axes for t in ax.texts] + list(fig.texts) + [ax.title for ax in fig.axes]
+        for t in texts:
+            if not t.get_visible() or not t.get_text():
+                continue
+            e = t.get_window_extent(r)
+            over = max(box.x0 - e.x0, box.y0 - e.y0, e.x1 - box.x1, e.y1 - box.y1)
+            if over > 0.5:
+                first = t.get_text().splitlines()[-1][:60] if t.get_text().splitlines() else t.get_text()[:60]
+                out.append(f"{name}: text {first!r} runs {over:.0f} px outside the saved image")
+    return out
 
 
 # ======================================================================== K4 labels carry their dimension
@@ -1037,11 +1127,44 @@ def k4(ctx):
             elif not any(abs(float(m) - float(want)) < 1e-9 for m in nums):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {lab['key']} = {want}")
     issues += figure_note_issues(ctx)
-    return result("K4", not issues, _summ(issues) if issues else f"{n} label(s) carry their key value; figure note names every not_drawn part",
+    issues += leader_issues(ctx)
+    return result("K4", not issues, _summ(issues) if issues else f"{n} label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
                   measured=len(issues), threshold=0, n_issues=len(issues))
 
 
 NOTE_GID = "note:figure_note"
+
+
+def leader_issues(ctx):
+    """1.2 (h), Designer M1 r1 F4 and F5. (a) Every label annotation (gid label:<id>) ends its leader (xy) on the ink of
+    its row, within TOL_Z: on a closed outline or inside it, or on a drawn line. (b) No two label leaders cross: the
+    leader is the segment from the text position (xytext; the label xy when the label has no separate text position)
+    to xy, in data coordinates, and two leaders that properly intersect fail."""
+    out = []
+    for pose, fig in ctx.figs.items():
+        ax = fig.axes[0]
+        legs = []
+        for t in ax.texts:
+            g = t.get_gid() or ""
+            if not g.startswith("label:") or not hasattr(t, "xy"):
+                continue
+            fid = g[len("label:"):]
+            ink = ink_pieces(ax, fid)
+            xy = tuple(float(v) for v in t.xy)
+            if not ink:
+                continue          # K9 reports an undrawn row
+            d = ink_distance(xy, ink)
+            if d > TOL_Z:
+                out.append(f"{pose}/{fid}: label leader ends at ({xy[0]:.2f}, {xy[1]:.2f}), {d:.2f} off the drawn part")
+            xt = getattr(t, "xyann", None)
+            if xt is not None and (abs(xt[0] - xy[0]) > 1e-9 or abs(xt[1] - xy[1]) > 1e-9):
+                legs.append((fid, (float(xt[0]), float(xt[1])), xy))
+        for i in range(len(legs)):
+            for j in range(i + 1, len(legs)):
+                (fa, a0, a1), (fb, b0, b1) = legs[i], legs[j]
+                if _segs_cross(a0, a1, b0, b1):
+                    out.append(f"{pose}: label leaders {fa} and {fb} cross")
+    return out
 
 
 def part_head(part):
@@ -1129,6 +1252,60 @@ def heel_point(pts, theta):
     return ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2)
 
 
+TICKS_SUFFIX = ":ticks"
+
+
+def ticks_admission_issue(row, artist, plan, siblings):
+    """1.2 (h), Designer M1 r1 F1 rule: K5 admits, under a gear row, one LineCollection sub-artist <row>:ticks (the
+    dashed tooth ticks on the underside face) in plan_xy, only when the row carries the K8 ticks_radial predicate that
+    enforces the premise (radial direction, ends between toe and heel, count). None when admitted, else the reason."""
+    if row is None:
+        return "sub-artist of no spec row"
+    if row.get("kind") != "gear" or row.get("axis") != "Z" or not plan:
+        return f"tick sub-artist admitted only for a gear row with axis Z in plan_xy ({row.get('kind')}, axis {row.get('axis')})"
+    if not isinstance(artist, LineCollection):
+        return f"tick sub-artist must be a LineCollection (drawn as {type(artist).__name__})"
+    if len(siblings) != 1:
+        return f"{len(siblings)} tick sub-artists, one admitted"
+    if not any(pr.get("pred") == "ticks_radial" for pr in row.get("sense") or []):
+        return "tick sub-artist without the K8 ticks_radial predicate on its row (premise unenforced)"
+    return None
+
+
+def ticks_radial_issue(ax, fid, pr, P):
+    """K8 ticks_radial (1.2 (h), Designer M1 r1 F1 premise): the row's <fid>:ticks LineCollection, through its artist
+    transform, holds exactly `count` segments; each lies on a radius (the line through its ends passes within TOL_Z of
+    the drill axis, and its ends lie on one side of it) with both ends between r_in - TOL_Z and r_out + TOL_Z.
+    Returns a list of issue texts."""
+    arts = tagged(ax).get(fid + TICKS_SUFFIX, [])
+    if not arts:
+        return ["no tick sub-artist drawn"]
+    import check_stack as cs  # stdlib + sketch_loader only; no cycle
+    r_in, r_out = cs.eval_expr(pr["r_in"], P, {}), cs.eval_expr(pr["r_out"], P, {})
+    want = int(round(cs.eval_expr(pr["count"], P, {})))
+    segs = [poly for a in arts for poly in artist_polys(a)]
+    out = []
+    if len(segs) != want:
+        out.append(f"{len(segs)} ticks drawn, count {pr['count']} = {want}")
+    for i, poly in enumerate(segs):
+        if len(poly) != 2:
+            out.append(f"tick {i} has {len(poly)} points, needs 2")
+            continue
+        (x0, y0), (x1, y1) = poly
+        L = math.hypot(x1 - x0, y1 - y0)
+        if L < 1e-9:
+            out.append(f"tick {i} has zero length")
+            continue
+        off = abs(x0 * y1 - x1 * y0) / L
+        same_side = (x0 * x1 + y0 * y1) > 0
+        ra, rb = math.hypot(x0, y0), math.hypot(x1, y1)
+        if off > TOL_Z or not same_side:
+            out.append(f"tick {i} not radial: its line passes {off:.2f} from the drill axis")
+        if min(ra, rb) < r_in - TOL_Z or max(ra, rb) > r_out + TOL_Z:
+            out.append(f"tick {i} r [{min(ra, rb):.2f}, {max(ra, rb):.2f}] outside [{r_in:.2f}, {r_out:.2f}]")
+    return out
+
+
 def expected_projection(kind, axis, normal):
     if normal is None or axis is None:
         return None
@@ -1165,6 +1342,12 @@ def k5(ctx):
                 continue
             row = rows.get(gid)
             if row is None:
+                base = gid[:-len(TICKS_SUFFIX)] if gid.endswith(TICKS_SUFFIX) else None
+                if base is not None:
+                    n += 1
+                    t = ticks_admission_issue(rows.get(base), a, plan, drawn.get(gid, []))
+                    if t:
+                        issues.append(f"{pose}/{gid}: {t}")
                 continue
             n += 1
             want = expected_projection(row.get("kind"), row.get("axis"), normal)
@@ -1454,11 +1637,77 @@ def _measurable(row):
     return not row.get("reference") and row.get("kind") not in NO_AREA_KINDS
 
 
+K7_TEST_FIELDS = ["pose", "pair", "class", "state", "z_gap", "distance", "overlap", "basis"]
+
+
+def _r3(v):
+    return None if v is None else round(float(v), 3)
+
+
+def _side_measure(st, lb):
+    """(distance, overlap, basis) of a side-view K7 judgement from its state and lower bound (assess_pair)."""
+    if lb is None:
+        return None, None, "declared N" if st == "N" else "none"
+    d, a = (float(lb), 0.0) if lb >= 0 else (0.0, float(-lb))
+    if st == "depth-separated":
+        return d, 0.0, "depth band"
+    if st in ("plan-separated", "plan-contact"):
+        return d, a, "plan footprint (spec placement)"
+    return d, a, "XZ projection (exact)"
+
+
+def _plan_basis(OA, OB, need, st):
+    """Basis of a plan K7 distance (Loftsman 1.2 (e) LF1.2-1): z band, box bound, circumscribed outline, depth disk, exact."""
+    if st in ("z-separated", "z-touch"):
+        return "z band"
+    kinds = []
+    for O in (OA, OB):
+        if O[0] == "annulus" and not O[2] and O[1][0] == 0.0:
+            kinds.append("depth disk")
+        elif not O[2]:
+            kinds.append("circumscribed outline")
+    if kinds:
+        return " + ".join(sorted(set(kinds)))
+    if OA[0] == "polys" and OB[0] == "polys" and _bbox_gap(OA[1], OB[1]) > need + 1:
+        return "box bound"
+    return "exact"
+
+
+def k7_record_issues(res):
+    """Record lint (Loftsman 1.2 (e) LF1.2-1): a K7 result carries `tests`, one entry per state, each a list in the order
+    of `test_fields` with a pose, a pair "a|b", a class, a state equal to the state list entry, and a basis."""
+    out = []
+    tests, states = res.get("tests"), res.get("states") or []
+    if res.get("test_fields") != K7_TEST_FIELDS:
+        out.append(f"K7 record: test_fields {res.get('test_fields')!r}, want {K7_TEST_FIELDS}")
+    if tests is None:
+        return out + ["K7 record: no per-test entries (tests)"]
+    if len(tests) != len(states):
+        out.append(f"K7 record: {len(tests)} test entries for {len(states)} states")
+    for i, t in enumerate(tests):
+        if not isinstance(t, (list, tuple)) or len(t) != len(K7_TEST_FIELDS):
+            out.append(f"K7 record: entry {i} is not a {len(K7_TEST_FIELDS)}-field list")
+            continue
+        e = dict(zip(K7_TEST_FIELDS, t))
+        miss = [k for k in ("pose", "pair", "class", "state", "basis") if not e[k]]
+        if miss or "|" not in str(e["pair"]):
+            out.append(f"K7 record: entry {i} lacks {miss or ['pair a|b']}")
+        elif i < len(states) and e["state"] != states[i]:
+            out.append(f"K7 record: entry {i} state {e['state']!r} differs from states[{i}] {states[i]!r}")
+    return out
+
+
 def k7(ctx):
     rows_list = ctx.spec.get("features", [])
     rows = {r["id"]: r for r in rows_list}
     side = ctx.view in SIDE_VIEWS
     issues, states, tested, failing, absent = [], [], 0, 0, 0
+    tests = []
+
+    def log(pose, a, b, cls, st, gap, lb):
+        d, ar, basis = _side_measure(st, lb)
+        states.append(st)
+        tests.append([pose, f"{a}|{b}", cls, st, _r3(gap), _r3(d), _r3(ar), basis])
     # TP-4 / LF-5: an explicit depth band must contain the placed part's true projection
     linted = set()
     for pose in ctx.figs:
@@ -1497,7 +1746,7 @@ def k7(ctx):
                 PA, PB = pieces(ax, a), pieces(ax, b)
                 gap = band_gap(_sep_band(ctx, pose, a), _sep_band(ctx, pose, b))
                 if nb["class"] == "N":
-                    states.append("N")
+                    log(pose, a, b, "N", "N", gap, None)
                     continue
                 needs_draw = not (gap is not None and gap > 0 and nb["class"] in ("F", "G") and gap >= (nb.get("g_min") or 0) - TOL_C)
                 if needs_draw and (not PA or not PB):
@@ -1505,11 +1754,11 @@ def k7(ctx):
                     failing += 1
                     absent += 1
                     continue
-                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), PA, PB, gap, (a, b),
-                                             plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None,
-                                             plan_contact=plan_contact_fn(ctx, rows, pose, a, b) if side else None)
+                ok, st, txt, lb = assess_pair(nb["class"], nb.get("g_min"), PA, PB, gap, (a, b),
+                                              plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None,
+                                              plan_contact=plan_contact_fn(ctx, rows, pose, a, b) if side else None)
                 tested += st not in ("depth-separated",)
-                states.append(st)
+                log(pose, a, b, nb["class"], st, gap, lb)
                 if not ok:
                     failing += 1
                     issues.append(f"{tag}: {txt}")
@@ -1523,9 +1772,11 @@ def k7(ctx):
                     if frozenset((a, b)) in declared or a == b or not drawn[a] or not drawn[b]:
                         continue
                     gap = band_gap(_sep_band(ctx, pose, a), _sep_band(ctx, pose, b))
-                    ok, st, txt, _ = assess_pair("F", 0, drawn[a], drawn[b], gap, (a, b),
-                                                 plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None)
+                    ok, st, txt, lb = assess_pair("F", 0, drawn[a], drawn[b], gap, (a, b),
+                                                  plan_gap=plan_gap_fn(ctx, rows, pose, a, b) if side else None)
+                    d, ar, basis = _side_measure(st, lb)
                     states.append(f"undeclared:{st}")
+                    tests.append([pose, f"{a}|{b}", "F (undeclared)", f"undeclared:{st}", _r3(gap), _r3(d), _r3(ar), basis])
                     if not ok:
                         failing += 1
                         issues.append(f"{pose}/{a}|{b} undeclared (F): {txt}")
@@ -1566,6 +1817,7 @@ def k7(ctx):
                 if not PL or not PH or not PB:
                     if gap is not None and gap > 0 and gap >= (nb.get("g_min") or 0) - TOL_C:
                         states.append("swept:depth-separated")
+                        tests.append([f"swept {lo}..{hi}", f"{a}|{b}", nb["class"], "swept:depth-separated", _r3(gap), _r3(gap), 0.0, "depth band"])
                         continue
                     issues.append(f"{tag}: untestable, not drawn")
                     failing += 1
@@ -1576,15 +1828,18 @@ def k7(ctx):
                     failing += 1
                     continue
                 hulls = [convex_hull(list(p) + list(q)) for p, q in zip(PL, PH)]
-                ok, st, txt, _ = assess_pair(nb["class"], nb.get("g_min"), hulls, PB, gap, (f"{a} swept", b),
-                                             plan_gap=plan_gap_fn(ctx, rows, lo, a, b) if side else None)
+                ok, st, txt, lb = assess_pair(nb["class"], nb.get("g_min"), hulls, PB, gap, (f"{a} swept", b),
+                                              plan_gap=plan_gap_fn(ctx, rows, lo, a, b) if side else None)
                 tested += st not in ("depth-separated",)
+                d, ar, basis = _side_measure(st, lb)
                 states.append(f"swept:{st}")
+                tests.append([f"swept {lo}..{hi}", f"{a}|{b}", nb["class"], f"swept:{st}", _r3(gap), _r3(d), _r3(ar), basis + " (swept hull)"])
                 if not ok:
                     failing += 1
                     issues.append(f"{tag}: swept hull {txt}")
     return result("K7", not issues, _summ(issues) if issues else f"{tested} pair test(s) clean; states {sorted(set(states))}",
-                  measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)))
+                  measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)),
+                  test_fields=list(K7_TEST_FIELDS), tests=tests)
 
 
 def _outline_diff(A, B):
@@ -1609,6 +1864,17 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
     declared with poses only, as F, LF-c1; N excepted)
     whose z band meets the sweep band (min to max of the moving row's z over the poses), Loftsman 1.2 (b) section 5."""
     states, tested, absent = [], 0, 0
+    tests = []
+
+    def log(pose, a, b, cls, st, gap, OA=None, OB=None, need=TOL_C):
+        states.append(st)
+        if OA is None or OB is None or st.split(":")[-1] in ("z-separated", "z-touch"):
+            d = gap if (gap is not None and st != "N") else None
+            tests.append([pose, f"{a}|{b}", cls, st, _r3(gap), _r3(d), 0.0 if d is not None else None,
+                          "declared N" if st == "N" else "z band"])
+            return
+        d, ar = measure(OA, OB, need)
+        tests.append([pose, f"{a}|{b}", cls, st, _r3(gap), _r3(d), _r3(ar), _plan_basis(OA, OB, need, st.split(":")[-1])])
     poses = list((ctx.stack or {}).get("poses", {})) or list(ctx.figs)
     one_fig = len(ctx.figs) < len(poses)
     out_cache, m_cache = {}, {}
@@ -1672,11 +1938,11 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                     continue
                 tag = f"{pose}/{a}|{b} {nb['class']}"
                 if nb["class"] == "N":
-                    states.append("N")
+                    log(pose, a, b, "N", "N", band_gap(zb(a, pose), zb(b, pose)))
                     continue
                 gap = band_gap(zb(a, pose), zb(b, pose))
                 if gap is not None and gap > TOL_C and nb["class"] in ("F", "G") and gap >= (nb.get("g_min") or 0) - TOL_C:
-                    states.append("z-separated")
+                    log(pose, a, b, nb["class"], "z-separated", gap)
                     continue
                 missing = [x for x in (a, b) if not drawn(x, pose)]
                 if missing:
@@ -1691,7 +1957,7 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                     continue
                 ok, st, txt, _ = _plan_judge(nb["class"], nb.get("g_min"), OA, OB, gap, measure)
                 tested += st != "z-separated"
-                states.append(st)
+                log(pose, a, b, nb["class"], st, gap, OA, OB, (nb.get("g_min") or 0) if nb["class"] == "G" else TOL_C)
                 if not ok:
                     failing += 1
                     issues.append(f"{tag}: {txt}")
@@ -1704,11 +1970,11 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                         continue
                     gap = band_gap(zb(a, pose), zb(b, pose))
                     if gap is not None and gap > TOL_C:
-                        states.append("undeclared:z-separated")
+                        log(pose, a, b, "F (undeclared)", "undeclared:z-separated", gap)
                         continue
                     OA, OB = outline(a, pose), outline(b, pose)
                     ok, st, txt, _ = _plan_judge("F", 0, OA, OB, gap, measure)
-                    states.append(f"undeclared:{st}")
+                    log(pose, a, b, "F (undeclared)", f"undeclared:{st}", gap, OA, OB)
                     if not ok:
                         failing += 1
                         issues.append(f"{pose}/{a}|{b} undeclared (F): {txt}")
@@ -1751,7 +2017,7 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                 gap = band_gap(sweep, zbb)
                 tag = f"swept {lo}..{hi}/{a}|{b} {cls}"
                 if gap is not None and gap > TOL_C and (cls == "F" or gap >= g - TOL_C):
-                    states.append("swept:z-separated")
+                    log(f"swept {lo}..{hi}", a, b, cls, "swept:z-separated", gap)
                     continue
                 if not (drawn(a, lo) and drawn(a, hi) and drawn(b, lo)):
                     issues.append(f"{tag}: untestable, not drawn")
@@ -1769,12 +2035,13 @@ def _k7_plan(ctx, rows_list, rows, issues, failing):
                 OB = outline(b, lo)
                 ok, st, txt, _ = _plan_judge(cls, g, OA, OB, gap, measure)
                 tested += 1
-                states.append(f"swept:{st}")
+                log(f"swept {lo}..{hi}", a, b, cls, f"swept:{st}", gap, OA, OB, g if cls == "G" else TOL_C)
                 if not ok:
                     failing += 1
                     issues.append(f"{tag}: swept outline {txt}")
     return result("K7", not issues, _summ(issues) if issues else f"{tested} plan pair test(s) clean over {len(poses)} pose(s); states {sorted(set(states))}",
-                  measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)))
+                  measured=failing, threshold=0, states=states, failing=failing, n_issues=len(issues), cause=_cause(absent, len(issues)),
+                  test_fields=list(K7_TEST_FIELDS), tests=tests)
 
 
 # ======================================================================== K8 sense and orientation
@@ -1831,6 +2098,118 @@ def face_rises_issue(polys, toward):
             return (f"piece {k}: face from ({a[0]:.2f}, {a[1]:.2f}) to ({b[0]:.2f}, {b[1]:.2f}), "
                     f"dz {b[1] - a[1]:+.2f} over d|x| {abs(b[0]) - abs(a[0]):+.2f}")
     return None
+
+
+COVER_SHRINK = 0.98    # sample points: each drawn vertex pulled 2 % toward its piece centre (Topologist 1.2 (e) section 7)
+SOLID_STYLES = ("-", "solid", None)
+
+
+def _cover_samples(a):
+    """Points strictly inside a drawn area artist, in rendered data coordinates. An Annulus (outer and inner rings from
+    artist_polys) at 2 %, 50 % and 98 % of its width along each outer-ring vertex direction; any other closed piece by
+    its vertices pulled COVER_SHRINK toward the piece centroid."""
+    polys = [p for p in artist_polys(a) if len(p) >= 3]
+    if isinstance(a, Annulus) and len(polys) == 2:
+        outer, inner = sorted(polys, key=poly_area_abs, reverse=True)
+        cx, cy = centroid([outer])
+        ri = sum(math.hypot(x - cx, y - cy) for x, y in inner) / len(inner)
+        out = []
+        for x, y in outer:
+            ro = math.hypot(x - cx, y - cy)
+            ux, uy = (x - cx) / ro, (y - cy) / ro
+            out += [(cx + (ro - f * (ro - ri)) * ux, cy + (ro - f * (ro - ri)) * uy) for f in (0.02, 0.5, 0.98)]
+        return out
+    out = []
+    for poly in polys:
+        cx, cy = centroid([poly])
+        out += [(cx + COVER_SHRINK * (x - cx), cy + COVER_SHRINK * (y - cy)) for x, y in poly]
+    return out
+
+
+def poly_area_abs(P):
+    return abs(poly_area(P))
+
+
+def is_solid(a):
+    """A drawn artist reads as visible: solid line style, or a fill, or a hatch."""
+    ls = a.get_linestyle()
+    fill = bool(a.get_fill()) if isinstance(a, Patch) else False
+    hatch = a.get_hatch() if isinstance(a, Patch) else None
+    return (ls in SOLID_STYLES) or fill or bool(hatch)
+
+
+def cover_issues(ctx, ax, pose, rows_list):
+    """K8 cover (1.2 (h); Topologist 1.2 (e) FIX TP1.2-2 and NOTE TP1.2-9; Designer M1 r1 F2 rule): in plan, a drawn
+    area artist of a row whose every sample point lies inside the true plan outline of some row with a z_max greater by
+    more than TOL_Z at the figure pose is hidden, and is drawn non-solid (dashed or dotted line, no fill, no hatch).
+    Premise: only true outlines (plan_outline true: section annulus, radial rectangle, round circle, plan_poly piece)
+    count as cover; a circumscribing outline (lift motor circle, pinion rectangle, depth-band disk) never does.
+    Reference rows, line kinds and the rows' own sub-artists are out. Returns (artists tested, issues)."""
+    rows = [r for r in rows_list if applies(r, pose) and _measurable(r)]
+    zmax = {r["id"]: _feat(ctx, pose, r["id"]).get("z_max") for r in rows}
+    outl = {}
+    for r in rows:
+        o = plan_outline(ctx, r, pose)
+        if o is not None and o[2] and zmax[r["id"]] is not None:
+            outl[r["id"]] = o
+    n, out = 0, []
+    for r in rows:
+        fid, z = r["id"], zmax[r["id"]]
+        if z is None:
+            continue
+        covers = [(oid, o) for oid, o in outl.items() if oid != fid and zmax[oid] > z + TOL_Z]
+        if not covers:
+            continue
+        for a in tagged(ax).get(fid, []):
+            if isinstance(a, Line2D):
+                continue
+            pts = _cover_samples(a)
+            if not pts:
+                continue
+            n += 1
+            by = set()
+            hidden = True
+            for p in pts:
+                hit = next((oid for oid, o in covers if outline_outside(o, p) <= 1e-9), None)
+                if hit is None:
+                    hidden = False
+                    break
+                by.add(hit)
+            if hidden and is_solid(a):
+                out.append(f"{pose}/{fid} cover: {type(a).__name__} wholly under {', '.join(sorted(by))} drawn solid "
+                           f"(linestyle {a.get_linestyle()!r}, fill {a.get_fill() if isinstance(a, Patch) else False}, "
+                           f"hatch {a.get_hatch() if isinstance(a, Patch) else None!r}); a hidden part is dashed, no fill")
+    return n, out
+
+
+def hidden_rows(ctx, pose):
+    """Rows to draw hidden in plan (Designer M1 r1 F2 rule, TP1.2-2): ids of the area rows whose own plan outline lies
+    wholly inside true outlines of rows with a z_max greater by more than TOL_Z at pose (samples as in K8 cover, taken
+    on the row's outline). The drawing reads this set; K8 cover tests the drawn artists independently."""
+    rows = [r for r in ctx.spec.get("features", []) if applies(r, pose) and _measurable(r)]
+    zmax = {r["id"]: _feat(ctx, pose, r["id"]).get("z_max") for r in rows}
+    outl = {r["id"]: plan_outline(ctx, r, pose) for r in rows}
+    out = set()
+    for r in rows:
+        fid, z, o = r["id"], zmax[r["id"]], outl[r["id"]]
+        if z is None or o is None:
+            continue
+        covers = [c for oid, c in outl.items() if c is not None and c[2] and oid != fid and zmax[oid] is not None and zmax[oid] > z + TOL_Z]
+        if not covers:
+            continue
+        if o[0] == "annulus":
+            a, b = o[1]
+            pts = [(rr * math.cos(2 * math.pi * i / PLAN_NGON), rr * math.sin(2 * math.pi * i / PLAN_NGON))
+                   for rr in (b - 0.02 * (b - a), (a + b) / 2, a + 0.02 * (b - a)) for i in range(PLAN_NGON)]
+        else:
+            pts = []
+            for poly in o[1]:
+                if len(poly) >= 3:
+                    cx, cy = centroid([poly])
+                    pts += [(cx + COVER_SHRINK * (x - cx), cy + COVER_SHRINK * (y - cy)) for x, y in poly]
+        if pts and all(any(outline_outside(c, p) <= 1e-9 for c in covers) for p in pts):
+            out.add(fid)
+    return out
 
 
 def k8(ctx):
@@ -1997,6 +2376,13 @@ def k8(ctx):
                     t = face_rises_issue(me, pr["toward"])
                     if t:
                         issues.append(f"{pose}/{fid} face_rises {pr['toward']}: {t}")
+                elif kind == "ticks_radial":
+                    for t in ticks_radial_issue(ax, fid, pr, ctx.P):
+                        issues.append(f"{pose}/{fid} ticks_radial: {t}")
+        if plan and ctx.stack:
+            nc, ci = cover_issues(ctx, ax, pose, rows_list)
+            n += nc
+            issues += ci
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
                   n_issues=len(issues), cause=_cause(absent, len(issues)))
 
@@ -2027,6 +2413,8 @@ def k9(ctx):
             if not applies(r, pose) and (r["id"] in gids or r["id"] in text_gids):
                 issues.append(f"{pose}: {r['id']} drawn at a pose outside its poses {r.get('poses')}")
         for g in sorted((gids | text_gids) - ids):
+            if g.endswith(TICKS_SUFFIX) and g[:-len(TICKS_SUFFIX)] in ids and g in gids:
+                continue      # sub-artist of a row; K5 rules its admission (1.2 (h), Designer M1 r1 F1)
             issues.append(f"{pose}: tagged artist {g} has no spec row")
     return result("K9", not issues, _summ(issues) if issues else f"every spec row drawn, every tagged artist in the spec ({len(ids)} rows)",
                   measured=len(issues), threshold=0, n_issues=len(issues))

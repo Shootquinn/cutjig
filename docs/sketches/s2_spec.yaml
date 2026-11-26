@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (awaiting the Loftsman and Designer at (c)/(e))"
+status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) awaiting the Designer re-sign and the raisers' re-check (step1.2_engineer_revision_r2.md)"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -72,7 +72,7 @@ s2_checks:
   S2-3: {pinions: [pinion_a, pinion_b, pinion_c], gear: gear, pitch_r: "gear.pitch_diameter / 2", tol: 0.05, source: "overlay gear.* ASSUMED"}
   S2-4: {rows: [drill_tube, collet_axis, ring, gear], tol: 0.05, source: "R13 ASSUMED [CP §14]; nominal only"}
   S2-5a: {sector: operator_sector, against: fixed, fixed: [frame_upper_a, frame_upper_b, frame_upper_c, liftmotor_a, liftmotor_b, liftmotor_c, anchor_a, anchor_b, anchor_c, guide_a, guide_b, guide_c, bracket_anchor_a, bracket_anchor_b, bracket_anchor_c, bracket_guide_a, bracket_guide_b, bracket_guide_c, descent_stop_post, guide_member, guide_member_b, guide_tie_a, guide_tie_b, screw_a, screw_b, screw_c, descent_stop], class: F, z: all, source: "Designer 1.2 (a) section 5; Design Notes 27 O1-B"}
-  S2-5b: {sector: operator_sector, pose: load, ring_parts: [ring, bearing, gear, gear_hub, nut_housing_a, nut_housing_b, nut_housing_c, motor_mount_a, motor_mount_b, motor_mount_c, guide_lug_a, guide_lug_b, guide_bushing_a, guide_bushing_b, pinion_a, pinion_b, pinion_c, motor23_a, motor23_b, motor23_c, motor_shaft_a, motor_shaft_b, motor_shaft_c], band: operator.hand_band, g_min: 10, source: "premise of the S2-5a relief (detail 1 common (h)); Designer 1.2 (a) section 5 raises and signs; Design Notes 27 O1-B"}
+  S2-5b: {sector: operator_sector, pose: load, parts: moves, band: operator.hand_band, g_min: 10, source: "premise of the S2-5a relief (detail 1 common (h)); Designer 1.2 (a) section 5 raises and signs; Design Notes 27 O1-B; parts: every row with moves: true, not reference, not a line kind (Topologist 1.2 (e) FIX TP1.2-3)"}
   S2-6: {seats: {frame_upper_a: base_plate, frame_upper_b: base_plate, frame_upper_c: base_frame}, notch_clear: 5, tol: 0.05, source: "Designer 1.2 (a) section 10 (proposed S2-6); gameplan l.258; params base.*, overlay frame_upper.foot"}
 
 rubric_additions:
@@ -88,7 +88,8 @@ reported:
   - "cutter overhang of the keep-out: drill.head_od / 2 - icd.keepout_radius = 2.70 (S2-a; Step 4 ICD row icd.keepout_radius)"
   - "F6 eye limits at r 400: 0.49 m z_S to the axis, 0.58 m z_S to the cutter rim (Designer 1.2 (a) section 6)"
   - "S2-5b overhead strike list in the sector at load (bearing, ring, pinion, motor, gear z bands) and the drill tip above the hand band"
-  - "tight spots: ring rim to guide rod 10.00 (identity), ring rim to member 34.00, lift motors to the sector edge 11.71"
+  - "tight spots with their basis: ring rim to guide rod 10.00 (identity), ring rim to member 34.00, lift motors to the sector edge 11.71 (bound, circumscribed outline) / 15.69 (drawn square), pinion toe to gear hub 5.22 (Loftsman 1.2 (e) LF1.2-2, -4)"
+  - "highest point and outline extents over parts only: rows with reference: true (operator_sector, sightline_f6, collet_axis, keepout) are excluded (Designer M1 r1 ruling 3; Loftsman LF1.2-5)"
 descent_stop: "one pad (frame_upper.stop_pad_count 1; Sean STOP S2-A, Design Notes 27): rows descent_stop and descent_stop_post at jackscrew.angle[1], as S1"
 
 not_drawn:
@@ -157,7 +158,7 @@ part_list:
   - {part: "guide lugs", row: "guide_lug_a, guide_lug_b"}
   - {part: "LM20UU bushing housings", row: "guide_bushing_a, guide_bushing_b"}
   - {part: "drill-to-ring bearing", row: bearing}
-  - {part: "ring gear with tooth ticks", row: gear}
+  - {part: "ring gear with dashed tooth ticks on the underside face", row: "gear (sub-artist gear:ticks, K5 tick admission, K8 ticks_radial)"}
   - {part: "gear clamp hub", row: gear_hub}
   - {part: "bevel pinions with hubs", row: "pinion_a, pinion_b, pinion_c"}
   - {part: "pinion axes (radial chain lines)", row: "pinion_axis_a, _b, _c"}
@@ -954,7 +955,7 @@ features:
 
   - id: gear
     name: "ring gear"
-    shape: "bevel ring gear seen from above: annulus r 90 to 126.32 with tooth ticks on the OD, clamp hub on the tube (row gear_hub)"
+    shape: "bevel ring gear seen from above: annulus r 90 to 126.32 with dashed tooth ticks on the underside face, toe r 95.2 to heel r 125 (teeth face down), clamp hub on the tube (row gear_hub)"
     kind: gear
     axis: Z
     projection: circle
@@ -966,17 +967,20 @@ features:
     section: ["gear.bore / 2", "gear.od / 2"]
     depth: ["-gear.od / 2", "gear.od / 2"]
     label: {text: "gear PD", key: gear.pitch_diameter, fmt: ".0f"}
+    label_theta: 10   # leader azimuth, deg (Designer M1 r1 F5: concentric leaders spread 340, 350, 0, 10 in order of radius)
     neighbours:
       - {use: fixed_g10}
       - {id: gear_hub, class: C, g_min: 0, source: "gear bore on the hub OD (gear.hub)"}
       - {id: pinion_a, class: "N", source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
       - {id: pinion_b, class: "N", source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
       - {id: pinion_c, class: "N", source: "Designer 1.1 (a) section 7: tooth mesh, overlap in z by design"}
-    sense: []
+    sense:
+      - {pred: ticks_radial, r_in: "pinion.r_toe - pinion.pitch_diameter / pinion.tooth_count * sind(pinion.pitch_angle)", r_out: "gear.pitch_diameter / 2", count: gear.tooth_count, source: "Designer M1 r1 F1 rule (raised and signed): dashed radial tooth ticks on the underside face, toe (pinion toe tip r 95.22, the pinion place r_in) to heel (pitch radius 125), gear.tooth_count of them; premise check for the K5 tick admission"}
     chain: []
     moves: true
     notes:
       - "S1 projection trapezoid (side section); plan projection circle (axis Z parallel to the view normal)"
+      - "plan: the teeth face down (Design Notes 22), so from +Z they are hidden on the underside: drawn as the dashed gear:ticks LineCollection over a light plain fill (Designer M1 r1 F1)"
 
   - id: gear_hub
     name: "gear hub"
@@ -988,7 +992,10 @@ features:
     z_rule: {z_min: "ring_top + pinion.axis_above_ring_top + gear.toe_tip_above_pinion_axis", z_max: "ring_top + pinion.axis_above_ring_top + gear.back_face_above_pinion_axis"}
     section: ["drill.tube_od / 2", "gear.bore / 2"]
     depth: ["-gear.bore / 2", "gear.bore / 2"]
-    neighbours: []
+    neighbours:
+      - {id: pinion_a, class: G, g_min: 3, source: "Designer M1 r1 ruling: toe to hub is set by pinion.r_toe and gear.bore; g_min 3 ASSUMED for toe runout; hub clamp screw heads (Step 2) must stay below r 90 or be re-checked (Loftsman 1.2 (e) LF1.2-2; toe gap 5.22)"}
+      - {id: pinion_b, class: G, g_min: 3, source: "Designer M1 r1 ruling: toe to hub is set by pinion.r_toe and gear.bore; g_min 3 ASSUMED for toe runout; hub clamp screw heads (Step 2) must stay below r 90 or be re-checked (Loftsman 1.2 (e) LF1.2-2; toe gap 5.22)"}
+      - {id: pinion_c, class: G, g_min: 3, source: "Designer M1 r1 ruling: toe to hub is set by pinion.r_toe and gear.bore; g_min 3 ASSUMED for toe runout; hub clamp screw heads (Step 2) must stay below r 90 or be re-checked (Loftsman 1.2 (e) LF1.2-2; toe gap 5.22)"}
     sense: []
     chain: []
     moves: true
@@ -1265,6 +1272,7 @@ features:
     z_rule: {z_min: head_top, z_max: drill_top}
     place: {r_in: 0, theta: 0, half_width: "drill.tube_od / 2", footprint: round}
     label: {text: "tube OD", key: drill.tube_od, fmt: ".1f", suffix: "(keep-out basis)"}
+    label_theta: 340   # Designer M1 r1 F5
     neighbours:
       - {id: bearing, class: C, g_min: 0, source: "inner race on the tube (bearing.bore = drill.tube_od)"}
       - {id: gear_hub, class: C, g_min: 0, source: "gear hub clamped on the tube (gear.hub)"}
@@ -1282,6 +1290,7 @@ features:
     z_rule: {z_min: receiver_floor, z_max: top_block_top}
     place: {r_in: 0, theta: 0, half_width: icd.keepout_radius, footprint: round}
     label: {text: "keep-out r", key: icd.keepout_radius, fmt: ".1f"}
+    label_theta: 350   # Designer M1 r1 F5
     neighbours:
       - {id: screw_a, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
       - {id: screw_b, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
@@ -1317,8 +1326,10 @@ features:
     sense: []
     chain: []
     moves: true
+    reference: true
     notes:
       - "S1 row keepout has no place (side-view lines); S2 adds the round place r 86.2 for the S2-a plan pairs"
+      - "reference: true (Designer M1 r1 ruling 3): a boundary, not a part; out of the highest point and the outline extents; its declared S2-a pairs are still judged in K7"
 
   - id: drill_head
     name: "drill head"
@@ -1330,6 +1341,7 @@ features:
     z_rule: {z_min: tip, z_max: head_top}
     place: {r_in: 0, theta: 0, half_width: "drill.head_od / 2", footprint: round}
     label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
+    label_theta: 0   # Designer M1 r1 F5
     neighbours: []
     sense: []
     chain: [axial]
@@ -1346,6 +1358,7 @@ features:
     sense: []
     chain: []
     moves: false
+    reference: true
     notes:
       - "cross, two axis arrows and the theta arrow are one row (drawing signifiers, not parts); K8 reads plan handedness (axes not inverted; azimuth predicates)"
 
@@ -1377,10 +1390,12 @@ features:
     z_rule: {z_min: capture_end_tip, z_max: operator.eye_height}
     place: {r_in: 0, r_out: operator.watch_r, theta: operator.watch_theta, half_width: 0, footprint: radial}
     draw: {solid: ["ring.od / 2", operator.watch_r], dashed: [0, "ring.od / 2"]}
-    label: {text: "F6 sightline: ring rim r 210 hides the cut at capture_end; eye z_S", key: operator.eye_height, fmt: ".0f", z_S: true}
+    label: {text: "F6 sightline: ring rim r 210 hides the cut at capture_end; eye", key: operator.eye_height, fmt: ".0f", z_S: true}
     neighbours: []
     sense: [{pred: azimuth, expr: operator.watch_theta, tol_deg: 0.1}]
     chain: []
     moves: false
+    reference: true
     notes:
+      - "reference: true (Designer M1 r1 ruling 3): a reference line, not a part; out of the highest point and the outline extents"
       - "line from the eye (operator.eye_height z_A at r 400) to the cut at the axis (capture_end tip 184.84 z_A); eye limits 0.49 m z_S (axis), 0.58 m z_S (cutter rim r 88.9) are reported values (Designer 1.2 (a) section 6)"

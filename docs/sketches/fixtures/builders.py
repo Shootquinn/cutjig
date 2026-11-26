@@ -20,6 +20,7 @@ import checks_s1  # noqa: E402
 import checks_s2  # noqa: E402
 import sketch_common as sc  # noqa: E402
 from sketch_loader import Params, load_spec  # noqa: E402
+from matplotlib.collections import LineCollection  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Annulus, Circle, Polygon, Rectangle  # noqa: E402
 from matplotlib.transforms import Affine2D  # noqa: E402
@@ -1420,13 +1421,38 @@ def _s2_draw_row(ax, P, spec, stack, pid, row):
         sc.draw(fid, Circle((cx, cy), w, fill=False), ax)
 
 
+def _ticks(P, pr, n=None, r_in=None, r_out=None, turn=None, start=0.0):
+    """LineCollection of radial ticks from the ticks_radial fields (count, r_in, r_out), evenly spaced from start (deg).
+    turn = (index, deg): that tick turned about its midpoint (B1)."""
+    r0 = check_stack.eval_expr(pr["r_in"], P, {}) if r_in is None else r_in
+    r1 = check_stack.eval_expr(pr["r_out"], P, {}) if r_out is None else r_out
+    n = int(round(check_stack.eval_expr(pr["count"], P, {}))) if n is None else n
+    segs = []
+    for i in range(n):
+        a = math.radians(start + 360.0 * i / n)
+        p0, p1 = (r0 * math.cos(a), r0 * math.sin(a)), (r1 * math.cos(a), r1 * math.sin(a))
+        if turn and turn[0] == i:
+            mx, my, t = (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, math.radians(turn[1])
+            rot = lambda q: (mx + (q[0] - mx) * math.cos(t) - (q[1] - my) * math.sin(t), my + (q[0] - mx) * math.sin(t) + (q[1] - my) * math.cos(t))  # noqa: E731
+            p0, p1 = rot(p0), rot(p1)
+        segs.append([p0, p1])
+    return LineCollection(segs, linestyles="--")
+
+
 def _s2_draw(P, spec, stack, skip=(), note=None):
     pid = _s2_pose(spec)
     fig, ax = sc.setup_figure(spec["view"], title=f"S2 plan fixture, pose {pid}")
+    hidden = sc.hidden_rows(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid)
     for row in spec["features"]:
         if row["id"] in skip or not sc.applies(row, pid):
             continue
         _s2_draw_row(ax, P, spec, stack, pid, row)
+        if row["id"] in hidden:   # 1.2 (h): hidden rows dashed, no fill (Designer M1 r1 F2 rule; K8 cover)
+            for a in sc.tagged(ax).get(row["id"], []):
+                a.set_linestyle("--")
+        tk = next((p for p in row.get("sense") or [] if p.get("pred") == "ticks_radial"), None)
+        if tk:   # 1.2 (h): gear tooth ticks (Designer M1 r1 F1), from the predicate's own fields
+            sc.draw(row["id"] + sc.TICKS_SUFFIX, _ticks(P, tk), ax)
     sc.finish_axes(ax)
     sc.place_labels(ax, spec, P, pid)
     txt = (spec.get("plan_figure") or {}).get("figure_note") if note is None else note
@@ -1690,7 +1716,8 @@ def k8_b19():
     def mirror(fid):
         def fn(c):
             pl = _s2_place(c, fid)
-            return [Circle((pl["r_c"] * check_stack.cosd(pl["theta"]), -pl["r_c"] * check_stack.sind(pl["theta"])), pl["half_width"], fill=False)]
+            return [Circle((pl["r_c"] * check_stack.cosd(pl["theta"]), -pl["r_c"] * check_stack.sind(pl["theta"])), pl["half_width"], fill=False,
+                           linestyle="--")]   # r2: dashed, so the mirrored screw under a pinion or motor is legal under K8 cover
         return fn
     c = _s2_ctx()
     for fid in ("screw_a", "screw_b", "screw_c"):
@@ -1750,7 +1777,10 @@ def k8_b25():
 
 def k8_b26():
     """SW 1.2 (c) FIX 1 (4g annulus containment): bearing drawn with its bore radius 5 under its section."""
-    return _annulus_row("bearing", d_in=-5)
+    c = _annulus_row("bearing", d_in=-5)
+    for a in sc.tagged(_s2_ax(c)).get("bearing", []):   # r2: the bearing is hidden under the gear and hub (K8 cover)
+        a.set_linestyle("--")
+    return c
 
 
 def k8_b27():
@@ -1853,6 +1883,12 @@ def s2_5b_b1():
     return _s2_ctx(spec_mut=_mut_row("motor23_c", lambda r: r.__setitem__("z_rule", {"z_min": 930, "z_max": "930 + pinion.motor_body"})))
 
 
+def s2_5b_b2():
+    """S2-5b B2 (Topologist 1.2 (e) FIX TP1.2-3): drill_head with its tip at the hand-band top + 5 (945 z_A) at load
+    (spec z_rule), drawn faithfully. drill_head moves and enters the sector; it is on no hand list."""
+    return _s2_ctx(spec_mut=_mut_row("drill_head", lambda r: r.__setitem__("z_rule", {"z_min": 945, "z_max": "945 + drill.head_length"})))
+
+
 def s2_6_b1():
     """S2-6 B: member c at radius 300 (26 off the plate edge), drawn faithfully."""
     return _s2_ctx(spec_mut=_mut_row("frame_upper_c", lambda r: r.__setitem__("place", dict(
@@ -1913,3 +1949,240 @@ def control_figures(out_dir):
     _plan_control().savefig(out_dir / "ctrl_c.png")
     _plan_control(mirror=True).savefig(out_dir / "ctrl_d.png")
     return mapping
+
+
+# ---------------------------------------------------------------- 1.2 (h) r2 (research/sean/cr_scratch/step1.2_engineer_revision_r2.md)
+# Designer M1 r1 F1 (gear ticks: K5 admission, K8 ticks_radial), F2 (K8 cover, raised as TP1.2-9), F4 (leader on ink),
+# F5 (leaders do not cross); S1 r5 F1 (K3 text inside the saved image); Loftsman LF1.2-1 (K7 record), LF1.2-2
+# (pinion|gear_hub G 3); Topologist TP1.2-3 (S2-5b over every moving row).
+
+S1_SPEC = HERE.parent / "s1_spec.yaml"
+
+
+def _script_ctx(s, spec_mut=None, script_paths=None):
+    """Live sketch drawn by its own script (s1_side_poses.py or s2_plan.py build), the drawing of record."""
+    import importlib
+    name = {"s1": "s1_side_poses", "s2": "s2_plan"}[s]
+    mod = importlib.import_module(name)
+    P = Params()
+    spec = load_spec(HERE.parent / f"{s}_spec.yaml")
+    if spec_mut:
+        spec_mut(spec)
+    stack = check_stack.evaluate_spec(P, spec)
+    figs = mod.build(P, spec, stack)
+    paths = [HERE.parent / f"{name}.py"] if script_paths is None else script_paths
+    return sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=paths, check_stack_path=CHECK_STACK_PATH)
+
+
+# K3 text inside the saved image (Designer M1 S1 r5 F1)
+
+def k3_z2():
+    """Live S1 load as drawn by s1_side_poses.py, held to the canvas (no script, so no tight premise): every text inside."""
+    c = _script_ctx("s1", script_paths=[])
+    c.figs = {"load": c.figs["load"]}
+    return c
+
+
+def k3_b8():
+    """Live S1 park as drawn at r5, held to the canvas (r5 saved the canvas): the figure-note line under the park-rule
+    note runs below the image (Designer M1 S1 r5 F1)."""
+    c = _script_ctx("s1", script_paths=[])
+    c.figs = {"park": c.figs["park"]}
+    return c
+
+
+def k3_z3():
+    """Premise Z: live S1, all four poses, with s1_side_poses.py (every savefig passes bbox_inches="tight"): clean."""
+    return _script_ctx("s1")
+
+
+def k3_b9():
+    """Premise B: live S1 park with the script list holding one savefig without bbox_inches="tight" (a temporary copy of
+    the r5 save line beside the r6 script): the canvas governs and the park note runs out."""
+    tmp = Path(tempfile.mkdtemp()) / "s1_r5_save.py"
+    tmp.write_text("def save(fig, path):\n    fig.savefig(path)\n", encoding="utf-8")
+    c = _script_ctx("s1", script_paths=[HERE.parent / "s1_side_poses.py", tmp])
+    c.figs = {"park": c.figs["park"]}
+    return c
+
+
+# K4 leaders (Designer M1 r1 F4, F5)
+
+def k4_z3():
+    """Live S2 as drawn by s2_plan.py: every leader ends on its part, no two cross."""
+    return _script_ctx("s2")
+
+
+def k4_b7():
+    """F4 B: live S2, the sightline label anchored where r1 put it, (max x, mid y) = (200.00, 173.21), off the line."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    t = next(t for t in ax.texts if t.get_gid() == "label:sightline_f6")
+    pts = [p for poly in sc.pieces(ax, "sightline_f6") for p in poly]
+    t.xy = (max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2)
+    return c
+
+
+def k4_b8():
+    """F5 B: live S2 with label_theta removed from the four concentric rows (the r1 anchors on y = 0): leaders cross."""
+    def mut(spec):
+        for r in spec["features"]:
+            r.pop("label_theta", None)
+    return _script_ctx("s2", spec_mut=mut)
+
+
+# K5 tick admission and K9 sub-gid (Designer M1 r1 F1)
+
+def _gear_ticks_pr(c):
+    return next(p for p in next(r for r in c.spec["features"] if r["id"] == "gear")["sense"] if p["pred"] == "ticks_radial")
+
+
+def _replace_ticks(c, artists):
+    ax = _s2_ax(c)
+    for a in sc.tagged(ax).get("gear" + sc.TICKS_SUFFIX, []):
+        a.remove()
+    for a in artists:
+        sc.draw("gear" + sc.TICKS_SUFFIX, a, ax)
+    return c
+
+
+def k5_b14():
+    """Gear ticks drawn as one Line2D under gid gear:ticks (not a LineCollection)."""
+    c = _s2_ctx()
+    segs = _ticks(c.P, _gear_ticks_pr(c)).get_segments()
+    xs, ys = [], []
+    for (p, q) in segs:
+        xs += [p[0], q[0]]
+        ys += [p[1], q[1]]
+    return _replace_ticks(c, [Line2D(xs, ys, linestyle="--")])
+
+
+def k5_b15():
+    """Gear ticks drawn while the gear row carries no ticks_radial predicate (premise unenforced)."""
+    pr = {}
+
+    def mut(spec):
+        row = next(r for r in spec["features"] if r["id"] == "gear")
+        pr.update(next(p for p in row["sense"] if p["pred"] == "ticks_radial"))
+        row["sense"] = []
+    c = _s2_ctx(spec_mut=mut)
+    sc.draw("gear" + sc.TICKS_SUFFIX, _ticks(c.P, pr), _s2_ax(c))
+    return c
+
+
+def k5_b16():
+    """Two tick LineCollections under gear:ticks (the set drawn twice)."""
+    c = _s2_ctx()
+    sc.draw("gear" + sc.TICKS_SUFFIX, _ticks(c.P, _gear_ticks_pr(c)), _s2_ax(c))
+    return c
+
+
+def k9_b6():
+    """A tick sub-artist under gid gear2:ticks, a row the spec does not have."""
+    c = _s2_ctx()
+    sc.draw("gear2" + sc.TICKS_SUFFIX, _ticks(c.P, _gear_ticks_pr(c)), _s2_ax(c))
+    return c
+
+
+# K8 ticks_radial (premise of the tick admission)
+
+def k8_b29():
+    """Tick 0 turned 90 deg about its midpoint (tangential)."""
+    c = _s2_ctx()
+    return _replace_ticks(c, [_ticks(c.P, _gear_ticks_pr(c), turn=(0, 90))])
+
+
+def k8_b30():
+    """Tick 0 runs 5 past the heel (r_out gear.pitch_diameter / 2 + 5); the other ticks as drawn."""
+    c = _s2_ctx()
+    pr = _gear_ticks_pr(c)
+    segs = [list(s) for s in _ticks(c.P, pr).get_segments()]
+    r1 = check_stack.eval_expr(pr["r_out"], c.P, {}) + 5
+    segs[0] = [tuple(segs[0][0]), (r1, 0.0)]
+    return _replace_ticks(c, [LineCollection(segs, linestyles="--")])
+
+
+def k8_b31():
+    """gear.tooth_count - 1 ticks drawn."""
+    c = _s2_ctx()
+    pr = _gear_ticks_pr(c)
+    n = int(round(check_stack.eval_expr(pr["count"], c.P, {}))) - 1
+    return _replace_ticks(c, [_ticks(c.P, pr, n=n)])
+
+
+# K8 cover (Designer M1 r1 F2 rule; Topologist TP1.2-2, TP1.2-9)
+
+def k8_b32():
+    """nut_a drawn solid (brass fill, solid edge) under guide_a, as at r1."""
+    def fn(c):
+        pl = _s2_place(c, "nut_a")
+        th = pl["theta"]
+        return [Circle((pl["r_c"] * check_stack.cosd(th), pl["r_c"] * check_stack.sind(th)), pl["half_width"], fill=True)]
+    return _s2_replace(_s2_ctx(), "nut_a", fn)
+
+
+def _cover_premise(motor_projection):
+    """A pad (r 182 to 186 at theta 30, half-width 3, z 0 to 50) drawn solid inside the circumscribing circle (r 29.70)
+    of a higher motor (z 100 to 148, round footprint r_c 160) and outside its inscribed 42 square."""
+    return _k7_plan([("motor", {"r_in": 160, "theta": 30, "half_width": 29.6985, "footprint": "round"}, (100, 148), [("pad", "F", 0)],
+                      {"kind": "prism", "projection": motor_projection}),
+                     ("pad", _rad(182, 186, 30, 3), (0, 50), None, {})])
+
+
+def k8_z7():
+    """Cover premise Z: the circumscribing circle of a motor drawn as its 42 square is no cover: the solid pad stays legal."""
+    return _cover_premise("rectangle")
+
+
+def k8_b33():
+    """Cover premise contrast B: the same motor drawn as its circle (a true outline) covers the solid pad."""
+    return _cover_premise("circle")
+
+
+# K7 record (Loftsman LF1.2-1) and pinion|gear_hub G 3 (LF1.2-2)
+
+def _k7_lint(c, mutate=None):
+    r = sc.k7(c)
+    if mutate:
+        mutate(r)
+    lint = sc.k7_record_issues(r)
+    return {"id": "K7", "result": "fail" if lint else "pass", "reason": sc._summ(lint) if lint else
+            f"{len(r['tests'])} test entries with pose, pair, class, state, z gap, distance, overlap, basis",
+            "n_issues": len(lint), "measured": len(lint), "threshold": 0}
+
+
+def k7_z16():
+    """Record lint Z: live S2 K7 record, one entry per state with ids."""
+    return _k7_lint(_s2_ctx(cache=True))
+
+
+def k7_z17():
+    """Record lint Z: live S1 K7 record."""
+    return _k7_lint(_s1_ctx())
+
+
+def k7_b32():
+    """Record lint B: live S2 K7 record with the pair id dropped from entry 0."""
+    def mut(r):
+        r["tests"][0][1] = None
+    return _k7_lint(_s2_ctx(cache=True), mut)
+
+
+def k7_b33():
+    """pinion_a/_b/_c|gear_hub declared G g_min 6 (toe gap 5.22): short at every pose."""
+    def mut(spec):
+        row = next(r for r in spec["features"] if r["id"] == "gear_hub")
+        for nb in row["neighbours"]:
+            if nb["id"].startswith("pinion_"):
+                nb["g_min"] = 6
+    return _s2_ctx(spec_mut=mut)
+
+
+# S2-5b premise set (TP1.2-3); s2_5b_b2 above
+
+def s2_5b_b3():
+    """S2-5b spec with the r1 hand list (ring_parts) in place of parts: moves."""
+    def mut(spec):
+        spec["s2_checks"]["S2-5b"].pop("parts", None)
+        spec["s2_checks"]["S2-5b"]["ring_parts"] = ["ring", "bearing", "gear"]
+    return _s2_ctx(spec_mut=mut)

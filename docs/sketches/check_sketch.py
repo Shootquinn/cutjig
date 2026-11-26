@@ -291,6 +291,11 @@ def run_sketch(args):
     ctx = sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[script],
                  overlay_path=P.overlay_path, check_stack_path=HERE / "check_stack.py")
     results = [safe(sc.CHECKS[k], k, ctx) for k in K_BY_SKETCH.get(s, K_ALL)]
+    for r in results:   # Loftsman 1.2 (e) LF1.2-1: the K7 record carries every test by pose and pair
+        if r["id"] == "K7" and r["result"] != "error":
+            lint = sc.k7_record_issues(r)
+            if lint:
+                r.update(result="fail", reason=sc._summ(lint) + " || " + r["reason"], n_issues=(r.get("n_issues") or 0) + len(lint), cause="content")
     smod_path = HERE / f"checks_{s}.py"
     smod = load_module(smod_path, f"checks_{s}")
     results += smod.run(ctx)
@@ -307,6 +312,8 @@ def run_sketch(args):
     rec = {"sketch": s, "rev": rev, "timestamp": TIMESTAMP(), "spec": spec_path.name, "spec_status": spec.get("status"),
            "script": str(script.relative_to(HERE)), "accepted": False, "frame": "z_S = z_A + jig.datum_a_above_floor",
            "files_sha256": P.hashes(), "keys_read": keys_read, "reported": check_stack.reported(P, spec, stack), "checks": results}
+    if hasattr(smod, "reported"):   # per-sketch drawn reported values (no threshold, never asserted)
+        rec["reported_drawn"] = safe(smod.reported, "reported", ctx)
     write_record(rec, args.wip_dir)
     exp = sketch_table(s, "STUB_EXPECT") if rev == 0 else {}
     for r in results:
@@ -359,6 +366,10 @@ def write_summary(rec, path):
     for pid, v in rep["poses"].items():
         if v["highest_z_S"] is not None:
             lines.append(f"- {pid}: highest point {v['highest_z_S']:.2f} z_S, margin to the 2000 mm soft target {v['margin_to_soft_target']:.2f} mm (spec values, not drawn)")
+    rd = rec.get("reported_drawn")
+    if isinstance(rd, dict) and rd.get("rows"):
+        lines += ["", f"## Reported values, drawn ({rec['script']} r{rec['rev']}; no threshold, never asserted)", "",
+                  "| Quantity | Value | Basis |", "|---|---|---|"] + [f"| {q} | {v} | {b} |" for q, v, b in rd["rows"]]
     lines += ["", f"Files: " + ", ".join(f"{k} {v[:12]}" for k, v in rec["files_sha256"].items())]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
