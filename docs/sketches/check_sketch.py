@@ -170,7 +170,7 @@ def specs_in(d):
 # ---------------------------------------------------------------- SYM screw-set symmetry lint (1.3 P4, Loftsman (b) sign-off)
 
 SYM_FAMILIES = ("anchor", "anchor_locknut", "screw", "nut", "nut_housing")
-SYM_FIELDS = ("z_rule", "place", "keys")
+SYM_FIELDS = ("z_rule", "place")   # P5f (Loftsman F4 ruling): keys not compared
 SYM_INDEX = {"a": 1, "b": 0, "c": 2}   # jackscrew.angle index per screw letter (S1, S2, S3 specs)
 _ANGLE_IX = re.compile(r"(jackscrew\.angle)\[\s*\d+\s*\]")
 
@@ -188,11 +188,34 @@ def _sym_norm(v):
     return v
 
 
+_DOTTED = re.compile(r"(?<![A-Za-z0-9_.])([a-z_][a-z0-9_]*\.[a-z0-9_.]+)")
+
+
+def sym_keys_premise(spec, keys_read):
+    """SYM-P (P5f, Loftsman F4 ruling): premise of comparing SYM rows on z_rule and place only. Every dotted key that
+    the place or z_rule of a SYM-family row references is in the record's keys_read (spec_keys plus every key
+    check_stack read), so a key change reaches the record whatever a row's keys list says."""
+    keys = set(keys_read)
+    miss = []
+    for row in spec.get("features", []):
+        if not any(row["id"].startswith(f + "_") and row["id"][len(f) + 1:] in SYM_INDEX for f in SYM_FAMILIES):
+            continue
+        txt = json.dumps([row.get("place"), row.get("z_rule")])
+        for k in sorted(set(_DOTTED.findall(txt))):
+            k = k.rstrip(".")
+            if k not in keys:
+                miss.append(f"{row['id']}: {k}")
+    return {"id": "SYM-P", "result": "pass" if not miss else "fail",
+            "reason": ("keys_read lacks keys read by SYM rows: " + sc._summ(miss)) if miss else "keys_read covers every key read by place and z_rule of the SYM rows",
+            "measured": len(miss), "threshold": 0, "n_issues": len(miss), "cause": None if not miss else "content"}
+
+
 def sym_lint(specs=None):
     """Premise of S3-3's certification of the a, b screw-set pairs from screw c (Loftsman 1.3 (b) R1 and (b) sign-off):
     in every spec, the anchor, anchor_locknut, screw, nut and nut_housing rows of a and b equal the c row (or, where the
-    spec has no c row, each other) in z_rule, place and keys once the angle index is swapped; each row's theta names its
-    own angle index (a 1, b 0, c 2); no row of those families carries x1_exempt."""
+    spec has no c row, each other) in z_rule and place once the angle index is swapped (keys not compared: Loftsman
+    1.3 (c) P5L F4 ruling; their premise is SYM-P, keys_read covers every key place and z_rule read); each row's theta
+    names its own angle index (a 1, b 0, c 2); no row of those families carries x1_exempt."""
     if specs is None:
         specs = specs_in(HERE)
     issues, n = [], 0
@@ -556,6 +579,11 @@ def run_sketch(args):
         rec["reported_drawn"] = rd
     if spec.get("reported_items"):   # RPT (1.3 step 0): the declared list travels with the record; --accept reads it
         rec["reported_items"] = spec["reported_items"]
+    if spec.get("chains"):   # P5f: SYM-P, premise of SYM's field set (S3 runs; S1 and S2 records unchanged)
+        sp = sym_keys_premise(spec, keys_read)
+        sp.update(z_result=tally.get("SYM-P", {}).get("Z", ""), b_result=tally.get("SYM-P", {}).get("B", ""), source=K_SOURCES["SYM"])
+        results.append(sp)
+        rec["checks"] = results
     write_record(rec, args.wip_dir)
     exp = sketch_table(s, "STUB_EXPECT") if rev == 0 else {}
     for r in results:

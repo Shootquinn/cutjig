@@ -16,7 +16,6 @@ if str(HERE) not in sys.path:
 import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
 
-K_CHECKS = ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9"]
 SECTION_AXES = "section"
 C_STATES = ("C", "z-contact", "plan-contact")   # K7 pass states of a class C pair (side, plan)
 
@@ -244,8 +243,8 @@ def _face_issue(ctx, sec, ax, pose, x, y, face):
         spans.append(ss)
     if not spans[0] or not spans[1]:
         return f"no horizontal edge of {x if not spans[0] else y} at the face z {z:.2f} z_S ({expr})"
-    if not any(min(a1, b1) - max(a0, b0) > -sc.TOL_Z for a0, a1 in spans[0] for b0, b1 in spans[1]):
-        return f"faces of {x} and {y} at z {z:.2f} do not overlap in u"
+    if not any(min(a1, b1) - max(a0, b0) > sc.TOL_Z for a0, a1 in spans[0] for b0, b1 in spans[1]):   # P5f (LF FIX 2)
+        return f"faces of {x} and {y} at z {z:.2f} overlap by no more than {sc.TOL_Z} in u (a corner is no axial seat)"
     return None
 
 
@@ -261,6 +260,48 @@ def _face_of(ctx, link, x, y):
     return None
 
 
+def true_cut_issues(ctx):
+    """P5f (Loftsman FIX 3): premise of the veto. Every row of a pair an S3 certifier names is drawn as its true cut
+    through x = 0: it carries section_u or section, or is an axis-Z round row whose depth band is symmetric about x = 0,
+    or has a place footprint centred on x = 0 (|r_c cos theta| <= TOL_Z) and symmetric about it (round, or radial at
+    theta 90 or 270 with rot 0). Otherwise a spec error."""
+    rows = {r["id"]: r for r in ctx.spec.get("features", [])}
+    pose = (ctx.spec.get("section_figure") or {}).get("pose", "capture_end")
+    feats = ctx.stack["poses"][pose]["features"]
+    named = set()
+    for lst in (ctx.spec.get("chains") or {}).values():
+        for link in lst:
+            if any(str(q).split()[:1] == ["S3"] for q in link.get("certifiers") or []):
+                named.update(link["pair"])
+    out = []
+    for fid in sorted(named):
+        r, f = rows.get(fid, {}), feats.get(fid, {})
+        if r.get("section_u") or r.get("section"):
+            continue
+        dep = f.get("depth")
+        if r.get("kind") in sc.ROUND_KINDS and r.get("axis") == "Z" and not r.get("place") and dep and abs(dep[0] + dep[1]) <= sc.TOL_Z:
+            continue
+        pl = f.get("place")
+        if pl:
+            th = pl["theta"] % 360
+            centred = abs(pl["r_c"] * math.cos(math.radians(pl["theta"]))) <= sc.TOL_Z
+            sym = pl["footprint"] == "round" or (pl["footprint"] == "radial" and min(abs(th - 90), abs(th - 270)) <= 1e-6 and abs(pl.get("rot", 0)) <= 1e-9)
+            if centred and sym:
+                continue
+        out.append(f"{fid}: spec error, row of an S3-certified pair not drawn as its true cut through x = 0 (veto premise)")
+    return out
+
+
+def _c_range(chains, xc, yc):
+    """P5f (Loftsman NOTE 1): the c links between the c counterparts of a link's rows, p(x_c) to p(y_c) - 1 along the
+    rows of chain c."""
+    rows = [l["pair"][0] for l in chains["c"]] + [chains["c"][-1]["pair"][1]]
+    if xc not in rows or yc not in rows:
+        return None
+    i, j = sorted((rows.index(xc), rows.index(yc)))
+    return list(range(i, j))
+
+
 def s3_3(ctx):
     """Axial loop closed in the cut case (spec chains, 1.3 open O11): every consecutive pair of each screw chain is class
     C in at least one certifier named for it: a record certifier "S1 a|b" or "S2 a|b" reads the K7 entries (pose of the
@@ -269,7 +310,9 @@ def s3_3(ctx):
     has the two drawn pieces meeting on a horizontal edge at that z; an S3 certifier whose test fails opens the link (the
     drawing contradicts the record); "declared ..." passes as declared and is listed; "none" certifies nothing, except a,
     b links certified by symmetry from the c chain under SYM (check_sketch.sym_lint) when every c link between the two
-    rows' c counterparts passes."""
+    rows' c counterparts passes. P5f: the S3 verdict is per pair (a failing section test opens the pair in every chain),
+    a named face needs an overlap in u above TOL_Z, the veto premise is linted (true_cut_issues), the symmetry range is
+    p(x_c) to p(y_c) - 1 along chain c."""
     c = _cfg(ctx, "S3-3")
     chains = ctx.spec.get("chains") or {}
     if not chains:
@@ -283,8 +326,24 @@ def s3_3(ctx):
     recs = _records(ctx)
     import check_sketch as cs
     sym = cs.sym_lint(getattr(ctx, "specs", None))
-    issues, listed, n = [], [], 0
+    issues, listed, n = list(true_cut_issues(ctx)), [], 0
     passed = {}
+    # P5f (Loftsman FIX 1): the S3 verdict is per pair. A pair any link certifies with "S3 x|y" is judged once by the
+    # section (K7 state, named face); a failing verdict opens that pair in every chain where it occurs.
+    s3v = {}
+    for lst in chains.values():
+        for link in lst:
+            if not any(str(q).split()[:1] == ["S3"] for q in link.get("certifiers") or []):
+                continue
+            x, y = link["pair"]
+            key = frozenset((x, y))
+            found, good, st = _pair_ok(s3_tests, x, y, pose)
+            face = _face_of(ctx, link, x, y)
+            fi = _face_issue(ctx, sec, ax, pose, x, y, face) if face and found and good else None
+            v = ("absent", "S3: pair not tested in the section") if not found else (
+                ("fail", f"S3 section K7 states {sorted(set(st))}") if not good else (("fail", f"S3 face: {fi}") if fi else ("pass", None)))
+            if key not in s3v or v[0] == "fail":
+                s3v[key] = v
     for ch in sorted(chains, key=lambda k: (k != "c", k)):
         for i, link in enumerate(chains[ch]):
             x, y = link["pair"]
@@ -309,31 +368,26 @@ def s3_3(ctx):
                     else:
                         why.append(f"{head} {p.name}: states {sorted(set(st))}")
                 elif head == "S3":
-                    found, good, st = _pair_ok(s3_tests, x, y, pose)
-                    face = _face_of(ctx, link, x, y)
-                    fi = _face_issue(ctx, sec, ax, pose, x, y, face) if face and found and good else None
-                    if not found:
-                        why.append("S3: pair not tested in the section")
-                    elif not good:
-                        veto = f"S3 section K7 states {sorted(set(st))}"
-                    elif fi:
-                        veto = f"S3 face: {fi}"
-                    else:
+                    v = s3v.get(frozenset((x, y)))
+                    if v and v[0] == "pass":
                         ok = True
+                    elif v and v[0] == "absent":
+                        why.append(v[1])
                 elif head.startswith("declared"):
                     decl = True
                 elif head == "none":
                     why.append("none")
+            v = s3v.get(frozenset((x, y)))
+            if v and v[0] == "fail":   # P5f (LF FIX 1): veto per pair, in every chain
+                veto = v[1]
             if not ok and decl:
                 ok = True
                 listed.append(f"{ch} {x}|{y} declared")
             if not ok and ch in ("a", "b") and [str(q).split()[0] for q in link.get("certifiers") or []] == ["none"]:
                 xc, yc = (v[:-2] + "_c" if v.endswith(f"_{ch}") else v for v in (x, y))
-                cids = [tuple(l["pair"]) for l in chains.get("c", [])]
-                seq = [v for pr in cids for v in pr]
-                if xc in seq and yc in seq and sym["result"] == "pass":
-                    i0, i1 = sorted((seq.index(xc) // 2, (len(seq) - 1 - seq[::-1].index(yc)) // 2))
-                    if all(passed.get(("c", j)) for j in range(i0, i1 + 1)):
+                rng = _c_range(chains, xc, yc) if "c" in chains else None
+                if rng is not None and sym["result"] == "pass":
+                    if all(passed.get(("c", j)) for j in rng):
                         ok = True
                         listed.append(f"{ch} {x}|{y} by symmetry from c")
                     else:
@@ -403,12 +457,12 @@ def reported(ctx):
 # floor-only stub; the content evidence is the S3-x B fixtures in run 1 (1.3 (c)).
 _ABS = ("absent", "red (absent, fail-closed; content evidence run 1, S3-x B fixtures 1.3 (c))")
 _ABS_K = ("absent", "red (absent, fail-closed; content evidence run 1)")
-STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1"],
+STUB_EXPECT = {"guard": ["K1", "K2", "K3", "K5", "X1", "SYM-P"],
                "red": ["K4", "K6", "K7", "K8", "K9", "S3-1", "S3-2", "S3-3", "RPT", "SYM"]}
 STUB_CAUSE = {"K6": _ABS_K, "K7": _ABS_K, "RPT": _ABS_K,
               "K8": ("content", "red (content: spec error motor_shaft_c outboard frame radial in the section, P4 finding F3; every other K8 issue absent)"),
               **{k: _ABS for k in ("S3-1", "S3-2", "S3-3")},
-              "SYM": ("content", "red (content: S3 anchor rows carry x1_exempt and the a/b key lists differ from c; clears at P6, S1 r8 / S2 r9)")}
+              "SYM": ("content", "red (content: S3 anchor rows carry x1_exempt; clears at P6, S1 r8 / S2 r9)")}
 SOURCES = {
     "S3-1": "[DN23]; gameplan detail 1.3 S3-1",
     "S3-2": "[DN23]; Design Notes 31 (SF 3 every case, K 0.7 on L_t, F_bind 300 N); E, d_r, mu, masses ASSUMED",

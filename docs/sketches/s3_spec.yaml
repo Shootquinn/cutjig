@@ -706,7 +706,7 @@ features:
   neighbours:
   - *id001
   - *id002
-  - {id: screw_c, class: F, source: screw passes the housing bore (bore radius nut_body_od / 2 + float > nominal / 2)}
+  - {id: screw_c, class: F, source: screw passes the housing bore (bore radius nut_body_od / 2 + float > nominal / 2), class_by_axes: {inset_plan: N}, class_by_axes_source: 'plan nesting in the inset, F on the true section pieces (Topologist 1.3 (c) P5T F5; P5f)'}
   - {id: anchor_c, class: G, g_min: 10, source: 'g_min seed l.148; housing bottom 305.84 to block top 295 at capture_end: 10.84 (S1)'}
   - {id: guide_c, class: G, g_min: 10, source: 'g_min seed l.148; housing top at park 1110.84 to block bottom 1135: 24.16 (S1)'}
   - {id: home_switch_c, class: G, g_min: 10, source: 'g_min seed l.148; housing top at park 1110.84 to switch bottom 1122: 11.16 (Designer 1.3 (a) section 9)'}
@@ -957,7 +957,7 @@ features:
   - {id: nut_c, class: C, source: thread contact}
   - {id: anchor_bearing_c, class: C, source: journal 10 in the bearing bores (Designer 1.3 (a) section 9)}
   - {id: guide_bearing_c, class: C, source: journal 10 in the bearing bore (Designer 1.3 (a) section 9)}
-  - {id: anchor_c, class: F, source: block bore clears the journal (Designer 1.3 (a) section 9)}
+  - {id: anchor_c, class: F, source: block bore clears the journal (Designer 1.3 (a) section 9), class_by_axes: {inset_plan: N}, class_by_axes_source: 'plan nesting in the inset, F on the true section pieces (Topologist 1.3 (c) P5T F5; P5f)'}
   - {id: guide_c, class: F, source: block bore clears the journal (Designer 1.3 (a) section 9)}
   - {id: screw_end_c, class: C, source: screw end below the anchor journal (same bar)}
   - {id: anchor_locknut_c, class: C, source: locknut on the thread}
@@ -1006,7 +1006,7 @@ features:
   - {id: bracket_anchor_c, class: C, source: 'block on the arm end, faces touch at r 181 (S2 r5 plan-contact)'}
   - {id: standoffs_c, class: C, source: standoff tops on the block underside}
   - {id: coupling_c, class: G, g_min: 1, source: '2.0 below the block underside (2.06 at the shoulder-bore corner) at liftmotor.coupling_length 36 (Designer 1.3 (b) FIX 2; g_min 1 Designer 1.3 (a) section 9, ASSUMED)'}
-  - {id: screw_c, class: F, source: bore clears the journal}
+  - {id: screw_c, class: F, source: bore clears the journal, class_by_axes: {inset_plan: N}, class_by_axes_source: 'plan nesting in the inset, F on the true section pieces (Topologist 1.3 (c) P5T F5; P5f)'}
   - id: anchor_bearing_c
     class: C
     source: 'outer races in the bore: axial faces at the shoulder (272, compression cases, screw pushed down) and the cover (288, cut case, screw pulled up) (Designer 1.3 (b) FIX 3)'

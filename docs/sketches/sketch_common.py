@@ -319,8 +319,9 @@ def is_opaque(a):
 
 
 def is_area(a):
-    """A drawn area that hides what is under it: a Patch with a visible fill or a hatch."""
-    if not isinstance(a, Patch):
+    """A drawn area that hides what is under it: a Patch with a visible fill or a hatch. A FancyArrowPatch (load and look
+    arrows, line kinds) is no area (P5f: its filled head is a mark)."""
+    if not isinstance(a, Patch) or isinstance(a, FancyArrowPatch):
         return False
     fc = a.get_facecolor()
     return (bool(a.get_fill()) and fc is not None and fc[3] > 0) or bool(a.get_hatch())
@@ -1677,7 +1678,8 @@ def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
                "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward",
                "ticks_radial": "count", "outline_matches": "pieces",
-               "look_direction": "toward", "axes_not_inverted": "pred", "points": "dir"}   # 1.3 P4 (s3_spec)
+               "look_direction": "toward", "axes_not_inverted": "pred", "points": "dir",   # 1.3 P4 (s3_spec)
+               "mirror_about_radial": "pred"}   # P5f (Topologist FIX 6)
 
 
 FRAME_VALUES = ("radial",)   # sense `frame` values a predicate may carry (outboard radial form, plan_xy only: TP1.2-1)
@@ -1921,6 +1923,8 @@ def k4(ctx):
     for pose, fig in ctx.figs.items():
         anns = {t.get_gid(): t.get_text() for t in fig.axes[0].texts if t.get_gid()}
         for row in ctx.spec.get("features", []):
+            if row.get("label_home") and f"label:{row['id']}" in anns:   # P5f (SW FIX 5)
+                issues.append(f"{pose}/{row['id']}: label drawn outside its home Axes {row['label_home']}")
             if not row.get("label") or not applies(row, pose):
                 continue
             n += 1
@@ -2895,6 +2899,8 @@ def k7(ctx):
     side = ctx.view in SIDE_VIEWS
     issues, states, tested, failing, absent = [], [], 0, 0, 0
     tests = []
+    if getattr(ctx, "axes_role", None) == "main" and getattr(ctx, "parent", None) is not None:
+        issues += class_by_axes_issues(ctx.parent.spec)   # P5f (Topologist FIX 7)
 
     def log(pose, a, b, cls, st, gap, lb):
         d, ar, basis = _side_measure(st, lb, _fp_basis(ctx, pose, a, b))
@@ -4069,6 +4075,10 @@ def k8(ctx):
     issues, n, absent = list(lint), 0, 0
     if getattr(ctx, "axes_role", None) == "main" and getattr(ctx, "parent", None) is not None:
         issues += orphan_predicates(ctx.parent.spec)   # 1.3 P4 (TP-7)
+        if ctx.view in SECTION_VIEWS:
+            issues += section_look_issues(ctx.parent.spec, ctx.view)   # P5f (Topologist FIX 2)
+            if ctx.parent.stack:
+                issues += omitted_row_issues(ctx, ctx.parent)   # P5f (Topologist FIX 3 b)
     side, plan = ctx.view in SIDE_VIEWS, ctx.view == "plan_xy"
     # TP1.2-1: the radial outboard form reads the plan centroid (x, y) in the drill-axis frame; in a side view the
     # centroid is (x, z) and its hypot is no radius. frame: radial outside plan_xy is a spec error, reported once.
@@ -4263,6 +4273,10 @@ def k8(ctx):
                 elif kind == "axes_not_inverted":
                     for t in axes_arrows_issues(ax, fid):
                         issues.append(f"{pose}/{fid} axes_not_inverted: {t}")
+                elif kind == "mirror_about_radial":
+                    t = mirror_radial_issue(me, pl, plan)
+                    if t:
+                        issues.append(f"{pose}/{fid} mirror_about_radial: {t}")
         if plan and ctx.stack:
             nc, ci = cover_issues(ctx, ax, pose, rows_list)
             n += nc
@@ -4297,9 +4311,14 @@ def points_issues(ax, fid, d):
         if len(arr) != 2:
             return [f"{len(arr)} arrows, needs 2"]
         (t0, h0), (t1, h1) = arr
+        d0, d1 = (h0[0] - t0[0], h0[1] - t0[1]), (h1[0] - t1[0], h1[1] - t1[1])
+        n0, n1 = math.hypot(*d0), math.hypot(*d1)
+        out = []
+        if d0[0] * d1[0] + d0[1] * d1[1] >= 0 or abs(d0[0] * d1[1] - d0[1] * d1[0]) > DIR_TOL * n0 * n1:
+            out.append("arrows not of opposite senses on one line (P5f, Topologist FIX 4)")
         if math.dist(h0, h1) <= math.dist(t0, t1):
-            return [f"heads {math.dist(h0, h1):.2f} apart against tails {math.dist(t0, t1):.2f} (arrows point together: compression)"]
-        return []
+            out.append(f"heads {math.dist(h0, h1):.2f} apart against tails {math.dist(t0, t1):.2f} (arrows point together: compression)")
+        return out
     if d not in DIRS:
         return [f"spec error, unknown direction {d!r}"]
     ux, uy = DIRS[d]
@@ -4382,6 +4401,57 @@ def render_section(ctx, ax, pose):
                 a.set_hatch(None)
                 ins, outs = _behind(a, cut)
                 a.set_linestyle("--" if ins and not outs else "-")
+
+
+SECTION_LOOK = {"section_yz": ("-X", (0.0, 1.0, 0.0))}   # P5f (TP FIX 2): u_view = +Y; u x z = +X; look = -(u x z)
+
+
+def section_look_issues(spec, view):
+    """P5f (Topologist FIX 2): the cutting-plane look direction is not free. For a section view the viewer sits on
+    u_view x z, so (u_view x z) . toward = -1: section_yz (u = +Y) looks toward -X. A look_direction predicate naming
+    another direction is a spec error in the main Axes, once per predicate."""
+    want = SECTION_LOOK.get(view, (None,))[0]
+    out = []
+    for r in spec.get("features", []):
+        for pr in r.get("sense") or []:
+            if pr.get("pred") == "look_direction" and want and pr.get("toward") != want:
+                out.append(f"{r['id']} look_direction: spec error, toward {pr.get('toward')} against the {view} viewer (u x z . toward = -1 needs {want})")
+    return out
+
+
+def omitted_row_issues(ctx, parent):
+    """P5f (Topologist FIX 3 b): converse of the section convention. Every area row of the spec (not reference, not line,
+    arrow or callout) that is not declared in the section Axes is omitted for a reason: its plan x band (place or
+    plan_poly) lies wholly in front (x0 > 0.05) or wholly past one profile width (x1 < -profile.width - 0.05). A row in the
+    section band that is not drawn in the section is an issue."""
+    main_id = main_axes_id(parent.spec.get("view"))
+    pw = ctx.P.get("profile.width") if ctx.P is not None and ctx.P.has("profile.width") else 60.0
+    out = []
+    for pose in ctx.figs:
+        feats = parent.stack["poses"][pose]["features"]
+        for r in parent.spec.get("features", []):
+            if main_id in row_axes(r, main_id) or r.get("reference") or r.get("kind") in NO_AREA_KINDS:
+                continue
+            f = feats.get(r["id"]) or {}
+            xb = (f.get("place") or {}).get("x") or f.get("plan_x")
+            if not xb:
+                continue
+            if not (xb[0] > TOL_Z or xb[1] < -pw - TOL_Z):
+                out.append(f"{pose}/{r['id']}: plan x [{xb[0]:.2f}, {xb[1]:.2f}] lies in the section band and is not drawn in the section (section convention 4, converse)")
+    return out
+
+
+def mirror_radial_issue(me, pl, plan):
+    """P5f (Topologist FIX 6): plan only. In the radial frame at the placed theta (to_ut), every vertex (u, t) of every
+    drawn piece has a partner (u, -t) in the same piece within TOL_Z: the part is symmetric about its own radial line."""
+    if not plan or not pl:
+        return "needs plan_xy and a place"
+    for P in me:
+        ut = to_ut(P, pl["theta"])
+        for u, t in ut:
+            if not any(abs(u - u2) <= TOL_Z and abs(t + t2) <= TOL_Z for u2, t2 in ut):
+                return f"vertex (u {u:.2f}, t {t:.2f}) has no mirror (u, -t) about the radial at theta {pl['theta']:g}"
+    return None
 
 
 def section_u_pieces(ctx, pose, row):
@@ -4472,6 +4542,8 @@ def section_convention_issues(ctx, ax, pose):
                     out.append(f"{pose}/{fid}: visible beyond piece drawn dashed (section convention 3)")
         if cls == "beyond" and dep and drawn and (dep[1] > TOL_Z):
             out.append(f"{pose}/{fid}: beyond row reaches in front of the plane (depth x up to {dep[1]:.2f}) (section convention 3)")
+        if cls == "unsectioned" and dep and drawn and not (dep[0] <= TOL_Z and dep[1] >= -TOL_Z):   # P5f (TP FIX 3 a)
+            out.append(f"{pose}/{fid}: unsectioned row whose axis is not in the plane (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 2)")
         if cls == "cut" and dep and drawn and not (dep[0] <= TOL_Z and dep[1] >= -TOL_Z):
             out.append(f"{pose}/{fid}: cut row the plane x = 0 does not cut (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 1)")
     return n, out
@@ -4587,9 +4659,12 @@ def sub_spec(spec, decl):
         pba = r.get("projection_by_axes") or {}
         if aid in pba:
             r2["projection"] = pba[aid]
-        r2["neighbours"] = [nb for nb in (r.get("neighbours") or []) if nb.get("id") in ids]
+        r2["neighbours"] = [dict(nb, **{"class": nb["class_by_axes"][aid]}) if aid in (nb.get("class_by_axes") or {}) else nb
+                            for nb in (r.get("neighbours") or []) if nb.get("id") in ids]   # P5f (TP FIX 7): class per Axes
         r2["sense"] = [pr for pr in (r.get("sense") or []) if _pred_in_axes(pr, aid, decl["view"], ids)]
         if row_axes(r, main_id)[0] != aid:
+            if r.get("label"):
+                r2["label_home"] = row_axes(r, main_id)[0]   # P5f (SW FIX 5): a label drawn here is refused by K4
             r2["label"] = None
         rows.append(r2)
     out = dict(spec)
@@ -4602,7 +4677,7 @@ def sub_spec(spec, decl):
 
 
 Z_PREDS = ("below", "above", "clears_above", "top_within", "rests_on", "mirror_about_axis", "face_rises")   # z-sense
-PLAN_PREDS = ("ticks_radial", "outline_matches")
+PLAN_PREDS = ("ticks_radial", "outline_matches", "mirror_about_radial")
 
 
 def _pred_in_axes(pr, aid, view, ids):
@@ -4639,7 +4714,32 @@ def orphan_predicates(spec):
             views = {d["id"]: d["view"] for d in declared_axes(spec)}
             homes = [a for a in ra if a in decl and _pred_in_axes(pr, a, views[a], {k for k, rr in rows.items() if a in row_axes(rr, main_id)})]
             if not homes:
-                out.append(f"{r['id']} {pr.get('pred')} {t or ''}: spec error, predicate evaluated in no declared Axes")
+                out.append(f"{r['id']} {pr.get('pred')} {_pred_target(pr) or ''}: spec error, predicate evaluated in no declared Axes")
+    return out
+
+
+def class_by_axes_issues(spec):
+    """P5f (Topologist FIX 7, F5): premise of a per-Axes neighbour class. A class_by_axes override to N in Axes A is
+    admitted only when both rows are declared in another Axes of the figure where the pair keeps its base class C, F or
+    G (so the true pieces are still tested); otherwise a K7 spec error, reported in the main Axes."""
+    main_id = main_axes_id(spec.get("view"))
+    decl = [d["id"] for d in declared_axes(spec)]
+    rows = {r["id"]: r for r in spec.get("features", [])}
+    out = []
+    for r in spec.get("features", []):
+        for nb in r.get("neighbours") or []:
+            cba = nb.get("class_by_axes") or {}
+            for aid, cls in cba.items():
+                if aid not in decl:
+                    out.append(f"{r['id']}|{nb.get('id')}: spec error, class_by_axes names undeclared Axes {aid}")
+                    continue
+                if cls != "N":
+                    continue
+                other = nb.get("id")
+                kept = [a for a in decl if a != aid and a not in cba and a in row_axes(r, main_id)
+                        and other in rows and a in row_axes(rows[other], main_id) and nb.get("class") in ("C", "F", "G")]
+                if not kept:
+                    out.append(f"{r['id']}|{other}: spec error, class_by_axes N in {aid} with the pair tested in no other Axes at its base class {nb.get('class')}")
     return out
 
 

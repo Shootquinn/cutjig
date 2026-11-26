@@ -476,8 +476,8 @@ def s3_2_b1():
 # ---- S3-3: records and specs as they stand after P6 (S1 r8, S2 r9 accepted with the 42-square anchors)
 
 def _post_p6_specs():
-    """The three specs with the S3 anchor place on S1/S2 anchor rows, x1_exempt removed and the a, b key lists equal to
-    the c rows' (S1: a, b equal each other): the state SYM certifies after P6."""
+    """The three specs with the S3 anchor place on S1/S2 anchor rows and x1_exempt removed, key lists as signed: the
+    state SYM certifies after P6."""
     sp = {n: load_spec(SK / f"{n}_spec.yaml") for n in ("s1", "s2", "s3")}
     s3rows = {r["id"]: r for r in sp["s3"]["features"]}
     for n, spec in sp.items():
@@ -488,13 +488,7 @@ def _post_p6_specs():
                 r.pop("x1_exempt", None)
                 if fam == "anchor" and f"anchor_{l}" in s3rows:
                     r["place"] = copy.deepcopy(s3rows[f"anchor_{l}"]["place"])
-            if have:
-                ref = have.get("c") or have[sorted(have)[0]]
-                keys = sorted(set(k for r in have.values() for k in r.get("keys") or []))
-                for r in have.values():
-                    r["keys"] = list(keys)
-                del ref
-    return sp
+    return sp   # P5f (Loftsman F4 ruling): key lists as signed (SYM compares z_rule and place only)
 
 
 def check_sketch_mod():
@@ -522,6 +516,26 @@ def _records_dir(t, s1_mut=None, s2_mut=None):
 _TMP = []
 
 
+def _new_tmp():
+    """A fresh records directory; the previous fixture's directory (its control already judged) is removed first."""
+    _cleanup_tmp()
+    del _TMP[:]
+    t = tempfile.mkdtemp(prefix="s3_3_")
+    _TMP.append(t)
+    return t
+
+
+def _cleanup_tmp():
+    """P5f: the S3-3 fixtures' temporary record directories are removed at interpreter exit (they leaked at P4)."""
+    import shutil
+    for t in _TMP:
+        shutil.rmtree(t, ignore_errors=True)
+
+
+import atexit  # noqa: E402
+atexit.register(_cleanup_tmp)
+
+
 def _receiver_cert(spec):
     """Finding F1 (P4): the signed section draws the receiver spigot 0.2 clear of the plate hole (spigot_od 160 in
     spigot_hole_dia 160.4) and no seat face, so the S3 certifier of receiver|base_plate reads F and vetoes the link; the
@@ -532,8 +546,7 @@ def _receiver_cert(spec):
 
 
 def _s3_3_ctx(s1_mut=None, s2_mut=None, mutate=None):
-    t = tempfile.mkdtemp(prefix="s3_3_")
-    _TMP.append(t)
+    t = _new_tmp()
     sp = _post_p6_specs()
     _receiver_cert(sp["s3"])
     return s3_ctx(spec=sp["s3"], mutate=mutate, records=_records_dir(t, s1_mut, s2_mut), specs=sp)
@@ -788,3 +801,361 @@ def s3_full_draw():
     none errors, none fails closed on an absent part."""
     import checks_s3
     return s3_fixed(), checks_s3.run
+
+
+# ======================================================================== 1.3 P5f (c) fix pass
+# research/sean/cr_scratch/step1.3_engineer_redfirst_fixes.md: Software Engineer FIX 1 to 5, Loftsman FIX 1 to 6,
+# Topologist FIX 1 to 7. Each B run on the P4 code (docs/sketches/wip/p5f_pre/) first, or shown red by deleting its branch.
+
+def _row(spec, fid):
+    return next(r for r in spec["features"] if r["id"] == fid)
+
+
+def orphan_b():
+    """K8 B (SW FIX 1 = TP FIX 1): screw_a (inset only) carries {pred: below, of: anchor_a}, a z predicate no plan Axes
+    evaluates: orphan, reported once."""
+    return s3_ctx(spec_mut=lambda sp: _row(sp, "screw_a").setdefault("sense", []).append({"pred": "below", "of": "anchor_a"}))
+
+
+def _reverse_look(fig, ax, axi, *a):
+    for art in sc.tagged(axi)["section_line"]:
+        if isinstance(art, FancyArrowPatch):
+            (x0, y0), (x1, y1) = art._posA_posB
+            art.set_positions((x0, y0), (2 * x0 - x1, y1))
+
+
+def look_reversed():
+    """K8 B (SW FIX 5 part = TP look sign): the look arrows drawn toward +X with the spec toward -X."""
+    return s3_ctx(mutate=_reverse_look)
+
+
+def look_spec_wrong():
+    """K8 B (TP FIX 2): spec look_direction toward +X with the arrows drawn toward +X: drawing and spec agree, the
+    section viewer (u = +Y, so the viewer at +X looking -X) does not."""
+    def sm(sp):
+        for pr in _row(sp, "section_line")["sense"]:
+            if pr["pred"] == "look_direction":
+                pr["toward"] = "+X"
+    return s3_ctx(spec_mut=sm, mutate=_reverse_look)
+
+
+def axes_undeclared_id():
+    """K3 B (SW FIX 5, M14): a third Axes carrying the id inset_x, which the spec does not declare."""
+    def m(fig, ax, axi, *a):
+        ex = fig.add_axes([0.05, 0.05, 0.1, 0.1])
+        ex.sketch_axes, ex.sketch_view = "inset_x", "plan_xy"
+    return s3_ctx(mutate=m)
+
+
+def _k4_one(fid, text_fn, axes=MAIN):
+    """S3 fixture with one label drawn (row fid), every other row's label removed; text_fn(spec, P) gives the text; the
+    leader runs to the first vertex of the row's first artist in the named Axes."""
+    def sm(spec):
+        for r in spec["features"]:
+            if r["id"] != fid:
+                r["label"] = None
+
+    def m(fig, ax, axi, P, spec, stack, pid):
+        tgt = ax if axes == MAIN else axi
+        art = sc.tagged(tgt)[fid][0]
+        x, z = sc.arrow_ends(art)[0] if isinstance(art, FancyArrowPatch) else sc.artist_polys(art)[0][0]
+        ann = tgt.annotate(text_fn(spec, P), xy=(x, z), xytext=(x - 120, z + 40), fontsize=6, zorder=sc.LEADER_ZORDER,
+                           arrowprops={"arrowstyle": "-", "lw": 0.5})
+        ann.set_gid(f"label:{fid}")
+    return s3_ctx(spec_mut=sm, mutate=m)
+
+
+def k4_value_from_z():
+    """K4 Z (SW FIX 5, M17): load_tension_c prints its value_from value (load_cases cut per_screw 254.04)."""
+    return _k4_one("load_tension_c", lambda sp, P: f"{_row(sp, 'load_tension_c')['label']['text']} 254.04")
+
+
+def k4_value_from_b():
+    """K4 B (SW FIX 5, M17): load_tension_c prints 300 against its value_from value 254.04."""
+    return _k4_one("load_tension_c", lambda sp, P: f"{_row(sp, 'load_tension_c')['label']['text']} 300")
+
+
+def k4_label_off_home():
+    """K4 B (SW FIX 5, M16): the keepout label (home Axes section) drawn in the inset as well as the section."""
+    def m(fig, ax, axi, P, spec, stack, pid):
+        txt = sc.label_text(_row(spec, "keepout"), P, spec=spec)
+        for tgt in (ax, axi):
+            art = sc.tagged(tgt)["keepout"][0]
+            x, y = sc.artist_polys(art)[0][0]
+            tgt.annotate(txt, xy=(x, y), xytext=(x - 60, y + 30), fontsize=6, zorder=sc.LEADER_ZORDER,
+                         arrowprops={"arrowstyle": "-", "lw": 0.5}).set_gid("label:keepout")
+
+    def sm(spec):
+        for r in spec["features"]:
+            if r["id"] != "keepout":
+                r["label"] = None
+    return s3_ctx(spec_mut=sm, mutate=m)
+
+
+def mark_gap_end():
+    """K5 B (TP FIX 5): anchor_bearing_c:line from u -173 to -160, one end in the journal gap (inside the hull of the
+    bearing pieces, on no vertical edge)."""
+    def m(fig, ax, axi, *a):
+        ln = sc.tagged(ax)["anchor_bearing_c:line"][0]
+        xs = list(ln.get_xdata())
+        ln.set_xdata([xs[0], -160.0])
+    return s3_ctx(mutate=m)
+
+
+# ---- section convention clauses (SW FIX 4; TP FIX 3)
+
+def conv_class_missing():
+    """K8 B (convention 5, M08): ring without section_class."""
+    return s3_ctx(spec_mut=lambda sp: _row(sp, "ring").pop("section_class", None))
+
+
+def _section_copy(fid, new_id, cls):
+    def sm(sp):
+        r = copy.deepcopy(_row(sp, fid))
+        r.update(id=new_id, axes=[MAIN], section_class=cls, projection="rectangle", projection_by_axes=None, sense=[], label=None, neighbours=[])
+        sp["features"].append(r)
+    return sm
+
+
+def conv_past_width():
+    """K8 B (convention 4, M09): the screw a set (theta 150, x -138.6) drawn in the section (row screw_a_past)."""
+    return s3_ctx(spec_mut=_section_copy("screw_a", "screw_a_past", "unsectioned"))
+
+
+def conv_beyond_partly():
+    """K8 B (convention 3, M10): one standoff moved to straddle the anchor block underside (z_S 315 to 335), solid."""
+    def m(fig, ax, axi, *a):
+        art = sc.tagged(ax)["standoffs_c"][0]
+        art.set_y(315.0)
+        art.set_height(20.0)
+        art.set_linestyle("-")
+    return s3_ctx(mutate=m)
+
+
+def conv_beyond_hatched():
+    """K8 B (convention 3, M11): a standoff hatched."""
+    return s3_ctx(mutate=lambda fig, ax, axi, *a: sc.tagged(ax)["standoffs_c"][0].set_hatch("//"))
+
+
+def conv_beyond_front():
+    """K8 B (convention 3, M12): standoffs_c plan_poly x band moved to straddle x = 0 (-2.75 to 2.75)."""
+    def sm(sp):
+        r = _row(sp, "standoffs_c")
+        for pc in r["plan_poly"]:
+            for pt in pc:
+                pt[0] = str(pt[0]).replace("-liftmotor.bolt_pattern / 2 - liftmotor.standoff_af / 2", "-liftmotor.standoff_af / 2").replace(
+                    "-liftmotor.bolt_pattern / 2 + liftmotor.standoff_af / 2", "liftmotor.standoff_af / 2")
+    return s3_ctx(spec_mut=sm)
+
+
+def conv_cut_missed():
+    """K8 B (convention 1, M13): ring depth set to x -50 to -40, a cut row the plane x = 0 does not cut."""
+    return s3_ctx(spec_mut=lambda sp: _row(sp, "ring").__setitem__("depth", [-50, -40]))
+
+
+def conv_unsectioned_off_plane():
+    """K8 B (TP FIX 3 a): standoffs_c (depth x -18.25 to -12.75) re-classed unsectioned."""
+    return s3_ctx(spec_mut=lambda sp: _row(sp, "standoffs_c").__setitem__("section_class", "unsectioned"))
+
+
+def conv_omitted_in_band():
+    """K8 B (TP FIX 3 b): coupling_c (plan x -9.5 to 9.5) declared in the inset only: in the section band, not drawn."""
+    def sm(sp):
+        r = _row(sp, "coupling_c")
+        r["axes"] = [INSET]
+        r["projection_by_axes"] = {INSET: "circle"}
+    return s3_ctx(spec_mut=sm)
+
+
+def points_same_sense():
+    """K8 B (TP FIX 4): load_tension_c drawn as two arrows from one tail, both pointing up, heads 3 either side."""
+    def m(fig, ax, axi, *a):
+        arts = [x for x in sc.tagged(ax)["load_tension_c"] if isinstance(x, FancyArrowPatch)]
+        (x0, y0), _ = arts[0]._posA_posB
+        _, (x1, y1) = arts[1]._posA_posB
+        arts[0].set_positions((x0, y0), (x0 - 3, y1))
+        arts[1].set_positions((x0, y0), (x0 + 3, y1))
+    return s3_ctx(mutate=m)
+
+
+# ---- mirror_about_radial (TP FIX 6)
+
+MIRROR_ROWS = ("anchor_a", "anchor_b", "anchor_c", "liftmotor_a", "liftmotor_b", "liftmotor_c", "frame_upper_a", "frame_upper_b",
+               "frame_upper_c", "home_switch_a", "home_switch_b", "home_switch_c")
+
+
+def _mirror_preds(sp):
+    for fid in MIRROR_ROWS:
+        _row(sp, fid).setdefault("sense", []).append({"pred": "mirror_about_radial", "axes": INSET})
+
+
+def mirror_z():
+    """K8 Z (TP FIX 6): mirror_about_radial declared on the twelve radial inset rows (the P6 spec edit), drawn faithfully."""
+    return s3_ctx(spec_mut=_mirror_preds)
+
+
+def mirror_b():
+    """K8 B (TP FIX 6): frame_upper_b drawn rotated 15 deg and scaled 0.75 about its centre in the inset."""
+    def m(fig, ax, axi, *a):
+        art = sc.tagged(axi)["frame_upper_b"][0]
+        P = sc.artist_polys(art)[0]
+        cx, cy = sum(x for x, _ in P) / len(P), sum(y for _, y in P) / len(P)
+        c, s_ = math.cos(math.radians(15)), math.sin(math.radians(15))
+        art.set_xy([(cx + 0.75 * ((x - cx) * c - (y - cy) * s_), cy + 0.75 * ((x - cx) * s_ + (y - cy) * c)) for x, y in P])
+    return s3_ctx(spec_mut=_mirror_preds, mutate=m)
+
+
+# ---- class_by_axes (TP FIX 7, F5)
+
+def _plate_g(sp):
+    """Fixture-only: base_plate|receiver G 0.10 (the Loftsman's P6 remedy item 1 for F1, pending Sean), so K7 can read
+    clean in both Axes; the spec itself keeps C until P6."""
+    for nb in _row(sp, "base_plate")["neighbours"]:
+        if nb.get("id") == "receiver":
+            nb.update({"class": "G", "g_min": 0.10})
+
+
+def cba_z():
+    """K7 Z (TP FIX 7): the spec's class_by_axes N on screw_c|nut_housing_c and screw_c|anchor_c in the inset (F kept in
+    the section): inset K7 clear of the 13 F overlaps; section K7 clean with the fixture-only F1 declaration."""
+    return s3_ctx(spec_mut=_plate_g)
+
+
+def cba_b():
+    """K7 B (TP FIX 7): screw_a|nut_housing_a with class_by_axes N in the inset, a pair no other Axes draws."""
+    def sm(sp):
+        _plate_g(sp)
+        _row(sp, "screw_a").setdefault("neighbours", []).append({"id": "nut_housing_a", "class": "F", "class_by_axes": {INSET: "N"}})
+    return s3_ctx(spec_mut=sm)
+
+
+# ---- S3-2 drawn span (SW FIX 2 = LF FIX 4)
+
+def s3_2_b2():
+    """S3-2 B: guide_bearing_c drawn 10 above its row, keys unchanged."""
+    def m(fig, ax, axi, *a):
+        for art in sc.tagged(ax)["guide_bearing_c"]:
+            art.set_y(art.get_y() + 10.0)
+    return s3_ctx(mutate=m)
+
+
+# ---- S3-3 branches (SW FIX 3 = LF FIX 5; LF FIX 1 to 3; SW NOTE 7)
+
+def s3_3_face_off():
+    """S3-3 B (SW FIX 3 a, M02): the nut face named 1 above the counterbore shoulder (spec neighbour face z + 1)."""
+    t = _new_tmp()
+    sp = _post_p6_specs()
+    _receiver_cert(sp["s3"])
+    for nb in _row(sp["s3"], "nut_housing_c")["neighbours"]:
+        if nb.get("id") == "nut_c" and isinstance(nb.get("face"), dict):
+            nb["face"]["z"] = nb["face"]["z"] + " + 1"
+    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+
+
+def s3_3_sym_fail():
+    """S3-3 B (SW FIX 3 b, M03): x1_exempt left on S3 anchor_b: SYM fails, no a, b link certifies by symmetry."""
+    t = _new_tmp()
+    sp = _post_p6_specs()
+    _receiver_cert(sp["s3"])
+    _row(sp["s3"], "anchor_b")["x1_exempt"] = {"reason": "planted"}
+    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+
+
+def s3_3_c_open():
+    """S3-3 B (SW FIX 3 c, M04): nut_housing_c drawn 1 down: c link nut_c|nut_housing_c open; the a, b nut links whose
+    counterpart range holds it open by symmetry."""
+    def m(fig, ax, axi, *a):
+        for art in sc.tagged(ax)["nut_housing_c"]:
+            art.set_y(art.get_y() - 1.0)
+    return _s3_3_ctx(mutate=m)
+
+
+def _set_state(pair, pose, state, only_pose=None):
+    def mut(rec):
+        k7 = next(c for c in rec["checks"] if c["id"] == "K7")
+        keep = []
+        for i, t in enumerate(k7["tests"]):
+            if t[1] in pair:
+                if only_pose and t[0] != only_pose:
+                    continue
+                if pose and t[0] == pose:
+                    t[3] = state
+                    k7["states"][i] = state
+            keep.append(i)
+        k7["tests"] = [k7["tests"][i] for i in keep]
+        k7["states"] = [k7["states"][i] for i in keep]
+    return mut
+
+
+def s3_3_record_not_c():
+    """S3-3 B (SW FIX 3 d, M05): the S1 record with collet|holder at capture_end in state F."""
+    return _s3_3_ctx(s1_mut=_set_state(("collet|holder", "holder|collet"), "capture_end", "F"))
+
+
+def s3_3_pose_only():
+    """S3-3 B (SW NOTE 7, M07): the S1 record carrying collet|holder at pose load only (absent at the figure pose)."""
+    return _s3_3_ctx(s1_mut=_set_state(("collet|holder", "holder|collet"), None, None, only_pose="load"))
+
+
+def s3_3_veto_pair():
+    """S3-3 B (LF FIX 1): the signed chains (S3 receiver certifier kept on chain c only), fresh records: the section reads
+    receiver|base_plate open, so the pair is open in chains c, a and b."""
+    t = _new_tmp()
+    sp = _post_p6_specs()
+    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+
+
+def s3_3_true_cut():
+    """S3-3 B (LF FIX 3): bracket_anchor_c, a row of an S3-certified pair, placed at jackscrew.angle[1] (150): off the
+    plane, not its true cut (drawn faithfully)."""
+    t = _new_tmp()
+    sp = _post_p6_specs()
+    _receiver_cert(sp["s3"])
+    _row(sp["s3"], "bracket_anchor_c")["place"]["theta"] = "jackscrew.angle[1]"
+    return s3_ctx(spec=sp["s3"], records=_records_dir(t), specs=sp)
+
+
+def s3_3_face_corner():
+    """S3-3 B (LF FIX 2): the anchor cover pieces (bottom at 348 z_S) drawn with the bore widened to the bearing OD, so
+    the cover meets the bearing top at u -173 and -147 only."""
+    def m(fig, ax, axi, *a):
+        for art in sc.tagged(ax)["anchor_c"]:
+            if abs(art.get_y() - 348.0) <= 1e-6:
+                x0, x1 = art.get_x(), art.get_x() + art.get_width()
+                if x1 <= -160:
+                    art.set_width(-173.0 - x0)
+                else:
+                    art.set_x(-147.0)
+                    art.set_width(x1 + 147.0)
+    return _s3_3_ctx(mutate=m)
+
+
+# ---- SYM-P (LF FIX 6)
+
+def _keys_read(n, drop_accessed=False, drop_key=None):
+    P = Params()
+    spec = load_spec(SK / f"{n}_spec.yaml")
+    if drop_key:
+        for r in spec["features"]:
+            if drop_key in (r.get("keys") or []):
+                r["keys"] = [k for k in r["keys"] if k != drop_key]
+    check_stack.evaluate_spec(P, spec)
+    keys = set(sc.spec_keys(spec)) | (set() if drop_accessed else set(P.accessed))
+    return spec, keys
+
+
+def sym_p_z():
+    """SYM-P Z: on S1, S2 and S3, keys_read (spec_keys plus every key check_stack read) covers every key the SYM rows'
+    place and z_rule read."""
+    cs = check_sketch_mod()
+    rs = [cs.sym_keys_premise(*_keys_read(n)) for n in ("s1", "s2", "s3")]
+    bad = [r for r in rs if r["result"] != "pass"]
+    return {"id": "SYM-P", "result": "fail" if bad else "pass", "reason": " || ".join(r["reason"] for r in rs), "n_issues": sum(r["n_issues"] for r in rs)}
+
+
+def sym_p_b():
+    """SYM-P B: S3 keys_read built from spec_keys alone (P.accessed dropped) with jackscrew.top_guide_z removed from
+    every row's keys list."""
+    cs = check_sketch_mod()
+    r = cs.sym_keys_premise(*_keys_read("s3", drop_accessed=True, drop_key="jackscrew.top_guide_z"))
+    return r
