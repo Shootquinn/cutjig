@@ -115,9 +115,12 @@ def draw_section_row(ax, pz, spec, row):
         if abs(z1 - z0) <= sc.TOL_Z:                       # nut station ticks across the screw
             u0, u1 = pz.u(fid)
             sc.draw_hline(ax, fid, u0, u1, z0, color="k", linestyle=CHAIN, linewidth=1)
-        else:                                            # span L_t, on the screw axis between the bearing lines
+        else:                                            # span L_t: dimension line at the offset between the bearing lines
             uc = sum(pz.u(fid)) / 2
-            sc.draw(fid, Line2D([uc, uc], [z0, z1], color=LOAD, linewidth=1, marker="_", markersize=sc.LABEL_FONTSIZE * 2), ax)
+            sc.draw(fid, Line2D([uc, uc], [z0, z1], color=LOAD, linewidth=1), ax)
+            L = sc.LABEL_FONTSIZE                        # 1.3 (h) r4 (D-r3-1): arrowhead terminators on the extension lines
+            _arrow(ax, fid, (uc, z0 + L), (uc, z0))
+            _arrow(ax, fid, (uc, z1 - L), (uc, z1))
         return
     if kind == "arrow":
         d = next((p["dir"] for p in row.get("sense") or [] if p.get("pred") == "points"), "+Z")
@@ -133,8 +136,8 @@ def draw_section_row(ax, pz, spec, row):
         return
     if kind == "callout":                                # leader from the screw outline, label by the placer
         zc = pz.zs("(jackscrew.thread_start_z + jackscrew.thread_end_z) / 2")
-        u0 = us - g("jackscrew.nominal") / 2
-        sc.draw(fid, Line2D([u0, u0 - g("profile.width") / 2], [zc, zc], color=CALLOUT, linewidth=1), ax)
+        u0 = us + g("jackscrew.nominal") / 2             # 1.3 (h) r4 (M1 S3 r3 F2): inboard edge toward +u, end u -124, clear of the span at -110
+        sc.draw(fid, Line2D([u0, u0 + g("profile.width") / 2], [zc, zc], color=CALLOUT, linewidth=1), ax)
         return
     if z0 is None:
         return
@@ -398,7 +401,7 @@ def build(P, spec, stack):
     notes = [
         (None, f"section A-A: plane x = 0 through the drill axis and screw c at theta {g('jackscrew.angle')[2]:g} (u = r sin theta = "
                f"{g('jackscrew.pitch_radius') * check_stack.sind(g('jackscrew.angle')[2]):g}); viewer at +X, u = +Y right, z up (z_S plotted)"),
-        (None, "hatch by material: aluminium // (anchor cover above the joint --), extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
+        (None, "hatch by material: aluminium // (anchor cover above the joint ||), extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
                "outline over the hatch; beyond the plane within one profile width (rear standoffs): solid, dashed behind cut parts;\n"
                "dash-dot: nut stations at start and park; red: loads and the S3-2 span; dashed: hidden edges (inside an unsectioned outline), thread root inside screw c"),
         (None, AXIAL_LOOP_NOTE),

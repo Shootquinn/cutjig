@@ -102,6 +102,43 @@ Controls added in r3: K5-B43 to B47, K8-B86, B87, S3-3-B16, B17 (9).
 | `plan_axes:arc` head (B43, Z7 with head) | The Topologist (R2-3) | K5-Z7 / B40 to B43 |
 | hatch alternate by line family (B87) | The Topologist (R2-4) | K8-Z16 / B79 to B82, B87 |
 
+## r4
+
+Sources: `docs/sketches/wip/s3_visual_gate_r3.md` (fresh M1 S3 r3 FAIL V8: F1, F2), `research/sean/cr_scratch/step1.3_raisers_sign_r3.md` (five rules signed; Designer objection D-r3-2 to "--"; NOTE D-r3-1), orchestrator rulings for r4. Scratch: `D:\Unleashed Robotics\_scratch\cutjig\p9r4\` (`pre\` the r3 harness, `pre_rf\` the r3 code with the r4 fixtures, spec and script). TMP and TEMP at `_scratch\cutjig\tmp`; nothing on C:.
+
+### Corrections to the brief (r4)
+
+1. **Both terminator forms touch K8 projected_extent on a reference line row of footprint half-width 0.** Ticks and arrowheads both widen the drawn x of span_lt: arrowheads drawn under gid span_lt read x [-111.14, -108.86] on the r3 code (K8-Z17 there, MEASURED). Arrowheads are picked. The K8 projected tests of a reference line row in a side or section view now read the row through `geom_pieces`, the P4 rule that an arrowhead on a line row marks it and is not its extent. The premise is checked: every arrow of the row has tail and head on the row's line ink (`sketch_common.terminator_issues`). This is a new relief, so it is listed for signature (Designer, raiser of D-r3-1).
+2. **The extension-line overrun stays at 2 (e3 0 to 3).** With the `_` marker gone, the visible red past the dimension line is the extension line's 2 mm alone (D-r3-1: was 6.1 from the marker).
+
+### Fixes
+
+| Item | Fix | Controls |
+|---|---|---|
+| M1 S3 r3 F1 | span_lt label text `S3-2 span, K 0.7; L_t` (expr unchanged): prints "S3-2 span, K 0.7; L_t 870" | K4 live pass; K4-B20 reason re-read ("S3-2 span, K 0.7; L_t 1150") |
+| M1 S3 r3 F2 | hold_callout mark from the inboard screw edge u -154 toward +u to u -124 (us + nominal / 2 + profile.width / 2); the leader lands at the mark root from the label column without crossing the screw | K4 (leader rules, (i)), K7 (269 section tests clean), K9 live pass |
+| Orchestrator hatch ruling (Designer D-r3-2) | `section.hatch_alt: {aluminium: "||"}`, hatch_split `above` text, legend `(anchor cover above the joint ||)`, `FIXTURE_ALT` "\|\|" | K8-Z16 clean; K8-B79, B80 reasons re-worded to '\|\|' |
+| D-r3-1 | `marker="_"` removed from span_lt; two arrowhead terminators (FancyArrowPatch, LABEL_FONTSIZE long, heads on the extension lines at z_S 340 and 1210); K8 projected tests read the line without its arrows, premise `terminator_issues` | K8-Z17 (live S3), K8-B88 (line 5 off: guard), K8-B89 (arrow 10 off the line) |
+
+### Red-first (r3 code, `p9r4\pre_rf`, MEASURED)
+
+| Control | Observed on the r3 code | Red |
+|---|---|---|
+| K8-Z17 live S3 with terminators | fires: span_lt projected_extent x [-111.14, -108.86] (by 1.14) | yes |
+| K8-B89 arrow off the line | fires 2 with the projected_x / extent reason, not the terminator reason | yes (reason) |
+| K8-B88 line 5 off | fires 2, same reason: a guard that the relief does not hide the line position (not red-first) | n/a |
+
+### Check results (MEASURED)
+
+- **S3 r4** (`docs/sketches/wip/s3_checks_r4.json`): **15 of 16 pass**. S3-3 fails only on the stale S1 r7 / S2 r5 records. Dry run with S1 r8 and S2 r9 accepted: **16/16**.
+- `--baseline s3`: 16/16 matched.
+- `--stale`: 2 records, 5 differences (the adopted keys, unchanged).
+- **`--controls --jobs 12`: 404/404 match (Z 96, B 305, smoke 3), 196.5 s.** Added: K8-Z17, B88, B89.
+
+PNG: `docs/sketches/wip/s3_jackscrew_section_r4.png` (4157 x 3876 px).
+
+Rule awaiting signature: K8 reference-line terminator relief with its premise (`terminator_issues`; Z K8-Z17, B K8-B88, B89), raiser The Designer (D-r3-1).
+
 ## Gameplan lines to change
 
 Merged from `step1.3_engineer_revision_r2.md` (E2), `step1.3_designer_r2_values.md` (D), `step1.3_loftsman_recheck_r2.md` (L) and `step1.3_topologist_recheck_r2.md` (T), plus r3. Apply the E2 items first. Each later Old reads text an earlier New writes; where an item supersedes an earlier one, the earlier item is marked.
@@ -167,4 +204,23 @@ New: | 1.3 | 2026-11-26 | (h) P9 r3 (step1.3_engineer_revision_r3.md): S3 r3 15/
 12. Design Notes 13: E2 item 8 row stands; insert after it:
 ```
 New: | S3-r2 | 2026-11-26 | No correction from Sean yet. r3 came from the Designer r2 values, the Topologist and Loftsman r2 re-checks and the orchestrator rulings (offset, hatch alternate) | r3: K5-B43 to B47, K8-B86, B87, S3-3-B16, B17 (`step1.3_engineer_revision_r3.md`) |
+```
+13. r4, l.142 (K8 row), after item 3:
+```
+Old: or deferred with an owner (K8-B83 to B85, B86 deferred with no owner; TP1.3-12, Topologist 1.3 P7r R2-2)
+New: or deferred with an owner (K8-B83 to B85, B86 deferred with no owner; TP1.3-12, Topologist 1.3 P7r R2-2); a reference line row's projected tests read its line without its arrowhead terminators, premise every arrow on the line ink (K8-Z17, B88, B89; Designer NOTE D-r3-1, 1.3 (h) r4)
+```
+14. r4, l.273 (detail 1.3 Shows), after item 5:
+```
+Old: anchor cover hatched with section.hatch_alt aluminium "--" ("////" refused by the line-family lint);
+New: anchor cover hatched with section.hatch_alt aluminium "||" ("////" refused by the line-family lint; "--" read as a doubled joint line, Designer D-r3-2, orchestrator ruling 1.3 (h) r4); the L_t dimension terminated by arrowheads (D-r3-1);
+```
+15. r4, l.147 (K table pointer), after item 4:
+```
+Old: (401 controls: Z 95, B 303, smoke 3, all match; 191.8 s at --jobs 12).
+New: (401 controls: Z 95, B 303, smoke 3, all match; 191.8 s at --jobs 12). Step 1.3 (h) r4 added K8-Z17, B88, B89 and re-worded K4-B20, K8-B79, B80 (404 controls: Z 96, B 305, smoke 3, all match; 196.5 s at --jobs 12).
+```
+16. r4, Progress Log, insert after the item 11 r3 row:
+```
+New: | 1.3 | 2026-11-26 | (h) P9 r4 (step1.3_engineer_revision_r3.md section r4): M1 S3 r3 F1 (span label 'S3-2 span, K 0.7; L_t 870') and F2 (hold mark from the inboard screw edge to u -124) fixed; hatch_alt '||'; span_lt arrowhead terminators with the K8 reference-line relief and its premise (K8-Z17, B88, B89); S3 r4 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); controls 404/404 in 196.5 s; wip/s3_jackscrew_section_r4.png for the Designer delta read |
 ```

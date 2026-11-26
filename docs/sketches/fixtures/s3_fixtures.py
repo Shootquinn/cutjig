@@ -228,7 +228,7 @@ def _draw_arc(ax, P, row, reverse=False, dr=0.0, gid=None, head_from=None):
     return a
 
 
-FIXTURE_ALT = "--"   # the live section.hatch_alt aluminium (Designer r2 pick 4, orchestrator ruling 1.3 (h) r3), for plants
+FIXTURE_ALT = "||"   # the live section.hatch_alt aluminium (orchestrator ruling 1.3 (h) r4), for plants
 
 
 def _ctx_of(P, spec, stack, figs):
@@ -1471,3 +1471,31 @@ def hatch_alt_family():
     def sm(sp):
         sp["section"]["hatch_alt"] = {"aluminium": "////"}
     return s3_ctx(spec_mut=sm)
+
+
+# ======================================================================== 1.3 (h) r4 (step1.3_engineer_revision_r3.md section r4)
+# Designer NOTE D-r3-1: arrowhead terminators on the span_lt dimension line; a reference line row's projected extent
+# reads its line without its arrows, premise: every arrow of the row lies on its line ink.
+
+def live_s3_k8():
+    """K8 Z (D-r3-1): the live S3 drawn by s3_jackscrew_section.py (span_lt with two arrowhead terminators)."""
+    return _builders()._script_ctx("s3")
+
+
+def span_line_moved():
+    """K8 B (D-r3-1, guard of the relief): the span_lt line drawn 5 off its place (u -105): the line, read without its
+    arrows, leaves the footprint."""
+    def m(fig, ax, axi, *a):
+        for art in sc.tagged(ax)["span_lt"]:
+            if isinstance(art, Line2D):
+                art.set_xdata([x + 5 for x in art.get_xdata()])
+    return s3_ctx(mutate=m)
+
+
+def span_arrow_off():
+    """K8 B (D-r3-1 premise): a span_lt arrow drawn 10 off the dimension line (u -100)."""
+    def m(fig, ax, axi, *a):
+        ln = next(x for x in sc.tagged(ax)["span_lt"] if isinstance(x, Line2D))
+        u, z0 = ln.get_xdata()[0], min(ln.get_ydata())
+        _arrow(ax, "span_lt", (u + 10, z0 + 7), (u + 10, z0))
+    return s3_ctx(mutate=m)

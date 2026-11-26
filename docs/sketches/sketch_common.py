@@ -1137,6 +1137,26 @@ def arrow_ends(a):
     return None
 
 
+def terminator_issues(ax, fid, pose):
+    """1.3 (h) r4 (Designer NOTE D-r3-1): premise of reading a reference line row's extent without its arrows. Every
+    FancyArrowPatch of the row has its tail and head on the row's Line2D ink within TOL_Z (a terminator lies on the
+    dimension line it ends), so an arrow cannot stand away from the line it marks."""
+    arts = tagged(ax).get(fid, [])
+    ink = [q for a in arts if isinstance(a, Line2D) for q in artist_polys(a)]
+    out = []
+    for a in arts:
+        if not isinstance(a, FancyArrowPatch):
+            continue
+        ends = arrow_ends(a)
+        if not ends:
+            continue
+        for nm, p in zip(("tail", "head"), ends):
+            d = min((_pt_seg(p, q[i], q[i + 1]) for q in ink for i in range(len(q) - 1)), default=float("inf"))
+            if d > TOL_Z:
+                out.append(f"{pose}/{fid} terminator: arrow {nm} ({p[0]:.2f}, {p[1]:.2f}) {d:.2f} off the line (D-r3-1)")
+    return out
+
+
 def geom_pieces(ax, row):
     """1.3 P4: the drawn geometry of a row for centre and extent tests: its pieces, without look arrows (FancyArrowPatch)
     on a line row (an arrowhead marks the direction of a cutting-plane line; it is not the line's extent)."""
@@ -4343,6 +4363,11 @@ def k8(ctx):
             if not applies(row, pose):
                 continue
             me = pieces(ax, fid)
+            if row.get("kind") == "line" and row.get("reference") and side:
+                # 1.3 (h) r4 (Designer D-r3-1): a dimension's arrowhead terminators are marks on its line, not its extent
+                # (the geom_pieces premise, P4); premise check: both ends of every arrow of the row lie on the row's line ink
+                me = geom_pieces(ax, row)
+                issues += terminator_issues(ax, fid, pose)
             # TP-3: every placed row sits at its projected position (x = r_c cos theta in side views; x and y in plan)
             pl = _feat(ctx, pose, fid).get("place")
             # 1.2 (c) plan: every drawn point lies inside the row's plan outline (premise of the K7 plan test and of the
