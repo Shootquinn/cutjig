@@ -40,6 +40,10 @@ def _template(rev=4):
     for k, v in rec["keys_read"].items():
         if P.has(k):
             v["value"] = P.get(k)
+    # SW P0S FIX 2: --accept refuses a record without an RPT row; the template carries the row run_sketch writes
+    rec["checks"] = [c for c in rec["checks"] if c.get("id") != "RPT"] + [
+        {"id": "RPT", "result": "pass", "reason": "not declared, exempt (template)", "measured": 0, "threshold": 0, "n_issues": 0, "cause": None,
+         "z_result": "template", "b_result": "template", "source": "template"}]
     return rec
 
 
@@ -321,8 +325,12 @@ def h1_b_rpt_fail():
 
 
 def h1_b_rpt_absent():
-    """B (R3): a record declaring reported_items with no RPT row: accept refused, nothing written."""
-    return _accept_refused(_rpt_record(None))
+    """B (R3; re-planted for SW P0S FIX 2): a record with no RPT row and no reported_items: accept refused, nothing
+    written. The P0 condition (refuse only when reported_items is declared) accepted this record."""
+    rec = _template()
+    rec.pop("reported_items", None)
+    rec["checks"] = [c for c in rec["checks"] if c["id"] != "RPT"]
+    return _accept_refused(rec)
 
 
 def _runner(wrong):
@@ -366,3 +374,107 @@ def run_b():
     fired = rc == 1 and [r["id"] for r in nos] == ["K2-Z"] and len(lines) == 1 and "K2-Z" in lines[0] and summ.get("jobs") == 2
     reason = f"--jobs {summ.get('jobs')}: exit {rc}; mismatched {[r['id'] for r in nos]}; printed {lines}" + (f"; stderr {err}" if not fired else "")
     return _res("RUN", fired, reason, 1 if fired else 0)
+
+
+# ---------------------------------------------------------------- 1.3 P0f (research/sean/cr_scratch/step1.3_engineer_step0_fixes.md)
+# SW P0S FIX 1 (controls destination, empty --only), FIX 3 (RPT branches, Reported items table).
+
+def run_z2():
+    """FIX 1 Z: the full live manifest writes the controls record (fixtures/controls_results.json)."""
+    kind, dst = cs.controls_dst(cs.MANIFEST, None)
+    ok = kind == "record" and str(dst) == cs.CONTROLS_RESULTS
+    return _res("RUN", not ok, f"full live manifest routes to {kind} {dst}", 0 if ok else 1)
+
+
+def run_b2():
+    """FIX 1 B: --only on the live manifest is never the record: the check fires "not a record" when it routes to the
+    partial file. With the --only test deleted from the routing (M1) it routes to the record and reads clean."""
+    kind, dst = cs.controls_dst(cs.MANIFEST, "K1-Z,K2-*")
+    fired = kind == "partial" and str(dst) == cs.CONTROLS_PARTIAL
+    return _res("RUN", fired, f"not a record: --only routes to {kind} {dst}", 1 if fired else 0)
+
+
+def run_b3():
+    """FIX 1 B: --only selecting no control (case typo K2-b4) exits 1 with "no control selected", nothing written."""
+    import argparse
+    import contextlib
+    import io
+    buf = io.StringIO()
+    part = cs.output_path(cs.CONTROLS_PARTIAL)
+    before = part.read_bytes() if part.is_file() else None
+    with contextlib.redirect_stdout(buf):
+        rc = cs.controls(argparse.Namespace(only="K2-b4", manifest=None, jobs=1))
+    after = part.read_bytes() if part.is_file() else None
+    out = buf.getvalue().strip().splitlines()
+    fired = rc == 1 and any("no control selected" in ln for ln in out) and before == after
+    return _res("RUN", fired, f"--only 'K2-b4': exit {rc}; {out[-1] if out else ''}; partial file {'unchanged' if before == after else 'written'}",
+                1 if fired else 0)
+
+
+def rpt_b3():
+    """FIX 3 B: rev 0, F_stall (needs_drawing true) missing: cause absent, carried in the reason."""
+    return cs.rpt_check(RPT_SPEC, {"L_min": RPT_VALUES["L_min"]}, "s3_checks_r0.json", 0)
+
+
+def rpt_b4():
+    """FIX 3 B: rev 0, L_min (needs_drawing false) missing: cause content."""
+    return cs.rpt_check(RPT_SPEC, {"F_stall": RPT_VALUES["F_stall"]}, "s3_checks_r0.json", 0)
+
+
+def rpt_b5():
+    """FIX 3 B: F_stall present with value None: no value."""
+    return cs.rpt_check(RPT_SPEC, {**RPT_VALUES, "F_stall": dict(RPT_VALUES["F_stall"], value=None)}, "s3_checks_r1.json", 1)
+
+
+def rpt_z2():
+    """FIX 3 Z: spec without reported_items under the record name s1_checks_r7.json: pass, exempt."""
+    r = cs.rpt_check({}, {}, "s1_checks_r7.json", 7)
+    ok = r["result"] == "pass" and "exempt" in r["reason"]
+    return _res("RPT", not ok, r["reason"], 0 if ok else 1)
+
+
+def _summary_rows(values):
+    """write_summary on a temporary record (template plus the two RPT_SPEC items and the given values); returns the rows
+    of its Reported items table as {id: [cells]}."""
+    rec = _template(rev=1)
+    rec["reported_items"] = RPT_SPEC["reported_items"]
+    rec["reported_drawn"] = {"rows": [], "items": values}
+    with tempfile.TemporaryDirectory() as t:
+        p = Path(t) / "summary.md"
+        cs.write_summary(rec, p)
+        lines = p.read_text(encoding="utf-8").splitlines()
+    if "## Reported items (spec reported_items; RPT)" not in lines:
+        return None
+    i = lines.index("## Reported items (spec reported_items; RPT)")
+    rows = {}
+    for ln in lines[i + 1:]:
+        if ln.startswith("| ") and not ln.startswith("| ID") and not ln.startswith("|---"):
+            cells = [c.strip() for c in ln.strip("|").split("|")]
+            rows[cells[0]] = cells
+        elif rows and not ln.startswith("|"):
+            break
+    return rows
+
+
+def rpt_z3():
+    """FIX 3 Z: summary table has one row per declared item, each with its value, basis and tag."""
+    rows = _summary_rows(RPT_VALUES)
+    issues = []
+    if rows is None:
+        issues.append("no Reported items table")
+    else:
+        for iid, v in RPT_VALUES.items():
+            c = rows.get(iid)
+            if not c or c[2] != str(v["value"]) or c[3] != v["basis"] or c[4] != v["tag"]:
+                issues.append(f"row {iid}: {c}")
+        if len(rows) != len(RPT_VALUES):
+            issues.append(f"{len(rows)} rows")
+    return _res("RPT", bool(issues), "; ".join(issues) or "Reported items table: L_min and F_stall rows with value, basis, tag", len(issues))
+
+
+def rpt_b6():
+    """FIX 3 B: F_stall without a value: its summary row reads ABSENT."""
+    rows = _summary_rows({"L_min": RPT_VALUES["L_min"]})
+    c = (rows or {}).get("F_stall")
+    fired = bool(c) and c[2] == "ABSENT"
+    return _res("RPT", fired, f"summary row F_stall reads {c[2] if c else 'no row'}", 1 if fired else 0)

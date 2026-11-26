@@ -1167,6 +1167,15 @@ def k2(ctx):
                   measured=len(issues), threshold=0, n_issues=len(issues))
 
 
+# The member-top chain (1.3 open O2): these overlay leaves, when present, must carry exactly this expr (whitespace-free
+# comparison), so neither deleting nor rewriting the expr silences the agreement lint (Loftsman P0L FIX 1).
+EXPR_REQUIRED = {
+    "jackscrew.top_guide_z": "jackscrew.anchor_z + jackscrew.length",
+    "frame_upper.member_length": "jackscrew.top_guide_z + profile.height - base.plate_thickness",
+    "frame_upper.member_length_rail": "jackscrew.top_guide_z + profile.height",
+}
+
+
 def expr_agreement_issues(P):
     """1.3 step 0 R2 (O2): an overlay leaf with an `expr` field (arithmetic in other keys, check_stack.eval_expr) fails
     when |value - eval(expr)| > TOL_Z. Premise of every DERIVED literal that carries one (jackscrew.top_guide_z,
@@ -1174,6 +1183,15 @@ def expr_agreement_issues(P):
     a record's keys_read is unchanged by the lint. Returns (issues, leaves with expr)."""
     import check_stack as cs  # stdlib + sketch_loader only; no cycle
     issues, n = [], 0
+    norm = lambda e: "".join(str(e).split())  # noqa: E731
+    for k, want in EXPR_REQUIRED.items():   # Loftsman P0L FIX 1: the chain premise is a check, not a convention
+        leaf = P.overlay.get(k)
+        if not isinstance(leaf, dict) or leaf.get("_malformed"):
+            continue
+        if "expr" not in leaf:
+            issues.append(f"overlay {k}: expr required ({want}) (Loftsman P0L FIX 1)")
+        elif norm(leaf["expr"]) != norm(want):
+            issues.append(f"overlay {k}: expr altered, has {leaf['expr']!r}, required {want!r} (Loftsman P0L FIX 1)")
     acc = dict(P.accessed)
     try:
         for k, leaf in P.overlay.items():
@@ -1606,14 +1624,38 @@ def expected_projection(kind, axis, normal):
 def zero_area_issue(row, a):
     """TP1.1-9 (1.3 step 0 R5 a): a Rectangle of zero width or height, or a Polygon of area <= TOL_AREA (0.01 mm2) in
     data coordinates, on a row whose kind draws an area (not line, arrow or callout), is no projection of a solid part."""
-    if row.get("kind") in NO_AREA_KINDS or not isinstance(a, (Rectangle, Polygon)):
+    kind = row.get("kind")
+    if kind in NO_AREA_KINDS:
         return None
-    if isinstance(a, Rectangle) and (a.get_width() == 0 or a.get_height() == 0):
-        return f"zero-area Rectangle (width {a.get_width():g}, height {a.get_height():g}) on a {row.get('kind')} row (TP1.1-9)"
-    area = sum(poly_area_abs(p) for p in artist_polys(a) if len(p) >= 3)
-    if area <= TOL_AREA:
-        return f"zero-area {type(a).__name__} (area {area:.4f} mm2) on a {row.get('kind')} row (TP1.1-9)"
+    if not isinstance(a, Patch):   # Topologist P0T FIX 1 (c): a line under a part row's own id draws no area
+        return f"{type(a).__name__} on a {kind} row draws no area (TP1.1-9)"
+    t = least_thickness(a)
+    if t <= TOL_Z:
+        return f"zero-area {type(a).__name__} (least thickness {t:.4f} mm <= {TOL_Z}) on a {kind} row (TP1.1-9)"
     return None
+
+
+def _perimeter(P):
+    return sum(math.hypot(P[(i + 1) % len(P)][0] - P[i][0], P[(i + 1) % len(P)][1] - P[i][1]) for i in range(len(P)))
+
+
+def least_thickness(a):
+    """Topologist P0T FIX 1 (a): least drawn thickness of a patch in data coordinates (transform chain applied). Annulus:
+    radial width, from the transformed rings (outer minus inner mean radius about the ring centre). Any other patch: the
+    least 2A/P over its pieces (a w x h rectangle gives wh / (w + h), the short side to first order); a piece with fewer
+    than three distinct vertices, or no piece, is 0."""
+    polys = [p for p in artist_polys(a) if len(p) >= 1]
+    if isinstance(a, Annulus) and len(polys) >= 2:
+        rings = sorted(polys, key=lambda p: -poly_area_abs(p) if len(p) >= 3 else 0)[:2]
+        cx = sum(x for x, _ in rings[0]) / len(rings[0])
+        cy = sum(y for _, y in rings[0]) / len(rings[0])
+        r = [sum(math.hypot(x - cx, y - cy) for x, y in q) / len(q) for q in rings]
+        return abs(r[0] - r[1])
+    ts = []
+    for p in polys:
+        per = _perimeter(p) if len(p) >= 2 else 0.0
+        ts.append(0.0 if len(p) < 3 or per <= 0 else 2 * poly_area_abs(p) / per)
+    return min(ts) if ts else 0.0
 
 
 def k5(ctx):

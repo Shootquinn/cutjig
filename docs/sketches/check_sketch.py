@@ -7,7 +7,7 @@
                                    flags the revision accepted (accepted, accepted_note, accepted_at), copies its wip/
                                    outputs up to docs/sketches/ with SHA-256 equality, marks earlier accepted records of
                                    the sketch superseded_by k. Refused (exit 1) when the record is absent, a check is not
-                                   pass (RPT included; a record that declares reported_items without an RPT row), the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
+                                   pass (RPT included; a record without an RPT row), the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
   check_sketch.py --stale          recorded key values of the latest accepted, unsuperseded record per sketch (docs/sketches/)
                                    against live params and overlay; exit 1 on any difference (--include-unaccepted also
                                    checks the unaccepted records in wip/).
@@ -125,10 +125,10 @@ def rpt_check(spec, items, rec_name, rev):
             issues.append(f"reported item {iid} ({it['text']}): no value" + (" (needs drawing)" if it["needs_drawing"] else ""))
     absent = rev == 0 and missing and len(missing) == len(issues) and all(m["needs_drawing"] for m in missing)
     ok = not issues
-    return {"id": "RPT", "result": "pass" if ok else "fail",
-            "reason": f"{len(decl)} reported item(s) declared, every one has a value" if ok else sc._summ(issues),
-            "measured": len(issues), "threshold": 0, "n_issues": len(issues),
-            "cause": None if ok else ("absent" if absent else "content")}
+    cause = None if ok else ("absent" if absent else "content")
+    return {"id": "RPT", "result": "pass" if ok else "fail",   # the reason states the cause field (SW P0S FIX 3)
+            "reason": f"{len(decl)} reported item(s) declared, every one has a value" if ok else sc._summ(issues) + f"; cause {cause}",
+            "measured": len(issues), "threshold": 0, "n_issues": len(issues), "cause": cause}
 
 
 def sketch_table(s, name):
@@ -346,6 +346,18 @@ def run_controls_rows(man, jobs):
     return out
 
 
+def controls_dst(man_path, only):
+    """Where a --controls run writes (SW P0S FIX 1), pure: ("record", CONTROLS_RESULTS) only for the full live manifest;
+    ("partial", CONTROLS_PARTIAL) for --only on the live manifest; ("other", <manifest dir>/controls_results.json) for any
+    other manifest. Record and partial paths are relative to wip/ (sketch_loader.output_path)."""
+    live = Path(man_path).resolve() == MANIFEST.resolve()
+    if live and not only:
+        return "record", CONTROLS_RESULTS
+    if live:
+        return "partial", CONTROLS_PARTIAL
+    return "other", Path(man_path).parent / "controls_results.json"
+
+
 def controls(args):
     import time
     t0 = time.perf_counter()
@@ -354,8 +366,19 @@ def controls(args):
     only = getattr(args, "only", None)
     if only:
         man = select_controls(man, only)
-    jobs = args.jobs if getattr(args, "jobs", None) else default_jobs()
+        if not man:   # SW P0S FIX 1: an --only that selects nothing is an error, never a green run
+            print(f"no control selected by --only {only!r}")
+            return 1
+    jobs = getattr(args, "jobs", None)
+    if jobs is None:
+        jobs = default_jobs()
+    elif jobs < 1:   # SW P0S NOTE 1
+        print(f"--jobs {jobs}: needs at least 1")
+        return 2
     rows = run_controls_rows(man, jobs)
+    if [r["id"] for r in rows] != [e["id"] for e in man]:   # SW P0S NOTE 1: rows back in manifest order, fail closed
+        print("runner error: result rows not in manifest order")
+        return 1
     for r in rows:
         print(f"{r['id']:9s} {r['control']} expected {r['expected']:16s} observed {r['observed'][:40]:40s} match {'yes' if r['match'] == 'yes' else 'NO'}")
     z = [r for r in rows if r["control"] == "Z"]
@@ -364,7 +387,8 @@ def controls(args):
     summary = {"z_clean": sum(r["match"] == "yes" for r in z), "z_total": len(z),
                "b_fired": sum(r["match"] == "yes" for r in b), "b_total": len(b),
                "smoke_ok": sum(r["match"] == "yes" for r in sm), "smoke_total": len(sm)}
-    record = not only and man_path.resolve() == MANIFEST.resolve()
+    kind, dst = controls_dst(man_path, only)
+    record = kind == "record"
     if record:   # control figures and key.json once, in this process, only for the full live set
         figs = output_path(CONTROL_FIGS + "/key.json").parent   # wip/fixtures/figs (R4-c)
         try:
@@ -376,14 +400,11 @@ def controls(args):
     wall = round(time.perf_counter() - t0, 1)
     summary.update(jobs=jobs, wall_seconds=wall)
     out = {"run": 1, "timestamp": TIMESTAMP(), "summary": summary, "controls": rows}
-    if record:
-        dst = output_path(CONTROLS_RESULTS)
-    elif only and man_path.resolve() == MANIFEST.resolve():
+    if kind == "partial":
         out["partial"] = {"only": only, "note": "PARTIAL, not a record (never read by control_tally or --accept)"}
-        dst = output_path(CONTROLS_PARTIAL)
-    else:   # another manifest (runner controls): results beside that manifest, never under wip/ or docs/
+    elif kind == "other":
         out["manifest"] = str(man_path)
-        dst = man_path.parent / "controls_results.json"
+    dst = output_path(dst) if kind in ("record", "partial") else dst
     dst.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print(f"Z clean {summary['z_clean']}/{summary['z_total']}, B fired {summary['b_fired']}/{summary['b_total']}, "
           f"smoke {summary['smoke_ok']}/{summary['smoke_total']}; jobs {jobs}; wall {wall} s")
@@ -658,8 +679,8 @@ def accept(s, k, note, docs, wip, out=print):
     bad = [f"{c['id']} {c['result']}" for c in rec.get("checks", []) if c.get("result") != "pass"]
     if not rec.get("checks"):
         bad.append("no checks in record")
-    if rec.get("reported_items") and not any(c.get("id") == "RPT" for c in rec.get("checks", [])):
-        bad.append("RPT absent (record declares reported_items)")   # 1.3 step 0 R3
+    if not any(c.get("id") == "RPT" for c in rec.get("checks", [])):
+        bad.append("RPT absent")   # 1.3 step 0 R3; SW P0S FIX 2: every record carries an RPT row
     if bad:
         say(f"refused: {src.name} has checks not pass: {', '.join(bad)}")
         return 1, msgs

@@ -2456,3 +2456,85 @@ def k7_b34():
     ring["neighbours"] = []
     member["neighbours"] = [{"id": "ring", "class": "G", "g_min": 10, "poses": ["p4"], "source": "fixture"}]
     return c
+
+
+
+# ---------------------------------------------------------------- 1.3 P0f (research/sean/cr_scratch/step1.3_engineer_step0_fixes.md)
+# Loftsman P0L FIX 1 (mandatory chain exprs); Topologist P0T FIX 1 (K5 thickness form, line under a part row) merged with
+# Software Engineer P0S FIX 4 (zero-area Polygon): K5-B20 to B23.
+
+def _k2_expr(key, expr, values):
+    """K2 on a temporary overlay: the live overlay with key's expr replaced (None: removed) and values replaced."""
+    src = sc.load_yaml(HERE.parent / "proposed_params.yaml")
+    for k, v in values.items():
+        node = src
+        for part in k.split(".")[:-1]:
+            node = node[part]
+        node[k.split(".")[-1]]["value"] = v
+    node = src
+    for part in key.split(".")[:-1]:
+        node = node[part]
+    leaf = node[key.split(".")[-1]]
+    if expr is None:
+        leaf.pop("expr", None)
+    else:
+        leaf["expr"] = expr
+    with tempfile.TemporaryDirectory() as t:
+        p = Path(t) / "proposed_params.yaml"
+        p.write_text(yaml.safe_dump(src, sort_keys=False, allow_unicode=True), encoding="utf-8")
+        P = Params(overlay_path=p)
+    return sc.Ctx(P=P, spec=load_spec(HERE.parent / "s1_spec.yaml"), overlay_path=p)
+
+
+def k2_b6():
+    """Loftsman P0L FIX 1 B: top_guide_z without expr, jackscrew.length 950: the agreement lint has nothing to compare
+    (0 issues on the P0 code, K6 ties green); the mandatory-expr rule fires once."""
+    return _k2_expr("jackscrew.top_guide_z", None, {"jackscrew.length": 950})
+
+
+def k2_b7():
+    """Loftsman P0L FIX 1 B: top_guide_z expr rewritten to "jackscrew.anchor_z + 900" (1165, agrees with the stale
+    value), jackscrew.length 950: the agreement lint reads 0 apart; the altered-expr rule fires once."""
+    return _k2_expr("jackscrew.top_guide_z", "jackscrew.anchor_z + 900", {"jackscrew.length": 950})
+
+
+def k5_b20():
+    """Topologist P0T FIX 1 B (sliver): the S1 r7 script drawing with the anchor bearing lines raised from height 0 to
+    0.001 (area 42 x 0.001 = 0.042 mm2, above the P0 absolute 0.01 threshold): the thickness test fires at 2 anchors x 4
+    poses."""
+    c = _script_ctx("s1")
+    for fig in c.figs.values():
+        for gid in ("anchor_a", "anchor_b"):
+            for a in sc.tagged(fig.axes[0]).get(gid, []):
+                if isinstance(a, Rectangle) and a.get_height() == 0:
+                    a.set_height(0.001)
+    return c
+
+
+def k5_b21():
+    """Topologist P0T FIX 1 B (round patch): live S2 fixture drawing with screw_a's Circle at radius 0."""
+    c = _s2_ctx()
+    for a in sc.tagged(_s2_ax(c)).get("screw_a", []):
+        if isinstance(a, Circle):
+            a.set_radius(0)
+    return c
+
+
+def k5_b22():
+    """Topologist P0T FIX 1 (c) B: fixture S1 with nut_a's projection field deleted and a Line2D drawn under nut_a at
+    load; the P0 projection compare has no expectation for a prism without projection and passes it."""
+    c = _s1_ctx(spec_mut=_mut_row("nut_a", lambda r: r.pop("projection", None)))
+    ax = c.figs["load"].axes[0]
+    z = c.stack["poses"]["load"]["features"]["nut_a"]["z_min"]
+    sc.draw("nut_a", Line2D([-10, 10], [z, z]), ax)
+    return c
+
+
+def k5_b23():
+    """Software Engineer P0S FIX 4 B: a degenerate Polygon (three collinear vertices) tagged drill_tube (cylinder row) at
+    load, fixture S1."""
+    c = _s1_ctx()
+    ax = c.figs["load"].axes[0]
+    z = c.stack["poses"]["load"]["features"]["drill_tube"]["z_min"]
+    sc.draw("drill_tube", Polygon([(-10, z), (0, z), (10, z)], closed=True, fill=False), ax)
+    return c
