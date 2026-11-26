@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) signed by the Designer (sign-off r3); r4 edits (outline_matches on base_plate, stand_in_owner on the ties, label_side left on descent_stop) signed by the Designer (sign-off r4); r5 edit (label_theta 150 on descent_stop, Designer sign-off r4 FIX D4-1; step1.2_engineer_revision_r5.md)"
+status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) signed by the Designer (sign-off r3); r4 edits (outline_matches on base_plate, stand_in_owner on the ties, label_side left on descent_stop) signed by the Designer (sign-off r4); r5 edit (label_theta 150 on descent_stop, Designer sign-off r4 FIX D4-1; step1.2_engineer_revision_r5.md); 1.3 P1Rf: reported_items (Designer P1Rd section 5) and label suffixes on drill_head and descent_stop (Designer P1Rd FIX D2)"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -87,6 +87,19 @@ rubric_additions:
   - "on every pinion axis the motor is outboard and the pinion inboard, narrowing toward the axis (K8 outboard radial, taper inward)"
   - "the ring reads as a structure with housings, mounts and lugs, not a washer (visual only, V7)"
   - "member c stands on the rail top inside the column notch with the notch outline visible round it (S2-6)"
+reported_items:   # 1.3 P1Rf (Designer P1Rd section 5, signed); RPT reads checks_s2.reported(ctx) items
+  - {id: outline_extents_all, text: "Outline extents, every drawn part, reference rows excluded, against the 644 x 608 footprint (open, not asserted)", source: "checks_s2.reported row Outline extents, every drawn part (drawn pieces)", needs_drawing: true}
+  - {id: outline_extents_above_plate, text: "Outline extents, parts above the plate", source: "checks_s2.reported row Outline extents, parts above the plate", needs_drawing: true}
+  - {id: members_to_plate_edge, text: "Members against the plate edge: members a, b x extent against 322; member c against the plate y edge 304", source: "drawn pieces of frame_upper_a/b/c against icd.footprint_x / 2 and icd.footprint_y / 2", needs_drawing: true}
+  - {id: tip_force_footprint, text: "Footprint against the S1 unbolted tip force (bolt-down or footprint goes to the Step 2 row, R1)", source: "s1_mass_report_r7.json tip_force_at_com_N, lever icd.footprint_y / 2", needs_drawing: false}
+  - {id: cutter_overhang, text: "Cutter overhang of the keep-out: drill.head_od / 2 - icd.keepout_radius (S2-a; Step 4 ICD row icd.keepout_radius)", source: "keys drill.head_od (ASSUMED, Q2), icd.keepout_radius", needs_drawing: false}
+  - {id: f6_eye_limits, text: "F6 eye limits at r 400: eye height below which the ring rim hides the cut at capture_end, to the axis and to the cutter rim", source: "Designer 1.2 (a) section 6; line from the cut through the ring rim to operator.watch_r (check_stack)", needs_drawing: false}
+  - {id: s2_5b_strike_list, text: "S2-5b overhead strike list in the sector at load, z_S bands, with margin over the hand-band top", source: "checks_s2.reported row S2-5b strike list (check_stack)", needs_drawing: true}
+  - {id: tight_rim_to_rod, text: "Tight spot: ring rim to guide rod", source: "plan outlines ring and guide_member (K7 plan measure; G g_min 10 identity)", needs_drawing: true}
+  - {id: tight_rim_to_member, text: "Tight spot: ring rim to member inner face", source: "plan outlines ring and frame_upper_a/b/c (K7 plan measure)", needs_drawing: true}
+  - {id: tight_liftmotor_sector, text: "Tight spot: lift motors to the sector edge, bound (circumscribed) and drawn square", source: "checks_s2.reported row Tight spot: lift motors to the sector edge", needs_drawing: true}
+  - {id: tight_pinion_toe_hub, text: "Tight spot: pinion toe to gear hub", source: "checks_s2.reported row Tight spot: pinion toe to gear hub", needs_drawing: true}
+  - {id: highest_point_parts, text: "Highest point over parts at each pose, reference rows excluded (LF1.2-5)", source: "checks_s2.reported rows Highest point over parts (check_stack)", needs_drawing: true}
 reported:
   - "outline extents (every drawn part, all poses) against the 644 x 608 footprint (open, not asserted)"
   - "members against the plate edge: outer face radius + 30 against 304 (theta 270) and the x extent of members a, b against 322"
@@ -718,7 +731,7 @@ features:
     keys: [stop.pad_thickness, stop.pad_width, ring.position_above_tip, upper.metal_stop, frame_upper.stop_pad_r_in, frame_upper.stop_pad_r_out, frame_upper.stop_pad_count, jackscrew.angle]
     z_rule: {z_min: "ring_bottom_low - stop.pad_thickness", z_max: ring_bottom_low}
     place: {r_in: frame_upper.stop_pad_r_in, r_out: frame_upper.stop_pad_r_out, theta: "jackscrew.angle[1]", half_width: "stop.pad_width / 2", footprint: radial}
-    label: {text: "descent stop (one pad) r", key: frame_upper.stop_pad_r_in, fmt: ".0f"}
+    label: {text: "descent stop (one pad) r", key: frame_upper.stop_pad_r_in, fmt: ".0f", suffix: "(dashed, under top-guide bracket arm)"}   # 1.3 P1Rf, Designer FIX D2
     label_side: left   # r4 (Designer M1 S2 r3 N1): left label column; the pad at theta 150 is about 40 from it
     label_theta: 150   # r5 (Designer sign-off r4 FIX D4-1): ray hit (-186.20, 107.50); the r3 end-quarter hatch rule re-anchors it to the r4 point (step1.2_engineer_revision_r5.md)
     neighbours: []
@@ -1353,7 +1366,7 @@ features:
     keys: [drill.head_od, drill.head_length]
     z_rule: {z_min: tip, z_max: head_top}
     place: {r_in: 0, theta: 0, half_width: "drill.head_od / 2", footprint: round}
-    label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f"}
+    label: {text: "cutter OD ASSUMED", key: drill.head_od, fmt: ".1f", suffix: "(dotted, under ring gear)"}   # 1.3 P1Rf, Designer FIX D2
     label_theta: 0   # Designer M1 r1 F5
     neighbours: []
     sense: []

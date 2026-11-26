@@ -2053,15 +2053,18 @@ def k4_b7():
 
 def k4_b8():
     """F5 B: live S2 with two concentric labels at the r1 anchors (r, 0) on y = 0 (drill_tube 76.2, keepout 86.2) and
-    their placed texts exchanged (inner anchor to the upper text): the leaders cross. 1.3 P1R re-plant: with label_theta
-    removed from the spec (the r1 to r5 plant) the placer finds anchors whose leaders do not cross."""
+    their texts in reverse radial order below the anchors (inner label 10 above the outer): the leaders cross. 1.3 P1R
+    re-plant (label_theta removal no longer crosses under the placer); P1Rf: text heights planted, not exchanged, so the
+    crossing does not depend on where the placer puts the two texts."""
     c = _script_ctx("s2")
     ax = _s2_ax(c)
     t = {g: next(x for x in ax.texts if x.get_gid() == f"label:{g}") for g in ("drill_tube", "keepout")}
-    xt = {g: tuple(t[g].xyann) for g in t}
     for g in t:
         t[g].xy = (max(q[0] for poly in sc.pieces(ax, g) for q in poly), 0.0)
-    t["drill_tube"].xyann, t["keepout"].xyann = xt["keepout"], xt["drill_tube"]
+    xc = t["drill_tube"].xyann[0]
+    yo = min(t[g].xyann[1] for g in t) - 20
+    t["keepout"].xyann = (xc, yo)
+    t["drill_tube"].xyann = (xc, yo + 10)
     return c
 
 
@@ -2703,4 +2706,87 @@ def k4_b13():
         a.set_facecolor("white")
     sc.render_plan(c, ax, pid)
     sc.place_plan_labels(ax, c, pid, margin=False)
+    return c
+
+
+# ---------------------------------------------------------------- 1.3 P1Rf (research/sean/cr_scratch/step1.3_engineer_renderer_fixes.md)
+# Topologist TP1.3-1 (annulus samples across the width), TP1.3-2 (K8 cover (5): an opaque fill hides only what lies behind
+# it); Designer FIX D1 (rule (e1) visible ink, enclosure exemption, clause (g)) and D2 (label suffixes naming the cover).
+
+_R_RADIAL = [("ring", None, (0, 10), None, _sec(100, 210)), ("d", _rad(135, 145, 0, 5), (0, 100), None, {})]
+
+
+def _filled_ring(c):
+    for a in sc.tagged(next(iter(c.figs.values())).axes[0]).get("ring", []):
+        a.set_fill(True)
+        a.set_facecolor("#c9dcef")
+    return c
+
+
+def k8_z13():
+    """TP1.3-1 Z: filled ring r 100 to 210 under a higher 10 x 10 cover centred at r 140 (between the P1R sample radii
+    127.5 and 155), rendered: split, the cover's square dashed."""
+    c = _filled_ring(_k7_plan(_R_RADIAL))
+    pid = next(iter(c.figs))
+    sc.render_plan(c, c.figs[pid].axes[0], pid)
+    return c
+
+
+def k8_b52():
+    """TP1.3-1 B: the same filled ring drawn solid and unsplit (the P1R renderer left it so: no sample under the cover)."""
+    return _filled_ring(_k7_plan(_R_RADIAL))
+
+
+def k8_b51():
+    """TP1.3-2 B: live S2 with the operator sector fill at alpha 0.95 set in the style before the renderer: the sector (a
+    zone, no z_max) is taken as an opaque cover and the plate pieces under it are dashed."""
+    import importlib
+    mod = importlib.import_module("s2_plan")
+    orig = mod._style_visible
+
+    def style(row):
+        kw = orig(row)
+        if row["id"] == "operator_sector":
+            kw = dict(kw, alpha=0.95)
+        return kw
+    mod._style_visible = style
+    try:
+        return _script_ctx("s2")
+    finally:
+        mod._style_visible = orig
+
+
+def k4_b14():
+    """D1 (e1) B: live S2 with the ring label anchored at the P1R r6 point (209.75, -10.33), on the rim's hidden stretch
+    inside guide_tie_a (the ring has visible ink)."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    th = math.atan2(-10.325733190674836, 209.7459794887204)
+    r = c.P.get("ring.od") / 2
+    t = next(t for t in ax.texts if t.get_gid() == "label:ring")
+    t.xy = (r * math.cos(th), r * math.sin(th))
+    return c
+
+
+def k4_b15():
+    """D1 (g) B: live S2 with the drill_head label suffix removed (the label does not name its cover)."""
+    return _script_ctx("s2", spec_mut=_mut_row("drill_head", lambda r: r["label"].pop("suffix", None)))
+
+
+def k4_b16():
+    """D1 (e2) B: live S2 r7 drawing judged with the gear outline planted as an open C (annulus 90 to 126.32 from -170 to
+    170 deg in convex pieces): the C neither contains nor encloses the cutter-rim anchor at theta 0, and the drill_head
+    leader's last quarter runs inside it."""
+    c = _script_ctx("s2")
+    row = next(r for r in c.spec["features"] if r["id"] == "gear")
+    row.pop("section", None)
+    a, b = 90.0, 126.32
+    angs = [-170 + 10 * k for k in range(35)]
+    pieces = []
+    for t0, t1 in zip(angs[:-1], angs[1:]):
+        c0, s0, c1, s1 = (math.cos(math.radians(t0)), math.sin(math.radians(t0)), math.cos(math.radians(t1)), math.sin(math.radians(t1)))
+        pieces.append([(a * c0, a * s0), (b * c0, b * s0), (b * c1, b * s1), (a * c1, a * s1)])
+    for pr in c.stack["poses"].values():
+        if "gear" in pr["features"]:
+            pr["features"]["gear"]["plan_pieces"] = pieces
     return c

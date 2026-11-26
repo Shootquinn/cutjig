@@ -92,8 +92,8 @@ def _style_visible(row):
         return {"fill": True, "facecolor": BRASS, "edgecolor": "k", "linewidth": 0.5, "zorder": Z_ON_RING}
     if fid in ("guide_member", "guide_member_b"):
         return {"fill": True, "facecolor": DARK, "edgecolor": "k", "zorder": Z_FIXED + Z_RING + 1}
-    if fid in ("guide_tie_a", "guide_tie_b"):
-        return {"edgecolor": "k", "linestyle": HIDDEN, "linewidth": 1, "zorder": Z_FIXED + Z_RING + 1}
+    if fid in ("guide_tie_a", "guide_tie_b"):   # Step 2 stand-in: phantom line, brown (1.3 P1Rf, Designer FIX D3)
+        return {"edgecolor": sc.STAND_IN_COLOR, "linestyle": sc.PHANTOM, "linewidth": 1, "zorder": Z_FIXED + Z_RING + 1}
     if fid == "ring":
         return {"fill": True, "facecolor": RING, "edgecolor": RING_EDGE, "linewidth": 2, "alpha": 0.5, "zorder": Z_RING}
     if pre == "guide_bushing":
@@ -288,7 +288,7 @@ def build(P, spec, stack):
         (None, "dashed, no fill: the part of a piece under a nearer part (base frame, pockets, lift motors, anchor arms and blocks, nut flanges, descent-stop\n"
                "pad, motor mounts, guide lugs and rods, bushings, bearing, pinion teeth and motor shafts under the gear, ring rim under the guide arms);\n"
                "dotted: cutter rim, descent-stop post\n"
-               "dashed: Step 2 stand-in (rod top ties)\n"
+               "phantom, brown: Step 2 stand-in (rod top ties)\n"
                "dashed radial ticks: gear teeth on the underside face (teeth face down); chain: slot lines, pinion axes"),
         (None, f"plan at pose {pid}; plan positions do not change with pose (z bands per pose in the checks)"),
     ]

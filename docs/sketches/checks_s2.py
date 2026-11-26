@@ -288,7 +288,56 @@ def reported(ctx):
             strike.append((z - top, f, lf[f]["z_min"], lf[f]["z_max"]))
     out.append((f"S2-5b strike list at {c['pose']} (z_S band; margin over the hand-band top {top} z_A)",
                 "; ".join(f"{f} {a:.2f} to {b:.2f} ({m:.2f})" for m, f, a, b in sorted(strike)), "MEASURED (check_stack)"))
-    return {"id": "reported", "result": "pass", "rows": out}
+    return {"id": "reported", "result": "pass", "rows": out, "items": _reported_items(ctx, out, toe, lm, lm_d)}
+
+
+def _reported_items(ctx, rows, toe, lm, lm_d):
+    """{id: {value, basis, tag}} for the spec's reported_items (1.3 P1Rf, Designer P1Rd section 5; RPT reads it). Rows
+    already computed by reported() are reused by their quantity text; the rest are computed here."""
+    import json
+    P = ctx.P
+    by = {q: (v, b) for q, v, b in rows}
+
+    def row(prefix):
+        return by[next(q for q in by if q.startswith(prefix))]
+    items = {}
+    v, b = row("Outline extents, every drawn part")
+    items["outline_extents_all"] = {"value": v, "basis": b, "tag": "MEASURED"}
+    v, b = row("Outline extents, parts above the plate")
+    items["outline_extents_above_plate"] = {"value": v, "basis": b, "tag": "MEASURED"}
+    xe, ye = P.get("icd.footprint_x") / 2, P.get("icd.footprint_y") / 2
+    ab = min(xe - max(abs(x) for poly in _pieces(ctx, m) for x, _ in poly) for m in ("frame_upper_a", "frame_upper_b"))
+    cy = min(y for poly in _pieces(ctx, "frame_upper_c") for _, y in poly)
+    items["members_to_plate_edge"] = {"value": f"a, b {ab:.2f} inside the x edge {xe:g}; c {abs(cy + ye):.2f} to the plate y edge -{ye:g}",
+                                      "basis": "drawn pieces of frame_upper_a/b/c against the plate edges (icd.footprint_x, icd.footprint_y)",
+                                      "tag": "MEASURED"}
+    rep = json.loads((Path(__file__).resolve().parent / "s1_mass_report_r7.json").read_text(encoding="utf-8"))
+    tips = [rep[k]["tip_force_at_com_N"] for k in ("load", "start", "capture_end", "park")]
+    items["tip_force_footprint"] = {"value": " / ".join(f"{t:.0f}" for t in tips) + f" N (load, start, capture_end, park) over lever {ye:g}",
+                                    "basis": "s1_mass_report_r7.json tip_force_at_com_N (accepted S1 report); lever icd.footprint_y / 2",
+                                    "tag": "DERIVED"}
+    items["cutter_overhang"] = {"value": round(P.get("drill.head_od") / 2 - P.get("icd.keepout_radius"), 2),
+                                "basis": "drill.head_od / 2 - icd.keepout_radius (drill.head_od ASSUMED, Q2)", "tag": "DERIVED"}
+    ce = ctx.stack["poses"]["capture_end"]["features"]
+    zt, zr, R, w = ce["drill_head"]["z_min"], ce["ring"]["z_min"], P.get("ring.od") / 2, P.get("operator.watch_r")
+    eye = [(zt + (zr - zt) * (w - rt) / (R - rt)) / 1000 for rt in (0.0, P.get("drill.head_od") / 2)]
+    items["f6_eye_limits"] = {"value": f"{eye[0]:.2f} m (axis), {eye[1]:.2f} m (cutter rim) z_S",
+                              "basis": "line from the cut at capture_end (drill_head z_min; r 0 or drill.head_od / 2) through the ring rim "
+                                       "(ring.od / 2, ring z_min at capture_end) to r = operator.watch_r (check_stack, z_S)",
+                              "tag": "DERIVED"}
+    v, b = row("S2-5b strike list")
+    items["s2_5b_strike_list"] = {"value": v, "basis": b, "tag": "MEASURED"}
+    ring = _outline(ctx, "ring")
+    rod = min(sc.outline_measure(ring, _outline(ctx, g), sc.TOL_C)[0] for g in ("guide_member", "guide_member_b"))
+    mem = min(sc.outline_measure(ring, _outline(ctx, g), sc.TOL_C)[0] for g in ("frame_upper_a", "frame_upper_b", "frame_upper_c"))
+    items["tight_rim_to_rod"] = {"value": round(rod, 2), "basis": "plan outlines ring and guide_member, the K7 plan measure (G, g_min 10 identity)", "tag": "MEASURED"}
+    items["tight_rim_to_member"] = {"value": round(mem, 2), "basis": "plan outlines ring and frame_upper_a/b/c, the K7 plan measure", "tag": "MEASURED"}
+    items["tight_liftmotor_sector"] = {"value": f"{lm:.2f} (bound) / {lm_d:.2f} (drawn square)", "basis": "circumscribed outline (S2-5a) / drawn pieces", "tag": "MEASURED"}
+    items["tight_pinion_toe_hub"] = {"value": round(toe, 2), "basis": "circumscribed outline (pinion radial footprint) against the hub annulus", "tag": "MEASURED"}
+    hp = [(q, v) for q, v, _ in rows if q.startswith("Highest point over parts")]
+    items["highest_point_parts"] = {"value": "; ".join(f"{q.split(', ')[-1]} {v}" for q, v in hp),
+                                    "basis": "check_stack, reference rows excluded (LF1.2-5)", "tag": "MEASURED"}
+    return items
 
 
 # Per-sketch tables (1.2 (c); check_sketch.sketch_table reads them). Every S2 check reads drawn patches and fails closed

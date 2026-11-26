@@ -215,6 +215,8 @@ def _rank(ax):
     return {id(a): (a.get_zorder(), i) for i, a in enumerate(kids)}
 
 
+PHANTOM = (0, (12, 3, 3, 3, 3, 3))   # 1.3 P1Rf (Designer FIX D3): phantom line (long dash, two short) for plan stand-ins
+STAND_IN_COLOR = "#8c510a"           # 1.3 P1Rf (Designer FIX D3): dark brown, apart from hidden black and rim blue
 OPAQUE_ALPHA = 0.75     # 1.3 P1R (TP1.2-19): a fill whose rendered alpha is at least this hides what is under it
 TRANSLUCENT_MAX = 0.5   # 1.3 P1R premise of the alpha rule: a fill counted see-through renders at alpha at most this
 
@@ -485,8 +487,11 @@ def leader_outline_issue(outl, fid, p0, p1, zmax=None):
     (K4 (a)); (2) an outline counts when its row's z_max is higher than fid's z_max by more than TOL_Z (seen from +Z
     the end of the leader then runs over a nearer part, as the descent-stop leader runs over tie b; a lower part, the
     plate, the base frame, a ring under a gear, lies behind the labelled part and every leader crosses it); a row with
-    no z_max (a zone) counts every outline; (3) an outline that contains the anchor (within TOL_Z: a part seated on or in
-    another, a hidden part under its cover) is exempt, since no leader can end on that ink without entering it.
+    no z_max (a zone) counts every outline; (3) 1.3 P1Rf (Designer FIX D1): an outline that encloses the anchor (outline_
+    encloses: its outer boundary with holes filled contains the anchor within TOL_Z; containing implies enclosing) is
+    exempt, since no straight leader from outside reaches that anchor without crossing it. A row with visible ink anchors
+    on visible ink (rule (e1), anchor_visibility_issue), so for such a row a containing outline cannot occur at the anchor;
+    a wholly hidden row (e2) ends inside its cover, and its label names the cover (clause (g), cover_name_issue).
     outl: cover_table's {id: (outline, box)}; zmax: {id: z_max} (None: every outline counts)."""
     L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
     Lq = L * LEADER_END
@@ -503,7 +508,7 @@ def leader_outline_issue(outl, fid, p0, p1, zmax=None):
         zo = (zmax or {}).get(oid)
         if zf is not None and (zo is None or zo <= zf + TOL_Z):
             continue
-        if outline_outside(O, p1) <= TOL_Z:
+        if outline_encloses(O, p1):
             continue
         if O[0] == "annulus":
             k = sum(1 for q in pts if outline_contains(O, q))
@@ -513,6 +518,79 @@ def leader_outline_issue(outl, fid, p0, p1, zmax=None):
         if k:
             out.append((oid, Lq * k / n))
     return out
+
+
+def outline_encloses(O, p):
+    """1.3 P1Rf (Designer FIX D1): p lies inside the outer boundary of plan outline O with its holes filled, within TOL_Z.
+    Annulus (a, b): r <= b (the bore is a hole, filled). Polys: p inside or within TOL_Z of a convex piece (a piece has
+    no hole; premise: no counted row's pieces ring round a hole, true for every S2 row)."""
+    if O[0] == "annulus":
+        return math.hypot(*p) <= O[1][1] + TOL_Z
+    return outline_outside(O, p) <= TOL_Z
+
+
+def counted_outlines(outl, zmax, fid):
+    """Rows whose true outlines rule (e) counts for row fid: z_max higher than fid's by more than TOL_Z (fid without
+    z_max: every other row)."""
+    zf = (zmax or {}).get(fid)
+    out = {}
+    for oid, v in outl.items():
+        if oid == fid or oid.startswith(fid + ":"):
+            continue
+        zo = (zmax or {}).get(oid)
+        if zf is None or (zo is not None and zo > zf + TOL_Z):
+            out[oid] = v
+    return out
+
+
+def row_visibility(ctx, ax, pose):
+    """{row id: (wholly hidden, [solid artists with their covers])} for every measurable row with an area artist, from the
+    renderer split as K8 cover certifies it (plan_cover_states on drawn samples). A row is wholly hidden when every area
+    artist of it reads 'hidden'. Rows absent from the map (lines, zones, reference rows) have visible ink. The ink of a
+    plan_style stand_in row (drawn in its own convention line, out of the renderer) counts as visible ink."""
+    cc = cover_context(ctx, ax, pose)
+    states = plan_cover_states(ctx, ax, pose)
+    stand_in = {r["id"] for r in ctx.spec.get("features", []) if r.get("plan_style") == "stand_in"}
+    out = {}
+    for a, (fid, st, by, op) in states.items():
+        hid, sol = out.get(fid, (True, []))
+        if st != "hidden":
+            hid = False
+        if is_solid(a) or fid in stand_in:   # a stand-in's convention line is its visible ink (K8 cover exempts it)
+            sol = sol + [(a, [q for q in artist_polys(a) if len(q) >= 3], artist_covers(cc, a, fid))]
+        out[fid] = (hid, sol)
+    return out
+
+
+def anchor_visibility_issue(vis, fid, p):
+    """Rule (e1) (Designer FIX D1): a row with visible ink anchors on visible ink: p within TOL_Z of the ink of a solid
+    artist of the row, inside its drawn region, under no cover of that artist. None when the rule holds or the row is
+    wholly hidden or has no area artist."""
+    if fid not in vis or vis[fid][0]:
+        return None
+    for a, polys, covers in vis[fid][1]:
+        if ink_distance(p, [(q, True) for q in polys]) > TOL_Z:
+            continue
+        reg = drawn_region(a)
+        if reg is not None and not reg.contains(p):
+            continue
+        if cover_hits([p], covers)[0][0] is None:
+            return None
+    return f"label anchor ({p[0]:.2f}, {p[1]:.2f}) on hidden ink of a row with visible ink (e1)"
+
+
+def cover_name_issue(ctx, vis, outl, zmax, fid, p, text):
+    """Clause (g) (Designer FIX D1): the drawn label of a wholly hidden row contains 'under ' followed by the spec name of
+    a counted row whose true outline contains or encloses the anchor. None when it holds or the row is not wholly
+    hidden."""
+    if fid not in vis or not vis[fid][0]:
+        return None
+    names = {r["id"]: r.get("name", r["id"]) for r in ctx.spec.get("features", [])}
+    cov = sorted(oid for oid, (O, box) in counted_outlines(outl, zmax, fid).items() if outline_encloses(O, p))
+    if any(f"under {names[o]}" in text for o in cov):
+        return None
+    return (f"label of a wholly hidden row lacks 'under <cover>' (g); covers at the anchor: "
+            f"{', '.join(names[o] for o in cov) or 'none'}")
 
 
 def _inside_c(p, C):
@@ -544,8 +622,8 @@ class _LeaderCtx:
     """What the leader rules read from a figure, cached for the placer: draw order, area artists with their rings, hatch,
     ink per row, true outlines at the pose, and the draw rank a label annotation gets. Same rules as leader_issues."""
 
-    def __init__(self, ax, outl, zmax=None):
-        self.ax, self.outl, self.zmax = ax, outl, zmax
+    def __init__(self, ax, outl, zmax=None, vis=None):
+        self.ax, self.outl, self.zmax, self.vis = ax, outl, zmax, vis or {}
         self.rank = _rank(ax)
         self.polys = {id(a): [q for q in artist_polys(a)] for a in artists(ax)}
         self.areas = [_AreaInfo(a, self.polys[id(a)]) for a in artists(ax) if a.get_gid() and is_area(a)]
@@ -613,6 +691,8 @@ class _LeaderCtx:
         cov = self.covering(fid, anc)
         if cov:
             return ("anchor under area", ", ".join(cov))
+        if anchor_visibility_issue(self.vis, fid, anc):
+            return ("anchor on hidden ink (e1)", "row has visible ink")
         over = set()
         for h in self.areas:
             if self.rank[id(h.a)] <= self.lz:
@@ -685,7 +765,8 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
     the anchor. Call after render_plan and finish_axes. Returns the placer record (also ax._sc_placer)."""
     spec, P = ctx.spec, ctx.P
     outl, zmx = leader_outlines(ctx, pose)
-    lc = _LeaderCtx(ax, outl, zmx)
+    vis = row_visibility(ctx, ax, pose) if ctx.view == "plan_xy" and ctx.stack is not None else {}
+    lc = _LeaderCtx(ax, outl, zmx, vis)
     rows = [r for r in spec.get("features", []) if r.get("label") and applies(r, pose) and lc.ink(r["id"])]
     order = [r["id"] for r in rows]
     byid = {r["id"]: r for r in rows}
@@ -1756,6 +1837,7 @@ def leader_issues(ctx):
             out.append(f"{pose}/{fid}: label unplaceable ({unpl[fid]['candidates']} candidate(s), none passes every leader rule; "
                        f"table in the placer record)")
         outl, zmx = leader_outlines(ctx, pose)
+        vis = row_visibility(ctx, ax, pose) if plan and ctx.stack is not None else {}
         areas = [(a, [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax) if a.get_gid() and is_area(a)]
         hatches = hatch_areas(ax)
         for t in ax.texts:
@@ -1791,6 +1873,10 @@ def leader_issues(ctx):
                 hx = leader_hatch(fid, (float(xt[0]), float(xt[1])), xy, hatches)
                 if hx:
                     out.append(f"{pose}/{fid}: label leader ends across the hatch of {', '.join(sorted(hx))}")
+                if plan:   # 1.3 P1Rf (Designer FIX D1): (e1) visible ink, (g) a wholly hidden row names its cover
+                    for msg in (anchor_visibility_issue(vis, fid, xy), cover_name_issue(ctx, vis, outl, zmx, fid, xy, t.get_text())):
+                        if msg:
+                            out.append(f"{pose}/{fid}: {msg}")
                 for oid, mm in leader_outline_issue(outl, fid, (float(xt[0]), float(xt[1])), xy, zmx):   # 1.3 P1R, Design Notes 30
                     out.append(f"{pose}/{fid}: label leader ends inside the outline of {oid} ({mm:.1f} mm of its last quarter)")
             if xt is not None and (abs(xt[0] - xy[0]) > 1e-9 or abs(xt[1] - xy[1]) > 1e-9):
@@ -2950,14 +3036,19 @@ ANNULUS_ARC_STEP = 2.5   # 1.3 P1R (TP1.2-19): annulus samples step by arc lengt
 
 
 def _annulus_samples(cx, cy, ri, ro):
-    """Samples of an annulus about (cx, cy): COVER_RINGS fractions of the width along directions spaced by at most
-    ANNULUS_ARC_STEP of arc at the outer radius (1.3 P1R, TP1.2-19; the r4 form stepped by outer-ring vertex)."""
+    """Samples of an annulus about (cx, cy): along directions spaced by at most ANNULUS_ARC_STEP of arc at the outer
+    radius (1.3 P1R, TP1.2-19; the r4 form stepped by outer-ring vertex), and across the width on m fractions evenly
+    spaced from 0.02 to 0.98, m = max(5, ceil(width / ANNULUS_ARC_STEP) + 1), so the radial step is at most 2.5 mm as
+    well (1.3 P1Rf, Topologist TP1.3-1; P1R used the five COVER_RINGS fractions, 27.5 mm apart on the ring)."""
     n = max(8, int(math.ceil(2 * math.pi * ro / ANNULUS_ARC_STEP)))
+    m = max(len(COVER_RINGS), int(math.ceil((ro - ri) / ANNULUS_ARC_STEP)) + 1)
+    lo, hi = COVER_RINGS[0], COVER_RINGS[-1]
+    fs = list(COVER_RINGS) if m == len(COVER_RINGS) else [lo + (hi - lo) * k / (m - 1) for k in range(m)]
     out = []
     for i in range(n):
         t = 2 * math.pi * (i + 0.5) / n
         ux, uy = math.cos(t), math.sin(t)
-        out += [(cx + (ro - f * (ro - ri)) * ux, cy + (ro - f * (ro - ri)) * uy) for f in COVER_RINGS]
+        out += [(cx + (ro - f * (ro - ri)) * ux, cy + (ro - f * (ro - ri)) * uy) for f in fs]
     return out
 
 
@@ -3534,7 +3625,9 @@ def cover_issues(ctx, ax, pose, rows_list):
     another row drawn above that solid artist (TP1.2-15); rows with plan_style: stand_in and a stand_in_owner naming a
     Step or sketch id are out of (3). (4) 1.3 P1R premise of the alpha rule: no plan fill renders at an alpha between
     TRANSLUCENT_MAX and OPAQUE_ALPHA. Premise of the rule set: only true outlines (plan_outline true) cover (K8-Z7,
-    K8-B33). Returns (artists tested, issues)."""
+    K8-B33). (5) 1.3 P1Rf (TP1.3-2): an opaque fill of another row drawn above an artist and over one of its
+    drawn samples belongs to a row with z_max at least the artist's z_max - TOL_Z (the draw order agrees with depth); a
+    fill of a row without z_max hides nothing and fails here. Returns (artists tested, issues)."""
     rows = {r["id"]: r for r in rows_list}
     cc = cover_context(ctx, ax, pose)
     n, out = 0, []
@@ -3586,6 +3679,21 @@ def cover_issues(ctx, ax, pose, rows_list):
             reg = drawn_region(a)
             solid = is_solid(a)
             geo = _cover_samples(a)
+            # (5) 1.3 P1Rf (Topologist TP1.3-2): an opaque fill hides only what lies behind it. An opaque fill of another
+            # row drawn above the artist over a drawn sample belongs to a row whose z_max is not lower than the artist's
+            # by more than TOL_Z; a fill of a row without z_max (a zone, a fixture row) hides nothing.
+            zf = cc["zmax"].get(fid)
+            inv = [c for c in covers if c[0] == "patch" and
+                   (cc["zmax"].get(c[1]) is None or (zf is not None and cc["zmax"][c[1]] < zf - TOL_Z))]
+            if inv:
+                dpts = [p for p in geo if reg is None or reg.contains(p)]
+                ih = cover_hits(dpts, inv)[0] if dpts else []
+                bad = sorted({h for h in ih if h})
+                if bad:
+                    zs = ", ".join(f"{b} {cc['zmax'].get(b):.2f}" if cc["zmax"].get(b) is not None else f"{b} none" for b in bad)
+                    out.append(f"{pose}/{fid} cover: opaque fill of {', '.join(bad)} drawn above it lies behind it or is no part "
+                               f"(z_max {zs} against {fid} {'none' if zf is None else format(zf, '.2f')}); an opaque fill hides "
+                               f"only what lies behind it (TP1.3-2)")
             if solid:
                 pts = [p for p in geo if reg is None or reg.contains(p)]
                 hits = list(zip(*cover_hits(pts, covers, deep=TOL_Z))) if pts else []
