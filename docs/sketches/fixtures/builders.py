@@ -2361,3 +2361,98 @@ def k8_b40():
 def k8_b41():
     """TP1.2-17: guide_tie_a keeps plan_style: stand_in without stand_in_owner: lint fires and the exemption is void."""
     return _script_ctx("s2", spec_mut=_mut_row("guide_tie_a", lambda r: r.pop("stand_in_owner", None)))
+
+
+# ---------------------------------------------------------------- 1.3 step 0 (research/sean/cr_scratch/step1.3_engineer_step0.md)
+# R2 (O2, Loftsman 1.2 (b) NOTE 2): K2 expr agreement lint and the member-top stack_ties; R5 (carried lints): TP1.1-9
+# zero-area K5, TP1.2-18 stand_in_owner, Topologist 1.2 (c) NOTE 2 frame value, Loftsman 1.2 (c) NOTE 1 side sweep.
+
+def _k2_overlay(values=None):
+    """K2 on the live S1 spec and a temporary copy of the live overlay with values {key: value} replaced (leaf value
+    only; expr and every other field kept). The copy is read once by Params and deleted."""
+    src = sc.load_yaml(HERE.parent / "proposed_params.yaml")
+    for k, v in (values or {}).items():
+        node = src
+        for part in k.split(".")[:-1]:
+            node = node[part]
+        node[k.split(".")[-1]]["value"] = v
+    with tempfile.TemporaryDirectory() as t:
+        p = Path(t) / "proposed_params.yaml"
+        p.write_text(yaml.safe_dump(src, sort_keys=False, allow_unicode=True), encoding="utf-8")
+        P = Params(overlay_path=p)
+    spec = load_spec(HERE.parent / "s1_spec.yaml")
+    return sc.Ctx(P=P, spec=spec, overlay_path=p)
+
+
+def k2_z2():
+    """R2 Z: live overlay (expr on the DERIVED leaves) and live S1 spec: every expr leaf agrees within 0.05."""
+    return _k2_overlay()
+
+
+def k2_b4():
+    """R2 B: jackscrew.length 950 with jackscrew.top_guide_z left at 1165: top_guide_z disagrees with its expr by 50.
+    member_length and member_length_rail read top_guide_z (1165) and stay consistent: planted 1."""
+    return _k2_overlay({"jackscrew.length": 950})
+
+
+def k2_b5():
+    """R2 B: frame_upper.member_length_rail 1230 against top_guide_z 1165 + profile.height 60 = 1225: planted 1."""
+    return _k2_overlay({"frame_upper.member_length_rail": 1230})
+
+
+def _tie_ctx(s, values):
+    """K6 stack_ties on the live spec of sketch s with values {key: value} replaced before check_stack runs; no figures
+    (the lint reads the spec rows' stack z, as K6-B7)."""
+    P = Params()
+    for k, v in values.items():
+        P.leaves[k] = dict(P.leaves[k], value=v)
+    spec = load_spec(HERE.parent / f"{s}_spec.yaml")
+    stack = check_stack.evaluate_spec(P, spec)
+    return sc.Ctx(P=P, spec=spec, figs={}, stack=stack, view=spec["view"], check_stack_path=CHECK_STACK_PATH)
+
+
+def k6_b10():
+    """R2 B: S1 with frame_upper.member_length 1200: members a and b top at 12 + 1200 = 1212 z_A against top_guide 1165 +
+    profile.height 60 = 1225, 13.00 apart on each tie (planted 2). K2 fires on the same values too (member_length expr,
+    a separate check, not counted here)."""
+    return _tie_ctx("s1", {"frame_upper.member_length": 1200})
+
+
+def k6_b11():
+    """R2 B: S2 with frame_upper.member_length_rail 1210: member c top 1210 z_A against 1225, 15.00 apart (planted 1;
+    K2 also fires on the rail expr, a separate check)."""
+    return _tie_ctx("s2", {"frame_upper.member_length_rail": 1210})
+
+
+def k5_b19():
+    """TP1.1-9 B: live S1 with one zero-height Rectangle tagged drill_tube (cylinder row) at load."""
+    c = _s1_ctx()
+    ax = c.figs["load"].axes[0]
+    z = c.stack["poses"]["load"]["features"]["drill_tube"]["z_min"]
+    sc.draw_rect(ax, "drill_tube", -10, 10, z, z)
+    return c
+
+
+def k8_b42():
+    """TP1.2-18 B: guide_tie_a stand_in_owner "tbd" (names no Step or sketch id): the lint fires and the exemption is
+    void, so the tie's dashed piece also fires the cover converse (planted 2, as K8-B41)."""
+    return _script_ctx("s2", spec_mut=_mut_row("guide_tie_a", lambda r: r.__setitem__("stand_in_owner", "tbd")))
+
+
+def k8_b43():
+    """Topologist 1.2 (c) NOTE 2 B: live S2 with frame "polar" on motor23_a's outboard predicate (plan reads any value as
+    radial today): sense_lint reports the unknown value."""
+    def fn(r):
+        next(p for p in r["sense"] if p.get("pred") == "outboard")["frame"] = "polar"
+    return _s2_ctx(spec_mut=_mut_row("motor23_a", fn))
+
+
+def k7_b34():
+    """Loftsman 1.2 (c) NOTE 1 B: the K7-B31 member (mid-stroke, inside the ring outline, clear of all four poses) with
+    the pose-restricted declaration (G 10 at p4) written only on the fixed row; the ring lists no neighbour. The 1.2 side
+    sweep read only the moving row's list and passed it; read from the fixed row, it is swept as F and fires."""
+    c = _swept(400)
+    ring, member = c.spec["features"]
+    ring["neighbours"] = []
+    member["neighbours"] = [{"id": "ring", "class": "G", "g_min": 10, "poses": ["p4"], "source": "fixture"}]
+    return c

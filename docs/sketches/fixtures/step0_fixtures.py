@@ -269,3 +269,100 @@ def h5_b_drawn_depends_on_c():
     except ValueError as e:
         return _res("H5", True, str(e), 1)
     return _res("H5", False, "check_stack evaluated a drawn value that depends on c", 0)
+
+
+# ---------------------------------------------------------------- 1.3 step 0 (research/sean/cr_scratch/step1.3_engineer_step0.md)
+# R3 (O10, Step 1.2 gate D3): check RPT on spec field reported_items, and --accept through RPT. R1 (O9): the parallel
+# controls runner on a temporary two-row manifest, run as its own process with --jobs 2.
+
+RPT_SPEC = {"reported_items": [
+    {"id": "L_min", "text": "screw length L_min per Q9 option", "source": "gameplan detail 1.3 Reported", "needs_drawing": False},
+    {"id": "F_stall", "text": "stall thrust, three lift motors", "source": "gameplan detail 1.3 Reported", "needs_drawing": True}]}
+RPT_VALUES = {"L_min": {"value": "885.00 / 885.00 / 1135.00", "basis": "S1 screw_length expression", "tag": "DERIVED"},
+              "F_stall": {"value": 636.17, "basis": "3 x 2 pi T_hold eta / lead", "tag": "DERIVED"}}
+
+
+def rpt_z():
+    """RPT Z: fixture spec with two items, both supplied."""
+    return cs.rpt_check(RPT_SPEC, RPT_VALUES, "s3_checks_r1.json", 1)
+
+
+def rpt_b1():
+    """RPT B: F_stall declared, no value supplied (rev 1: cause content)."""
+    return cs.rpt_check(RPT_SPEC, {"L_min": RPT_VALUES["L_min"]}, "s3_checks_r1.json", 1)
+
+
+def rpt_b2():
+    """RPT B: a record that is not one accepted before the rule, spec with no reported_items."""
+    return cs.rpt_check({}, {}, "s3_checks_r1.json", 1)
+
+
+def _rpt_record(rpt_row):
+    rec = _template()
+    rec["reported_items"] = RPT_SPEC["reported_items"]
+    rec["checks"] = [c for c in rec["checks"] if c["id"] != "RPT"] + ([rpt_row] if rpt_row else [])
+    return rec
+
+
+def _accept_refused(rec):
+    with tempfile.TemporaryDirectory() as t:
+        docs, wip = _dirs(t)
+        _write(wip, rec)
+        rc, msgs = cs.accept("s1", 4, NOTE, docs, wip, out=_quiet)
+        flagged = json.loads((wip / "s1_checks_r4.json").read_text(encoding="utf-8")).get("accepted")
+        written = sorted(p.name for p in docs.iterdir())
+        fired = rc != 0 and not flagged and not written
+        return _res("H1", fired, " / ".join(msgs) + (f"; flagged {flagged}, docs/ {written}" if not fired else ""), 1 if fired else 0)
+
+
+def h1_b_rpt_fail():
+    """B (R3): a record declaring reported_items with RPT fail (one item without a value): accept refused, nothing written."""
+    return _accept_refused(_rpt_record(rpt_b1()))
+
+
+def h1_b_rpt_absent():
+    """B (R3): a record declaring reported_items with no RPT row: accept refused, nothing written."""
+    return _accept_refused(_rpt_record(None))
+
+
+def _runner(wrong):
+    """Two rows of the live manifest (K1-Z, K2-Z) in a temporary manifest, the second with expected fires when wrong;
+    check_sketch.py --controls --manifest <tmp> --jobs 2 as its own process."""
+    import subprocess
+    man = {e["id"]: e for e in yaml.safe_load((SK / "fixtures" / "manifest.yaml").read_text(encoding="utf-8"))["controls"]}
+    rows = [dict(man["K1-Z"]), dict(man["K2-Z"])]
+    if wrong:
+        rows[1].update(expected="fires", reason=["planted wrong expectation"])
+    with tempfile.TemporaryDirectory() as t:
+        mp = Path(t) / "manifest.yaml"
+        mp.write_text(yaml.safe_dump({"controls": rows}, sort_keys=False), encoding="utf-8")
+        pr = subprocess.run([sys.executable, str(SK / "check_sketch.py"), "--controls", "--manifest", str(mp), "--jobs", "2"],
+                            capture_output=True, text=True, timeout=600)
+        res = Path(t) / "controls_results.json"
+        data = json.loads(res.read_text(encoding="utf-8")) if res.is_file() else {}
+    got = [(r["id"], r["match"]) for r in data.get("controls", [])]
+    nos = [r for r in data.get("controls", []) if r["match"] != "yes"]
+    lines = [ln for ln in pr.stdout.splitlines() if "match NO" in ln]
+    return pr.returncode, got, nos, lines, data.get("summary", {}), (pr.stderr or "")[-300:]
+
+
+def run_z():
+    """R1 Z: the two-row manifest with correct expectations under --jobs 2: exit 0, both rows match yes, in manifest
+    order, jobs 2 recorded."""
+    rc, got, nos, lines, summ, err = _runner(False)
+    issues = []
+    if rc != 0:
+        issues.append(f"exit {rc} {err}")
+    if got != [("K1-Z", "yes"), ("K2-Z", "yes")]:
+        issues.append(f"rows {got}")
+    if summ.get("jobs") != 2:
+        issues.append(f"jobs {summ.get('jobs')}")
+    return _res("RUN", bool(issues), "; ".join(issues) or "--jobs 2: exit 0, K1-Z and K2-Z match yes in manifest order", len(issues))
+
+
+def run_b():
+    """R1 B: the same manifest with K2-Z expecting fires: under --jobs 2 the runner prints match NO for K2-Z and exits 1."""
+    rc, got, nos, lines, summ, err = _runner(True)
+    fired = rc == 1 and [r["id"] for r in nos] == ["K2-Z"] and len(lines) == 1 and "K2-Z" in lines[0] and summ.get("jobs") == 2
+    reason = f"--jobs {summ.get('jobs')}: exit {rc}; mismatched {[r['id'] for r in nos]}; printed {lines}" + (f"; stderr {err}" if not fired else "")
+    return _res("RUN", fired, reason, 1 if fired else 0)

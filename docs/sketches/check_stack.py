@@ -354,6 +354,8 @@ def global_vars(P, spec):
         "ring_bottom_low": lowest + g("ring.position_above_tip"),
         "height_target_z_A": from_shop_floor(g("jig.height_target"), P),
     }
+    if P.has("jackscrew.top_guide_z"):   # 1.3 step 0 R2 (Loftsman 1.2 (b) NOTE 2): member-top stack_ties term, z_A
+        out["top_guide"] = g("jackscrew.top_guide_z")
     out["load_plane"] = out[load_plane(spec)["term"]]
     out["entry_plane"] = out[load_plane(spec, "entry_plane")["term"]]
     out["park_tip"] = park_tip_z_A(P, q9, out["entry_plane"], spec, out, validity=validity)

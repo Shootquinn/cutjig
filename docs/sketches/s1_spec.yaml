@@ -71,6 +71,10 @@ entry_plane: {term: collar_top, feature: collar, edge: z_max, offset: 0}     # F
 # (holder_bottom + holder.length, no flange) reads 8.00 apart (K6-B7).
 stack_ties:
   - {id: holder_flange, term: collar_top, feature: holder, edge: z_max, offset: "nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate", source: "Loftsman 1.1 (e) LF1.1-1; check_stack.collar_top_z_A (test_P18)"}
+# 1.3 step 0 R2 (Loftsman 1.2 (b) NOTE 2): member z_max - profile.height = top guide; term top_guide = jackscrew.top_guide_z
+# (check_stack.global_vars), so a jackscrew.length change that leaves the member tops behind fires here and in K2.
+  - {id: member_top_a, term: top_guide, feature: frame_upper_a, edge: z_max, offset: "-profile.height", source: "Loftsman 1.2 (b) NOTE 2; overlay frame_upper.member_length / member_length_rail expr (K2); 1.3 step 0 R2"}
+  - {id: member_top_b, term: top_guide, feature: frame_upper_b, edge: z_max, offset: "-profile.height", source: "Loftsman 1.2 (b) NOTE 2; overlay frame_upper.member_length / member_length_rail expr (K2); 1.3 step 0 R2"}
 
 # Park rule, option R (Design Notes 22), with the start-above-core term (Design Notes 23, Sean's FIX 5 ruling; H5,
 # 1.2 step 0). Per supported core class of length L:

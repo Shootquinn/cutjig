@@ -1058,6 +1058,10 @@ PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within":
                "ticks_radial": "count", "outline_matches": "pieces"}
 
 
+FRAME_VALUES = ("radial",)   # sense `frame` values a predicate may carry (outboard radial form, plan_xy only: TP1.2-1)
+STAND_IN_OWNER = re.compile(r"\bStep\s+\d+(?:\.\d+)?\b|\b[Ss][1-6]\b")   # TP1.2-18: a Step id or a sketch id
+
+
 def sense_lint(rows):
     """Spec errors in sense rows, one per bad predicate, never an exception. Returns (issues, ids of bad predicates)."""
     issues, bad = [], set()
@@ -1074,6 +1078,9 @@ def sense_lint(rows):
                 msg = f"{row['id']}: spec error, unknown predicate {kind!r}"
             elif need not in pr:
                 msg = f"{row['id']} {kind}: spec error, missing key '{need}'"
+            elif "frame" in pr and pr["frame"] not in FRAME_VALUES:
+                # Topologist 1.2 (c) NOTE 2 (1.3 step 0 R5 c): plan reads any frame value as radial; only a known value passes
+                msg = f"{row['id']} {kind}: spec error, unknown frame {pr['frame']!r} (known: {', '.join(FRAME_VALUES)})"
             if msg:
                 issues.append(msg)
                 bad.add(id(pr))
@@ -1152,9 +1159,41 @@ def k2(ctx):
             issues.append(f"overlay {k}: status {leaf.get('status')!r} not in {LEGAL_STATUS}")
         if leaf.get("status") == "DECLARED" and not CITATION.search(str(leaf.get("source") or "")):
             issues.append(f"overlay {k}: DECLARED without [CP §n, mm:ss] or [DN23]")
+    expr_issues, n_expr = expr_agreement_issues(P)
+    issues += expr_issues
     n = len(P.overlay)
-    return result("K2", not issues, _summ(issues) if issues else f"{len(spec_keys(ctx.spec))} spec keys resolve; {n} overlay leaves sourced, legal status, no shadow",
+    return result("K2", not issues, _summ(issues) if issues else f"{len(spec_keys(ctx.spec))} spec keys resolve; {n} overlay leaves sourced, legal status, no shadow; "
+                  f"{n_expr} expr leaves agree within {TOL_Z}",
                   measured=len(issues), threshold=0, n_issues=len(issues))
+
+
+def expr_agreement_issues(P):
+    """1.3 step 0 R2 (O2): an overlay leaf with an `expr` field (arithmetic in other keys, check_stack.eval_expr) fails
+    when |value - eval(expr)| > TOL_Z. Premise of every DERIVED literal that carries one (jackscrew.top_guide_z,
+    frame_upper.member_length, frame_upper.member_length_rail mandatory). The evaluation does not add to P.accessed, so
+    a record's keys_read is unchanged by the lint. Returns (issues, leaves with expr)."""
+    import check_stack as cs  # stdlib + sketch_loader only; no cycle
+    issues, n = [], 0
+    acc = dict(P.accessed)
+    try:
+        for k, leaf in P.overlay.items():
+            if not isinstance(leaf, dict) or "expr" not in leaf or leaf.get("_malformed"):
+                continue
+            n += 1
+            try:
+                v = cs.eval_expr(leaf["expr"], P, {})
+            except Exception as e:  # noqa: BLE001
+                issues.append(f"overlay {k}: expr {leaf['expr']!r} does not evaluate ({type(e).__name__}: {e})")
+                continue
+            val = P.get(k)
+            if not isinstance(val, (int, float)) or isinstance(val, bool) or not isinstance(v, (int, float)):
+                issues.append(f"overlay {k}: expr {leaf['expr']!r} on a non-numeric value {val!r}")
+            elif abs(val - v) > TOL_Z:
+                issues.append(f"overlay {k}: value {val:g} vs expr {leaf['expr']} = {v:.2f}, {abs(val - v):.2f} apart")
+    finally:
+        P.accessed.clear()
+        P.accessed.update(acc)
+    return issues, n
 
 
 # ======================================================================== K3 plot conventions
@@ -1564,6 +1603,19 @@ def expected_projection(kind, axis, normal):
     return None
 
 
+def zero_area_issue(row, a):
+    """TP1.1-9 (1.3 step 0 R5 a): a Rectangle of zero width or height, or a Polygon of area <= TOL_AREA (0.01 mm2) in
+    data coordinates, on a row whose kind draws an area (not line, arrow or callout), is no projection of a solid part."""
+    if row.get("kind") in NO_AREA_KINDS or not isinstance(a, (Rectangle, Polygon)):
+        return None
+    if isinstance(a, Rectangle) and (a.get_width() == 0 or a.get_height() == 0):
+        return f"zero-area Rectangle (width {a.get_width():g}, height {a.get_height():g}) on a {row.get('kind')} row (TP1.1-9)"
+    area = sum(poly_area_abs(p) for p in artist_polys(a) if len(p) >= 3)
+    if area <= TOL_AREA:
+        return f"zero-area {type(a).__name__} (area {area:.4f} mm2) on a {row.get('kind')} row (TP1.1-9)"
+    return None
+
+
 def k5(ctx):
     """1.2 (c) plan rules (TP-13): in plan_xy a row with axis X or Y is a radial-axis part (the spec's X means radial,
     as in S1). Premise: its place footprint is radial (spec lint). Its four-vertex pieces have a tangential edge pair at
@@ -1602,6 +1654,10 @@ def k5(ctx):
                         issues.append(f"{pose}/{gid}: {t}")
                 continue
             n += 1
+            za = zero_area_issue(row, a)
+            if za:
+                issues.append(f"{pose}/{gid}: {za}")
+                continue
             want = expected_projection(row.get("kind"), row.get("axis"), normal)
             got = classify(a)
             spec_proj = row.get("projection")
@@ -2055,13 +2111,24 @@ def k7(ctx):
         for a, row in rows.items():
             if not row.get("moves"):
                 continue
-            nbs = row.get("neighbours") or []
+            # Loftsman 1.2 (c) NOTE 1 (1.3 step 0 R5 d): the moving row's neighbours, then every fixed row's entries that
+            # name this row (read as the plan branch does), so a declaration written only on the fixed row is swept too;
+            # the moving row's own entry comes first, and an N on either list excepts the pair
+            nbs = list(row.get("neighbours") or [])
+            for b, rb in rows.items():
+                if b != a and not rb.get("moves"):
+                    nbs += [dict(nb, id=b) for nb in rb.get("neighbours") or [] if nb.get("id") == a]
             unrestricted = {nb["id"] for nb in nbs if not nb.get("poses")}
-            seen_pr = set()
+            rel_n = {nb["id"] for nb in nbs if nb["class"] == "N"}
+            seen_pr, seen_un = set(), set()
             for nb in nbs:
                 b = nb["id"]
-                if b not in rows or rows[b].get("moves") or nb["class"] == "N":
+                if b not in rows or rows[b].get("moves") or b in rel_n:
                     continue
+                if not nb.get("poses"):
+                    if b in seen_un:   # the pair declared on both rows: the moving row's entry governs
+                        continue
+                    seen_un.add(b)
                 if nb.get("poses"):
                     # LF-c1 (Loftsman 1.2 (c)): a pair declared at some poses only is undeclared at every swept
                     # position between them, so it is swept as F (g_min 0); a declaration of the pair without
@@ -2525,10 +2592,13 @@ def cover_issues(ctx, ax, pose, rows_list):
     exempt = set()
     for fid, r in rows.items():
         if r.get("plan_style") == "stand_in":
-            if str(r.get("stand_in_owner") or "").strip():
-                exempt.add(fid)
-            else:
+            owner = str(r.get("stand_in_owner") or "").strip()
+            if not owner:
                 out.append(f"{pose}/{fid} cover: spec error, plan_style stand_in without stand_in_owner (TP1.2-17)")
+            elif not STAND_IN_OWNER.search(owner):
+                out.append(f"{pose}/{fid} cover: spec error, stand_in_owner {owner!r} names no Step id (Step 2) or sketch id (S3, s1 to s6) (TP1.2-18)")
+            else:
+                exempt.add(fid)
 
     def shown(fid, p):
         """p lies in a solid artist of fid that no opaque fill of another row draws over (r4, TP1.2-15)."""

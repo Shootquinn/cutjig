@@ -1,17 +1,24 @@
 """Run the sketch checks (contributor gameplan (sean) detail 1.0, line 124).
 
-  check_sketch.py sN [--rev k]     K1 to K9 plus checks_sN.py on the sketch (rev 0: stubs/sN_stub.py);
-                                   writes wip/sN_checks_r<k>.json and wip/sN_summary_r<k>.md.
+  check_sketch.py sN [--rev k]     K1 to K9 plus checks_sN.py, X1 and RPT on the sketch (rev 0: stubs/sN_stub.py);
+                                   writes wip/sN_checks_r<k>.json and wip/sN_summary_r<k>.md (with a Reported items table
+                                   when the spec declares reported_items).
   check_sketch.py --accept sN --rev k --note "<Design Notes ref>"
                                    flags the revision accepted (accepted, accepted_note, accepted_at), copies its wip/
                                    outputs up to docs/sketches/ with SHA-256 equality, marks earlier accepted records of
                                    the sketch superseded_by k. Refused (exit 1) when the record is absent, a check is not
-                                   pass, the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
+                                   pass (RPT included; a record that declares reported_items without an RPT row), the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
   check_sketch.py --stale          recorded key values of the latest accepted, unsuperseded record per sketch (docs/sketches/)
                                    against live params and overlay; exit 1 on any difference (--include-unaccepted also
                                    checks the unaccepted records in wip/).
-  check_sketch.py --controls       every entry of fixtures/manifest.yaml against its expected result;
-                                   writes wip/fixtures/controls_results.json and wip/fixtures/figs/ (ctrl PNGs, key.json).
+  check_sketch.py --controls [--jobs N] [--only ids]
+                                   every entry of fixtures/manifest.yaml against its expected result, in N spawn worker
+                                   processes (default min(cpu_count - 2, 12); rows in manifest order, per-control results
+                                   equal to --jobs 1); writes wip/fixtures/controls_results.json and wip/fixtures/figs/
+                                   (ctrl PNGs, key.json, generated once in the main process). --only (comma-separated id
+                                   globs or check ids) runs a subset to wip/fixtures/controls_results_partial.json,
+                                   "PARTIAL, not a record": never read by control_tally() or --accept. --manifest runs
+                                   another manifest and writes its results beside it (runner controls).
   check_sketch.py --baseline sN    assembles wip/baseline_red.json: run 1 from controls_results.json (wip/ first), run 2
                                    for sN from sN_checks_r0.json (wip/ first, else docs/sketches/); prior records kept.
 Output rule (sketch_loader docstring, Design Notes 26 decision 1): every output goes to wip/; only --accept writes to
@@ -24,6 +31,7 @@ import datetime
 import hashlib
 import importlib.util
 import json
+import re
 import shutil
 import sys
 import traceback
@@ -49,6 +57,7 @@ K_SOURCES = {
     "K7": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED", "K8": "gameplan l.141; ASSEMBLY.md Coordinate frame",
     "K9": "gameplan l.142",
     "X1": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)",
+    "RPT": "1.3 open O10; Step 1.2 gate D3; gameplan detail 1.3 Reported (spec reported_items)",
 }
 SKETCH_TABLES = {
     "s1": {
@@ -65,6 +74,61 @@ SKETCH_TABLES = {
         },
     },
 }
+
+
+def k_checks(s):
+    """K checks run on sketch s: checks_sN.py's K_CHECKS when it defines one (S3 on), else K_BY_SKETCH, else K1 to K9."""
+    p = HERE / f"checks_{s}.py"
+    if p.is_file():
+        mod = load_module(p, f"checks_{s}")
+        if hasattr(mod, "K_CHECKS"):
+            return list(mod.K_CHECKS)
+    return K_BY_SKETCH.get(s, K_ALL)
+
+
+# ---------------------------------------------------------------- RPT reported items (1.3 step 0 R3, O10, Step 1.2 gate D3)
+
+# Records accepted before the RPT rule: their specs declare no reported_items; RPT reads exempt by record name (as K4's
+# figure-note exemption reads by sketch id). A record of any other name whose spec declares no reported_items fails.
+RPT_EXEMPT = {"s1_checks_r7.json": "S1 r7 accepted 2026-11-25 (Design Notes 13)",
+              "s2_checks_r5.json": "S2 r5 accepted 2026-11-25 (Design Notes 13)"}
+RPT_FIELDS = ("id", "text", "source", "needs_drawing")
+
+
+def rpt_check(spec, items, rec_name, rev):
+    """RPT: every id in the spec's reported_items has a value in items ({id: {value, basis, tag}}, from checks_sN.py
+    reported(ctx)["items"]). A declared id with no value (absent or None) fails; on rev 0 the cause is "absent" when every
+    missing item has needs_drawing: true, else "content". A spec with no reported_items fails unless the record name is
+    in RPT_EXEMPT. Malformed entries (missing field, duplicate id) are spec errors."""
+    decl = spec.get("reported_items")
+    if not decl:
+        if rec_name in RPT_EXEMPT:
+            return {"id": "RPT", "result": "pass", "reason": f"not declared, exempt (accepted before RPT): {rec_name}, {RPT_EXEMPT[rec_name]}",
+                    "measured": 0, "threshold": 0, "n_issues": 0, "cause": None, "exempt": True}
+        return {"id": "RPT", "result": "fail", "reason": f"spec declares no reported_items ({rec_name} is not a record accepted before RPT)",
+                "measured": 1, "threshold": 0, "n_issues": 1, "cause": "content"}
+    items = items or {}
+    issues, missing, seen = [], [], set()
+    for it in decl:
+        miss = [f for f in RPT_FIELDS if not isinstance(it, dict) or f not in it]
+        iid = it.get("id") if isinstance(it, dict) else None
+        if miss:
+            issues.append(f"reported_items {iid!r}: spec error, missing {miss}")
+            continue
+        if iid in seen:
+            issues.append(f"reported_items {iid}: spec error, duplicate id")
+            continue
+        seen.add(iid)
+        v = items.get(iid)
+        if not isinstance(v, dict) or v.get("value") is None:
+            missing.append(it)
+            issues.append(f"reported item {iid} ({it['text']}): no value" + (" (needs drawing)" if it["needs_drawing"] else ""))
+    absent = rev == 0 and missing and len(missing) == len(issues) and all(m["needs_drawing"] for m in missing)
+    ok = not issues
+    return {"id": "RPT", "result": "pass" if ok else "fail",
+            "reason": f"{len(decl)} reported item(s) declared, every one has a value" if ok else sc._summ(issues),
+            "measured": len(issues), "threshold": 0, "n_issues": len(issues),
+            "cause": None if ok else ("absent" if absent else "content")}
 
 
 def sketch_table(s, name):
@@ -140,6 +204,7 @@ def x1_lint(specs=None):
 
 
 TIMESTAMP = lambda: datetime.datetime.now().isoformat(timespec="seconds")  # noqa: E731
+SKETCH_CHECK = re.compile(r"^S(\d+)-")   # S<n>-x routes to checks_s<n>.py (1.3 step 0 R4, O13)
 _MODS = {}
 
 
@@ -184,8 +249,9 @@ def run_control(entry):
     for c in ctxs:
         if entry.get("anchors"):
             c.anchors = entry["anchors"]
-    if entry["check"][:3] in ("S1-", "S2-"):   # sketch checks (1.1 (b), 1.2 (c)): checks_sN.py, judged as K checks
-        s = entry["check"][:2].lower()
+    m = SKETCH_CHECK.match(entry["check"])
+    if m:   # sketch checks S<n>-x (1.1 (b), 1.2 (c); 1.3 step 0 R4): checks_s<n>.py, judged as K checks
+        s = f"s{m.group(1)}"
         smod = load_module(HERE / f"checks_{s}.py", f"checks_{s}")
         fn = dict(smod.CHECKS)[entry["check"]]
         res = [smod._run(entry["check"], fn, c) for c in ctxs]
@@ -226,39 +292,103 @@ def compare(entry, res):
 
 
 CONTROLS_RESULTS = "fixtures/controls_results.json"   # path under wip/ (written) and under docs/sketches/ (committed copy)
+CONTROLS_PARTIAL = "fixtures/controls_results_partial.json"   # --only runs (1.3 step 0, O9): never a record
 CONTROL_FIGS = "fixtures/figs"
+MANIFEST = HERE / "fixtures" / "manifest.yaml"
+# Per-control equality between --jobs 1 and --jobs N (1.3 step 0 R1 b) covers these row fields; "seconds" (wall time of
+# the control in its worker) is excluded, as is the file timestamp.
+CONTROL_EQ_FIELDS = ("id", "expected", "observed", "reason", "match")
+
+
+def default_jobs():
+    import os
+    return max(1, min((os.cpu_count() or 1) - 2, 12))
+
+
+def control_row(e):
+    """One manifest entry run and compared; the row as written to the results file, plus the printed line."""
+    import time
+    t0 = time.perf_counter()
+    res = safe(run_control, e["check"], e)
+    ok, observed = compare(e, res)
+    row = {"id": e["id"], "check": e["check"], "control": e["control"], "expected": e["expected"],
+           "observed": observed, "reason": res["reason"], "match": "yes" if ok else "no", "gameplan_line": e.get("gameplan_line"),
+           "finding": e.get("finding")}
+    if "per_check" in res:
+        row["reported"] = [{k: r.get(k) for k in ("id", "result", "cause", "measured", "reason")} for r in res["per_check"]]
+    row["seconds"] = round(time.perf_counter() - t0, 3)
+    return row
+
+
+def _control_task(item):   # worker entry (spawn start method: module-level, picklable)
+    i, e = item
+    return i, control_row(e)
+
+
+def select_controls(man, only):
+    """--only: comma-separated tokens; an entry is kept when its id matches a token as an fnmatch glob or its check id
+    equals a token."""
+    import fnmatch
+    toks = [t.strip() for t in str(only).split(",") if t.strip()]
+    return [e for e in man if any(fnmatch.fnmatchcase(e["id"], t) or e["check"] == t for t in toks)]
+
+
+def run_controls_rows(man, jobs):
+    """Rows in manifest order. jobs 1: in this process; jobs > 1: a spawn pool, one entry per task (each worker keeps
+    its own module cache, so a control never sees another's state except through its own worker's caches)."""
+    if jobs <= 1 or len(man) <= 1:
+        return [control_row(e) for e in man]
+    import multiprocessing as mp
+    out = [None] * len(man)
+    with mp.get_context("spawn").Pool(min(jobs, len(man))) as pool:
+        for i, row in pool.imap_unordered(_control_task, list(enumerate(man)), chunksize=1):
+            out[i] = row
+    return out
 
 
 def controls(args):
-    man = load_yaml(HERE / "fixtures" / "manifest.yaml")["controls"]
-    rows = []
-    for e in man:
-        res = safe(run_control, e["check"], e)
-        ok, observed = compare(e, res)
-        row = {"id": e["id"], "check": e["check"], "control": e["control"], "expected": e["expected"],
-               "observed": observed, "reason": res["reason"], "match": "yes" if ok else "no", "gameplan_line": e.get("gameplan_line"),
-               "finding": e.get("finding")}
-        if "per_check" in res:
-            row["reported"] = [{k: r.get(k) for k in ("id", "result", "cause", "measured", "reason")} for r in res["per_check"]]
-        rows.append(row)
-        print(f"{e['id']:9s} {e['control']} expected {e['expected']:16s} observed {observed[:40]:40s} match {'yes' if ok else 'NO'}")
+    import time
+    t0 = time.perf_counter()
+    man_path = Path(args.manifest) if getattr(args, "manifest", None) else MANIFEST
+    man = load_yaml(man_path)["controls"]
+    only = getattr(args, "only", None)
+    if only:
+        man = select_controls(man, only)
+    jobs = args.jobs if getattr(args, "jobs", None) else default_jobs()
+    rows = run_controls_rows(man, jobs)
+    for r in rows:
+        print(f"{r['id']:9s} {r['control']} expected {r['expected']:16s} observed {r['observed'][:40]:40s} match {'yes' if r['match'] == 'yes' else 'NO'}")
     z = [r for r in rows if r["control"] == "Z"]
     b = [r for r in rows if r["control"] == "B"]
     sm = [r for r in rows if r["control"] == "smoke"]
     summary = {"z_clean": sum(r["match"] == "yes" for r in z), "z_total": len(z),
                "b_fired": sum(r["match"] == "yes" for r in b), "b_total": len(b),
                "smoke_ok": sum(r["match"] == "yes" for r in sm), "smoke_total": len(sm)}
-    figs = output_path(CONTROL_FIGS + "/key.json").parent   # wip/fixtures/figs (R4-c)
-    try:
-        mod = load_module(HERE / "fixtures" / "builders.py", "fixture_builders")
-        key = mod.control_figures(figs)
-        (figs / "key.json").write_text(json.dumps(key, indent=1), encoding="utf-8")
-    except Exception as e:  # noqa: BLE001
-        summary["ctrl_figs_error"] = f"{type(e).__name__}: {e}"
+    record = not only and man_path.resolve() == MANIFEST.resolve()
+    if record:   # control figures and key.json once, in this process, only for the full live set
+        figs = output_path(CONTROL_FIGS + "/key.json").parent   # wip/fixtures/figs (R4-c)
+        try:
+            mod = load_module(HERE / "fixtures" / "builders.py", "fixture_builders")
+            key = mod.control_figures(figs)
+            (figs / "key.json").write_text(json.dumps(key, indent=1), encoding="utf-8")
+        except Exception as e:  # noqa: BLE001
+            summary["ctrl_figs_error"] = f"{type(e).__name__}: {e}"
+    wall = round(time.perf_counter() - t0, 1)
+    summary.update(jobs=jobs, wall_seconds=wall)
     out = {"run": 1, "timestamp": TIMESTAMP(), "summary": summary, "controls": rows}
-    output_path(CONTROLS_RESULTS).write_text(json.dumps(out, indent=1), encoding="utf-8")
+    if record:
+        dst = output_path(CONTROLS_RESULTS)
+    elif only and man_path.resolve() == MANIFEST.resolve():
+        out["partial"] = {"only": only, "note": "PARTIAL, not a record (never read by control_tally or --accept)"}
+        dst = output_path(CONTROLS_PARTIAL)
+    else:   # another manifest (runner controls): results beside that manifest, never under wip/ or docs/
+        out["manifest"] = str(man_path)
+        dst = man_path.parent / "controls_results.json"
+    dst.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print(f"Z clean {summary['z_clean']}/{summary['z_total']}, B fired {summary['b_fired']}/{summary['b_total']}, "
-          f"smoke {summary['smoke_ok']}/{summary['smoke_total']}")
+          f"smoke {summary['smoke_ok']}/{summary['smoke_total']}; jobs {jobs}; wall {wall} s")
+    if only:
+        print(f"PARTIAL, not a record: {len(rows)} control(s) selected by --only {only!r}; written to {dst}")
     return 0 if all(r["match"] == "yes" for r in rows) else 1
 
 
@@ -290,7 +420,7 @@ def run_sketch(args):
     figs = mod.build(P, spec, stack)
     ctx = sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[script],
                  overlay_path=P.overlay_path, check_stack_path=HERE / "check_stack.py")
-    results = [safe(sc.CHECKS[k], k, ctx) for k in K_BY_SKETCH.get(s, K_ALL)]
+    results = [safe(sc.CHECKS[k], k, ctx) for k in k_checks(s)]
     for r in results:   # Loftsman 1.2 (e) LF1.2-1: the K7 record carries every test by pose and pair
         if r["id"] == "K7" and r["result"] != "error":
             lint = sc.k7_record_issues(r)
@@ -300,6 +430,12 @@ def run_sketch(args):
     smod = load_module(smod_path, f"checks_{s}")
     results += smod.run(ctx)
     results.append(safe(x1_lint, "X1"))
+    acc = dict(P.accessed)   # keys_read keeps its pre-RPT scope: keys the reported values read are not added
+    rd = safe(smod.reported, "reported", ctx) if hasattr(smod, "reported") else None
+    P.accessed.clear()
+    P.accessed.update(acc)
+    items = rd.get("items") if isinstance(rd, dict) else None
+    results.append(safe(rpt_check, "RPT", spec, items, record_name(s, rev), rev))
     tally = control_tally()
     for r in results:
         r["z_result"] = tally.get(r["id"], {}).get("Z", "not run at 1.0 (Z fixture from the signed spec, 1.1)")
@@ -312,8 +448,10 @@ def run_sketch(args):
     rec = {"sketch": s, "rev": rev, "timestamp": TIMESTAMP(), "spec": spec_path.name, "spec_status": spec.get("status"),
            "script": str(script.relative_to(HERE)), "accepted": False, "frame": "z_S = z_A + jig.datum_a_above_floor",
            "files_sha256": P.hashes(), "keys_read": keys_read, "reported": check_stack.reported(P, spec, stack), "checks": results}
-    if hasattr(smod, "reported"):   # per-sketch drawn reported values (no threshold, never asserted)
-        rec["reported_drawn"] = safe(smod.reported, "reported", ctx)
+    if rd is not None:   # per-sketch drawn reported values (no threshold, never asserted)
+        rec["reported_drawn"] = rd
+    if spec.get("reported_items"):   # RPT (1.3 step 0): the declared list travels with the record; --accept reads it
+        rec["reported_items"] = spec["reported_items"]
     write_record(rec, args.wip_dir)
     exp = sketch_table(s, "STUB_EXPECT") if rev == 0 else {}
     for r in results:
@@ -370,6 +508,16 @@ def write_summary(rec, path):
     if isinstance(rd, dict) and rd.get("rows"):
         lines += ["", f"## Reported values, drawn ({rec['script']} r{rec['rev']}; no threshold, never asserted)", "",
                   "| Quantity | Value | Basis |", "|---|---|---|"] + [f"| {q} | {v} | {b} |" for q, v, b in rd["rows"]]
+    rpt = next((c for c in rec["checks"] if c["id"] == "RPT"), None)   # 1.3 step 0 R3: one row per declared item
+    if rec.get("reported_items"):
+        vals = (rd.get("items") if isinstance(rd, dict) else None) or {}
+        lines += ["", "## Reported items (spec reported_items; RPT)", "", "| ID | Item | Value | Basis | Tag |", "|---|---|---|---|---|"]
+        for it in rec["reported_items"]:
+            v = vals.get(it.get("id")) if isinstance(vals.get(it.get("id")), dict) else {}
+            cell = lambda x: "ABSENT" if x is None else str(x).replace("|", "/")  # noqa: E731
+            lines.append(f"| {it.get('id')} | {cell(it.get('text'))} | {cell(v.get('value'))} | {cell(v.get('basis'))} | {cell(v.get('tag'))} |")
+    elif rpt is not None:
+        lines += ["", f"Reported items: {rpt['reason']}"]
     lines += ["", f"Files: " + ", ".join(f"{k} {v[:12]}" for k, v in rec["files_sha256"].items())]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -510,6 +658,8 @@ def accept(s, k, note, docs, wip, out=print):
     bad = [f"{c['id']} {c['result']}" for c in rec.get("checks", []) if c.get("result") != "pass"]
     if not rec.get("checks"):
         bad.append("no checks in record")
+    if rec.get("reported_items") and not any(c.get("id") == "RPT" for c in rec.get("checks", [])):
+        bad.append("RPT absent (record declares reported_items)")   # 1.3 step 0 R3
     if bad:
         say(f"refused: {src.name} has checks not pass: {', '.join(bad)}")
         return 1, msgs
@@ -662,6 +812,9 @@ def main(argv=None):
     ap.add_argument("--stale", action="store_true")
     ap.add_argument("--include-unaccepted", action="store_true")
     ap.add_argument("--controls", action="store_true")
+    ap.add_argument("--jobs", type=int, help="--controls worker processes (default min(cpu_count - 2, 12))")
+    ap.add_argument("--only", help="--controls subset: comma-separated id globs or check ids; PARTIAL, not a record")
+    ap.add_argument("--manifest", help="--controls on another manifest (runner controls); results beside it")
     ap.add_argument("--baseline", metavar="sN")
     ap.add_argument("--accept", metavar="sN")
     ap.add_argument("--note")
