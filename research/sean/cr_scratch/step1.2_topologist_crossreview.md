@@ -411,3 +411,98 @@ New:
 ```
 | 1.2 | 2026-11-25 | (e) re-check r2 Topologist (`step1.2_topologist_crossreview.md`, Re-check r2): TP1.2-2 and TP1.2-3 closed; K8 cover SIGNED (probes p1 to p5; K8-B19, K8-B26 restyles legitimate), S2-5b over moves: true SIGNED (p5' to p8, least drill_head 19.84); S2 r2 and S1 r6 CROSS-REVIEW PASS; NOTEs TP1.2-13 (cover over-cover, base_frame in the +Y notch), TP1.2-14 (records cite the 212/214 tally; re-run s2 r2, s1 r6). |
 ```
+
+## Re-check r3
+
+### Corrections to the brief
+
+1. **The rail top in the +Y notch does not read solid.** The split puts the base_frame solid copy at zorder 0.5, under the plate fill at zorder 1. The operator sector fill is opaque (alpha 1, facecolor #fbe3c0) at zorder 2 and covers the +Y notch. All 24 visible samples of the rail piece in the notch lie under the sector fill above the copy (MEASURED, live r3 build). A render of x -80 to 80, y 200 to 320 shows only the dashed rail lines at y 244, 289 and 304 over the sector tint. The sector is a reference row and no cover. K8 cover passes because a solid artist of the row contains the samples; whether that artist shows is not tested. FIX TP1.2-15.
+2. **Red-first for K8-B34 to B36 is now MEASURED.** The coordinator asked for this check.
+
+Inputs:
+- `step1.2_engineer_revision_r3.md`
+- `sketch_common.py`: `cover_issues`, `plan_cover_states`, `style_hidden`, `hidden_rows`
+- `fixtures/builders.py`: `k8_z8`, `k8_b34` to `k8_b36`
+- `fixtures/manifest.yaml`
+- `wip/s2_checks_r3.json`, `wip/s1_checks_r7.json`, `wip/fixtures/controls_results.json`
+
+Probes ran on the live r3 build and on a scratch copy of `docs/sketches/` with params.yaml beside it. Scratchpad files: `sk_noconv/`, `run_ctl.py`, `tp_r3.py`, `notch_r3.png`, `heel_r3.png`. Results are MEASURED.
+
+### 1 Red-first by deletion
+
+In the scratch copy, `sketch_common.cover_issues` had its converse branch deleted. That is the `elif st != "hidden" and not is_solid(a) and ... != "stand_in":` block, 7 lines. The manifest entries were run through `check_sketch.run_control` and `compare`:
+
+| Control | Converse deleted | Live code |
+|---|---|---|
+| K8-B34 (rail top dashed only) | **NO MATCH**: clean, 0 issues, planted 1 | MATCH: "load/base_frame cover: Polygon partly visible drawn dashed (24 of 24 ...)" |
+| K8-B35 (ties without stand_in) | **NO MATCH**: clean, 0 of 2 | MATCH: 2 issues, guide_tie_a and _b, 134 of 134 samples each |
+| K8-B36 (probe p4 bar, open middle) | **NO MATCH**: clean, 0 of 1 | MATCH: "fixture/c ... 96 of 96" |
+| K8-Z8 (live S2 script) | MATCH, clean | MATCH, clean |
+| K8-B32 (nut_a solid under guide_a) | MATCH, branch (1) untouched | MATCH |
+
+Each new B reads clean without the converse and fires on it. Red-first holds.
+
+### 2 Live r3
+
+**K8 cover.** 73 artists, 0 issues. Cover states: hidden 30, partial 21, visible 22. These rows are partly visible:
+- base_frame, base_plate
+- bracket_guide_a, _b
+- motor_shaft_a, _b, _c
+- nut_housing_a, _b, _c
+- pinion_a, _b, _c
+- ring
+
+Only base_frame and the three pinions draw a dashed piece over a solid copy. Every other partial row is drawn solid.
+
+**Pinion heel corners: read solid.** The pinion_c solid copy sits at zorder 6.5. Above it, the gear fill (zorder 7, opaque) masks the covered part. Below it, the ring fill (zorder 5, alpha 0.5) shows through. The visible samples are pinion_a 6, pinion_b 6 and pinion_c 10, and none is under an opaque fill of another row above the copy. At the corner (44.5, 124.6), the artists in zorder order are: sector 2, ring 5, pinion_c copy 6.5, pinion_c dashed 8. At the covered point (0, 110), the gear fill at 7 sits between the copy and the dashed piece. The render `heel_r3.png` shows the heel edge and flank solid outside the gear OD (r 126.32) and dashed inside it.
+
+**Rail top: does not read solid** (Corrections 1).
+
+**Ties.** guide_tie_a and _b carry `plan_style: stand_in` and are exempt from the converse. K8-B35 shows that the exemption comes from the field alone.
+
+**Records.** `s2_checks_r3.json` (20:20:48) and `s1_checks_r7.json` (20:21:17) were written after the controls run (20:20:27). Both read K8 fired 36/36. TP1.2-14 is closed.
+
+**S1 r7.** 18/18. K8 cover is a plan rule, so S1 is unaffected. S1 r7: CROSS-REVIEW PASS.
+
+### Findings (re-check r3)
+
+**FIX TP1.2-15 (Engineer; Designer for the sector style; Topologist signs). The converse premise "a solid piece of the row shows the visible area" is not checked against the render.**
+
+Live failure: the base_frame copy at zorder 0.5 is masked over all 24 visible samples by the opaque operator_sector fill at zorder 2.
+
+Drawing fix, Designer's pick:
+- (a) Draw the sector fill translucent.
+- (b) Draw the sector fill below the plate, with its outline above.
+
+In the live order no zorder for the copy works. The covering fill (plate, 1) lies below the non-covering fill (sector, 2).
+
+Check: in K8 cover (2), a split row's visible samples must also lie under no filled opaque artist of a row that is not a cover (not a true outline with a z_max higher by more than 0.05) and that is drawn above the row's solid copy. Controls:
+- B: the r3 drawing, which fires on base_frame and operator_sector.
+- Z: the fixed drawing.
+- Probe I will run at sign-off: the pinion copies raised above the gear fill, which must not fire under this predicate (the gear is a cover); and the pinion copies under an opaque ring, which must fire.
+
+**NOTE TP1.2-16. The grid density is relative.** The 12 x 12 grid spaces samples 53.7 mm apart along the 644 rail. In the -Y notch, the two rail strips of 5 x 60 beside member c (notch x +-35, member x +-30) get no sample, so they read hidden and are drawn dashed. This is still over-cover only, and no solid-hidden part passes. At S3, set an absolute step, for example 2.5 mm, or sample just inside each cover edge that crosses the piece.
+
+**NOTE TP1.2-17. `plan_style: stand_in` is an unrestricted exemption.** Any row can carry it and silence the converse. K8-B35 proves only that removing the field fires. Lint for S3: a stand_in row names its Step 2 owner (a T2 row or an ASSUMED key), and the legend's stand-in line names it.
+
+### Verdicts (re-check r3)
+
+- Red-first of K8-B34 to B36: VERIFIED, MEASURED by deletion.
+- TP1.2-13: closed, except FIX TP1.2-15. TP1.2-14: closed.
+- K8 cover converse: **NOT SIGNED**. Its artist logic holds; its render premise is open (FIX TP1.2-15).
+- **S2 r3: CROSS-REVIEW FAIL** (FIX TP1.2-15).
+- **S1 r7: CROSS-REVIEW PASS.**
+
+Counts (re-check r3): BLOCK 0, FIX 1, NOTE 2.
+
+### Gameplan lines to change
+
+**Open Questions.** Add a row after the TP1.2-13 row (added by Re-check r2). Old is that row unchanged; New is that row followed by:
+```
+| TP1.2-16, TP1.2-17 (cover sampling, stand-in) | K8 cover grid is 12 x 12 per piece (53.7 mm along the 644 rail): the -Y notch rail strips 5 x 60 beside member c read hidden; plan_style: stand_in exempts any row from the converse with no lint on who may carry it | 1.3 (S3) | The Topologist proposes; The Engineer |
+```
+
+**Progress Log.** Add a row after the (h) P9 r3 row (`| 1.2 | 2026-11-25 | (h) P9 r3 (`step1.2_engineer_revision_r3.md`): ...`). Old is that row unchanged; New is that row followed by:
+```
+| 1.2 | 2026-11-25 | (e) re-check r3 Topologist (`step1.2_topologist_crossreview.md`, Re-check r3): red-first of K8-B34 to B36 MEASURED by deleting the converse in a scratch copy (all three NO MATCH, clean); pinion heel corners read solid (copy 6.5 between ring 5 and gear fill 7); rail top in the +Y notch does not (copy 0.5 masked by the opaque sector fill at 2, 24 of 24 samples): FIX TP1.2-15, converse NOT SIGNED; S2 r3 CROSS-REVIEW FAIL, S1 r7 PASS; TP1.2-14 closed; NOTEs TP1.2-16 (grid density), TP1.2-17 (stand_in lint). |
+```
