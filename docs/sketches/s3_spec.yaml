@@ -31,7 +31,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md; 1.3 (h) r5 edits (load_comp_c cases label M1 S3 r4 F1, hold label lead angle from stall.lead_angle N5, label anchors DR4-1); 1.3 (h) r4 edits (span_lt label text M1 S3 r3 F1, hatch_alt '||'); 1.3 (h) r3 edits (Designer r2 values picks 2, 3 (offset per orchestrator ruling u -110), 4 ('--' per orchestrator ruling), 5, 7, 8, 9; Loftsman LF1.3-10; Topologist R2-5), step1.3_engineer_revision_r3.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md; 1.3 (h) r6 edits (labels print computed loads; nut station labels with z_S from the stack; load_comp_c leader on the arrow shaft); 1.3 (h) r5 edits (load_comp_c cases label M1 S3 r4 F1, hold label lead angle from stall.lead_angle N5, label anchors DR4-1); 1.3 (h) r4 edits (span_lt label text M1 S3 r3 F1, hatch_alt '||'); 1.3 (h) r3 edits (Designer r2 values picks 2, 3 (offset per orchestrator ruling u -110), 4 ('--' per orchestrator ruling), 5, 7, 8, 9; Loftsman LF1.3-10; Topologist R2-5), step1.3_engineer_revision_r3.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -1667,7 +1667,7 @@ features:
   projection: line
   keys: [stop.start_z, ring.position_above_tip, ring.thickness, jackscrew.pitch_radius, jackscrew.angle]
   z_rule: {z_min: 'stop.start_z[0] + ring.position_above_tip + ring.thickness / 2', z_max: 'stop.start_z[0] + ring.position_above_tip + ring.thickness / 2'}
-  label: {text: nut at start, key: stop.start_z, fmt: s, z_S: true}
+  label: {text: nut at start, key: stop.start_z, fmt: s, stack_z: z_min, pose_of: start, stack_name: nut_z}   # 1.3 (h) r6 (M1 S3 r5 F2)
   neighbours: []
   sense: []
   chain: []
@@ -1683,7 +1683,7 @@ features:
   projection: line
   keys: [ring.position_above_tip, ring.thickness, jackscrew.pitch_radius, jackscrew.angle]
   z_rule: {z_min: park_tip + ring.position_above_tip + ring.thickness / 2, z_max: park_tip + ring.position_above_tip + ring.thickness / 2}
-  label: null
+  label: {text: nut at park (= load), key: ring.position_above_tip, fmt: s, stack_z: z_min, pose_of: park, stack_name: nut_z}   # 1.3 (h) r6 (M1 S3 r5 F2)
   neighbours: []
   sense: []
   chain: []
@@ -1748,6 +1748,7 @@ features:
   keys: [liftload.f_bind, liftmotor.holding_torque, jackscrew.lead, jackscrew.thread_mu]
   z_rule: {z_min: nut_z + ring.nut_housing_height / 2, z_max: nut_z + ring.nut_housing_height / 2 + ring.nut_housing_height}
   label: {text: 'compression per screw:', key: liftload.f_bind, fmt: .0f, value_from: s3_checks.load_cases, cases: [[static, static], [capture_lift, capture], [retract_bind, 'retract (F_bind {liftload.f_bind})'], [stall_up, stall up]], suffix: N}
+  label_anchor_frac: 0.5   # 1.3 (h) r6 (M1 S3 r5 F1): leader on the arrow shaft at mid height (z_S 410.84), off the z 400 gridline
   neighbours: []
   sense:
   - {pred: points, dir: -Z}

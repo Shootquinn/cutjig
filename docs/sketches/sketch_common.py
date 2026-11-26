@@ -204,6 +204,49 @@ def _spec_path(spec, path):
     return v if v is not None or len(segs) < 2 else walk(spec or {}, segs[1:])
 
 
+LOAD_TOL = 0.005   # N: a load_cases per_screw literal agrees with checks_s3.loads() within this (1.3 (h) r6)
+LOAD_PATH = "load_cases"
+
+
+def computed_per_screw(spec, P):
+    """1.3 (h) r6 (M1 S3 r5 Rule 1 fix): {case id: N per screw} computed by checks_s3.loads from the keys (stall_up and
+    stall_down: F_stall at the governing mu), or None when the spec has no load_cases / s3_checks. Labels print these;
+    the spec per_screw literals are held to them (load_literal_issues)."""
+    if not (spec or {}).get("load_cases") or not (spec or {}).get("s3_checks"):
+        return None
+    import importlib
+    if str(HERE) not in sys.path:
+        sys.path.insert(0, str(HERE))
+    ld = importlib.import_module("checks_s3").loads(P, spec)
+    out = dict(ld["per_screw"])
+    out["stall_down"] = ld["F_stall_max"]
+    return out
+
+
+def _load_case_of(path):
+    """Case id of a value_from path '<...>.load_cases.<case>.per_screw', else None."""
+    segs = str(path).split(".")
+    if LOAD_PATH in segs and segs[-1] == "per_screw" and len(segs) >= segs.index(LOAD_PATH) + 3:
+        return segs[segs.index(LOAD_PATH) + 1]
+    return None
+
+
+def load_literal_issues(spec, P):
+    """1.3 (h) r6: premise of the load labels. Every load_cases case's per_screw literal (its first number when text)
+    agrees with checks_s3.loads() within LOAD_TOL, so a change of W or of any load key fails here unless the spec follows."""
+    comp = computed_per_screw(spec, P)
+    if comp is None:
+        return []
+    out = []
+    for c in (spec.get("load_cases") or {}).get("cases") or []:
+        v = _first_number(c.get("per_screw"))
+        if v is None or c.get("id") not in comp:
+            continue
+        if abs(v - comp[c["id"]]) > LOAD_TOL:
+            out.append(f"load_cases {c['id']} per_screw literal {v:g} against loads() {comp[c['id']]:.4f} N (W or a load key changed)")
+    return out
+
+
 def label_value(lab, P, spec=None):
     """1.3 P4: the value a label must print, as a string, or None when the label carries no single value (its text
     carries it). expr: the expression's value in fmt; value_from: the spec value at that path (a number, str());
@@ -215,6 +258,11 @@ def label_value(lab, P, spec=None):
     if lab.get("expr"):
         import check_stack as _cs
         return format(_cs.eval_expr(lab["expr"], P, {}), fmt if fmt != "s" else ".2f")
+    if lab.get("value_from") and _load_case_of(lab["value_from"]):   # 1.3 (h) r6: a computed load, not the literal
+        comp = computed_per_screw(spec, P)
+        cid = _load_case_of(lab["value_from"])
+        if comp is not None and cid in comp:
+            return format(comp[cid], ".2f").rstrip("0").rstrip(".")
     if lab.get("value_from"):
         v = _spec_path(spec, lab["value_from"])
         return (format(v, ".2f").rstrip("0").rstrip(".") if isinstance(v, float) else str(v)) if isinstance(v, (int, float, str)) else None
@@ -236,10 +284,11 @@ def label_cases(lab, P, spec):
     load_cases block; label.cases lists [case id, name] pairs (a name may carry {dotted.key}, formatted from P); the value
     is the case's per_screw (its first number when the entry is text, the governing mu) in label.fmt."""
     fmt = lab.get("fmt", ".0f")
+    comp = computed_per_screw(spec, P)   # 1.3 (h) r6: values from checks_s3.loads, not the spec literals
     out = []
     for cid, name in lab["cases"]:
         nm = re.sub(r"\{([\w.\[\]]+)\}", lambda m: format(P.get(m.group(1)), "g"), str(name))
-        v = _first_number(_spec_path(spec, f"{lab['value_from']}.{cid}.per_screw"))
+        v = comp.get(cid) if comp is not None else _first_number(_spec_path(spec, f"{lab['value_from']}.{cid}.per_screw"))
         out.append((cid, nm, None if v is None else format(v, fmt)))
     return out
 
@@ -255,6 +304,8 @@ def label_text(row, P, rec=None, spec=None):
     v = P.get(lab["key"])
     if lab.get("z_S") and isinstance(v, (int, float)) and fmt != "s":
         txt = f"{lab['text']} z_S {format(v + P.get('jig.datum_a_above_floor'), fmt)} ({lab['key']} {format(v, fmt)} z_A)"
+    elif lab.get("stack_z") and rec and lab["stack_z"] in rec:   # 1.3 (h) r6 (M1 S3 r5 F2): the row's stack height, z_S
+        txt = f"{lab['text']} z_S {rec[lab['stack_z']]:.2f}"
     elif lab.get("cases"):   # 1.3 (h) r5 (M1 S3 r4 F1): one value per load case, read from load_cases at run time
         txt = f"{lab['text']} " + ", ".join(f"{name} {v}" for _, name, v in label_cases(lab, P, spec))
     else:
@@ -855,7 +906,28 @@ def _column_default(ink, column):
     return min(cand, key=lambda p: abs(p[1] - ym))
 
 
-def anchor_candidates(lc, row, column):
+def frac_anchor(ink, frac, column, zr=None):
+    """1.3 (h) r5, r6: the point of a row's ink at height y0 + frac (y1 - y0) farthest toward the label column (the
+    column-side crossing of the ink at that height: a block face, an arrow shaft), or None."""
+    pts = [p for poly, _ in ink for p in poly]
+    y0, y1 = zr if zr else (min(p[1] for p in pts), max(p[1] for p in pts))   # r6: the row's stack z range when given
+    y = y0 + float(frac) * (y1 - y0)
+    xs = []
+    for poly, closed in ink:
+        segs = _edges(poly) if closed else [(poly[i], poly[i + 1]) for i in range(len(poly) - 1)]
+        for a, b in segs:
+            if min(a[1], b[1]) - 1e-9 <= y <= max(a[1], b[1]) + 1e-9:
+                if abs(b[1] - a[1]) < 1e-12:
+                    xs += [a[0], b[0]]
+                else:
+                    xs.append(a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]))
+    if not xs:
+        return None
+    q = (max(xs) if column == "right" else min(xs), y)
+    return q if ink_distance(q, ink) <= TOL_Z else None
+
+
+def anchor_candidates(lc, row, column, zr=None):
     """[(source, anchor)] for one row in one column, in placer order (see the block comment)."""
     ink = lc.ink(row["id"])
     if not ink:
@@ -866,11 +938,8 @@ def anchor_candidates(lc, row, column):
         if hit is not None:
             out.append(("label_theta", hit))
     if row.get("label_anchor_frac") is not None:   # 1.3 (h) r5 (Designer DR4-1): on the column-side face at a height fraction
-        pts = [p for poly, _ in ink for p in poly]
-        xm = max(p[0] for p in pts) if column == "right" else min(p[0] for p in pts)
-        y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
-        q = (xm, y0 + float(row["label_anchor_frac"]) * (y1 - y0))
-        if ink_distance(q, ink) <= TOL_Z:
+        q = frac_anchor(ink, row["label_anchor_frac"], column, zr)
+        if q is not None:
             out.append(("label_anchor_frac", q))
     first = _column_default(ink, column)
     out.append(("default", first))
@@ -918,7 +987,9 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
     cands = {}
     for r in rows:
         cols = ["left", "right"] if r.get("label_side") == "left" else ["right", "left"]
-        cands[r["id"]] = [(col, src, anc) for col in cols for src, anc in anchor_candidates(lc, r, col)]
+        f_ = (stack_pose or {}).get(r["id"]) or {}
+        zr_ = (f_["z_min"], f_["z_max"]) if f_.get("z_min") is not None and f_.get("z_max") is not None and f_["z_max"] > f_["z_min"] else None
+        cands[r["id"]] = [(col, src, anc) for col in cols for src, anc in anchor_candidates(lc, r, col, zr_)]
     ax.apply_aspect()
     (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
     line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)
@@ -1995,6 +2066,18 @@ def k4(ctx):
             if lab["text"] not in txt:
                 issues.append(f"{pose}/{row['id']}: label {txt!r} lacks text {lab['text']!r}")
                 continue
+            if lab.get("stack_z"):   # 1.3 (h) r6 (M1 S3 r5 F2): the printed z_S against check_stack nut_z at the named pose
+                pz_ = lab.get("pose_of")
+                st_ = (ctx.parent.stack if getattr(ctx, "parent", None) is not None else ctx.stack) or {}
+                vz = ((st_.get("poses") or {}).get(pz_) or {}).get("vars_z_A", {}).get(lab.get("stack_name", "nut_z"))
+                import check_stack as _cs
+                m_ = re.search(r"z_S (-?\d+(?:\.\d+)?)", txt)
+                if vz is None or m_ is None:
+                    issues.append(f"{pose}/{row['id']}: label {txt!r} stack_z without a z_S value or pose_of {pz_!r}")
+                elif abs(float(m_.group(1)) - _cs.to_shop_floor(vz, ctx.P)) > TOL_Z:
+                    issues.append(f"{pose}/{row['id']}: label {txt!r} z_S {m_.group(1)} against check_stack {lab.get('stack_name', 'nut_z')} "
+                                  f"at {pz_} {_cs.to_shop_floor(vz, ctx.P):.2f} (K4 stack_z)")
+                continue
             if lab.get("cases"):   # 1.3 (h) r5 (M1 S3 r4 F1): every case value as load_cases per_screw prints it
                 for cid, nm, v in label_cases(lab, ctx.P, ctx.spec):
                     if v is None or f"{nm} {v}" not in txt:
@@ -2014,6 +2097,10 @@ def k4(ctx):
     issues += figure_note_issues(ctx)
     issues += leader_issues(ctx)
     issues += text_overlap_issues(ctx)   # 1.3 (h) r2: K4 (i), Designer M1 S3 r1 F2, F3
+    if getattr(ctx, "axes_role", "main") == "main":   # 1.3 (h) r6: load literals, anchor record, frac lint, collinearity
+        issues += load_literal_issues(ctx.spec, ctx.P)
+    issues += anchor_record_issues(ctx)
+    issues += collinear_issues(ctx)
     extra = {}
     for pose, fig in ctx.figs.items():   # 1.3 P1R: the placer's UNPLACEABLE candidate tables go into the record
         for fid, u in ((getattr(fig.axes[0], "_sc_placer", None) or {}).get("unplaceable") or {}).items():
@@ -2103,6 +2190,98 @@ def leader_issues(ctx):
                     d = seg_distance(a0, a1, b0, b1)
                     if d < LEADER_SEP_MIN:
                         out.append(f"{pose}: label leaders {fa} and {fb} {d:.2f} mm apart (h, least {LEADER_SEP_MIN:g})")
+    return out
+
+
+COLLINEAR_MM = 1.0      # 1.3 (h) r6: a leader within this of a line ...
+COLLINEAR_RUN_MM = 5.0  # ... over more than this run, and
+COLLINEAR_DEG = 2.0     # ... within this angle of it, runs along the line (M1 S3 r5 F1, Rule 2 fix (b))
+
+
+def anchor_record_issues(ctx):
+    """1.3 (h) r6 (M1 S3 r5 Rule 2 fix (a), (c)): a row declaring label_anchor_frac has frac in [0, 1] (lint) and its
+    placed leader ends at that anchor (placer record source label_anchor_frac, anchor within TOL_Z of frac_anchor on the
+    row's ink); a fallback to another candidate is an issue, so the premise of the frac input is checked."""
+    out = []
+    for pose, fig in (ctx.figs or {}).items():
+        ax = fig.axes[0]
+        rec = (getattr(ax, "_sc_placer", None) or {}).get("placed") or {}
+        for row in ctx.spec.get("features", []):
+            fr = row.get("label_anchor_frac")
+            if fr is None or not row.get("label"):
+                continue
+            if not isinstance(fr, (int, float)) or not 0 <= float(fr) <= 1:
+                out.append(f"{row['id']}: spec error, label_anchor_frac {fr!r} outside [0, 1]")
+                continue
+            got = rec.get(row["id"])
+            if got is None:
+                continue
+            f_ = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("features", {}).get(row["id"]) or {}
+            zr_ = (f_["z_min"], f_["z_max"]) if f_.get("z_min") is not None and f_.get("z_max") is not None and f_["z_max"] > f_["z_min"] else None
+            q = frac_anchor(ink_pieces(ax, row["id"]), fr, got["column"], zr_) if ink_pieces(ax, row["id"]) else None
+            if got.get("source") != "label_anchor_frac" or q is None or math.hypot(got["anchor"][0] - q[0], got["anchor"][1] - q[1]) > TOL_Z + 0.01:
+                out.append(f"{pose}/{row['id']}: label leader ends at {got['anchor']} ({got.get('source')}), not at its label_anchor_frac {fr:g} anchor "
+                           f"{None if q is None else [round(q[0], 2), round(q[1], 2)]} (K4 anchor record)")
+    return out
+
+
+def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25):
+    """Longest run (mm) of segment p0-p1 within COLLINEAR_MM of a line (point, unit direction; seg = (a, b) bounds it)."""
+    L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    if L < 1e-9:
+        return 0.0
+    n = max(2, int(L / step) + 1)
+    best = run = 0.0
+    for k in range(n):
+        t = k / (n - 1)
+        q = (p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t)
+        d = _pt_seg(q, seg[0], seg[1]) if seg else abs((q[0] - line_pt[0]) * line_dir[1] - (q[1] - line_pt[1]) * line_dir[0])
+        run = run + L / (n - 1) if d <= COLLINEAR_MM and k else (0.0 if d > COLLINEAR_MM else run)
+        best = max(best, run)
+    return best
+
+
+def collinear_issues(ctx):
+    """1.3 (h) r6 (M1 S3 r5 F1 and Rule 2 fix (b)). Premise: a leader is followed by eye only where it does not merge with
+    another line. On a script-drawn figure in a side or section view, no label leader (text position to anchor, data
+    coordinates) runs within COLLINEAR_DEG of, and within COLLINEAR_MM of, a reference line row's line (its Line2D and
+    :ext sub-artists) or a major or minor gridline inside the Axes, over more than COLLINEAR_RUN_MM. Scope at r6: section
+    views (the S3 rule raised at M1 S3 r5); S1 r8 height_target runs 32.2 mm along the z 2000 gridline, on which its own
+    target line lies, and goes to Sean at M2 (no S1 revision opens under the r6 ruling)."""
+    if not getattr(ctx, "script_paths", None) or ctx.view not in SECTION_VIEWS:
+        return []
+    out = []
+    refs = {r["id"] for r in ctx.spec.get("features", []) if r.get("reference") and r.get("kind") == "line"}
+    for pose, fig in (ctx.figs or {}).items():
+        ax = fig.axes[0]
+        (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
+        lines = []
+        for g, arts in tagged(ax).items():
+            if g.split(":")[0] in refs:
+                for a in arts:
+                    if isinstance(a, Line2D):
+                        q = artist_polys(a)[0]
+                        lines += [(g, (q[i], q[i + 1])) for i in range(len(q) - 1)]
+        grid = [("gridline z %g" % v, ((x0, v), (x1, v))) for v in set(ax.yaxis.get_majorticklocs()) | set(ax.yaxis.get_minorticklocs()) if y0 < v < y1]
+        grid += [("gridline u %g" % v, ((v, y0), (v, y1))) for v in set(ax.xaxis.get_majorticklocs()) | set(ax.xaxis.get_minorticklocs()) if x0 < v < x1]
+        for t in ax.texts:
+            g = t.get_gid() or ""
+            xt = getattr(t, "xyann", None)
+            if not g.startswith("label:") or xt is None:
+                continue
+            p0, p1 = (float(xt[0]), float(xt[1])), (float(t.xy[0]), float(t.xy[1]))
+            if p0[0] > x1:   # the run inside the Axes (the text sits in the margin column)
+                p0 = (x1, p0[1] + (p1[1] - p0[1]) * (p0[0] - x1) / (p0[0] - p1[0])) if abs(p0[0] - p1[0]) > 1e-9 else p0
+            ang = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0]))
+            for nm, (a, b) in lines + grid:
+                la = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+                dd = abs((ang - la + 90) % 180 - 90)
+                if dd > COLLINEAR_DEG:
+                    continue
+                Ll = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+                run = _run_near(p0, p1, a, ((b[0] - a[0]) / Ll, (b[1] - a[1]) / Ll), seg=(a, b))
+                if run > COLLINEAR_RUN_MM:
+                    out.append(f"{pose}/{g[len('label:'):]}: label leader runs {run:.1f} mm along {nm} within {COLLINEAR_MM:g} mm (K4 collinear)")
     return out
 
 

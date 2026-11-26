@@ -1513,3 +1513,72 @@ def k4_cases_z():
 def k4_cases_b():
     """K4 B (M1 S3 r4 F1): load_comp_c prints the W 24.25 kg static value 79 (the r4 label)."""
     return _k4_one("load_comp_c", lambda sp, P: sc.label_text(_row(sp, "load_comp_c"), P, spec=sp).replace("static 86", "static 79"))
+
+
+# ======================================================================== 1.3 (h) r6 (step1.3_engineer_revision_r3.md section r6)
+# M1 S3 r5 Rule 1 fix (labels print loads(); spec per_screw literals held to loads()), Rule 2 fix (anchor record, frac
+# lint, leader collinearity), F1 (load_comp_c leader off the grid), F2 (nut station labels from the stack).
+
+def _live_s3(spec_mut=None):
+    return _builders()._script_ctx("s3", spec_mut=spec_mut)
+
+
+def k4_live_s3():
+    """K4 Z (r6): the live S3 drawn by s3_jackscrew_section.py."""
+    return _live_s3()
+
+
+def k4_ring_mass():
+    """K4 B (Rule 1 fix): the live S3 drawn with ring.mass + 4 kg, the spec per_screw literals unchanged (static, capture,
+    retract and cut move; the labels print the new loads, the literals fail against loads())."""
+    import importlib
+    mod = importlib.import_module("s3_jackscrew_section")
+    P = Params()
+    P.leaves["ring.mass"] = dict(P.leaves["ring.mass"], value=P.get("ring.mass") + 4)
+    spec = load_spec(S3_SPEC)
+    stack = check_stack.evaluate_spec(P, spec)
+    figs = mod.build(P, spec, stack)
+    return sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[SK / "s3_jackscrew_section.py"],
+                  check_stack_path=CHECK_STACK_PATH)
+
+
+def k4_frac_088():
+    """K4 B (Rule 2 fix (a)): anchor_c label_anchor_frac 0.88, the measured fallback (the placer ends the leader elsewhere)."""
+    def sm(sp):
+        _row(sp, "anchor_c")["label_anchor_frac"] = 0.88
+    return _live_s3(sm)
+
+
+def k4_frac_range():
+    """K4 B (Rule 2 fix (c)): guide_c label_anchor_frac 1.5, outside [0, 1]."""
+    def sm(sp):
+        _row(sp, "guide_c")["label_anchor_frac"] = 1.5
+    return _live_s3(sm)
+
+
+def k4_frac_removed():
+    """K4 B (Rule 2 fix (b)): label_anchor_frac removed from guide_c and anchor_c (the r95 layout): the leaders run along
+    the span extension lines."""
+    def sm(sp):
+        for f in ("guide_c", "anchor_c"):
+            _row(sp, f).pop("label_anchor_frac", None)
+    return _live_s3(sm)
+
+
+def k4_leader_on_grid():
+    """K4 B (F1): the load_comp_c leader planted on z 400 (anchor on the arrow shaft at 400, text at 400)."""
+    c = _live_s3()
+    ax = next(a for a in sc.real_figure(list(c.figs.values())[0]).axes if getattr(a, "sketch_axes", None) == MAIN)
+    t = next(x for x in ax.texts if x.get_gid() == "label:load_comp_c")
+    t.xy = (t.xy[0], 400.0)
+    t.xyann = (t.xyann[0], 400.0)
+    return c
+
+
+def k4_start_label_wrong():
+    """K4 B (F2): the start label printing 1020.84 against check_stack nut_z at start 1030.84 z_S."""
+    c = _live_s3()
+    ax = next(a for a in sc.real_figure(list(c.figs.values())[0]).axes if getattr(a, "sketch_axes", None) == MAIN)
+    t = next(x for x in ax.texts if x.get_gid() == "label:nut_station_start")
+    t.set_text(t.get_text().replace("1030.84", "1020.84"))
+    return c

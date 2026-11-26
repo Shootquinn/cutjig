@@ -177,6 +177,107 @@ PNG: `docs/sketches/wip/s3_jackscrew_section_r5.png`.
 
 Rule awaiting signature: K4 cases label value check. Premise: a label that prints several load-case values reads each from the load_cases entry at run time, so a change of W reaches the label. Every case prints `name value` in the label's fmt. Z K4-Z7, B K4-B25. Raiser The Designer (M1 S3 r4 F1).
 
+## r6
+
+Sources:
+- `docs/sketches/wip/s3_visual_gate_r5.md`: fresh M1 S3 r5 FAIL F1, F2; r5 Rule 1 and Rule 2 REFUSED with fixes.
+- The orchestrator ruling that r6 is the last drawn revision before M2.
+
+Scratch: `D:\Unleashed Robotics\_scratch\cutjig\p9r6\`.
+- `pre\`: the r5 harness.
+- `pre_rf\`: the r5 code with the r6 fixtures, spec and script.
+- `leaders.py`: the per-leader report.
+
+TMP and TEMP at `_scratch\cutjig\tmp`; nothing on C:.
+
+### Corrections to the brief (r6)
+
+1. **The collinearity rule fires on S1 r8.**
+   - The height_target leader runs 32.2 mm along the z 2000 gridline in all four poses, and its own target line lies on that gridline (MEASURED, live S1, K4-Z4).
+   - Enforcing it would open S1 r9 under a rule raised for S3, and the r6 ruling closes only the listed items. The rule is scoped to section views at r6.
+   - S1 height_target goes to Sean at M2 as an item. S1 r8 stays 19/19 and S2 r9 18/18 on the r6 harness.
+2. **The frac anchor reads the row's stack z range, not the ink's.**
+   - The arrowhead geometry of load_comp_c changes in data units once the figure is laid out. An ink-range fraction therefore moved between placement (411.30) and check (411.79) (MEASURED).
+   - `frac_anchor` now takes its height from the row's z_min to z_max whenever the stack has them, in the placer and in K4 alike.
+   - The anchor_c and guide_c anchors are unchanged at 353.50 and 1219.90.
+
+### Fixes
+
+| Item | Fix | Controls |
+|---|---|---|
+| 1 Load values (Rule 1 fix) | `computed_per_screw` (checks_s3.loads; stall_up and stall_down = F_stall at the governing mu). The cases label (load_comp_c) and every value_from label on `load_cases.<case>.per_screw` (load_tension_c) print the computed load. `load_literal_issues`: every spec per_screw literal agrees with loads() within 0.005 N, or K4 fails | K4-B26 (ring.mass + 4 kg, literals unchanged: 4 issues, static, capture, retract, cut); K4-Z7, B25, Z6, B21 unchanged |
+| 2 label_anchor_frac (Rule 2 fix) | (a) `anchor_record_issues`: a row declaring frac ends its leader at the frac anchor (placer record source and point within TOL_Z). (c) lint: frac in [0, 1]. (b) `collinear_issues`: a leader within 2 deg and within 1.0 mm of a reference line row (with its :ext lines) or a major or minor gridline, over more than 5 mm, fails (section views, Corrections 1) | K4-B27 (anchor_c 0.88 fallback), B28 (guide_c 1.5), B29 (frac removed, the r95 layout: guide_c along span_lt:ext 31.0 mm, span_lt along z 1200 48.5 mm), B30 (load_comp_c on z 400) |
+| 3 F1 | load_comp_c `label_anchor_frac` 0.5: the leader ends on the arrow shaft at z_S 410.84 (`frac_anchor` takes the column-side crossing of the ink at that height) | K4-Z8 live; leader report below |
+| 4 F2 | Labels "nut at start z_S 1030.84" and "nut at park (= load) z_S 1155.84": label `stack_z: z_min`, `pose_of`, `stack_name: nut_z`. K4 reads the printed z_S against check_stack nut_z at that pose (plus datum), within 0.05 | K4-B31 (start label prints 1020.84) |
+
+**Leader report** (`p9r6\leaders.py`, MEASURED):
+- z gridlines every 50 mm, 28 in view.
+- Distance is the least vertical distance from the leader's run inside the Axes to a z gridline.
+
+| Leader | Anchor (u, z_S) | Slope deg | Distance mm |
+|---|---|---|---|
+| load_comp_c | (-185.00, 410.84) | 180.00 | **10.84** |
+| wingnut | (115.00, 185.09) | 180.00 | 14.91 |
+| core_750 | (50.00, 502.50) | 180.00 | 2.50 |
+| drill_head | (88.90, 298.02) | 180.00 | 1.98 |
+| drill_tube | (76.20, 698.02) | 180.00 | 1.98 |
+| drill_top_block | (76.20, 1119.84) | 180.00 | 19.84 |
+| keepout | (86.20, 647.42) | 180.00 | 2.58 |
+| ring | (210.00, 380.84) | 178.60 | 19.16 |
+| nut_c | (-139.00, 387.84) | 180.00 | 12.16 |
+| gear | (126.32, 483.96) | 180.00 | 16.04 |
+| screw_c | (-154.00, 775.00) | 180.00 | 25.00 |
+| anchor_c | (-139.00, 353.50) | 180.00 | 3.50 |
+| guide_c | (-139.00, 1219.90) | 180.00 | 19.90 |
+| frame_upper_c | (-244.00, 672.50) | 180.00 | 22.50 |
+| hold_callout | (-124.00, 770.00) | 179.33 | 14.38 |
+| nut_station_start | (-135.00, 1030.84) | 180.00 | 19.16 |
+| nut_station_park | (-135.00, 1155.84) | 180.00 | 5.84 |
+| span_lt | (-109.15, 1206.80) | 180.00 | 6.80 |
+| load_cut | (0.85, 348.01) | 179.17 | 1.99 |
+| load_tension_c | (-159.15, 343.20) | 178.78 | 6.80 |
+
+Every leader is at least 1.0 mm from a gridline.
+
+The park label does not stack onto its neighbours (MEASURED):
+- its text sits at z_S 1155.84 in the right column, 109.8 px below the span label at 1206.80;
+- the span label is 17.0 px below the top-guide label at 1219.90;
+- K4 (i2) is clean.
+
+### Red-first (r5 code, `p9r6\pre_rf`, MEASURED)
+
+| Control | Observed on the r5 code | Red |
+|---|---|---|
+| K4-B26 | clean (literals not compared) | yes |
+| K4-B27 | clean | yes |
+| K4-B28 | clean | yes |
+| K4-B29 | clean | yes |
+| K4-B30 | fires 1 with "0.85 off the drawn part", not the collinear reason | yes (reason) |
+| K4-B31 | clean | yes |
+
+### Check results (MEASURED)
+
+- **S3 r6** (`docs/sketches/wip/s3_checks_r6.json`): **15 of 16 pass**.
+  - S3-3 fails on the stale S1 r7 / S2 r5 records only.
+  - Dry run with S1 r8 and S2 r9 accepted: **16/16**.
+- S1 r8 19/19 and S2 r9 18/18, re-run on the r6 harness.
+- `--baseline s3`: 16/16.
+- `--stale`: 2 records, 5 differences (the adopted keys).
+- **`--controls --jobs 12`: 413/413 match (Z 98, B 312, smoke 3), 211.1 s.** Added: K4-Z8, B26 to B31.
+
+PNG: `docs/sketches/wip/s3_jackscrew_section_r6.png`.
+
+### Rules for signature (raiser The Designer, M1 S3 r5)
+
+| Rule | Premise | Z / B |
+|---|---|---|
+| Rule 1 re-submitted: computed load labels and load literal agreement | a label printing a load reads loads() from the keys; a spec per_screw literal that differs from loads() by more than 0.005 N fails | K4-Z7, Z8 / B25, B26 |
+| Rule 2 re-submitted: label_anchor_frac with the anchor record (a) and the frac lint (c) | a declared frac anchor is the one the leader uses | K4-Z8 / B27, B28 |
+| Leader collinearity (b), section views | a leader can be followed by eye only where it does not merge with a reference line or gridline | K4-Z8 / B29, B30 |
+| Nut station labels, stack_z | a printed station height equals check_stack nut_z at its pose | K4-Z8 / B31 |
+
+Item for Sean at M2 (not a revision): the S1 r8 height_target leader runs along the z 2000 gridline (Corrections 1).
+
 ## Gameplan lines to change
 
 Merged from `step1.3_engineer_revision_r2.md` (E2), `step1.3_designer_r2_values.md` (D), `step1.3_loftsman_recheck_r2.md` (L) and `step1.3_topologist_recheck_r2.md` (T), plus r3. Apply the E2 items first. Each later Old reads text an earlier New writes; where an item supersedes an earlier one, the earlier item is marked.
@@ -262,7 +363,7 @@ New: (401 controls: Z 95, B 303, smoke 3, all match; 191.8 s at --jobs 12). Step
 ```
 New: | 1.3 | 2026-11-26 | (h) P9 r4 (step1.3_engineer_revision_r3.md section r4): M1 S3 r3 F1 (span label 'S3-2 span, K 0.7; L_t 870') and F2 (hold mark from the inboard screw edge to u -124) fixed; hatch_alt '||'; span_lt arrowhead terminators with the K8 reference-line relief and its premise (K8-Z17, B88, B89); S3 r4 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); controls 404/404 in 196.5 s; wip/s3_jackscrew_section_r4.png for the Designer delta read |
 ```
-17. r5, l.138 (K4 row), after E2 item 1:
+17. r5, l.138 (K4 row), after E2 item 1. **HELD** (M1 S3 r5 Rule 1 refused): apply the item 20 text instead once the r6 rules are signed.
 ```
 Old: K4-B7, B8, B18 re-counted 4, 7, 3 |
 New: K4-B7, B8, B18 re-counted 4, 7, 3; (j) a cases label (load_comp_c) prints every load case as `name value` from load_cases per_screw at run time (K4-Z7, B25 static 79; M1 S3 r4 F1, 1.3 (h) r5) |
@@ -275,4 +376,18 @@ New: (404 controls: Z 96, B 305, smoke 3, all match; 196.5 s at --jobs 12). Step
 19. r5, Progress Log, insert after the item 16 r4 row:
 ```
 New: | 1.3 | 2026-11-26 | (h) P9 r5 (step1.3_engineer_revision_r3.md section r5): M1 S3 r4 F1 fixed (load_comp_c label from load_cases per_screw: static 86, capture 120, retract 186, stall up 343 N; K4 cases rule, K4-Z7, B25 red on r4); N5 hold label lambda 5.20 from s3_checks.S3-2.stall.lead_angle, the expression RPT uses; DR4-1 leaders on the block faces at z_S 1219.9 and 353.5; N3 block over motor in the inset (inside the housing both stay hidden by rule); S3 r5 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); controls 406/406 in 197.1 s; wip/s3_jackscrew_section_r5.png |
+```
+20. r6, l.138 (K4 row), after E2 item 1. It replaces held item 17 once the r6 rules are signed.
+```
+Old: K4-B7, B8, B18 re-counted 4, 7, 3 |
+New: K4-B7, B8, B18 re-counted 4, 7, 3; (j) a label printing a load reads checks_s3.loads() from the keys (load_comp_c cases, load_tension_c), and every load_cases per_screw literal agrees with loads() within 0.005 N (K4-Z7, Z8, B25 static 79, B26 ring.mass + 4 kg); (k) a row declaring label_anchor_frac ends its leader at that anchor, frac in [0, 1] (K4-B27, B28); (l) section views: no leader runs within 2 deg and 1.0 mm of a reference line or gridline over more than 5 mm (K4-B29, B30); (m) a stack_z label prints check_stack nut_z at its pose within 0.05 (K4-B31) (M1 S3 r4 F1, r5 Rule 1, Rule 2, F1, F2; 1.3 (h) r5, r6) |
+```
+21. r6, l.147 (K table pointer), after item 18.
+```
+Old: (406 controls: Z 97, B 306, smoke 3, all match; 197.1 s at --jobs 12).
+New: (406 controls: Z 97, B 306, smoke 3, all match; 197.1 s at --jobs 12). Step 1.3 (h) r6 added K4-Z8, B26 to B31 (413 controls: Z 98, B 312, smoke 3, all match; 211.1 s at --jobs 12).
+```
+22. r6, Progress Log: insert after the item 19 r5 row.
+```
+New: | 1.3 | 2026-11-26 | (h) P9 r6, last drawn revision before M2 (step1.3_engineer_revision_r3.md section r6): labels print loads() and the spec per_screw literals are held to it (K4-B26); frac anchor record and lint (B27, B28); leader collinearity in section views (B29, B30); load_comp_c leader on the arrow shaft at z_S 410.84 (10.84 from the nearest gridline); nut station labels z_S 1030.84 and 1155.84 from check_stack nut_z (B31); S3 r6 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); S1 r8 19/19, S2 r9 18/18; controls 413/413 in 211.1 s; S1 height_target leader along the z 2000 gridline to Sean at M2 |
 ```
