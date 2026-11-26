@@ -278,7 +278,9 @@ def _inset_style(fid):
         return {"fill": True, "facecolor": "0.85", "edgecolor": "k", "hatch": "xx", "linewidth": 1, "zorder": 2}
     if pre == "home_switch":                             # F5 (M1 S3 r1): drawn over the A-A line (zorder above it)
         return {"edgecolor": DARK, "linewidth": 1, "zorder": sc.LABEL_FONTSIZE + 2}
-    if pre in ("anchor", "liftmotor"):
+    if pre == "anchor":                                  # 1.3 (h) r5 (M1 S3 r4 N3): block outline drawn over the coincident NEMA 17
+        return {"edgecolor": DARK, "linewidth": 1, "zorder": 2 * 2}
+    if pre == "liftmotor":
         return {"edgecolor": DARK, "linewidth": 1, "zorder": 2 + 1}
     if fid == "keepout":
         return {"edgecolor": "red", "linestyle": HIDDEN, "linewidth": 1, "zorder": 2 * 2}

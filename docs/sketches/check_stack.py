@@ -214,7 +214,8 @@ def report_value(x):
     return x
 
 
-FUNCS = {"min": pmin, "max": pmax, "abs": pabs, "sind": sind, "cosd": cosd, "sqrt": math.sqrt}
+FUNCS = {"min": pmin, "max": pmax, "abs": pabs, "sind": sind, "cosd": cosd, "sqrt": math.sqrt,
+         "atand": lambda v: math.degrees(math.atan(v))}   # 1.3 (h) r5: lead angle (N5)
 
 
 # ---------------------------------------------------------------- frames
@@ -408,6 +409,8 @@ def eval_expr(expr, P, names):
         if isinstance(n, ast.Name):
             if n.id in names:
                 return names[n.id]
+            if n.id == "pi":   # 1.3 (h) r5: the constant pi (lead angle, N5)
+                return math.pi
             raise KeyError(f"unknown stack name {n.id!r} in {expr!r}")
         if isinstance(n, ast.Attribute):
             return P.get(_dotted(n))

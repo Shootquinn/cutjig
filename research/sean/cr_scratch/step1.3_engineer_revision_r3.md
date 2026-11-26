@@ -139,6 +139,44 @@ PNG: `docs/sketches/wip/s3_jackscrew_section_r4.png` (4157 x 3876 px).
 
 Rule awaiting signature: K8 reference-line terminator relief with its premise (`terminator_issues`; Z K8-Z17, B K8-B88, B89), raiser The Designer (D-r3-1).
 
+## r5
+
+Sources: `docs/sketches/wip/s3_visual_gate_r4.md` (fresh M1 S3 r4 FAIL F1, NOTEs N1 to N10) and the Designer's r4 delta-read notes DR4-1, DR4-2 in `wip/s3_visual_gate_r3.md`. Scratch: `D:\Unleashed Robotics\_scratch\cutjig\p9r5\` (`pre\` the r4 harness, `pre_rf\` the r4 code with the r5 fixtures, spec and overlay). TMP and TEMP at `_scratch\cutjig\tmp`; nothing on C:.
+
+### Corrections to the brief (r5)
+
+1. **N3 cannot be drawn solid under the plan renderer rule.** The block's shared outline with the NEMA 17 lies inside the nut-housing circle (r 25 > the block half-width 21) seen from +Z. render_plan therefore splits anchor_c: it is solid outside the housing (the four corners) and dashed inside, as a hidden part under a higher row (MEASURED, inset artists: anchor_c Polygon solid with clip, hidden copy dashed; liftmotor_c dashed). The anchor square is now drawn above the NEMA 17 (inset zorder 4 against 3), so the block corners lie over the motor's dashes. Inside the housing both outlines stay dashed by rule. Drawing them solid would need a cover exception, not a draw-order change.
+2. **The phi_n range leaves the hold label.** hold.device carried the literals "lambda 5.19 deg < phi_n 8.83 to 11.70 deg". The label now prints the lead angle from the one spec expression `s3_checks.S3-2.stall.lead_angle`, `atand(jackscrew.lead / (pi * jackscrew.mean_diameter))`, which `checks_s3.loads` also uses. The phi_n range is printed by RPT backdrive. Both now read 5.20 (MEASURED: label "lambda 5.20 deg", RPT "lambda 5.20 deg"). `check_stack.eval_expr` gains `atand` and the constant `pi`.
+
+### Fixes
+
+| Item | Fix | Controls |
+|---|---|---|
+| M1 S3 r4 F1 (rule (h)) | load_comp_c label built at run time from load_cases per_screw: spec label `cases` [[static, static], [capture_lift, capture], [retract_bind, 'retract (F_bind {liftload.f_bind})'], [stall_up, stall up]], fmt .0f, suffix N. It prints "compression per screw: static 86, capture 120, retract (F_bind 300) 186, stall up 343 N". The text entries use the first number (governing mu). K4 cases branch: every case prints `name value` as load_cases per_screw gives it. Shape texts of load_comp_c (86 / 120 / 186 / 343) and load_tension_c ('T per screw, cut 247.5') corrected | K4-Z7, K4-B25 ("static 79" fires); load_tension_c stays on K4-Z6 / B21 (value_from 247.5) |
+| N5 | hold label `expr_ref: s3_checks.S3-2.stall.lead_angle`, fmt .2f: "power-off hold: self-locking Tr12x3 lead, lambda 5.20 deg < phi_n (self-locking, RPT backdrive); options brake on each NEMA 17, park pin with visible state; Step 2 decides". hold.device value text without the numbers. `checks_s3.loads` takes lambda from the same expression | K4 live (value from expr_ref) |
+| DR4-1 | placer anchor candidate `label_anchor_frac` on the column-side face. guide_c 0.83: anchor (-139, 1219.9), 9.9 above the extension line at 1210. anchor_c 0.95: anchor (-139, 353.5) on the cover, 13.5 above the extension line at 340. Dry runs (MEASURED): anchor_c 0.88 passed alone but failed the stacked-layout leader separation (placer fell back to an ink anchor at 338); 0.2 and 0.12 placed at 331 and 328.6 (below the line); 0.95 chosen (above the joint, per DR4-1). K4 leader rules and K9 pass | K4, K9 live |
+| N3 | inset anchor square zorder 4 over the NEMA 17 at 3 (Corrections 1) | K8 inset cover pass |
+| N1, N2, N4, N6 to N9; DR4-2 | notes, not applied | none |
+
+### Red-first (r4 code, `p9r5\pre_rf`, MEASURED)
+
+| Control | Observed on the r4 code | Red |
+|---|---|---|
+| K4-B25 "static 79" | clean: K4 skipped the label (value_from names a block, no single value) | yes |
+| K4-Z7 | clean | Z |
+
+### Check results (MEASURED)
+
+- **S3 r5** (`docs/sketches/wip/s3_checks_r5.json`): **15 of 16 pass**. S3-3 fails only on the stale S1 r7 / S2 r5 records. Dry run with S1 r8 and S2 r9 accepted: **16/16**.
+- RPT backdrive: "lambda 5.20 deg; mu 0.15: phi_n 8.83 deg ... mu 0.2: phi_n 11.70 deg".
+- `--baseline s3`: 16/16 matched.
+- `--stale`: 2 records, 5 differences (the adopted keys, unchanged).
+- **`--controls --jobs 12`: 406/406 match (Z 97, B 306, smoke 3), 197.1 s.** Added: K4-Z7, K4-B25.
+
+PNG: `docs/sketches/wip/s3_jackscrew_section_r5.png`.
+
+Rule awaiting signature: K4 cases label value check. Premise: a label that prints several load-case values reads each from the load_cases entry at run time, so a change of W reaches the label. Every case prints `name value` in the label's fmt. Z K4-Z7, B K4-B25. Raiser The Designer (M1 S3 r4 F1).
+
 ## Gameplan lines to change
 
 Merged from `step1.3_engineer_revision_r2.md` (E2), `step1.3_designer_r2_values.md` (D), `step1.3_loftsman_recheck_r2.md` (L) and `step1.3_topologist_recheck_r2.md` (T), plus r3. Apply the E2 items first. Each later Old reads text an earlier New writes; where an item supersedes an earlier one, the earlier item is marked.
@@ -223,4 +261,18 @@ New: (401 controls: Z 95, B 303, smoke 3, all match; 191.8 s at --jobs 12). Step
 16. r4, Progress Log, insert after the item 11 r3 row:
 ```
 New: | 1.3 | 2026-11-26 | (h) P9 r4 (step1.3_engineer_revision_r3.md section r4): M1 S3 r3 F1 (span label 'S3-2 span, K 0.7; L_t 870') and F2 (hold mark from the inboard screw edge to u -124) fixed; hatch_alt '||'; span_lt arrowhead terminators with the K8 reference-line relief and its premise (K8-Z17, B88, B89); S3 r4 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); controls 404/404 in 196.5 s; wip/s3_jackscrew_section_r4.png for the Designer delta read |
+```
+17. r5, l.138 (K4 row), after E2 item 1:
+```
+Old: K4-B7, B8, B18 re-counted 4, 7, 3 |
+New: K4-B7, B8, B18 re-counted 4, 7, 3; (j) a cases label (load_comp_c) prints every load case as `name value` from load_cases per_screw at run time (K4-Z7, B25 static 79; M1 S3 r4 F1, 1.3 (h) r5) |
+```
+18. r5, l.147 (K table pointer), after item 15:
+```
+Old: (404 controls: Z 96, B 305, smoke 3, all match; 196.5 s at --jobs 12).
+New: (404 controls: Z 96, B 305, smoke 3, all match; 196.5 s at --jobs 12). Step 1.3 (h) r5 added K4-Z7, B25 (406 controls: Z 97, B 306, smoke 3, all match; 197.1 s at --jobs 12).
+```
+19. r5, Progress Log, insert after the item 16 r4 row:
+```
+New: | 1.3 | 2026-11-26 | (h) P9 r5 (step1.3_engineer_revision_r3.md section r5): M1 S3 r4 F1 fixed (load_comp_c label from load_cases per_screw: static 86, capture 120, retract 186, stall up 343 N; K4 cases rule, K4-Z7, B25 red on r4); N5 hold label lambda 5.20 from s3_checks.S3-2.stall.lead_angle, the expression RPT uses; DR4-1 leaders on the block faces at z_S 1219.9 and 353.5; N3 block over motor in the inset (inside the housing both stay hidden by rule); S3 r5 15/16 (S3-3 stale records only; 16/16 with S1 r8 / S2 r9 accepted); controls 406/406 in 197.1 s; wip/s3_jackscrew_section_r5.png |
 ```

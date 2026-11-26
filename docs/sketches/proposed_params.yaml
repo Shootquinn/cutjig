@@ -180,7 +180,7 @@ liftmotor:
   mass: {value: 0.35, unit: kg, source: "each; fixed part (not in W); no source; Designer 1.3 (a) section 8", status: ASSUMED}
 
 hold:
-  device: {value: "self-locking Tr12x3 lead (drawn; lambda 5.19 deg < phi_n 8.83 to 11.70 deg); options brake on each NEMA 17, park pin with visible state; Step 2 decides", unit: "", source: "Designer 1.3 (a) section 4 option (a); Sean STOP S3-A, Design Notes 31 (self-locking lead as the power-off hold; pick at M2); gameplan detail 2 power-off hold row", status: ASSUMED}
+  device: {value: "self-locking Tr12x3 lead (drawn; lead angle below the friction angle: s3_spec s3_checks S3-2 stall.lead_angle, RPT backdrive); options brake on each NEMA 17, park pin with visible state; Step 2 decides", unit: "", source: "Designer 1.3 (a) section 4 option (a); Sean STOP S3-A, Design Notes 31 (self-locking lead as the power-off hold; pick at M2); gameplan detail 2 power-off hold row", status: ASSUMED}
 
 liftsync:
   method: {value: "one controller, three drivers, home switch per screw at park; no belt", unit: "", source: "Designer 1.3 (a) section 4 (a belt enclosing the axis crosses S2-5a, 1.3 open O7); Sean STOP S3-A, Design Notes 31 (drawn; pick at M2)", status: ASSUMED}

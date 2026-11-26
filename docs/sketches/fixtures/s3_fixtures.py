@@ -1499,3 +1499,17 @@ def span_arrow_off():
         u, z0 = ln.get_xdata()[0], min(ln.get_ydata())
         _arrow(ax, "span_lt", (u + 10, z0 + 7), (u + 10, z0))
     return s3_ctx(mutate=m)
+
+
+# ======================================================================== 1.3 (h) r5 (step1.3_engineer_revision_r3.md section r5)
+# M1 S3 r4 F1: a cases label prints every load case value from load_cases per_screw (K4 cases).
+
+def k4_cases_z():
+    """K4 Z (M1 S3 r4 F1): load_comp_c prints the load_cases per_screw values (static 86, capture 120, retract 186,
+    stall up 343 at W 26.25 kg)."""
+    return _k4_one("load_comp_c", lambda sp, P: sc.label_text(_row(sp, "load_comp_c"), P, spec=sp))
+
+
+def k4_cases_b():
+    """K4 B (M1 S3 r4 F1): load_comp_c prints the W 24.25 kg static value 79 (the r4 label)."""
+    return _k4_one("load_comp_c", lambda sp, P: sc.label_text(_row(sp, "load_comp_c"), P, spec=sp).replace("static 86", "static 79"))

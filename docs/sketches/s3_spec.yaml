@@ -31,7 +31,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md; 1.3 (h) r4 edits (span_lt label text M1 S3 r3 F1, hatch_alt '||'); 1.3 (h) r3 edits (Designer r2 values picks 2, 3 (offset per orchestrator ruling u -110), 4 ('--' per orchestrator ruling), 5, 7, 8, 9; Loftsman LF1.3-10; Topologist R2-5), step1.3_engineer_revision_r3.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md; 1.3 (h) r5 edits (load_comp_c cases label M1 S3 r4 F1, hold label lead angle from stall.lead_angle N5, label anchors DR4-1); 1.3 (h) r4 edits (span_lt label text M1 S3 r3 F1, hatch_alt '||'); 1.3 (h) r3 edits (Designer r2 values picks 2, 3 (offset per orchestrator ruling u -110), 4 ('--' per orchestrator ruling), 5, 7, 8, 9; Loftsman LF1.3-10; Topologist R2-5), step1.3_engineer_revision_r3.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -149,7 +149,7 @@ s3_checks:
     sf: jackscrew.buckling_sf
     cases: [static, capture_lift, retract_bind, stall_up]
     core_mass: liftload.core_mass_capture   # 10.4 kg (Designer 1.3 (b) section 7 item 9)
-    stall: {torque: liftmotor.holding_torque, lead: jackscrew.lead, starts: jackscrew.starts, mean_diameter: jackscrew.mean_diameter, mu: jackscrew.thread_mu, half_angle: jackscrew.thread_half_angle, governing: "mu low end (largest F_stall)"}
+    stall: {lead_angle: 'atand(jackscrew.lead / (pi * jackscrew.mean_diameter))', torque: liftmotor.holding_torque, lead: jackscrew.lead, starts: jackscrew.starts, mean_diameter: jackscrew.mean_diameter, mu: jackscrew.thread_mu, half_angle: jackscrew.thread_half_angle, governing: "mu low end (largest F_stall)"}
     rule: "P_cr = pi^2 E I / (K L)^2, I = pi d_r^4 / 64; pass when P_cr / F >= sf for every case at the per-screw force; retract capped at F_stall per screw"
     expected: {P_cr_N: 1363.8, least_margin: "3.97 (stall_up, mu 0.15)", margins: {static: 15.89, capture_lift: 11.38, retract_bind: 7.34, stall_up: 3.97}}
     source: "[DN23]; Design Notes 31 (SF 3, K 0.7 credit, F_bind 300 N); inputs ASSUMED"
@@ -1051,6 +1051,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_cover_bore / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_block_width / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.anchor_z + jackscrew.anchor_allowance]
   hatch: aluminium
   label: {text: 'fixed anchor (2 x angular contact, back-to-back), block', key: jackscrew.anchor_block_width, fmt: .0f}
+  label_anchor_frac: 0.95   # 1.3 (h) r5 (Designer DR4-1): leader on the cover face at z_S 353.5, 13.5 above the span extension line at 340 (0.88 failed the stacked-layout leader separation, dry run)
   hatch_split: {at: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, above: 'section.hatch_alt (aluminium ||, cover)', joint_line: true, source: 'Designer 1.3 (b) re-sign FIX C; the cover pieces stay in anchor_c.section_u so the row extent matches the shared z_rule (X1, K6)'}
 - id: anchor_bearing_c
   name: anchor bearings
@@ -1132,6 +1133,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.guide_bearing_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_flange_od / 2', jackscrew.top_guide_z - jackscrew.guide_allowance, jackscrew.top_guide_z]
   hatch: aluminium
   label: {text: top guide (radial only), key: jackscrew.guide_bearing_z, fmt: .0f, z_S: true}
+  label_anchor_frac: 0.83   # 1.3 (h) r5 (Designer DR4-1): leader on the block face at about z_S 1220, off the span extension line at 1210
   notes: ['place and section_u read jackscrew.nut_flange_od / 2 for the block radius (value 21 = jackscrew.guide_block_od / 2): kept equal to s2_spec.yaml guide_c for X1; the rename to guide_block_od lands in all three specs at P6 (open item 7)']
 - id: guide_bearing_c
   name: top-guide bearing
@@ -1650,7 +1652,7 @@ features:
   projection: line
   keys: [hold.device, jackscrew.lead, jackscrew.mean_diameter, jackscrew.thread_mu, jackscrew.thread_half_angle]
   z_rule: null
-  label: {text: 'power-off hold:', key: hold.device, fmt: s}
+  label: {text: 'power-off hold: self-locking Tr12x3 lead, lambda', key: hold.device, fmt: .2f, expr_ref: s3_checks.S3-2.stall.lead_angle, suffix: 'deg < phi_n (self-locking, RPT backdrive); options brake on each NEMA 17, park pin with visible state; Step 2 decides'}
   neighbours: []
   sense: []
   chain: []
@@ -1724,7 +1726,7 @@ features:
   axes: [section]
 - id: load_tension_c
   name: screw tension, cut case
-  shape: opposed T arrows on screw c between the anchor bearing line and the nut, 'T 254 N per screw (cut)' (Designer 1.3 (a) section 7)
+  shape: opposed T arrows on screw c between the anchor bearing line and the nut, 'T per screw, cut 247.5' (load_cases cut per_screw at W 26.25 kg; Designer 1.3 (a) section 7)
   kind: arrow
   axis: Z
   projection: line
@@ -1739,13 +1741,13 @@ features:
   axes: [section]
 - id: load_comp_c
   name: compression cases
-  shape: 'down arrows on housing c labelled ''compression per screw: static 79, capture 113, retract (F_bind 300) 179, stall up 343 N'' (Designer 1.3 (b) FIX 5)'
+  shape: 'down arrows on housing c labelled ''compression per screw: static 86, capture 120, retract (F_bind 300) 186, stall up 343 N'', each value read from load_cases per_screw at run time (Designer 1.3 (b) FIX 5; M1 S3 r4 F1)'
   kind: arrow
   axis: Z
   projection: line
   keys: [liftload.f_bind, liftmotor.holding_torque, jackscrew.lead, jackscrew.thread_mu]
   z_rule: {z_min: nut_z + ring.nut_housing_height / 2, z_max: nut_z + ring.nut_housing_height / 2 + ring.nut_housing_height}
-  label: {text: 'compression per screw: static 79, capture 113, retract (F_bind 300) 179, stall up 343 N', key: liftload.f_bind, fmt: s, value_from: s3_checks.load_cases}
+  label: {text: 'compression per screw:', key: liftload.f_bind, fmt: .0f, value_from: s3_checks.load_cases, cases: [[static, static], [capture_lift, capture], [retract_bind, 'retract (F_bind {liftload.f_bind})'], [stall_up, stall up]], suffix: N}
   neighbours: []
   sense:
   - {pred: points, dir: -Z}

@@ -87,7 +87,7 @@ def loads(P, spec):
     st = c2["stall"]
     lead, starts = P.get(st["lead"]), P.get(st["starts"])
     d2 = P.get(st["mean_diameter"])
-    lam = math.atan(lead / (math.pi * d2))
+    lam = math.radians(check_stack.eval_expr(st["lead_angle"], P, {})) if st.get("lead_angle") else math.atan(lead / (math.pi * d2))   # 1.3 (h) r5 (N5): the one expression the hold label prints
     half = math.radians(P.get(st["half_angle"]))
     T = P.get(st["torque"])
     mus = list(P.get(st["mu"]))

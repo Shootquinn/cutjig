@@ -209,6 +209,9 @@ def label_value(lab, P, spec=None):
     carries it). expr: the expression's value in fmt; value_from: the spec value at that path (a number, str());
     fmt "s": the key's value when it is a string or number; else the key's value in fmt."""
     fmt = lab.get("fmt", ".1f")
+    if lab.get("expr_ref"):   # 1.3 (h) r5 (M1 S3 r4 N5): the expression is a spec value read by the label and by RPT
+        import check_stack as _cs
+        return format(_cs.eval_expr(_spec_path(spec, lab["expr_ref"]), P, {}), fmt if fmt != "s" else ".2f")
     if lab.get("expr"):
         import check_stack as _cs
         return format(_cs.eval_expr(lab["expr"], P, {}), fmt if fmt != "s" else ".2f")
@@ -219,6 +222,26 @@ def label_value(lab, P, spec=None):
     if fmt == "s":
         return str(v) if isinstance(v, (str, int, float)) else None
     return format(v, fmt)
+
+
+def _first_number(v):
+    if isinstance(v, (int, float)):
+        return float(v)
+    m = NUMBER.search(str(v))
+    return float(m.group(0)) if m else None
+
+
+def label_cases(lab, P, spec):
+    """1.3 (h) r5 (M1 S3 r4 F1): [(case id, printed name, printed value)] of a cases label. label.value_from names the
+    load_cases block; label.cases lists [case id, name] pairs (a name may carry {dotted.key}, formatted from P); the value
+    is the case's per_screw (its first number when the entry is text, the governing mu) in label.fmt."""
+    fmt = lab.get("fmt", ".0f")
+    out = []
+    for cid, name in lab["cases"]:
+        nm = re.sub(r"\{([\w.\[\]]+)\}", lambda m: format(P.get(m.group(1)), "g"), str(name))
+        v = _first_number(_spec_path(spec, f"{lab['value_from']}.{cid}.per_screw"))
+        out.append((cid, nm, None if v is None else format(v, fmt)))
+    return out
 
 
 def label_text(row, P, rec=None, spec=None):
@@ -232,6 +255,8 @@ def label_text(row, P, rec=None, spec=None):
     v = P.get(lab["key"])
     if lab.get("z_S") and isinstance(v, (int, float)) and fmt != "s":
         txt = f"{lab['text']} z_S {format(v + P.get('jig.datum_a_above_floor'), fmt)} ({lab['key']} {format(v, fmt)} z_A)"
+    elif lab.get("cases"):   # 1.3 (h) r5 (M1 S3 r4 F1): one value per load case, read from load_cases at run time
+        txt = f"{lab['text']} " + ", ".join(f"{name} {v}" for _, name, v in label_cases(lab, P, spec))
     else:
         lv = label_value(lab, P, spec)
         txt = f"{lab['text']}" + (f" {lv}" if lv is not None else "")
@@ -840,6 +865,13 @@ def anchor_candidates(lc, row, column):
         hit = _ray_hit(ink, float(row["label_theta"]))
         if hit is not None:
             out.append(("label_theta", hit))
+    if row.get("label_anchor_frac") is not None:   # 1.3 (h) r5 (Designer DR4-1): on the column-side face at a height fraction
+        pts = [p for poly, _ in ink for p in poly]
+        xm = max(p[0] for p in pts) if column == "right" else min(p[0] for p in pts)
+        y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
+        q = (xm, y0 + float(row["label_anchor_frac"]) * (y1 - y0))
+        if ink_distance(q, ink) <= TOL_Z:
+            out.append(("label_anchor_frac", q))
     first = _column_default(ink, column)
     out.append(("default", first))
     samples = []
@@ -1962,6 +1994,11 @@ def k4(ctx):
                 continue
             if lab["text"] not in txt:
                 issues.append(f"{pose}/{row['id']}: label {txt!r} lacks text {lab['text']!r}")
+                continue
+            if lab.get("cases"):   # 1.3 (h) r5 (M1 S3 r4 F1): every case value as load_cases per_screw prints it
+                for cid, nm, v in label_cases(lab, ctx.P, ctx.spec):
+                    if v is None or f"{nm} {v}" not in txt:
+                        issues.append(f"{pose}/{row['id']}: label {txt!r} lacks case {cid} {nm!r} {v} (load_cases per_screw; K4 cases)")
                 continue
             if want is None:
                 continue   # 1.3 P4: no single value (a list key or a spec block); the text carries it
