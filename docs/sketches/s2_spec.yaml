@@ -1,5 +1,5 @@
 # S2 spec, plan XY (contributor gameplan (sean) detail 1.2, lines 243-261).
-status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) awaiting the Designer re-sign (step1.2_engineer_revision_r3.md)"
+status: "signed (Designer, Loftsman 1.2 (b), with re-check sections; step1.2_designer_spec_signoff.md, step1.2_loftsman_spec_signoff.md); 1.2 (c) gear section field added for the plan annulus (signed at (c) by the Loftsman, Designer, Topologist and Software Engineer after P5f); 1.2 (h) r2 edits (gear ticks and shape text, label_theta, reference rows, F6 label text, pinion|gear_hub G 3, S2-5b over moves: true) re-checked by the Loftsman and the Topologist; r3 edits (tick toe pinion.r_toe 96.54 per Design Notes 29, plan_style: stand_in on the ties) signed by the Designer (sign-off r3); r4 edits (outline_matches on base_plate, stand_in_owner on the ties, label_side left on descent_stop) awaiting the Designer re-sign (step1.2_engineer_revision_r4.md)"
 # Written at 1.2 (b) by The Engineer, 2026-11-25, from research/sean/cr_scratch/step1.2_designer_params_review.md and Sean's
 # STOP S2-A rulings (gameplan Design Notes 27): frame_upper.radius 274 with member c on the rail top in base.column_notch;
 # O1-B (pinion phase 60, S2-5 split into S2-5a and S2-5b); one descent-stop pad. No drawing before the signed spec.
@@ -195,7 +195,8 @@ features:
     label: {text: "base plate (open), x", key: icd.footprint_x, fmt: ".0f"}
     neighbours:
       - {id: base_frame, class: C, g_min: 0, source: "icd.datum_a: frame top plane = plate underside (S1 base_frame|base_plate)"}
-    sense: []
+    sense:
+      - {pred: outline_matches, pieces: plan_poly, source: "Designer sign-off r3 ruling on M1 S2 r2 N2: one unfilled base_plate:outline polygon, the boundary of the union of the plan_poly pieces (644 x 608 with both column notches), drawn above the plate tint; premise check for the K5 outline admission"}
     chain: [axial]
     moves: false
     notes:
@@ -712,6 +713,7 @@ features:
     z_rule: {z_min: "ring_bottom_low - stop.pad_thickness", z_max: ring_bottom_low}
     place: {r_in: frame_upper.stop_pad_r_in, r_out: frame_upper.stop_pad_r_out, theta: "jackscrew.angle[1]", half_width: "stop.pad_width / 2", footprint: radial}
     label: {text: "descent stop (one pad) r", key: frame_upper.stop_pad_r_in, fmt: ".0f"}
+    label_side: left   # r4 (Designer M1 S2 r3 N1): left label column; the pad at theta 150 is about 40 from it
     neighbours: []
     sense: [{pred: azimuth, expr: "jackscrew.angle[1]", tol_deg: 0.1}]
     chain: [axial]
@@ -1223,6 +1225,7 @@ features:
     chain: [torque]
     moves: false
     plan_style: stand_in   # r3: Step 2 stand-in, dashed by convention although topmost (K8 cover converse exempt; Designer M1 r1 addendum, TP1.2-2 legend)
+    stand_in_owner: "Step 2: rod top support (guide.top_support ASSUMED; Designer 1.2 (b) FIX 1); r4 lint TP1.2-17"
     notes:
       - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 
@@ -1261,6 +1264,7 @@ features:
     chain: [torque]
     moves: false
     plan_style: stand_in   # r3: Step 2 stand-in, dashed by convention although topmost (K8 cover converse exempt; Designer M1 r1 addendum, TP1.2-2 legend)
+    stand_in_owner: "Step 2: rod top support (guide.top_support ASSUMED; Designer 1.2 (b) FIX 1); r4 lint TP1.2-17"
     notes:
       - "z 1165 to 1225 (on the arm top, top flush with the member top); strip from rod centre - 30 u to the member near corner station 95.69; Step 2 decides the tie (guide.top_support ASSUMED)"
 

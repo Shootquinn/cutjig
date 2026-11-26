@@ -215,6 +215,14 @@ def _rank(ax):
     return {id(a): (a.get_zorder(), i) for i, a in enumerate(kids)}
 
 
+def is_opaque(a):
+    """A Patch whose fill hides what is under it: filled, face alpha times artist alpha equal to 1."""
+    if not isinstance(a, Patch) or not a.get_fill():
+        return False
+    fc = a.get_facecolor()
+    return fc is not None and fc[3] * (a.get_alpha() if a.get_alpha() is not None else 1.0) >= 1 - 1e-9
+
+
 def is_area(a):
     """A drawn area that hides what is under it: a Patch with a visible fill or a hatch."""
     if not isinstance(a, Patch):
@@ -265,7 +273,7 @@ def leader_hatch(fid, p0, p1, hatches):
     return gids if hit > LEADER_HATCH_MAX * len(ks) else set()
 
 
-def _reanchor(ax, fid, anc, text_xy, hatches, rank):
+def _reanchor(ax, fid, anc, text_xy, hatches, rank, left=False):
     """r3: an anchor on the row's ink, nearest the first choice, whose leader from text_xy crosses no other row's hatch
     and that no other row's area covers; the first choice when none exists."""
     ink = ink_pieces(ax, fid)
@@ -274,7 +282,11 @@ def _reanchor(ax, fid, anc, text_xy, hatches, rank):
         segs = _edges(poly) if closed else [(poly[i], poly[i + 1]) for i in range(len(poly) - 1)]
         for a, b in segs:
             cands += [(a[0] + (b[0] - a[0]) * k / ANCHOR_SAMPLES, a[1] + (b[1] - a[1]) * k / ANCHOR_SAMPLES) for k in range(ANCHOR_SAMPLES + 1)]
-    cands.sort(key=lambda q: (q[0] < anc[0] - TOL_Z, math.hypot(q[0] - anc[0], q[1] - anc[1])))   # same edge first
+    if left:   # r4: a left-column label searches from the left edge of its ink
+        x_min = min(q[0] for q in cands)
+        cands.sort(key=lambda q: (q[0] > x_min + TOL_Z, math.hypot(q[0] - x_min, q[1] - anc[1])))
+    else:
+        cands.sort(key=lambda q: (q[0] < anc[0] - TOL_Z, math.hypot(q[0] - anc[0], q[1] - anc[1])))   # same edge first
     for c in cands:
         if not leader_hatch(fid, text_xy, c, hatches) and not covering_areas(ax, fid, c, rank):
             return c
@@ -318,13 +330,25 @@ def label_anchor(ax, row):
     return first
 
 
+def _stack_z(wants, hs, zlo, zhi, gap):
+    """Text z for a column of labels in descending anchor z: each as near its anchor as the boxes above allow, lifted from
+    the bottom if the stack runs below the axes (the right-column rule, place_labels)."""
+    zs = []
+    for i, (want, h) in enumerate(zip(wants, hs)):
+        zs.append(min(want, zhi - h / 2) if i == 0 else min(want, zs[-1] - hs[i - 1] / 2 - gap - h / 2))
+    for i in range(len(zs) - 1, -1, -1):
+        floor_z = zlo + hs[i] / 2 if i == len(zs) - 1 else zs[i + 1] + hs[i + 1] / 2 + gap + hs[i] / 2
+        zs[i] = max(zs[i], floor_z)
+    return zs
+
+
 def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()):
     """One annotation per spec row with a label, gid label:<id>, anchored at the right edge of the row's drawn pieces.
     margin=True (S1 r3, Designer M1 r2 F4): every label and every note goes into one column right of the axes, each
     with a leader to its anchor, stacked in anchor-z order with LABEL_GAP_LINES of free space between text boxes.
     Call after finish_axes (the column reads the final limits). notes: (anchor (x, z) or None, text[, gid]) tuples;
     a note without a gid is untagged (the figure note carries gid note:figure_note, Designer 1.2 (c) FIX R1)."""
-    items = []
+    items, left_ids = [], set()
     for row in spec.get("features", []):
         if not row.get("label") or (pose and row.get("poses") and pose not in row["poses"]):
             continue
@@ -333,6 +357,8 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
             continue
         rec = (stack_pose or {}).get(row["id"])
         items.append((anc, label_text(row, P, rec), f"label:{row['id']}"))
+        if row.get("label_side") == "left":
+            left_ids.add(f"label:{row['id']}")
     if not margin:
         for (x, z), txt, gid in items:
             ann = ax.annotate(txt, xy=(x, z), xytext=(x + 60, z + 20), fontsize=LABEL_FONTSIZE,
@@ -348,10 +374,18 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
     zlo, zhi = ax.get_ylim()
     x_col = ax.get_xlim()[1] + line
     hatches, rank = hatch_areas(ax), _rank(ax)
+    x_left = ax.get_xlim()[0] - line
     for i, (anc, txt, gid) in enumerate(items):   # r3 (Designer M1 S1 r6 F1): the end of a leader clear of other hatch
         fid = gid[len("label:"):] if gid and gid.startswith("label:") else None
-        if anc and fid and leader_hatch(fid, (x_col, anc[1]), anc, hatches):
-            items[i] = (_reanchor(ax, fid, anc, (x_col, anc[1]), hatches, rank), txt, gid)
+        tx = x_left if gid in left_ids else x_col
+        if anc and fid and leader_hatch(fid, (tx, anc[1]), anc, hatches):
+            items[i] = (_reanchor(ax, fid, anc, (tx, anc[1]), hatches, rank, left=gid in left_ids), txt, gid)
+    left = sorted([it for it in items if it[2] in left_ids], key=lambda it: -it[0][1])   # r4: label_side left
+    items = [it for it in items if it[2] not in left_ids]
+    for it, z in zip(left, _stack_z([it[0][1] for it in left], [line * (it[1].count("\n") + 1) for it in left], zlo, zhi, gap)):
+        ann = ax.annotate(it[1], xy=it[0], xytext=(x_left, z), fontsize=LABEL_FONTSIZE, ha="right", va="center",
+                          zorder=LEADER_ZORDER, annotation_clip=False, arrowprops={"arrowstyle": "-", "linewidth": 0.4, "color": "0.35"})
+        ann.set_gid(it[2])
     order = sorted(items, key=lambda it: -it[0][1])
     hs = [line * (it[1].count("\n") + 1) for it in order]
     zs = []
@@ -1021,7 +1055,7 @@ def _assess_pair(cls, g_min, PA, PB, gap, names=("a", "b")):
 
 PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within": "of", "side": "of", "outboard": "of", "rests_on": "seat",
                "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward",
-               "ticks_radial": "count"}
+               "ticks_radial": "count", "outline_matches": "pieces"}
 
 
 def sense_lint(rows):
@@ -1393,6 +1427,99 @@ def ticks_admission_issue(row, artist, plan, siblings):
     return None
 
 
+OUTLINE_SUFFIX = ":outline"
+SUB_SUFFIXES = (TICKS_SUFFIX, OUTLINE_SUFFIX)
+
+
+def outline_admission_issue(row, artist, plan, siblings):
+    """r4 (Designer sign-off r3, M1 S2 r2 N2): K5 admits, under a plate row with plan_poly pieces, one unfilled closed
+    Polygon <row>:outline in plan_xy, only when the row carries the K8 outline_matches predicate (its premise check).
+    None when admitted, else the reason."""
+    if row is None:
+        return "sub-artist of no spec row"
+    if row.get("kind") != "plate" or not row.get("plan_poly") or not plan:
+        return f"outline sub-artist admitted only for a plate row with plan_poly in plan_xy ({row.get('kind')})"
+    if not isinstance(artist, Polygon) or artist.get_fill():
+        return f"outline sub-artist must be an unfilled Polygon (drawn as {type(artist).__name__}, fill {getattr(artist, 'get_fill', lambda: None)()})"
+    if len(siblings) != 1:
+        return f"{len(siblings)} outline sub-artists, one admitted"
+    if not any(pr.get("pred") == "outline_matches" for pr in row.get("sense") or []):
+        return "outline sub-artist without the K8 outline_matches predicate on its row (premise unenforced)"
+    return None
+
+
+def union_boundary(pieces, tol=1e-6):
+    """Boundary ring of the union of convex pieces that meet along shared edges (plate pieces): every edge is cut at the
+    vertices of the other pieces lying on it; sub-edges carried by two pieces are interior and dropped; the rest are
+    chained into one ring and collinear vertices are merged. Counter-clockwise; None when the edges do not close
+    into one ring."""
+    verts = [tuple(v) for pc in pieces for v in pc]
+    subs = {}
+    for pc in pieces:
+        pc = ccw([tuple(v) for v in pc])
+        for a, b in _edges(pc):
+            L2 = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+            ts = sorted({0.0, 1.0} | {((v[0] - a[0]) * (b[0] - a[0]) + (v[1] - a[1]) * (b[1] - a[1])) / L2
+                                     for v in verts if _pt_seg(v, a, b) <= tol})
+            for t0, t1 in zip(ts, ts[1:]):
+                if t1 - t0 < 1e-12:
+                    continue
+                p0 = (round(a[0] + (b[0] - a[0]) * t0, 6), round(a[1] + (b[1] - a[1]) * t0, 6))
+                p1 = (round(a[0] + (b[0] - a[0]) * t1, 6), round(a[1] + (b[1] - a[1]) * t1, 6))
+                k = frozenset((p0, p1))
+                subs.setdefault(k, []).append((p0, p1))
+    edges = [v[0] for v in subs.values() if len(v) == 1]
+    if not edges:
+        return None
+    nxt = {}
+    for p0, p1 in edges:
+        if p0 in nxt:
+            return None
+        nxt[p0] = p1
+    start = edges[0][0]
+    ring, cur = [start], nxt[start]
+    while cur != start:
+        if cur not in nxt or len(ring) > len(edges):
+            return None
+        ring.append(cur)
+        cur = nxt[cur]
+    if len(ring) != len(edges):
+        return None
+    out = []
+    for i, q in enumerate(ring):
+        a, b = ring[i - 1], ring[(i + 1) % len(ring)]
+        if abs((q[0] - a[0]) * (b[1] - a[1]) - (q[1] - a[1]) * (b[0] - a[0])) > tol:
+            out.append(q)
+    return out
+
+
+def outline_matches_issue(ax, ctx, pose, fid):
+    """K8 outline_matches (r4, Designer sign-off r3): the <fid>:outline Polygon, through its artist transform, has the
+    vertex ring of the boundary of the union of the row's plan_poly pieces: same vertex count, same orientation, every
+    vertex within TOL_Z of its partner under one cyclic shift. Returns a list of issue texts."""
+    arts = tagged(ax).get(fid + OUTLINE_SUFFIX, [])
+    if not arts:
+        return ["no outline sub-artist drawn"]
+    pcs = _feat(ctx, pose, fid).get("plan_pieces") or []
+    want = union_boundary(pcs)
+    if want is None:
+        return ["plan_poly pieces do not close into one boundary ring"]
+    out = []
+    for a in arts:
+        got = artist_polys(a)[0]
+        if len(got) != len(want):
+            out.append(f"outline has {len(got)} vertices, the union boundary {len(want)}")
+            continue
+        if (poly_area(got) > 0) != (poly_area(want) > 0):
+            out.append("outline runs clockwise, the union boundary counter-clockwise")
+            continue
+        best = min(max(math.hypot(got[(i + k) % len(got)][0] - want[i][0], got[(i + k) % len(got)][1] - want[i][1])
+                       for i in range(len(want))) for k in range(len(got)))
+        if best > TOL_Z:
+            out.append(f"outline vertices off the union boundary by {best:.2f}")
+    return out
+
+
 def ticks_radial_issue(ax, fid, pr, P):
     """K8 ticks_radial (1.2 (h), Designer M1 r1 F1 premise): the row's <fid>:ticks LineCollection, through its artist
     transform, holds exactly `count` segments; each lies on a radius (the line through its ends passes within TOL_Z of
@@ -1463,10 +1590,14 @@ def k5(ctx):
                 continue
             row = rows.get(gid)
             if row is None:
-                base = gid[:-len(TICKS_SUFFIX)] if gid.endswith(TICKS_SUFFIX) else None
-                if base is not None:
+                if gid.endswith(TICKS_SUFFIX):
                     n += 1
-                    t = ticks_admission_issue(rows.get(base), a, plan, drawn.get(gid, []))
+                    t = ticks_admission_issue(rows.get(gid[:-len(TICKS_SUFFIX)]), a, plan, drawn.get(gid, []))
+                    if t:
+                        issues.append(f"{pose}/{gid}: {t}")
+                elif gid.endswith(OUTLINE_SUFFIX):
+                    n += 1
+                    t = outline_admission_issue(rows.get(gid[:-len(OUTLINE_SUFFIX)]), a, plan, drawn.get(gid, []))
                     if t:
                         issues.append(f"{pose}/{gid}: {t}")
                 continue
@@ -2241,18 +2372,27 @@ COVER_RINGS = (0.02, 0.25, 0.5, 0.75, 0.98)   # annulus samples across the width
 SOLID_STYLES = ("-", "solid", None)
 
 
+COVER_STEP_MAX = 2.5   # r4 (TP1.2-16): grid step at most 2.5 mm, so a 5 mm visible strip gets samples
+COVER_SAMPLES_MAX = 20000
+
+
 def _piece_samples(poly):
-    """Points strictly inside one closed convex piece: its vertices pulled COVER_SHRINK toward the centroid, and a
-    COVER_GRID x COVER_GRID grid over its bounding box kept where inside (r3, TP1.2-13: vertex samples alone let a
-    union of covers hide an open middle)."""
+    """Points strictly inside one closed convex piece: its vertices pulled COVER_SHRINK toward the centroid, and a grid
+    over its bounding box kept where inside (r3, TP1.2-13). r4 (TP1.2-16): the grid step is the short side over
+    COVER_GRID, capped at COVER_STEP_MAX, so a long thin piece (a 644 x 60 rail) is sampled finely along its length."""
     if len(poly) < 3:
         return []
     cx, cy = centroid([poly])
     out = [(cx + COVER_SHRINK * (x - cx), cy + COVER_SHRINK * (y - cy)) for x, y in poly]
     x0, x1, y0, y1 = bbox([poly])
-    for i in range(COVER_GRID):
-        for j in range(COVER_GRID):
-            p = (x0 + (x1 - x0) * (i + 0.5) / COVER_GRID, y0 + (y1 - y0) * (j + 0.5) / COVER_GRID)
+    w, h = x1 - x0, y1 - y0
+    step = max(min(min(w, h) / COVER_GRID, COVER_STEP_MAX), 1e-6)
+    nx, ny = max(1, int(math.ceil(w / step))), max(1, int(math.ceil(h / step)))
+    while nx * ny > COVER_SAMPLES_MAX:
+        nx, ny = max(1, nx // 2), max(1, ny // 2)
+    for i in range(nx):
+        for j in range(ny):
+            p = (x0 + w * (i + 0.5) / nx, y0 + h * (j + 0.5) / ny)
             if _inside(p, poly):
                 out.append(p)
     return out
@@ -2376,23 +2516,41 @@ def cover_issues(ctx, ax, pose, rows_list):
     rows = {r["id"]: r for r in rows_list}
     states = plan_cover_states(ctx, ax, pose)
     n, out = 0, []
-    solid_polys = {}
+    solid_arts = {}
     for a, (fid, st, by, open_pts) in states.items():
         if is_solid(a):
-            solid_polys.setdefault(fid, []).extend(p for p in artist_polys(a) if len(p) >= 3)
+            solid_arts.setdefault(fid, []).append((a, [p for p in artist_polys(a) if len(p) >= 3]))
+    rank = _rank(ax)
+    opaque = [(a, [q for q in artist_polys(a) if len(q) >= 3]) for a in artists(ax) if a.get_gid() and is_opaque(a)]
+    exempt = set()
+    for fid, r in rows.items():
+        if r.get("plan_style") == "stand_in":
+            if str(r.get("stand_in_owner") or "").strip():
+                exempt.add(fid)
+            else:
+                out.append(f"{pose}/{fid} cover: spec error, plan_style stand_in without stand_in_owner (TP1.2-17)")
+
+    def shown(fid, p):
+        """p lies in a solid artist of fid that no opaque fill of another row draws over (r4, TP1.2-15)."""
+        for s_a, polys in solid_arts.get(fid, []):
+            if not any(_inside(p, q) for q in polys):
+                continue
+            if not any(o.get_gid() != fid and not o.get_gid().startswith(fid + ":") and rank[id(o)] > rank[id(s_a)]
+                       and any(_inside(p, q) for q in oq) for o, oq in opaque):
+                return True
+        return False
     for a, (fid, st, by, open_pts) in states.items():
         n += 1
         if st == "hidden" and is_solid(a):
             out.append(f"{pose}/{fid} cover: {type(a).__name__} wholly under {', '.join(sorted(by))} drawn solid "
                        f"(linestyle {a.get_linestyle()!r}, fill {a.get_fill() if isinstance(a, Patch) else False}, "
                        f"hatch {a.get_hatch() if isinstance(a, Patch) else None!r}); a hidden part is dashed, no fill")
-        elif st != "hidden" and not is_solid(a) and (rows.get(fid) or {}).get("plan_style") != "stand_in":
-            sp = solid_polys.get(fid, [])
-            bare = [p for p in open_pts if not any(_inside(p, q) for q in sp)]
+        elif st != "hidden" and not is_solid(a) and fid not in exempt:
+            bare = [p for p in open_pts if not shown(fid, p)]
             if bare:
                 out.append(f"{pose}/{fid} cover: {type(a).__name__} partly visible drawn dashed ({len(bare)} of "
-                           f"{len(open_pts)} uncovered samples outside any solid piece of the row, e.g. "
-                           f"({bare[0][0]:.2f}, {bare[0][1]:.2f})); its visible area is drawn solid")
+                           f"{len(open_pts)} uncovered samples not shown by a solid piece of the row under no opaque fill, "
+                           f"e.g. ({bare[0][0]:.2f}, {bare[0][1]:.2f})); its visible area is drawn solid")
     return n, out
 
 
@@ -2598,6 +2756,9 @@ def k8(ctx):
                 elif kind == "ticks_radial":
                     for t in ticks_radial_issue(ax, fid, pr, ctx.P):
                         issues.append(f"{pose}/{fid} ticks_radial: {t}")
+                elif kind == "outline_matches":
+                    for t in outline_matches_issue(ax, ctx, pose, fid):
+                        issues.append(f"{pose}/{fid} outline_matches: {t}")
         if plan and ctx.stack:
             nc, ci = cover_issues(ctx, ax, pose, rows_list)
             n += nc
@@ -2632,7 +2793,7 @@ def k9(ctx):
             if not applies(r, pose) and (r["id"] in gids or r["id"] in text_gids):
                 issues.append(f"{pose}: {r['id']} drawn at a pose outside its poses {r.get('poses')}")
         for g in sorted((gids | text_gids) - ids):
-            if g.endswith(TICKS_SUFFIX) and g[:-len(TICKS_SUFFIX)] in ids and g in gids:
+            if any(g.endswith(sfx) and g[:-len(sfx)] in ids for sfx in SUB_SUFFIXES) and g in gids:
                 continue      # sub-artist of a row; K5 rules its admission (1.2 (h), Designer M1 r1 F1)
             issues.append(f"{pose}: tagged artist {g} has no spec row")
     return result("K9", not issues, _summ(issues) if issues else f"every spec row drawn, every tagged artist in the spec ({len(ids)} rows)",

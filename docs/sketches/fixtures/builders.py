@@ -1439,6 +1439,28 @@ def _ticks(P, pr, n=None, r_in=None, r_out=None, turn=None, start=0.0):
     return LineCollection(segs, linestyles="--")
 
 
+def _notch_ring(pieces):
+    """Fixture's own plate outline (independent of sketch_common.union_boundary): the bounding rectangle of the pieces with
+    each notch cut in; a notch is a bbox edge interval no piece reaches, found from the piece x and y extents."""
+    xs0, xs1 = min(p[0] for pc in pieces for p in pc), max(p[0] for pc in pieces for p in pc)
+    ys0, ys1 = min(p[1] for pc in pieces for p in pc), max(p[1] for pc in pieces for p in pc)
+
+    def gap(edge_y):
+        on = sorted((min(p[0] for p in pc), max(p[0] for p in pc)) for pc in pieces if any(abs(p[1] - edge_y) < 1e-6 for p in pc))
+        depth = min(abs(p[1] - edge_y) for pc in pieces for p in pc if abs(p[1] - edge_y) > 1e-6 and
+                    any(abs(q[1] - edge_y) < 1e-6 for q in pc))
+        return [(a[1], b[0]) for a, b in zip(on, on[1:]) if b[0] - a[1] > 1e-6], depth
+    (bot, db), (top, dt) = gap(ys0), gap(ys1)
+    ring = [(xs0, ys0)]
+    for g0, g1 in bot:
+        ring += [(g0, ys0), (g0, ys0 + db), (g1, ys0 + db), (g1, ys0)]
+    ring += [(xs1, ys0), (xs1, ys1)]
+    for g0, g1 in sorted(top, reverse=True):
+        ring += [(g1, ys1), (g1, ys1 - dt), (g0, ys1 - dt), (g0, ys1)]
+    ring += [(xs0, ys1)]
+    return ring
+
+
 def _s2_draw(P, spec, stack, skip=(), note=None):
     pid = _s2_pose(spec)
     fig, ax = sc.setup_figure(spec["view"], title=f"S2 plan fixture, pose {pid}")
@@ -1450,6 +1472,10 @@ def _s2_draw(P, spec, stack, skip=(), note=None):
         if tk:   # 1.2 (h): gear tooth ticks (Designer M1 r1 F1), from the predicate's own fields
             sc.draw(row["id"] + sc.TICKS_SUFFIX, _ticks(P, tk), ax)
     sc.style_hidden(sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), ax, pid)   # r3: hidden pieces dashed (K8 cover)
+    bp = next((r for r in spec["features"] if r["id"] == "base_plate"), None)
+    if bp and any(p.get("pred") == "outline_matches" for p in bp.get("sense") or []) and "base_plate" not in skip:
+        sc.draw("base_plate:outline", Polygon(_notch_ring(stack["poses"][pid]["features"]["base_plate"]["plan_pieces"]),
+                                              closed=True, fill=False), ax)   # r4: plate outline (Designer sign-off r3)
     sc.finish_axes(ax)
     sc.place_labels(ax, spec, P, pid)
     txt = (spec.get("plan_figure") or {}).get("figure_note") if note is None else note
@@ -2199,7 +2225,7 @@ def k8_b34():
     the column notch, 70 x 60, visible from +Z, drawn dashed only, as at r2)."""
     c = _script_ctx("s2")
     for a in sc.tagged(_s2_ax(c)).get("base_frame", []):
-        if sc.is_solid(a):
+        if sc.is_solid(a) and sc.bbox(sc.artist_polys(a))[2] > 0:   # r4: the +Y rail copy only (the -Y copy is K8-B40)
             a.remove()
     return c
 
@@ -2259,3 +2285,79 @@ def k4_b10():
     mx, my = (t.xy[0] + t.xyann[0]) / 2, (t.xy[1] + t.xyann[1]) / 2
     sc.draw("ring", Rectangle((mx - 5, my - 5), 10, 10, fill=True, facecolor="white", zorder=sc.LEADER_ZORDER * 2), ax)
     return c
+
+
+# ---------------------------------------------------------------- 1.2 (h) r4 (research/sean/cr_scratch/step1.2_engineer_revision_r4.md)
+# Designer sign-off r3 (plate outline: K5 admission, K8 outline_matches, K9 sub-gid); Topologist TP1.2-15 (no opaque fill
+# over a solid copy), TP1.2-16 (grid step from the short side), TP1.2-17 (stand_in needs an owner).
+
+def _replace_outline(c, ring, n=1, fill=False):
+    ax = _s2_ax(c)
+    for a in sc.tagged(ax).get("base_plate:outline", []):
+        a.remove()
+    for _ in range(n):
+        sc.draw("base_plate:outline", Polygon(ring, closed=True, fill=fill), ax)
+    return c
+
+
+def _plate_ring(c):
+    return _notch_ring(c.stack["poses"][_s2_pose(c.spec)]["features"]["base_plate"]["plan_pieces"])
+
+
+def k8_b37():
+    """outline_matches B1: the outline drawn as the plain 644 x 608 rectangle (notches missing)."""
+    c = _s2_ctx()
+    r = _plate_ring(c)
+    x0, x1, y0, y1 = sc.bbox([r])
+    return _replace_outline(c, [(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
+
+
+def k8_b38():
+    """outline_matches B2: the -Y notch of the outline 5 deeper (notch floor y -239 drawn at -234)."""
+    c = _s2_ctx()
+    r = _plate_ring(c)
+    y_floor = min(p[1] for p in r if p[1] > sc.bbox([r])[2] + 1e-6)
+    return _replace_outline(c, [(x, y + 5 if abs(y - y_floor) < 1e-6 else y) for x, y in r])
+
+
+def k5_b17():
+    """Outline admission B3: two outline Polygons."""
+    c = _s2_ctx()
+    return _replace_outline(c, _plate_ring(c), n=2)
+
+
+def k5_b18():
+    """Outline admission B4: outline drawn while base_plate carries no outline_matches predicate."""
+    c = _s2_ctx(spec_mut=_mut_row("base_plate", lambda r: r.__setitem__("sense", [])))
+    return _replace_outline(c, _plate_ring(c))
+
+
+def k9_b7():
+    """An outline sub-artist under gid base_plate2:outline, a row the spec does not have."""
+    c = _s2_ctx()
+    sc.draw("base_plate2:outline", Polygon(_plate_ring(c), closed=True, fill=False), _s2_ax(c))
+    return c
+
+
+def k8_b39():
+    """TP1.2-15: live S2 drawing with the operator sector fill opaque (alpha 1, as at r3): the rail-top solid copy in the
+    +Y notch is drawn under it."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("operator_sector", []):
+        a.set_alpha(1.0)
+    return c
+
+
+def k8_b40():
+    """TP1.2-16: live S2 drawing with the base-frame -Y rail solid copy removed: the two 5 x 60 rail strips beside member
+    c in the -Y notch are visible and drawn dashed only (on r3 the 12 x 12 grid missed them and read the rail hidden)."""
+    c = _script_ctx("s2")
+    for a in sc.tagged(_s2_ax(c)).get("base_frame", []):
+        if sc.is_solid(a) and sc.bbox(sc.artist_polys(a))[3] < 0:
+            a.remove()
+    return c
+
+
+def k8_b41():
+    """TP1.2-17: guide_tie_a keeps plan_style: stand_in without stand_in_owner: lint fires and the exemption is void."""
+    return _script_ctx("s2", spec_mut=_mut_row("guide_tie_a", lambda r: r.pop("stand_in_owner", None)))

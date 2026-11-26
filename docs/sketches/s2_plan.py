@@ -83,7 +83,8 @@ def _style_visible(row):
     if fid == "base_plate":
         return {"fill": True, "facecolor": PLATE, "edgecolor": PLATE, "zorder": Z_PLATE}
     if fid == "operator_sector":
-        return {"fill": True, "facecolor": SECTOR, "edgecolor": "darkorange", "linewidth": 1, "zorder": Z_SECTOR}
+        # r4 (TP1.2-15): translucent, so the rail-top solid copy in the +Y notch shows through (no opaque fill over it)
+        return {"fill": True, "facecolor": SECTOR, "edgecolor": "darkorange", "linewidth": 1, "alpha": 0.5, "zorder": Z_SECTOR}
     if fid == "base_frame":
         return {"edgecolor": GREY, "linestyle": HIDDEN, "linewidth": 0.5, "zorder": Z_BASE}
     if fid in ("base_key_pockets", "base_pin_pocket"):
@@ -251,6 +252,17 @@ def draw_row(ax, P, stack, pid, row):
         sc.draw(fid, Circle((cx, cy), w, **kw), ax)
 
 
+def _plate_outline(ax, feats, spec):
+    """Plate outline with both column notches (Designer sign-off r3, M1 S2 r2 N2): one unfilled Polygon, gid
+    base_plate:outline, the boundary of the union of the base_plate plan_poly pieces, at bracket line weight above the
+    plate tint; drawn only when the row carries outline_matches (K5 admission premise)."""
+    row = next(r for r in spec["features"] if r["id"] == "base_plate")
+    if not any(p.get("pred") == "outline_matches" for p in row.get("sense") or []):
+        return
+    ring = sc.union_boundary(feats["base_plate"]["plan_pieces"])
+    sc.draw("base_plate" + sc.OUTLINE_SUFFIX, Polygon(ring, closed=True, fill=False, edgecolor=DARK, linewidth=1, zorder=Z_BASE), ax)
+
+
 def _tags(ax, P, feats):
     """Untagged part tags: screw set letter and azimuth outboard of each frame member; pinion letter and azimuth beside
     each NEMA 23, on the side farther from the guide rods and the F6 sightline (Designer M1 S2 r2 N1: off slot line C;
@@ -283,6 +295,7 @@ def build(P, spec, stack):
         if sc.applies(row, pid):
             draw_row(ax, P, stack, pid, row)
     _hidden_lines(ax, sc.Ctx(P=P, spec=spec, stack=stack, view=spec["view"]), pid, spec)
+    _plate_outline(ax, feats, spec)
     _tags(ax, P, feats)
     s21 = spec["s2_checks"]["S2-1"]
     ang = lambda k, ids: ", ".join(f"{i[-1]} {feats[i]['place']['theta']:g}" for i in ids)  # noqa: E731
