@@ -285,3 +285,129 @@ New:
 | 1.2 | 2026-11-25 | (d) P6 (`step1.2_engineer_draw_r1.md`): `s2_plan.py` written; `wip/s2_plan_r1.png` first written 17:57:05; S2 r1 17/17 on run 1; S1 r5 18/18 (four poses, mass report equal to r4); members a, b 43.73 from the plate x edge, member c on the rail edge 0.00; cutter overhang 2.70; controls 191/191 (284 s); --stale red on s1 r4 frame_upper.radius only. Open: gear ticks, F6 label "z_S z_S", sightline in the highest-point report, s2 status text. Next: STOP-T5, (e) and M1 in parallel. |
 | 1.2 | 2026-11-25 | (e) Topologist (`step1.2_topologist_crossreview.md`): S2 r1 CROSS-REVIEW FAIL, FIX TP1.2-2 (nuts, descent pad, motor mounts drawn solid under nearer parts; tie legend) and TP1.2-3 (S2-5b misses drill_tube, drill_head; set from moves: true); handedness correct (screw cross products +22170.25 in azimuth order); TP-13 SIGNED; TP-n 6 rows; S1 r5 CROSS-REVIEW PASS (arms outboard 39.375). NOTEs TP1.2-4 to -11. |
 ```
+
+## Re-check r2
+
+### Corrections to the brief
+
+1. **The r2 records carry the pre-fix control tally.** `wip/s2_checks_r2.json` (19:08:25) and `wip/s1_checks_r6.json` (19:09:13) were written before the final controls run (19:37:04, 214/214). Both read K8 b_result "fired 31/33", which is the 212/214 run (MEASURED). The checks themselves are unchanged. Re-run `check_sketch.py s2 --rev 2` and `s1 --rev 6` so that the record of the revision cites the final tally (NOTE TP1.2-14).
+
+Inputs: `step1.2_engineer_revision_r2.md`, `sketch_common.py` (`hidden_rows`, `cover_issues`, `_cover_samples`, `is_solid`), `checks_s2.py` (`moving_parts`, `s2_5b`), `fixtures/builders.py` (`k8_b19`, `k8_b26`), `fixtures/manifest.yaml`, `wip/fixtures/controls_results.json`, `wip/s2_plan_r2.png`, `wip/s2_checks_r2.json` and `wip/s1_checks_r6.json`. Probes were run in memory on the live r2 build (scratchpad `tp_r2.py`). Results are MEASURED; hand values are DERIVED.
+
+### 1 TP1.2-2: K8 `cover` and the r2 drawing
+
+**Live r2.** K8 cover tests 68 artists with 0 issues. `hidden_rows` at load returns 26 rows:
+- anchor_a, _b, _c
+- base_frame
+- bearing
+- bracket_anchor_a, _b, _c
+- descent_stop and post
+- drill_head
+- guide_bushing_a, _b
+- guide_lug_a, _b
+- guide_member, guide_member_b
+- liftmotor_a, _b, _c
+- motor_mount_a, _b, _c
+- nut_a, _b, _c
+
+The seven rows named in FIX TP1.2-2 are drawn dashed with no fill (nuts x3, pad, mounts x3). The tie legend is split into "under a nearer part" and "Step 2 stand-in". FIX TP1.2-2 is closed.
+
+**Premise: only true outlines count.** `cover_issues` and `hidden_rows` both admit covers only where `plan_outline` returns true. K8-Z7 (a circumscribing circle is no cover) reads clean. K8-B33 (the same motor drawn as its circle covers the pad) fires. Both match (controls_results 19:37:04).
+
+**Own probes (MEASURED):**
+
+| Probe | Planted | Result |
+|---|---|---|
+| p1 | descent_stop solid, no fill, no hatch | fires: "wholly under bracket_guide_a drawn solid (linestyle '-')" |
+| p2 | descent_stop dashed with hatch '//' | fires (`is_solid` counts a hatch) |
+| p3 | bearing Annulus solid | fires: "wholly under gear, gear_hub" (annulus samples at 2, 50 and 98 % of its width) |
+| p4 | synthetic: bar C (0 to 100 x 0 to 10, top 10) whose ends lie under A (-5 to 20) and B (80 to 105, top 100), middle 60 open | `hidden_rows` = {C}; cover fires on C drawn solid. **Over-cover** (NOTE TP1.2-13) |
+| p5 | drill_tube and drill_head marked reference (no cover from the hollow disks) | `hidden_rows` loses drill_head. Its outline samples at r 44.45 and r 1.78 are covered only by the drill_tube disk (TP1.2-7) |
+
+**Fixture restyles, K8-B19 and K8-B26: legitimate.**
+- K8-B19 plants each screw at -theta. That puts screw_a at (r 160, 210), under motor23_a (r 142 to 218, half-width 28.5, top 1242.34 against the screw top 1225.00). The same holds for screw_b under motor23_b and screw_c under motor23_c. At those positions each screw is truly hidden, so dashed is the correct style. The planted defects (azimuth x3, plan_extent x3, planted 6) are unchanged, and the match is yes.
+- K8-B26 redraws the bearing annulus with its bore 5 under its section. The bearing is hidden under the gear and hub in the live drawing (dashed at r1 and r2). The restyle returns the non-planted property to the live style, and the planted plan_extent (by 5.00) still fires alone.
+
+Both restyles isolate the B on its own defect.
+
+**Over-cover is the direction the rule tolerates.** All three over-cover routes can only add rows to the hidden set:
+- p4: vertex samples against a union of covers;
+- vertex samples against an annulus cover (a chord piece can span the bore);
+- a hollow part with a solid true disk (TP1.2-7).
+
+The cover check then demands dashed, and a solid hidden part still fires, so no solid-hidden defect passes. The converse case, a visible part drawn dashed, is not checked. `hidden_rows` now generates the drawing styles, so an over-cover reaches the PNG.
+
+One live instance: **base_frame**. The +Y rail (y 244 to 304) has its vertices in the plate edge strips, but the plate column notch (x -35 to 35, y 239 to 304) is open. A 70 x 60 piece of the rail top is visible from +Z and is drawn dashed (DERIVED: rail y 244 to 304 against notch y 239 to 304, x +-35; no row covers it; the sector is reference).
+
+The pinion toothed piece is drawn dashed by choice. Its heel corners at r 133.07 lie outside the gear OD of 126.32, and `hidden_rows` reads it as visible. The legend states "pinion teeth under the gear". This is a Designer convention.
+
+Neither instance passes a solid-hidden defect. NOTE TP1.2-13.
+
+**K8 cover: SIGNED.**
+
+### 2 TP1.2-3: S2-5b over `moves: true`
+
+`moving_parts` takes every `moves: true` row that is not reference and not a NO_AREA kind. `s2_5b` refuses any `parts` other than "moves". Live: 10 moving parts in the sector, least 19.84 (drill_head). Hand: 959.84 - 940 = 19.84. The strike list matches section 3 of this file row for row.
+
+Controls (match yes):
+- S2-5b-B2: drill tip at 945 z_A. Red-first: it read clean on the r1 hand list.
+- S2-5b-B3: the r1 hand list is refused.
+- S2-5b-B1 and S2-5b-Z: unchanged.
+
+**Own probes (MEASURED):**
+
+| Probe | Planted | Result |
+|---|---|---|
+| p6 | stack drill_head z_min 15 lower | fail: "drill_head: lowest z 944.84 z_A, 4.84 above the hand band top 940, need 10" |
+| p7 | `parts: [drill_head]` | refused: "spec parts must be 'moves'" |
+| p8 | `parts` key deleted | refused (same reason) |
+| p5' | drill_head `moves: false` | pass, 9 parts, least drill_tube 126.21 |
+
+Probe p5' shows that the premise set is only as good as the `moves` flag. That flag is also the K7 swept-case key (one field, two uses). A wrong `moves` already breaks the swept test, so this adds no new failure route.
+
+**S2-5b set: SIGNED.**
+
+### 3 S1 r6
+
+Values equal to r5 (engineer record). The JSON reports 18/18: K8 346 predicates, K9 58 rows, K5 343. No row moved: label anchors moved 0 of 55, and only the save crop changed. Section 6 of this file stands.
+
+### Findings (re-check)
+
+**NOTE TP1.2-13. Cover samples can over-cover.**
+- Vertex samples against a union of covers, or against an annulus cover, can declare a partly visible piece hidden (probe p4).
+- Since `hidden_rows` drives the r2 styles, the base_frame rail top in the +Y notch (70 x 60) is drawn dashed while visible.
+- The rule never passes a solid hidden part.
+
+Fix at S3, or when the converse is wanted: sample the piece interior on a grid, or test containment exactly per cover (convex piece in one convex cover, or the piece's radius range inside one annulus), and treat a union as covering only when the pieces tile. Raise a K8 converse ("visible drawn dashed") only if the Designer wants dashed to mean hidden strictly.
+
+**NOTE TP1.2-14. Records cite the stale tally.** Re-run the two record commands after the final `--controls` (Corrections 1).
+
+**NOTE TP1.2-7, updated.** The hollow-disk outline now feeds `hidden_rows` (probe p5: drill_head is hidden only through the tube disk). There is no drawing effect, because the cutter rim circle at r 88.9 is truly under the gear_hub (r 76.2 to 90, top 1275.84). Still to S3 or S6.
+
+### Verdicts (re-check)
+
+- FIX TP1.2-2: CLOSED. K8 `cover`: **SIGNED**.
+- FIX TP1.2-3: CLOSED. S2-5b over `moves: true`: **SIGNED**.
+- **S2 r2: CROSS-REVIEW PASS.**
+- **S1 r6: CROSS-REVIEW PASS.**
+
+Counts (re-check): BLOCK 0, FIX 0, NOTE 2 new (TP1.2-13, TP1.2-14), TP1.2-7 updated.
+
+### Gameplan lines to change
+
+**l.638** (Open Questions). Add a row after the TP-n row. Old is the TP-n row as it stands after this file's 1.2 (e) change is applied:
+
+Old:
+```
+| TP-n (narrower than footprint) | K8 projected_extent is containment only: a part drawn narrower than its footprint passes (probe: member drawn 60 wide as in r3). Safe for interference; only the M1 read sees it. S2 r1 (Topologist 1.2 (e)): 6 rows, liftmotor_a, _b, _c (42 square in its r 29.70 circle, 8.70) and pinion_a, _b, _c (trapezoid and hub in the radial rectangle, 15.00); drill_tube and drill_head outlines are solid disks flagged true over hollow parts (TP1.2-7, S3/S6) | every M1 from 1.2 on | The Designer (M1); The Topologist at each (e) |
+```
+New:
+```
+| TP-n (narrower than footprint) | K8 projected_extent is containment only: a part drawn narrower than its footprint passes (probe: member drawn 60 wide as in r3). Safe for interference; only the M1 read sees it. S2 r1 (Topologist 1.2 (e)): 6 rows, liftmotor_a, _b, _c (42 square in its r 29.70 circle, 8.70) and pinion_a, _b, _c (trapezoid and hub in the radial rectangle, 15.00); drill_tube and drill_head outlines are solid disks flagged true over hollow parts (TP1.2-7, S3/S6) | every M1 from 1.2 on | The Designer (M1); The Topologist at each (e) |
+| TP1.2-13 (cover over-cover) | K8 cover and hidden_rows sample piece vertices: a union of covers, an annulus cover or a hollow true disk (TP1.2-7) can mark a partly visible piece hidden; never passes a solid hidden part; live: base_frame rail top in the +Y notch (70 x 60) drawn dashed while visible; visible-drawn-dashed is unchecked | 1.3 (S3) | The Topologist proposes; The Engineer |
+```
+
+**Progress Log.** Add a row after the (h) P9 row (`| 1.2 | 2026-11-25 | (h) P9 (`step1.2_engineer_revision_r2.md`): ...`). Old is that row unchanged; New is that row followed by:
+```
+| 1.2 | 2026-11-25 | (e) re-check r2 Topologist (`step1.2_topologist_crossreview.md`, Re-check r2): TP1.2-2 and TP1.2-3 closed; K8 cover SIGNED (probes p1 to p5; K8-B19, K8-B26 restyles legitimate), S2-5b over moves: true SIGNED (p5' to p8, least drill_head 19.84); S2 r2 and S1 r6 CROSS-REVIEW PASS; NOTEs TP1.2-13 (cover over-cover, base_frame in the +Y notch), TP1.2-14 (records cite the 212/214 tally; re-run s2 r2, s1 r6). |
+```

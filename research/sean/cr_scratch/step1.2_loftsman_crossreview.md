@@ -262,3 +262,78 @@ New:
 | 1.2 | 2026-11-25 | (d) P6 (`step1.2_engineer_draw_r1.md`): `s2_plan.py` written; `wip/s2_plan_r1.png` first written 17:57:05; S2 r1 17/17 on run 1; S1 r5 18/18 (four poses, mass report equal to r4); members a, b 43.73 from the plate x edge, member c on the rail edge 0.00; cutter overhang 2.70; controls 191/191 (284 s); --stale red on s1 r4 frame_upper.radius only. Open: gear ticks, F6 label "z_S z_S", sightline in the highest-point report, s2 status text. Next: STOP-T5, (e) and M1 in parallel. |
 | 1.2 | 2026-11-25 | (e) P7a Loftsman (`step1.2_loftsman_crossreview.md`): S2 r1 CROSS-REVIEW PASS, S1 r5 changed rows PASS, LF-8 plan K7 SIGNED; BLOCK 0, FIX 2 (LF1.2-1 K7 record pair ids and distance basis before S2 r2; LF1.2-2 pinion\|gear_hub undeclared, toe gap 5.22, Designer rules the class), NOTE 5 (zero-measure C contacts, bound labels, highest point 1285.00 at capture_end, S2-3 identity, member feet 90.5 % on the end member). |
 ```
+
+## Re-check r2 (S2 r2, S1 r6; `step1.2_engineer_revision_r2.md`)
+
+Corrections to the brief: none. Records read: `wip/s2_checks_r2.json`, `wip/s1_checks_r6.json` (MEASURED 2026-11-25). Hand values DERIVED as in sections 1 and 5.
+
+### LF1.2-1 K7 record: CLOSED
+
+| Item | S2 r2 | S1 r6 |
+|---|---|---|
+| `test_fields` | [pose, pair, class, state, z_gap, distance, overlap, basis] | same |
+| entries / states | 7334 / 7334 | 5556 / 5556 |
+| malformed entries (wrong length, empty pose, pair, class or state) | 0 | 0 |
+| state per entry equal to `states` | yes | yes |
+| bases | z band 4059, box bound 1848, exact 778, circumscribed outline 477, declared N 172 | XZ projection (exact) 3428, depth band 1578, depth band (swept hull) 156, declared N 141, XZ (swept hull) 140, plan footprint (spec placement) 107, plan footprint (swept hull) 6 |
+
+Spot checks, record value against hand value:
+
+| Entry | Record | Hand | Basis right? |
+|---|---|---|---|
+| S2 load nut_housing_a\|frame_upper_a G | 32.746 | true 58.99 (244 - 160 - 25) | yes: box bound |
+| S2 load motor23_a\|guide_tie_b G | 14.766 | true 46.16 | yes: box bound |
+| S2 load ring\|frame_upper_a G | 34.000 | 244 - 210 = 34.00 | yes: exact |
+| S2 load guide_tie_a\|bracket_guide_b C | overlap 146.367 | 146.37 triangle | yes: exact |
+| S2 load ring\|guide_lug_a C | 0.000 / 0.000 | point (210, 0) | yes: exact |
+| S2 load gear_hub\|pinion_a G | z -17.39, 5.222 | 95.22 - 90.00 = 5.22; band overlap 1259.46 - 1242.07 = 17.39 | yes: circumscribed outline (the toe chord midpoint lies on the drawn edge, so bound = drawn gap) |
+| S2 load ring\|liftmotor_a G | z-separated 849.84 | 1149.84 - 300 | yes: z band |
+| S1 load nut_housing_a\|frame_upper_a G | 32.746 | -196.31 + 163.56 = 32.75 | yes: XZ exact |
+| S1 load ring\|frame_upper_a G | 33.944 | 34.00 true | basis reads "plan footprint (spec placement)": correct source, but the value is a 128-gon bound (NOTE R2-2) |
+
+Record lint `k7_record_issues`: it checks the field list, the count, the 8-field shape, non-empty pose, pair, class, state and basis, the pair form a|b, and state equality. It runs in `check_sketch.run_sketch` and fails K7. Z: K7-Z16 (S2), K7-Z17 (S1). B: K7-B32 (pair dropped from entry 0, reason "entry 0 lacks ['pair']"). The lint holds what LF1.2-1 asked. **Record lint: SIGNED (Loftsman).**
+
+### LF1.2-2 pinion|gear_hub: CLOSED
+
+`s2_spec.yaml` l.996-998 declares pinion_a, _b, _c on gear_hub as G, g_min 3, ASSUMED, with the Designer's source (toe runout; Step 2 hub clamp heads below r 90). The record shows 5.222 against 3: +2.22 at four poses x three pinions. K7-B33 (g_min 6) fires 12 short as planted. The spec `reported` list (l.91) and `wip/s2_summary_r2.md` l.81 report "pinion toe to gear hub 5.22" with its basis. **G 3 declaration: SIGNED (Loftsman)** on the geometry: 5.22 by hand. g_min 3 is the Designer's value.
+
+### Ruling: tick toe radius
+
+The ticks stand for the gear's teeth, so both ends should lie on the gear. With the heel end at the pitch radius 125.00 (`gear.pitch_diameter / 2`), the toe end on the same pitch cone is the toe pitch point, `pinion.r_toe` = 125 - 30 sin 71.565 = 125 - 28.46 = **96.54** (DERIVED; the key value). 95.22 = r_toe - m sin(pinion pitch angle) is the pinion's toe-tip radius, a point on the pinion, not on the gear. A tick from 95.22 to 125 mixes a pinion tip with a gear pitch point, and no gear generator has that pair of ends. The geometrically right tick is **96.54 to 125.00**: `ticks_radial r_in: pinion.r_toe`, as the Designer's rule names the key. The "r 95.2" in the rule text and the gear shape text is the wrong number. The 1.32 mm difference is not visible at plot scale, and no check verdict moves.
+
+FIX R2-1 (spec only; no other geometry): `s2_spec.yaml` l.978 `ticks_radial` r_in becomes `pinion.r_toe`, and its source text "toe pitch point r 96.54". l.958 shape text "toe r 95.2" becomes "toe r 96.54". `s2_plan.py` reads the same predicate value. Re-run `s2 --rev 3` (or fold into the Designer re-sign revision). K8-B29 to B31 stand as written.
+
+### NOTES
+
+- R2-1 (S1/S2 class agreement). S1 r6 records `gear_hub|pinion_a` as undeclared F, 5.198 (plan footprint). S2 declares the same physical pair G 3. Declare it G 3 in `s1_spec.yaml` before `--accept s1 --rev 6`. It passes: 5.198 > 3. X1 compares place, z_rule and plan_poly only, so it does not see neighbour classes.
+- R2-2 (basis wording). A round placed footprint in S1 (ring 128-gon) is tagged "plan footprint (spec placement)" with no word that it is a circumscribed bound: 33.944 against a true 34.00. Tag it "plan footprint (circumscribed 128-gon)" when `footprint: round` or a depth disk is used. In z-separated entries the `distance` field repeats the z gap (S2 ring|liftmotor 849.84 / 849.84). Write `null` there, or the plan distance; the basis already says z band. Neither is blocking.
+
+### Verdict r2
+
+LF1.2-1: **PASS** (closed). LF1.2-2: **PASS** (closed). Record lint and G 3 declaration: **SIGNED**. Tick toe radius: **96.54** (`pinion.r_toe`); FIX R2-1, spec-only. Counts r2: BLOCK 0, FIX 1, NOTE 2.
+
+### Gameplan lines to change (re-check r2)
+
+**Progress Log** (add a row after the (h) P9 row; the orchestrator places it after the P9 row once that row is applied).
+
+Old:
+```
+| 1.2 | 2026-11-25 | (h) P9 (`step1.2_engineer_revision_r2.md`):
+```
+New:
+```
+| 1.2 | 2026-11-25 | P7r Loftsman re-check r2 (`step1.2_loftsman_crossreview.md`, Re-check r2): LF1.2-1 closed (S2 7334, S1 5556 entries, record lint SIGNED), LF1.2-2 closed (pinion\|gear_hub G 3 SIGNED, 5.22); tick toe ruled 96.54 = pinion.r_toe (pitch cone, toe to heel 125), FIX R2-1 spec-only; NOTE: declare S1 gear_hub\|pinion G 3 before --accept s1 r6. |
+| 1.2 | 2026-11-25 | (h) P9 (`step1.2_engineer_revision_r2.md`):
+```
+(The new row goes after the P9 row; the anchor is the P9 row's first cells. If the orchestrator applies rows in order, append it after that row.)
+
+**l.141** (K7 row, the clause added at (e)).
+
+Old:
+```
+(exact, box bound, circumscribed outline, depth disk) (Loftsman 1.2 (e) LF1.2-1) |
+```
+New:
+```
+(exact, box bound, circumscribed outline, depth disk) (Loftsman 1.2 (e) LF1.2-1; record lint k7_record_issues, K7-Z16, Z17, B32, signed at re-check r2) |
+```
