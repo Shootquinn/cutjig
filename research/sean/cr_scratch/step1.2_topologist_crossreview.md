@@ -506,3 +506,85 @@ Counts (re-check r3): BLOCK 0, FIX 1, NOTE 2.
 ```
 | 1.2 | 2026-11-25 | (e) re-check r3 Topologist (`step1.2_topologist_crossreview.md`, Re-check r3): red-first of K8-B34 to B36 MEASURED by deleting the converse in a scratch copy (all three NO MATCH, clean); pinion heel corners read solid (copy 6.5 between ring 5 and gear fill 7); rail top in the +Y notch does not (copy 0.5 masked by the opaque sector fill at 2, 24 of 24 samples): FIX TP1.2-15, converse NOT SIGNED; S2 r3 CROSS-REVIEW FAIL, S1 r7 PASS; TP1.2-14 closed; NOTEs TP1.2-16 (grid density), TP1.2-17 (stand_in lint). |
 ```
+
+## Re-check r4
+
+### Corrections to the brief
+
+None.
+
+Inputs:
+- `step1.2_engineer_revision_r4.md`
+- `sketch_common.py`: `cover_issues` with the opacity clause and owner lint, `is_opaque`, `_piece_samples`
+- `fixtures/manifest.yaml`: K8-B39 to B41
+- `wip/s2_checks_r4.json` (21:05:58), `wip/s1_checks_r7.json` (21:06:28)
+- `wip/fixtures/controls_results.json` (21:05:25, 230/230)
+
+Probes ran on the live r4 build and on three scratch copies of `docs/sketches/`: `sk4_noop`, `sk4_nogrid`, `sk4_noowner`. Driver: `run_ctl.py`, output `r4_ctl.txt`. Results are MEASURED.
+
+### 1 Red-first by branch deletion (spot-check widened to all three)
+
+| Scratch copy | Deleted | Control | Result | K8-Z8 on the same copy |
+|---|---|---|---|---|
+| `sk4_noop` | opacity test in `shown` (any solid piece of the row counts) | K8-B39 | **NO MATCH**: clean, 0 of 1 | MATCH |
+| `sk4_nogrid` | step rule (nx = ny = COVER_GRID, as r3) | K8-B40 | **NO MATCH**: clean, 0 of 1 | MATCH |
+| `sk4_noowner` | owner lint (stand_in exempts unconditionally) | K8-B41 | **NO MATCH**: clean, 0 of 2 | MATCH |
+| live | none | K8-B39 / B40 / B41 / Z8 | MATCH: 1 issue (672 of 672 samples) / 1 issue (96 of 96, at (-33.70, -302.75)) / 2 issues (lint plus converse, 1242 samples) / clean | n/a |
+
+Each clause is the only thing that makes its B fire. This agrees with the Engineer's red-first on the kept r3 modules.
+
+### 2 Live r4
+
+- **K8 cover.** 74 artists, 0 issues. Cover states: hidden 29, partial 23, visible 22.
+- **Sector.** The fill has alpha 0.5 at zorder 2 and is not opaque (`is_opaque` False). The opaque artists are base_plate, drill_tube, frame_upper_a/b/c, gear, motor_shaft_a/b/c and screw_a/b/c.
+- **Split copies, shown samples and masking.** No opaque fill of another row lies above any copy (MEASURED):
+
+| Copy | Zorder | Samples shown | Masked | Where |
+|---|---|---|---|---|
+| base_frame +Y rail top | 0.5 | 672 | 0 | x -33.70 to 33.70, y 245.25 to 302.75 |
+| base_frame -Y rail | 0.5 | 96 | 0 | x +-33.70, y -302.75 to -245.25: the two 5 x 60 strips beside member c (x +-30 to +-35) |
+| pinion_a | 6.5 | 29 | 0 | |
+| pinion_b | 6.5 | 29 | 0 | |
+| pinion_c | 6.5 | 24 | 0 | heel band y 121.28 to 124.72 outside the gear OD |
+
+  The rail top in the +Y notch and the -Y strips now read solid through the translucent sector. TP1.2-15 and TP1.2-16 are closed.
+- **Stand-in rows.** guide_tie_a and _b carry `plan_style: stand_in` with owner "Step 2: rod top support (guide.top_support ASSUMED; Designer 1.2 (b) FIX 1)". TP1.2-17 is closed.
+- **Grid step.** The rail is 644 x 60, so the step is 60 / 12 = 5, capped at 2.5. That gives 258 x 24 = 6192 samples per rail piece, under the 20000 cap (DERIVED). A 5 mm strip gets 2 sample columns.
+- **Records.** s2 r4 is 17/17 and s1 r7 is 18/18. Both were written after the controls run and read K8 fired 41/41.
+
+### 3 Engineer Correction 3 (ring rim through the unfilled guide arms)
+
+Agreed. A solid piece under an unfilled true cover is "partial" in K8 terms. Dashing its covered arc means a hidden-line renderer, either opaque cover fills or overlay copies. That is an S3 item for the Topologist and the Engineer.
+
+### Findings (re-check r4)
+
+**NOTE TP1.2-18. The owner lint checks only that the string is non-empty.** `stand_in_owner: "x"` would pass. When S3 has more stand-ins, require the owner to name an overlay key with status ASSUMED, or a T2 row.
+
+**NOTE TP1.2-19. Two sampling and threshold limits remain:**
+- Annulus samples step by angle, from the outer-ring vertices: about 20.6 mm of arc at r 210. The 2.5 mm cap applies only to polygon pieces.
+- `is_opaque` treats a fill with alpha below 1 as see-through, so alpha 0.95 counts as translucent.
+
+Both can only misclassify toward "hidden" or "shown"; no live case. To S3.
+
+### Verdicts (re-check r4)
+
+- FIX TP1.2-15: CLOSED. Opacity clause: **SIGNED**.
+- TP1.2-16: closed. Grid step rule: **SIGNED**.
+- TP1.2-17: closed. `stand_in_owner` lint: **SIGNED**.
+- K8 cover converse, held at r3: **SIGNED**.
+- **S2 r4: CROSS-REVIEW PASS.**
+- S1 r7 (record re-run under r4 code, PNGs pixel-equal per the Engineer): PASS stands.
+
+Counts (re-check r4): BLOCK 0, FIX 0, NOTE 2.
+
+### Gameplan lines to change
+
+**Open Questions.** Add a row after the TP1.2-16, TP1.2-17 row (added by Re-check r3). Old is that row unchanged; New is that row followed by:
+```
+| TP1.2-18, TP1.2-19 (cover limits), N2 renderer | stand_in_owner accepts any non-empty string; annulus cover samples step by angle (about 20.6 mm at r 210), not the 2.5 mm cap; is_opaque needs alpha 1; solid pieces under unfilled true covers (ring rim under the guide arms) draw no dashed hidden arc (Engineer r4 Correction 3) | 1.3 (S3) | The Topologist proposes; The Engineer |
+```
+
+**Progress Log.** Add a row after the (h) P9 r4 row (`| 1.2 | 2026-11-25 | (h) P9 r4 (`step1.2_engineer_revision_r4.md`): ...`). Old is that row unchanged; New is that row followed by:
+```
+| 1.2 | 2026-11-25 | (e) re-check r4 Topologist (`step1.2_topologist_crossreview.md`, Re-check r4): red-first by branch deletion for K8-B39, B40, B41 (each NO MATCH without its clause, K8-Z8 clean); copies shown with 0 masked (+Y rail 672, -Y strips 96, pinions 29/29/24); TP1.2-15, -16, -17 closed and SIGNED; K8 cover converse SIGNED; S2 r4 CROSS-REVIEW PASS; NOTEs TP1.2-18 (owner string), TP1.2-19 (annulus step, opacity threshold) to S3. |
+```

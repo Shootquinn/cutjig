@@ -9,7 +9,7 @@
 - research/quinn/gameplan.md (Objectives, Design Notes, CAD Test Specification, Source Verification Register; Steps 0 to 7 record)
 - supplements/llm_plm_cad.md (section 8.4 sketching phase, 8.4.1 projection checklist, 8.4.2 plot conventions), method/tdd_method.md
 **Date:** 2026-11-24
-**Current step:** 1.2 (S2) in progress (opened 2026-11-25, research/sean/cr_scratch/step1.2_manager_open.md)
+**Current step:** 1.2 (S2) in progress: S2 r4 and S1 r7 reviewed; next D4-1 fix to S2 r5, then M2 (see latest Progress Log row)
 **lit_review:** no
 
 ---
@@ -492,6 +492,7 @@ Human gate: Sean, then pushed for Quinn.
 | 1.2 | 2026-11-25 | (e) Topologist (`step1.2_topologist_crossreview.md`): S2 r1 CROSS-REVIEW FAIL, FIX TP1.2-2 (nuts, descent pad, motor mounts drawn solid under nearer parts; tie legend) and TP1.2-3 (S2-5b misses drill_tube, drill_head; set from moves: true); handedness correct (screw cross products +22170.25 in azimuth order); TP-13 SIGNED; TP-n 6 rows; S1 r5 CROSS-REVIEW PASS (arms outboard 39.375). NOTEs TP1.2-4 to -11. |
 | 1.2 | 2026-11-25 | (e) P7a Loftsman (`step1.2_loftsman_crossreview.md`): S2 r1 CROSS-REVIEW PASS, S1 r5 changed rows PASS, LF-8 plan K7 SIGNED; BLOCK 0, FIX 2 (LF1.2-1 K7 record pair ids and distance basis before S2 r2; LF1.2-2 pinion\|gear_hub undeclared, toe gap 5.22, Designer rules the class), NOTE 5 (zero-measure C contacts, bound labels, highest point 1285.00 at capture_end, S2-3 identity, member feet 90.5 % on the end member). |
 | 1.2 | 2026-11-25 | r2 reviews: Designer signed ticks, leaders, K3, ties legend, spec edits (S2 highest point 1819.84 accepted; S1 1969.84 is the jig height of record); Loftsman PASS (record lint and G 3 signed; FIX R2-1 tick toe 96.54, ruled for him, Design Notes 29); Topologist PASS both (cover and S2-5b signed; NOTE TP1.2-13 rail top drawn dashed while visible, taken as a fix); fresh M1: S2 r2 FAIL F1 (leaders hidden under the gear fill), S1 r6 FAIL F1 (core 750 leader hidden under hatch, also in accepted r4); reviewer controls scored a FAIL V3, b PASS, c PASS, d FAIL, matching key.json. Controls run 1640 s (was 284 s). Next: Engineer fix pass to S2 r3 / S1 r7. |
+| 1.2 | 2026-11-25 | S2 r4 reviews: Designer SIGNED all five r4 items (notch outline rule, label_side, spec edits; carries fresh-M1 N2 ring rim through unfilled arms to S3), FIX D4-1 (descent-stop leader ends in a tie outline; set label_theta: 150 on descent_stop, anchor on the pad outer-edge midpoint -186.20, 107.50). Topologist S2 r4 CROSS-REVIEW PASS (TP1.2-15/16/17 and the K8 cover converse signed; NOTEs TP1.2-18, TP1.2-19 to S3). S1 r7 has passed every review (fresh M1, Topologist). **Resume here:** the Engineer applies D4-1 only (label_theta: 150 on descent_stop) to make S2 r5, re-runs S2 checks and --controls (about 734 s); the Designer does a delta read of s2_plan_r5.png; then STOP M2, Sean's correction pass on S2 r5 and S1 r7; then ORCH-B (--accept s1 --rev 7 and --accept s2 --rev 5) and P10 Manager close. Carried for S3/Manager close: controls runtime (734 s), N2 hidden-line renderer, TP1.2-18/19, Loftsman NOTE 2 (member-top stack tie, before S3 opens). |
 
 ---
 
