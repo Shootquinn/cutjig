@@ -27,7 +27,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -153,7 +153,7 @@ s3_checks:
     records: "certifiers name sketch and pair id; S3-3 resolves each at run time to the latest accepted, unsuperseded record of that sketch (check_sketch.stale_records); premise: --stale clean on it, checked inside S3-3 (a stale record certifies nothing); S3 is accepted after S1 r8 and S2 r9 (Loftsman 1.3 (b) FIX 6)"
     this_figure: "K7 entries of this S3 run (section Axes, capture_end) for pairs certified by S3"
     case: cut
-    rule: "every consecutive pair of each screw chain (field chains) is class C, as an axial face contact in the section, in at least one certifier named for it (state C, z-contact or plan-contact); a pair whose certifier is 'declared' passes only as declared and is listed; a pair with no certifier fails; the a, b screw-set pairs are certified from screw c only under the symmetry premise lint (P4)"
+    rule: "every consecutive pair of each screw chain (field chains) is class C, as an axial face contact that carries the cut-case load in its direction (the named face of each S3 certifier, field face) in the section, in at least one certifier named for it (state C, z-contact or plan-contact); a pair whose certifier is 'declared' passes only as declared and is listed; a pair with no certifier fails; the a, b screw-set pairs are certified from screw c only under the symmetry premise lint (P4)"
     source: "SE-2; gameplan detail 1.3 S3-3; Designer 1.3 (a) section 11"
 
 # S3-3 chains, cut case (Designer 1.3 (a) section 11). certifiers: record and K7 pair id as written in that record
@@ -171,10 +171,11 @@ chains:
     - {pair: [base_frame, frame_upper_c], certifiers: ["S2 frame_upper_c|base_frame z-contact", "S3 base_frame|frame_upper_c"]}
     - {pair: [frame_upper_c, bracket_anchor_c], certifiers: ["S2 bracket_anchor_c|frame_upper_c plan-contact", "S3 bracket_anchor_c|frame_upper_c"]}
     - {pair: [bracket_anchor_c, anchor_c], certifiers: ["S2 bracket_anchor_c|anchor_c plan-contact (round r 21 block; S2 r9 re-certifies the 42 square)", "S3 anchor_c|bracket_anchor_c"]}
-    - {pair: [anchor_c, anchor_bearing_c], certifiers: ["S3 anchor_c|anchor_bearing_c"], note: "axial faces: block shoulder 272, cover 288"}
-    - {pair: [anchor_bearing_c, screw_c], certifiers: ["S3 anchor_bearing_c|screw_c", "S3 anchor_locknut_c|anchor_bearing_c and anchor_locknut_c|screw_c (cut case, locknut under the inner races)"], note: "axial faces: screw shoulder 288 (lifting cases), locknut 272 (cut case)"}
+    - {pair: [anchor_c, anchor_bearing_c], certifiers: ["S3 anchor_c|anchor_bearing_c"], face: "cover underside on the upper outer race, jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width (288), cut case", note: "lifting cases bear on the block shoulder 272"}
+    - {pair: [anchor_bearing_c, anchor_locknut_c], certifiers: ["S3 anchor_locknut_c|anchor_bearing_c"], face: "locknut top under the lower inner race, jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width (272), cut case", note: "Loftsman 1.3 (b) re-sign FIX 8: the cut-case path; the screw shoulder at 288 unloads in the cut case"}
+    - {pair: [anchor_locknut_c, screw_c], certifiers: ["S3 anchor_locknut_c|screw_c"], face: "M10x1 thread", note: "Loftsman 1.3 (b) re-sign FIX 8"}
     - {pair: [screw_c, nut_c], certifiers: ["S3 screw_c|nut_c"], note: "tension segment (S3-1)"}
-    - {pair: [nut_c, nut_housing_c], certifiers: ["S3 nut_housing_c|nut_c"], note: "cut case: flange on the counterbore shoulder; lifting cases through nut_clamp_c"}
+    - {pair: [nut_c, nut_housing_c], certifiers: ["S3 nut_housing_c|nut_c"], face: "counterbore shoulder under the flange, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, cut case", note: "cut case: flange on the counterbore shoulder; lifting cases through nut_screws_c (head on the flange top)"}
     - {pair: [nut_housing_c, ring], certifiers: ["S3 ring|nut_housing_c"]}
     - {pair: [ring, bearing], certifiers: ["S1 ring|bearing C", "S2 ring|bearing plan-contact", "S3 ring|bearing"]}
     - {pair: [bearing, drill_tube], certifiers: ["S1 drill_tube|bearing C", "S2 drill_tube|bearing plan-contact", "declared (S6-5 draws the segment)"]}
@@ -220,7 +221,7 @@ rubric_additions:
   - "section handedness: viewer at +X, u = +Y right; screw c and member c on the left (u < 0), pinion c and NEMA 23 c on the right (u > 0) (K8 side predicates on screw_c, frame_upper_c, motor23_c, pinion_c)"
   - "inset handedness: +X right, +Y up, theta counter-clockwise from +X seen from +Z; screws at 30, 150, 270; A-A on x = 0 with arrows toward -X (K8 per Axes, TP-7)"
   - "V6: rectangles in the section, circles only in the inset (and balls as circles, admitted sub-artists)"
-  - "V7: the screw reads as a screw with a fixed anchor (two bearings between shoulder, cover and locknut), a floating nut in a counterbored, clamped boss, and a radial guide; the motor as body, pilot and shaft on standoffs (visual-only)"
+  - "V7: the screw reads as a screw with a fixed anchor (two bearings between shoulder, cover and locknut), a floating nut in a counterbored boss held by shoulder screws with axial play, and a radial guide; the motor as body, pilot and shaft on standoffs (visual-only)"
   - "V10: the operator rows of gameplan detail 1 common for S3, judged on fixed parts (couplings, standoffs, motor shafts) and on nut_station_park for the ring at load (load tip = park tip) (visual-only)"
 
 # Reported items (RPT; Designer 1.3 (a) section 12). checks_s3.reported(ctx)["items"] supplies each value.
@@ -247,9 +248,8 @@ not_drawn:
   - {part: "descent-stop pad and post", reason: "theta 150, x -173 to -186, beyond the 60 band (Designer 1.3 (a) section 1 row 14); drawn in S1, S2"}
   - {part: "base-frame end members and plate supports", reason: "at x +-232 and +-112, off the plane; drawn in S2"}
   - {part: "front M3 standoffs", reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
-  - {part: "anti-rotation pin", reason: "pin through the nut flange into the housing: no diameter or position leaf; named in the nut_c shape (Designer 1.3 (b) section 7)"}
-  - {part: "clamp bolts", reason: "bolts of the nut clamp ring into the housing top: off the plane, no leaf; named in the nut_clamp_c shape"}
-figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; anti-rotation pin; clamp bolts. Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
+  - {part: "two nut shoulder screws", reason: "at +-60 deg from the outboard radial, x +-13.86, off the plane; leaf ring.nut_screw; the inboard screw is row nut_screws_c (Designer 1.3 (b) re-sign FIX A)"}
+figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; two nut shoulder screws (off the plane). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
 
 part_list:
   - {part: "base frame rails (cut across, slot notches, centre bore lines)", row: base_frame}
@@ -269,7 +269,7 @@ part_list:
   - {part: "angular-contact bearing pair, balls, bearing line", row: "anchor_bearing_c (sub-artists balls, line)"}
   - {part: "top-guide block c and radial bearing (balls)", row: "guide_c, guide_bearing_c (sub-artist balls)"}
   - {part: "anchor locknut", row: anchor_locknut_c}
-  - {part: "nut clamp ring", row: nut_clamp_c}
+  - {part: "nut shoulder screw (inboard)", row: nut_screws_c}
   - {part: "anchor and top-guide bracket arms c", row: "bracket_anchor_c, bracket_guide_c"}
   - {part: "member c", row: frame_upper_c}
   - {part: "NEMA 17 c, pilot, shaft", row: "liftmotor_c, liftmotor_pilot_c, liftmotor_shaft_c"}
@@ -281,7 +281,8 @@ part_list:
   - {part: "load arrows (cut, tension, compression)", row: "load_cut, load_tension_c, load_comp_c"}
   - {part: "inset: screws, housings, anchor blocks, lift motors, members, home switches a, b, c", row: "screw_a/_b/_c, nut_housing_a/_b/_c, anchor_a/_b/_c, liftmotor_a/_b/_c, frame_upper_a/_b/_c, home_switch_a/_b/_c"}
   - {part: "inset: controller callout, ring OD reference, cutting-plane line A-A, axes and theta arc", row: "sync_callout, ring_ref, section_line, plan_axes"}
-  - {part: "front standoffs, anti-rotation pin, clamp bolts, off-plane sets", row: not_drawn}
+  - {part: "shop floor line (ground hatch)", row: floor}
+  - {part: "front standoffs, two nut shoulder screws, off-plane sets", row: not_drawn}
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups).
 neighbour_groups:
@@ -695,11 +696,11 @@ features:
   hatch: aluminium
 - id: nut_housing_c
   name: nut housing
-  shape: 'ring boss D50 x 30 at the screw (u -185 to -135), hatched with the ring: bore D23 over the nut body (0.5 float), counterbore D43 x 8 at the top for the flange, flange seated on the counterbore shoulder (cut-case seat); nut clamp ring (row nut_clamp_c) over the flange, bolted to the housing top (upward seat); circle d 50 in the inset (Designer 1.3 (b) sign-off FIX 1; Loftsman 1.3 (b) FIX 3; orchestrator P2f ruling)'
+  shape: 'ring boss D50 x 30 at the screw (u -185 to -135), hatched with the ring: bore D23 over the nut body (0.5 float), counterbore D43 x 8 at the top for the flange, flange seated on the counterbore shoulder (cut-case seat); three M5 tapped holes in the counterbore floor on PCD 32 for the nut shoulder screws (row nut_screws_c); circle d 50 in the inset (Designer 1.3 (b) FIX 1, re-sign FIX A; Loftsman 1.3 (b) FIX 3, re-sign FIX 7 (a))'
   kind: cylinder
   axis: Z
   projection: circle
-  keys: [ring.nut_housing_od, ring.nut_housing_height, ring.nut_float, jackscrew.nut_body_od, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_thickness, jackscrew.nut_flange_od, jackscrew.nut_length]
+  keys: [ring.nut_housing_od, ring.nut_housing_height, ring.nut_float, jackscrew.nut_body_od, jackscrew.pitch_radius, jackscrew.angle, jackscrew.nut_flange_thickness, jackscrew.nut_flange_od, jackscrew.nut_length, ring.nut_screw_pcd, ring.nut_screw_thread_d, ring.nut_screw_thread_length]
   z_rule: {z_min: nut_z - ring.nut_housing_height / 2, z_max: nut_z + ring.nut_housing_height / 2}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: ring.nut_housing_od / 2, footprint: round}
   neighbours:
@@ -709,8 +710,11 @@ features:
   - {id: anchor_c, class: G, g_min: 10, source: 'g_min seed l.148; housing bottom 305.84 to block top 295 at capture_end: 10.84 (S1)'}
   - {id: guide_c, class: G, g_min: 10, source: 'g_min seed l.148; housing top at park 1110.84 to block bottom 1135: 24.16 (S1)'}
   - {id: home_switch_c, class: G, g_min: 10, source: 'g_min seed l.148; housing top at park 1110.84 to switch bottom 1122: 11.16 (Designer 1.3 (a) section 9)'}
-  - {id: nut_c, class: C, source: 'flange on the counterbore shoulder at nut_z + nut_length / 2 - nut_flange_thickness: the cut-case seat (the nut pushes the ring down); 0.5 radial float at the body and the flange (Designer 1.3 (b) FIX 1)'}
-  - {id: nut_clamp_c, class: C, source: 'clamp ring bolted on the housing top, outside the counterbore (r 21.5 to 23)'}
+  - id: nut_c
+    class: C
+    source: 'flange on the counterbore shoulder at nut_z + nut_length / 2 - nut_flange_thickness: the cut-case seat (the nut pushes the ring down); 0.5 radial float at the body and the flange (Designer 1.3 (b) FIX 1)'
+    face: {z: nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, side: counterbore shoulder under the flange (cut case)}
+  - {id: nut_screws_c, class: C, source: 'M5 in the floor, shoulder on the counterbore floor (Designer re-sign FIX A)'}
   sense:
   - {pred: below, of: guide_c}
   - {pred: above, of: anchor_c}
@@ -721,23 +725,25 @@ features:
   projection_by_axes: {section: rectangle, inset_plan: circle}
   section_u:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - ring.nut_housing_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (jackscrew.nut_body_od / 2 + ring.nut_float)', nut_z - ring.nut_housing_height / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
-  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_body_od / 2 + ring.nut_float', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_housing_od / 2', nut_z - ring.nut_housing_height / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_body_od / 2 + ring.nut_float', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - ring.nut_screw_thread_d / 2', nut_z - ring.nut_housing_height / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + ring.nut_screw_thread_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_housing_od / 2', nut_z - ring.nut_housing_height / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - ring.nut_screw_thread_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + ring.nut_screw_thread_d / 2', nut_z - ring.nut_housing_height / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness - ring.nut_screw_thread_length]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - ring.nut_housing_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (jackscrew.nut_flange_od / 2 + ring.nut_float)', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + ring.nut_housing_height / 2]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_flange_od / 2 + ring.nut_float', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_housing_od / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + ring.nut_housing_height / 2]
   hatch: aluminium
 - id: nut_c
   name: lead-screw nut
-  shape: 'brass flange nut D22 body, D42 x 8 flange, 30 long, hatched either side of the screw: body from the thread (nominal / 2) to nut_body_od / 2, flange step to nut_flange_od / 2 at the top, seated on the counterbore shoulder, clamp ring above (row nut_clamp_c); 0.5 radial float to the housing bore and counterbore; anti-rotation pin not drawn (not_drawn) (Designer 1.3 (a) section 7, 1.3 (b) FIX 1)'
+  shape: 'brass flange nut D22 body, D42 x 8 flange, 30 long, hatched either side of the screw: body from the thread (nominal / 2) to nut_body_od / 2, flange step to nut_flange_od / 2 at the top with three D7 holes on PCD 32 (one cut by the plane, inboard), seated on the counterbore shoulder; shoulder screws (row nut_screws_c) through the holes, 0.5 radial and 0.05 axial play; floating = radial float only, axially located with 0.05 play (Design Notes 31 as re-ruled); rotation located by the screws (Designer 1.3 (a) section 7, 1.3 (b) FIX 1, re-sign FIX A)'
   kind: cylinder
   axis: Z
   projection: circle
-  keys: [jackscrew.nut_length, jackscrew.nut_flange_od, jackscrew.nut_body_od, jackscrew.nut_flange_thickness, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, ring.thickness]
+  keys: [jackscrew.nut_length, jackscrew.nut_flange_od, jackscrew.nut_body_od, jackscrew.nut_flange_thickness, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, ring.thickness, ring.nut_screw_pcd, ring.nut_screw_shoulder_d, ring.nut_float]
   z_rule: {z_min: nut_z - jackscrew.nut_length / 2, z_max: nut_z + jackscrew.nut_length / 2}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: jackscrew.nut_flange_od / 2, footprint: round}
   neighbours:
   - {id: screw_c, class: C, source: thread contact (Designer 1.3 (a) section 9)}
   - {id: nut_housing_c, class: C, source: 'flange on the counterbore shoulder: cut-case axial seat (Designer 1.3 (b) FIX 1)'}
-  - {id: nut_clamp_c, class: C, source: 'clamp ring on the flange top: axial seat for every lifting case, the nut pushing the ring up (Loftsman 1.3 (b) FIX 3 (b))'}
+  - {id: nut_screws_c, class: F, source: 'shoulder in the flange hole 0.5 radial, head 0.05 above the flange top (axial play, Loftsman NOTE 3); the lifting cases close the 0.05 against the head'}
   sense:
   - {pred: below, of: guide_c}
   - {pred: above, of: anchor_c}
@@ -749,37 +755,39 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nut_body_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nominal / 2', nut_z - jackscrew.nut_length / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nominal / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_body_od / 2', nut_z - jackscrew.nut_length / 2, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nut_flange_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nominal / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2]
-  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nominal / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_flange_od / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nominal / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - (ring.nut_screw_shoulder_d / 2 + ring.nut_float)', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + (ring.nut_screw_shoulder_d / 2 + ring.nut_float)', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nut_flange_od / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2]
   hatch: brass
   label: {text: 'floating nut, radial float', key: ring.nut_float, fmt: .1f}
-- id: nut_clamp_c
-  name: nut clamp ring
-  shape: nut clamp ring OD 46, bore 30, 3 thick, on the housing top over the nut flange, bolted to the housing (bolts not drawn); holds the floating nut against upward load; hatched steel (orchestrator P2f ruling; values for the Designer to sign)
-  kind: cylinder
+- id: nut_screws_c
+  name: nut shoulder screws
+  shape: shoulder screw d 6 x 8.05, M5 into the counterbore floor, head D10 x 4.5 over the nut flange, 0.05 axial play; the one on the inboard radial drawn (unsectioned), two at +-60 deg from the outboard radial off the plane (not_drawn); the nut's upward seat in every lifting case (Designer 1.3 (b) re-sign FIX A)
+  kind: screw
   axis: Z
   projection: rectangle
-  keys: [ring.nut_clamp_od, ring.nut_clamp_id, ring.nut_clamp_thickness, ring.nut_housing_height, jackscrew.pitch_radius, jackscrew.angle]
-  z_rule: {z_min: nut_z + ring.nut_housing_height / 2, z_max: nut_z + ring.nut_housing_height / 2 + ring.nut_clamp_thickness}
+  keys: [ring.nut_screw, ring.nut_screw_pcd, ring.nut_screw_shoulder_d, ring.nut_screw_thread_d, ring.nut_screw_head_d, ring.nut_screw_head_height, ring.nut_screw_thread_length, ring.nut_axial_play, jackscrew.nut_length, jackscrew.nut_flange_thickness, jackscrew.pitch_radius, jackscrew.angle]
+  z_rule: {z_min: nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness - ring.nut_screw_thread_length, z_max: nut_z + jackscrew.nut_length / 2 + ring.nut_axial_play + ring.nut_screw_head_height}
   label: null
   neighbours:
   - {use: s1_5b_base}
   - {use: fixed_g10}
-  - {id: nut_c, class: C, source: on the flange top (upward seat)}
-  - {id: nut_housing_c, class: C, source: bolted on the housing top}
-  - {id: screw_c, class: F, source: bore r 15 clears the screw r 6}
-  - {id: home_switch_c, class: G, g_min: 10, source: 'g_min seed l.148; clamp top at park 1113.84 to switch bottom 1122, 7 radially (r 183 to 190): 10.75 in plane (P2f dry run)'}
-  - {id: guide_c, class: G, g_min: 10, source: 'g_min seed l.148; clamp top at park 1113.84 to block bottom 1135: 21.16'}
+  - {id: nut_housing_c, class: C, source: 'M5 in the counterbore floor, shoulder on the floor'}
+  - {id: nut_c, class: F, source: '0.5 radial in the flange hole, head 0.05 above the flange top (axial play)'}
+  - {id: screw_c, class: F, source: clears the lead screw}
+  - {id: ring, class: F, source: above and inboard of the ring pieces}
+  - {id: home_switch_c, class: G, g_min: 10, source: g_min seed l.148 (Designer re-sign dry run 41.53 at park)}
+  - {id: guide_c, class: G, g_min: 10, source: 'g_min seed l.148; head top 1115.39 at park to block bottom 1135: 19.61'}
   sense:
   - {pred: below, of: guide_c}
   chain: [axial]
   moves: true
   axes: [section]
-  section_class: cut
-  place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: ring.nut_clamp_od / 2, footprint: round}
+  section_class: unsectioned
+  place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: ring.nut_screw_pcd / 2 + ring.nut_screw_head_d / 2, footprint: round}
   section_u:
-  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - ring.nut_clamp_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - ring.nut_clamp_id / 2', nut_z + ring.nut_housing_height / 2, nut_z + ring.nut_housing_height / 2 + ring.nut_clamp_thickness]
-  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_clamp_id / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_clamp_od / 2', nut_z + ring.nut_housing_height / 2, nut_z + ring.nut_housing_height / 2 + ring.nut_clamp_thickness]
-  hatch: steel
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - ring.nut_screw_thread_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + ring.nut_screw_thread_d / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness - ring.nut_screw_thread_length, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - ring.nut_screw_shoulder_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + ring.nut_screw_shoulder_d / 2', nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, nut_z + jackscrew.nut_length / 2 + ring.nut_axial_play]
+  - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 - ring.nut_screw_head_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + ring.nut_screw_pcd / 2 + ring.nut_screw_head_d / 2', nut_z + jackscrew.nut_length / 2 + ring.nut_axial_play, nut_z + jackscrew.nut_length / 2 + ring.nut_axial_play + ring.nut_screw_head_height]
 - id: bearing
   name: drill-to-ring bearing
   shape: 'drill-to-ring bearing: nested rectangles per side, outer race in the ring bore (r 100), inner race on the tube (r 76.2), top flush with the ring top, hanging 13 below the plate'
@@ -938,11 +946,11 @@ features:
   section_class: reference
 - id: screw_c
   name: Tr12x3 jack screw
-  shape: 'Tr12x3 lead screw, unsectioned outline in three steps (section_u): M10x1 thread and journal 10 from the block underside through the locknut and both anchor bearings (265 to 288), Tr12x3 body 12 from the shoulder on the upper inner race (288) to the guide-block bottom (1135), journal 10 through the guide bearing to the block top (1165, no axial contact); thread ticks at the lead 3; label ''Tr12x3 screw L 900, lead 3''; power-off hold callout (row hold_callout); circle d 12 in the inset (Designer 1.3 (b) FIX 3; Loftsman 1.3 (b) FIX 1). place half_width nominal / 2 contains every step; K6 reads the z_rule envelope; K5 admission of the stepped outline on an unsectioned row: P4'
+  shape: 'Tr12x3 lead screw cut from d 12 bar, unsectioned outline in three steps (section_u): M10x1 thread and journal 10 from the block underside through the locknut and both anchor bearings (265 to 288); plain d 12 collar from the shoulder on the upper inner race (288) to the thread start (jackscrew.thread_start_z 300); Tr12x3 thread 300 to jackscrew.thread_end_z 1120, thread ticks at the lead 3 over that span only; plain d 12 collar 1120 to the guide-block bottom (1135); journal 10 through the guide bearing to the block top (1165, no axial contact); label ''Tr12x3 screw L 900, lead 3''; power-off hold callout (row hold_callout); circle d 12 in the inset (Designer 1.3 (b) FIX 3, re-sign FIX B; Loftsman 1.3 (b) FIX 1). place half_width nominal / 2 contains every step; K6 reads the z_rule envelope; K5 admission of the stepped outline on an unsectioned row: P4'
   kind: screw
   axis: Z
   projection: rectangle
-  keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, jackscrew.length, jackscrew.lead, jackscrew.journal_d, jackscrew.anchor_bearing_z, jackscrew.anchor_bearing_width, jackscrew.guide_allowance]
+  keys: [jackscrew.anchor_z, jackscrew.top_guide_z, jackscrew.nominal, jackscrew.pitch_radius, jackscrew.angle, jackscrew.length, jackscrew.lead, jackscrew.journal_d, jackscrew.anchor_bearing_z, jackscrew.anchor_bearing_width, jackscrew.guide_allowance, jackscrew.thread_start_z, jackscrew.thread_end_z]
   z_rule: {z_min: jackscrew.anchor_z, z_max: jackscrew.top_guide_z}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: jackscrew.nominal / 2, footprint: round}
   neighbours:
@@ -953,7 +961,7 @@ features:
   - {id: guide_c, class: F, source: block bore clears the journal (Designer 1.3 (a) section 9)}
   - {id: screw_end_c, class: C, source: screw end below the anchor journal (same bar)}
   - {id: anchor_locknut_c, class: C, source: locknut on the thread}
-  - {id: nut_clamp_c, class: F, source: clamp bore clears the screw}
+  - {id: nut_screws_c, class: F, source: shoulder screw at PCD 32 clears the lead screw}
   sense:
   - {pred: side, of: drill_tube, sign: -1, source: u = pitch_radius sin 270 = -160 < 0 (Designer 1.3 (a) section 2 handedness)}
   - {pred: azimuth, expr: 'jackscrew.angle[2]', tol_deg: 0.1, axes: inset_plan}
@@ -967,6 +975,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.journal_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.journal_d / 2', jackscrew.anchor_z, jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.nominal / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.nominal / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.top_guide_z - jackscrew.guide_allowance]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.journal_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.journal_d / 2', jackscrew.top_guide_z - jackscrew.guide_allowance, jackscrew.top_guide_z]
+  ticks: {from: jackscrew.thread_start_z, to: jackscrew.thread_end_z, pitch: jackscrew.lead, source: Designer 1.3 (b) re-sign FIX B}
 - id: screw_end_c
   name: screw end
   shape: screw end d 8 below the anchor thread, from the block underside down into the coupling, 9 engaged, liftmotor.shaft_gap 1 above the motor shaft tip; unsectioned (Designer 1.3 (b) FIX 2)
@@ -986,7 +995,7 @@ features:
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: liftmotor.screw_end_d / 2, footprint: round}
 - id: anchor_c
   name: fixed anchor
-  shape: 'anchor block 42 square x 30, one hatched body with its cover: bore 26 for the back-to-back pair, shoulder bore 20 under the outer races (face at 272), cover bore 16 over them (face at 288); locknut (row anchor_locknut_c) under the inner races, screw shoulder on the upper inner race; the block carries both axial directions; outer face on the arm end at r 181; 42 square in the inset, faces radial (Designer 1.3 (b) FIX 3; Loftsman 1.3 (b) FIX 1, 2)'
+  shape: 'anchor block 42 square x 30, block 265 to 288 and a separate bolted cover 288 to 295 (bearings enter from the top), the cover hatched at the opposite angle with its joint line drawn at 288: bore 26 for the back-to-back pair, shoulder bore 20 under the outer races (face at 272), cover bore 16 over them (face at 288); locknut (row anchor_locknut_c) under the inner races, screw shoulder on the upper inner race; the block carries both axial directions; outer face on the arm end at r 181; 42 square in the inset, faces radial (Designer 1.3 (b) FIX 3; Loftsman 1.3 (b) FIX 1, 2)'
   kind: prism
   axis: null
   projection: rectangle
@@ -996,9 +1005,12 @@ features:
   neighbours:
   - {id: bracket_anchor_c, class: C, source: 'block on the arm end, faces touch at r 181 (S2 r5 plan-contact)'}
   - {id: standoffs_c, class: C, source: standoff tops on the block underside}
-  - {id: coupling_c, class: G, g_min: 1, source: '1.5 clear of the block underside (rotating in place; Designer 1.3 (a) section 9, new, ASSUMED)'}
+  - {id: coupling_c, class: G, g_min: 1, source: '2.0 below the block underside (2.06 at the shoulder-bore corner) at liftmotor.coupling_length 36 (Designer 1.3 (b) FIX 2; g_min 1 Designer 1.3 (a) section 9, ASSUMED)'}
   - {id: screw_c, class: F, source: bore clears the journal}
-  - {id: anchor_bearing_c, class: C, source: 'outer races in the bore: axial faces at the shoulder (272, compression cases, screw pushed down) and the cover (288, cut case, screw pulled up) (Designer 1.3 (b) FIX 3)'}
+  - id: anchor_bearing_c
+    class: C
+    source: 'outer races in the bore: axial faces at the shoulder (272, compression cases, screw pushed down) and the cover (288, cut case, screw pulled up) (Designer 1.3 (b) FIX 3)'
+    face: {z: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, side: cover underside on the upper outer race (cut case)}
   - {id: anchor_locknut_c, class: F, source: locknut r 9 inside the shoulder bore r 10}
   sense:
   - {pred: below, of: nut_c}
@@ -1018,6 +1030,7 @@ features:
   hatch: aluminium
   x1_exempt: {reason: '1.3 (b): anchor block 42 square (Sean STOP S3-A, Design Notes 31); s1_spec.yaml anchor_a/_b and s2_spec.yaml anchor_a/_b/_c take this place at P6 with their script redraw (S1 r8, S2 r9), when the exemption is removed; a spec-only edit now turns 17 live S1/S2 controls red (P2 dry run)'}
   label: {text: 'fixed anchor (2 x angular contact, back-to-back), block', key: jackscrew.anchor_block_width, fmt: .0f}
+  hatch_split: {at: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, above: reversed hatch (cover), joint_line: true, source: 'Designer 1.3 (b) re-sign FIX C; the cover pieces stay in anchor_c.section_u so the row extent matches the shared z_rule (X1, K6)'}
 - id: anchor_bearing_c
   name: anchor bearings
   shape: 'two angular-contact bearings 10 x 26 x 8 back-to-back at the block mid-height (280 z_A): races hatched, balls as circles (sub-artist anchor_bearing_c:balls), contact lines converging outward; bearing line marked (sub-artist anchor_bearing_c:line at jackscrew.anchor_bearing_z) (Designer 1.3 (a) section 7); outer races between the block shoulder (272) and the cover (288), inner races between the locknut (272) and the screw shoulder (288)'
@@ -1030,7 +1043,10 @@ features:
   neighbours:
   - {id: anchor_c, class: C, source: outer races in the block bore}
   - {id: screw_c, class: C, source: 'inner races on the journal 10; axial faces: screw shoulder on the upper inner race at 288 (compression cases) and the locknut under the lower inner race at 272 (cut case) (Designer 1.3 (b) FIX 3)'}
-  - {id: anchor_locknut_c, class: C, source: locknut clamps the inner races from below (272)}
+  - id: anchor_locknut_c
+    class: C
+    source: locknut clamps the inner races from below (272)
+    face: {z: jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width, side: locknut top under the lower inner race (cut case)}
   sense:
   - {pred: below, of: nut_c}
   chain: [axial]
@@ -1218,7 +1234,7 @@ features:
   neighbours:
   - {id: liftmotor_c, class: C, source: on the motor face}
   - {id: liftmotor_shaft_c, class: N, source: shaft through the pilot}
-  - {id: coupling_c, class: G, g_min: 1, source: '1.5 clear of the pilot top (Designer 1.3 (a) section 9, new, ASSUMED)'}
+  - {id: coupling_c, class: G, g_min: 1, source: 12.0 above the pilot top at liftmotor.coupling_length 36 (Designer 1.3 (b) FIX 2)}
   sense: []
   chain: []
   moves: false
@@ -1296,16 +1312,16 @@ features:
   notes: ['beyond the plane within one profile width (0 > x >= -profile.width): plan_poly gives the two rear standoff squares (x -18.25 to -12.75); drawn in elevation, edges behind a cut part dashed (renderer section convention, P4)']
 - id: home_switch_c
   name: home switch
-  shape: micro switch under the top-guide arm, body 13 x 20 x 6 at r 190 to 210, top on the arm underside; roller lever (sub-artist home_switch_c:lever, a line, no area, outside K7) in its free state from the body bottom inboard corner (r 190, 1122) to (r liftsync.lever_r_tip 182, z of the clamp top at park + liftsync.lever_free_gap = 1115.00 z_A), over the housing rim; the ring trips it about 2 above park when homing (Designer 1.3 (b) FIX 4; P2f clamp)
+  shape: micro switch under the top-guide arm, body 13 x 20 x 6 at r 190 to 210, top on the arm underside; roller lever (sub-artist home_switch_c:lever, a line, no area, outside K7) in its free state from the body bottom inboard corner (r 190, 1122) to (r liftsync.lever_r_tip 182, z of the housing top at park + liftsync.lever_free_gap = 1112.00 z_A), over the housing rim; the ring trips it about 2 above park when homing (Designer 1.3 (b) FIX 4; re-sign FIX A)
   kind: prism
   axis: null
   projection: rectangle
-  keys: [liftsync.home_switch, liftsync.switch_r_in, liftsync.switch_r_out, liftsync.switch_height, liftsync.switch_width, jackscrew.top_guide_z, jackscrew.guide_allowance, jackscrew.angle, liftsync.lever_r_tip, liftsync.lever_free_gap, ring.nut_clamp_thickness]
+  keys: [liftsync.home_switch, liftsync.switch_r_in, liftsync.switch_r_out, liftsync.switch_height, liftsync.switch_width, jackscrew.top_guide_z, jackscrew.guide_allowance, jackscrew.angle, liftsync.lever_r_tip, liftsync.lever_free_gap]
   z_rule: {z_min: jackscrew.top_guide_z - jackscrew.guide_allowance - liftsync.switch_height, z_max: jackscrew.top_guide_z - jackscrew.guide_allowance}
   label: null
   neighbours:
   - {id: bracket_guide_c, class: C, source: switch body top on the arm underside}
-  - {id: nut_clamp_c, class: G, g_min: 10, source: g_min seed l.148; 10.75 at park in plane (P2f dry run)}
+  - {id: nut_screws_c, class: G, g_min: 10, source: 'g_min seed l.148; head top at park 1115.39 to switch, off radially (Designer re-sign dry run 41.53)'}
   sense:
   - {pred: azimuth, expr: 'jackscrew.angle[2]', tol_deg: 0.1, axes: inset_plan}
   chain: []
@@ -1317,7 +1333,7 @@ features:
   sub_artists: [lever]
   lever:
     from: ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (liftsync.switch_r_in - jackscrew.pitch_radius)', jackscrew.top_guide_z - jackscrew.guide_allowance - liftsync.switch_height]
-    to: ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (liftsync.lever_r_tip - jackscrew.pitch_radius)', park_tip + ring.position_above_tip + ring.thickness / 2 + ring.nut_housing_height / 2 + ring.nut_clamp_thickness + liftsync.lever_free_gap]
+    to: ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - (liftsync.lever_r_tip - jackscrew.pitch_radius)', park_tip + ring.position_above_tip + ring.thickness / 2 + ring.nut_housing_height / 2 + liftsync.lever_free_gap]
     frame: section (u, z_A)
 - id: screw_a
   name: Tr12x3 jack screw

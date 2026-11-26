@@ -121,7 +121,110 @@ coupling_length joins the S1 r8 and S2 r9 key lists. No new revision opens. Per 
 4. Brass Tr12 nut mass 0.14 against the overlay 0.05 (Loftsman NOTE 4): W rises 2.6 N, every margin falls less than 1 percent. Designer / vendor (B2-1).
 5. Carried picks: nut mounting, hold device, sync, anchoring (Design Notes 31).
 
+## P2f2
+
+Last (b) pass, run under the loop cap: the raisers sign from this table and there is no further re-sign round. Sources: `step1.3_designer_spec_resign.md` (FIX A to D, notes; rewritten FIX A) and `step1.3_loftsman_spec_resign.md` (FIX 7, FIX 8, notes). Orchestrator rulings: the revised nut-seat ruling (Designer option (a), shoulder screws) replaces the earlier OD 50 x 2 clamp with M3 ears.
+
+### Corrections to the brief
+
+1. **The ear form was applied first, measured, then reverted.** The first P2f2 ruling (clamp OD 50 x 2, 2 x M3 through ears at ±X) was applied and dry-run before the revised ruling arrived.
+   - Clamp results: clamp|home_switch_c 10.44 at park, clamp|guide_c 22.16, lever tip 1114.00, all C pairs 0.00, controls 285/285 at 128.3 s.
+   - S2 r8 plan geometry (ears 9 wide, from 20 to 33 off the screw axis tangentially, at all three screws; dimensions ASSUMED for the dry run):
+     - The ears stay inside the ring OD (outer corner r 167.78) and 8.37 outside the operator sector edge in plan.
+     - They overlap the guide and anchor block footprints in plan, z-separated by 22.16 (park) and 32.84 (capture_end).
+     - They would have entered the S2 plan as drawn detail outside the d 50 housing circle. No S2 check value moved.
+   - The revised ruling removed the clamp. The overlay clamp leaves and `nut_clamp_bolts` are out, nut_clamp_c is out, and nothing of the ear form remains (MEASURED: 0 occurrences of `nut_clamp` in the overlay and the spec).
+2. **nut_c|home_switch_c is undeclared F in the spec, not G 10 as the Designer's table labels it.** The distance equals the Designer's: 14.34 at park (MEASURED). fixed_g10 does not expand on the switch row, and nut_c carries no group. The pair passes under either class.
+
+### Dry run (Designer re-sign section 4, six steps)
+
+All MEASURED, live `docs/sketches/` after the edit.
+
+1. **K2 on s3:** pass. 409 spec keys resolve; 186 overlay leaves; 20 expr leaves agree (`expr_agreement_issues` 0 issues). The three clamp leaves are gone and the eight `ring.nut_screw*` / `ring.nut_axial_play` leaves are in.
+2. **check_stack on s3_spec.yaml:** nut_screws_c spans 319.84 to 340.39 z_A at capture_end (969.84 to 990.39 at start, 1094.84 to 1115.39 at load and park). This equals the Designer's 319.84 to 340.39.
+3. **Section-piece script:** every declared pair of nut_c, nut_housing_c, nut_screws_c, home_switch_c and ring, all four poses. 250 pair-pose tests, 0 failures (C off 0.00, G under g_min, F overlapping). The pair table (below) equals the Designer's table entry for entry.
+4. **Lever tip from the lever field:** 1112.00 z_A (r 182, 3 inboard of the housing rim).
+5. **`--stale`:** 2 records, 5 differences, unchanged from P2f (clamp and screw leaves are read by no accepted record).
+6. **X1:** pass, 70 compared, 3 skipped, 3 exempt, unchanged.
+
+| Pair (pose) | Declared | Overlap mm² | Distance | Designer table |
+|---|---|---|---|---|
+| nut_screws_c \| nut_housing_c (capture_end) | C | 0.00 | 0.00 | 0.00 |
+| nut_screws_c \| nut_c (capture_end) | F | 0.00 | 0.05 (head play) | 0.05 |
+| nut_c \| nut_housing_c (capture_end) | C | 0.00 | 0.00 | 0.00 |
+| screw_c \| nut_c; screw_c \| nut_housing_c; screw_c \| nut_screws_c | C; F; F | 0.00 | 0.00; 5.50; 5.00 | same |
+| nut_screws_c \| ring (capture_end) | F | 0.00 | 6.08 | 6.08 |
+| nut_screws_c \| home_switch_c (park) | G 10 | 0.00 | 41.53 | 41.53 |
+| nut_screws_c \| guide_c (park) | G 10 | 0.00 | 19.61 | 19.61 |
+| nut_screws_c \| guide_bearing_c; \| bracket_guide_c (park) | G 10 | 0.00 | 30.61; 37.53 | - |
+| nut_housing_c \| home_switch_c; \| guide_c (park) | G 10 | 0.00 | 12.23; 24.17 | same |
+| nut_c \| home_switch_c (park) | F (undeclared; Correction 2) | 0.00 | 14.34 | 14.34 |
+| nut_housing_c \| anchor_c; nut_screws_c \| anchor_c (capture_end) | G 10 | 0.00 | 10.84; 24.84 | same |
+
+Least G margins over the five rows, all poses: nut_housing_c|anchor_c and |bracket_anchor_c 10.84, nut_housing_c|home_switch_c 12.23, nut_housing_c|anchor_bearing_c 17.84, nut_screws_c|guide_c 19.61, ring|bracket_anchor_c 19.84, ring|home_switch_c 20.16 (MEASURED).
+
+### Pairs that moved since P2f
+
+| Pair | P2f | P2f2 |
+|---|---|---|
+| nut_clamp_c \| nut_c, \| nut_housing_c (C 0.00) | present | removed with the row |
+| nut_clamp_c \| home_switch_c (park) | G 10, 10.75 | removed |
+| nut_clamp_c \| guide_c (park) | G 10, 21.16 | removed |
+| nut_screws_c \| nut_housing_c | - | C 0.00 |
+| nut_screws_c \| nut_c | - | F 0.05 |
+| nut_screws_c \| home_switch_c / \| guide_c (park) | - | G 10, 41.53 / 19.61 |
+| nut_screws_c \| ring; \| anchor_c; \| screw_c | - | F 6.08; G 24.84; F 5.00 |
+| Lever tip | 1115.00 | 1112.00 |
+| anchor_c \| anchor_bearing_c, anchor_bearing_c \| anchor_locknut_c, nut_housing_c \| nut_c | C 0.00 | C 0.00, now with the cut-case `face` field (Loftsman FIX 8) |
+
+All other pairs from the P2f table are unchanged (MEASURED, same script).
+
+### Items closed
+
+| Item | Closed by |
+|---|---|
+| Designer FIX A (revised ruling) | nut_clamp_c deleted and **nut_screws_c** added; still 65 rows. Three ISO 7379-type shoulder screws: shoulder d 6, M5 x 8, head D10 x 4.5, PCD 32. One on the inboard radial in the plane (u -144), unsectioned; two at ±60 deg from the outboard radial, off the plane, not_drawn. Flange holes D7 (0.5 float); shoulder length 8.05 (0.05 axial play). nut_c +u flange split at the hole; nut_housing_c +u lower band split at the tapped hole, with material under it. Anti-rotation pin deleted (the screws locate rotation). Nut shape: "floating = radial float only, axially located with 0.05 play". Overlay: `ring.nut_screw`, `nut_screw_pcd` 32, `nut_screw_shoulder_d` 6, `nut_screw_thread_d` 5, `nut_screw_head_d` 10, `nut_screw_head_height` 4.5, `nut_screw_thread_length` 8, `nut_axial_play` 0.05 (ASSUMED). Lever `to` z reads the housing top at park + `lever_free_gap`: 1112.00. not_drawn 9 entries |
+| Designer FIX B | Overlay `jackscrew.thread_start_z` 300 and `thread_end_z` 1120. screw_c shape: "cut from d 12 bar", plain collars 288 to 300 and 1120 to 1135. New field `ticks: {from: thread_start_z, to: thread_end_z, pitch: lead}`, so the ticks run over 300 to 1120 only. Keys added |
+| Designer FIX C | anchor_c\|coupling_c source "2.0 below (2.06 at the bore corner) at coupling_length 36". liftmotor_pilot_c\|coupling_c source "12.0 above the pilot top at 36". anchor_c shape: block 265 to 288 and a separate bolted cover 288 to 295, hatched at the opposite angle, joint line at 288. Field `hatch_split` on anchor_c. The cover pieces stay in anchor_c.section_u so the row extent keeps the shared z_rule (X1, K6) |
+| Designer FIX D | part_list gains "shop floor line (ground hatch)", row floor |
+| Loftsman FIX 8 | Chain c: [anchor_bearing_c, screw_c] replaced by [anchor_bearing_c, anchor_locknut_c] (certifier "S3 anchor_locknut_c\|anchor_bearing_c") and [anchor_locknut_c, screw_c] (certifier "S3 anchor_locknut_c\|screw_c", the thread). Cut-case `face` fields: cover underside 288 on anchor_c\|anchor_bearing_c, locknut top 272 on anchor_bearing_c\|anchor_locknut_c, counterbore shoulder on nut_housing_c\|nut_c. The S3-3 rule reads "axial face contact that carries the cut-case load in its direction". anchor_locknut joins the P4 symmetry-lint row set |
+| Loftsman FIX 7 | Superseded by Designer FIX A (option (a)) per the revised ruling |
+| Designer note 1 (L_min) | L_min reported both ways (DERIVED, check_stack `screw_length` + head 4.55 above the housing top = nut_axial_play + head_height): **without the head 885.00 / 885.84 at anchor_z (1 m: 1135.00 / 1135.84); with it 889.55 / 890.39 (1 m: 1139.55 / 1140.39)**. Drawn L 900 still covers both 0.5 / 0.75 m values. The expression is the Loftsman's to amend; no geometry change |
+
+### Check results
+
+| Run | Result |
+|---|---|
+| `--controls` (default 12 jobs) | Z clean 75/75, B fired 208/208, smoke 2/2: 285/285 match; wall 125.8 s |
+| `--stale` | 2 records, 5 differences (s1 r7: lead, nominal, coupling_length; s2 r5: nominal, coupling_length), unchanged from P2f; X1 pass (70 compared, 3 skipped, 3 exempt) |
+| `--stale --include-unaccepted` | 15 records, 32 differences, unchanged from P2f |
+| K2 on s3_spec.yaml | pass, 409 spec keys, 186 overlay leaves, 20 expr leaves agree |
+| s3 empty-figure run (checks_s3 on no figure; no stub before (c)) | S3-1, S3-2, S3-3 fail, cause absent; reported 9 of 10 (tension_segment needs drawing); S3-2 P_cr 1363.8 N, margins 17.20 / 12.04 / 7.61 / 3.97 unchanged |
+| Spec | 65 rows, 9 not_drawn, 0 neighbour ids outside the spec |
+
+### Items for P4 (added)
+
+1. The symmetry premise lint row set gains anchor_locknut (Loftsman FIX 8 (c)). The full set is anchor, anchor_locknut, screw, nut and nut_housing for k = a, b against c.
+2. The S3-3 reader reads the `face` field of each S3 certifier (the named horizontal edge carries the contact).
+3. K5 admission of the screw_c `ticks` span and of the anchor_c `hatch_split` (cover hatch and joint line), with Z and B.
+4. Open: "contact lines" on anchor_bearing_c are admitted under `anchor_bearing_c:balls`, or `contact` is added to its sub_artists (Designer note 3, Topologist).
+
+### Items for P6 (added)
+
+1. The S2 r9 plan draws nothing new for the nut. The shoulder-screw heads (D10 at PCD 32, r up to 21 from the screw axis) lie inside the d 50 housing circle (DERIVED: 16 + 5 = 21 < 25).
+
+### Items for Sean at M2 (P2f2)
+
+1. **Drawn screw bar 911.00** against DN23 800 to 900 (unchanged from P2f).
+2. **L_min with the shoulder-screw head:** 889.55 / 890.39 (0.5 and 0.75 m), 1139.55 / 1140.39 (1 m), against 885.00 / 885.84 without it. The drawn 900 covers both.
+3. **Floating nut re-ruled as "axially located with 0.05 play".** Design Notes 31 says "axially clamped". This leaves a 0.05 dead band on load reversal (6.0 deg of screw rotation at lead 3). Homing approaches in one direction (Designer Correction 2). Gameplan l.695 line below.
+4. **Nut upward seat by three shoulder screws:** d 6, M5, head D10 x 4.5, PCD 32. The anti-rotation pin is removed.
+5. **Seat assignment:** the screw heads carry the ring weight in every lifting case; the counterbore shoulder carries the cut case only (Designer note 4). This bears on the nut-mounting pick.
+6. Carried from P2f: coupling_length 36 with 12 mm of bare shaft below each coupling; Tr12 nut mass 0.14 against 0.05; picks for nut mounting, hold, sync and anchoring.
+
 ## Gameplan lines to change
+
+Final list. It merges P2f, the Designer re-sign and the Loftsman re-sign. P2f items 5 and 6 and Loftsman re-sign item 2 are superseded by items 5 and 6 below.
 
 1. l.188, within the line.
 ```
@@ -133,32 +236,42 @@ New: couplings (r 150.5 to 169.5, z_S 303 to 323) 35.5 radially from the hand zo
 Old: (end of line)
 New:  From S1 r8 these are the spec field reported_items in s1_spec.yaml (8 ids, Designer 1.3 (b) sign-off section 8), read by RPT from checks_s1.reported items; the mass report carries W 24.25 kg (s3_spec load_cases.W_kg) and Tr12x3 screws.
 ```
-3. l.272, replacing the P2 item 1 new text.
+3. l.272, within the line (supersedes P2 item 1).
 ```
 Old: Shows: bottom anchor with thrust bearing, screw
-New: Shows: bottom anchor (fixed: two angular-contact bearings back-to-back in a 42-square block, outer races between a bore shoulder and a cover, inner races between the screw shoulder and an M10x1 locknut; Design Notes 31, Designer 1.3 (b) FIX 3), screw
+New: Shows: bottom anchor (fixed: two angular-contact bearings back-to-back in a 42-square block with a bolted cover, outer races between the block shoulder and the cover, inner races between the screw shoulder and an M10x1 locknut; Design Notes 31, Designer 1.3 (b) FIX 3, re-sign FIX C), screw
 ```
-4. l.272, within the line (replacing P2 item 2 new text where it reads the NEMA 17 mount).
+4. l.272, within the line (Designer re-sign item 1).
+```
+Old: screw (rectangle, `jackscrew.nominal` wide, lead labelled from `jackscrew.lead`; Tr12x3 from STOP S3-A)
+New: screw (stepped outline cut from d 12 bar: journal 10 in the anchor and guide bearings, plain d 12 collars at the 288 shoulder and under the guide, Tr12x3 thread over the nut travel 300 to 1120 z_A, lead labelled from `jackscrew.lead`; Tr12x3 from STOP S3-A; Designer 1.3 (b) re-sign FIX B)
+```
+5. l.272, within the line (Designer re-sign item 2; supersedes P2f item 5 and Loftsman re-sign item 2).
+```
+Old: brass nut on the ring with its mounting
+New: brass flange nut in a counterbored boss on the ring, held up by three shoulder screws through the flange (d 6, M5, PCD 32, 0.5 radial and 0.05 axial play; Designer 1.3 (b) re-sign FIX A, Loftsman 1.3 (b) re-sign FIX 7 (a)), with its mounting
+```
+6. l.272, within the line.
 ```
 Old: NEMA 17 mount and coupling
 New: NEMA 17 on four M3 standoffs 36 long under the anchor block with a beam coupling 19 x 20 centred on the motor shaft tip, screw end 1 above it (Designer 1.3 (b) FIX 2; 1.3 P2f dry run)
 ```
-5. l.272, within the line.
-```
-Old: brass nut on the ring with its mounting
-New: brass flange nut in a counterbored boss under a clamp ring on the ring, with its mounting
-```
-6. l.288, the S3-3 row, supersedes P2 item 7 and the Loftsman sign-off item 1.
+7. l.288, the S3-3 row (merges P2f item 6 and Loftsman re-sign item 1; supersedes P2 item 7).
 ```
 Old: every consecutive pair class C in the drawn figures (S1 for core, base and frame members; S3 for anchor, screw, nut, ring; S6 for bearing and tube), K7 C |
-New: every consecutive pair class C, as an axial face contact in the section, in the K7 entries of a certifier named per pair in the spec `chains` by sketch and pair id and resolved at run time to the latest accepted S1 and S2 records (a stale record certifies nothing; S3 is accepted after S1 r8 and S2 r9), this figure, or declared (cutter\|core as the load-application pair, row load_cut; bearing and tube for S6-5). Chain per screw: screw c runs base plate, base frame, member c (Design Notes 27); screws a, b run base plate, member a or b; the a, b screw-set pairs are certified from screw c under the symmetry premise lint (P4; Loftsman 1.3 (b) R1), K7 C |
+New: every consecutive pair class C, as an axial face contact that carries the cut-case load in its direction (named face per S3 certifier: anchor locknut top 272, cover underside 288, nut counterbore shoulder; the chain lists the locknut; Loftsman 1.3 (b) re-sign FIX 8) in the section, in the K7 entries of a certifier named per pair in the spec `chains` by sketch and pair id and resolved at run time to the latest accepted S1 and S2 records (a stale record certifies nothing; S3 is accepted after S1 r8 and S2 r9), this figure, or declared (cutter\|core as the load-application pair, row load_cut; bearing and tube for S6-5). Chain per screw: screw c runs base plate, base frame, member c (Design Notes 27); screws a, b run base plate, member a or b; the a, b screw-set pairs are certified from screw c under the symmetry premise lint (anchor, anchor locknut, screw, nut, nut-housing rows; P4; Loftsman 1.3 (b) R1), K7 C |
 ```
-7. l.292, within the line.
+8. l.292, within the line.
 ```
 Old: + max(nut length, ring nut-housing height) + 2 g_min (Loftsman ruling, 1.1 (b);
-New: + max(nut length, ring nut-housing height) + 2 g_min, with the drawn bar length beside it (screw-end bottom to guide-block top, 911.00 at 1.3 (b) P2f, coupling_length 36; Loftsman 1.3 (b) NOTE 3) (Loftsman ruling, 1.1 (b);
+New: + max(nut length, ring nut-housing height) + 2 g_min, with the drawn bar length beside it (screw-end bottom to guide-block top, 911.00 at 1.3 (b) P2f, coupling_length 36; Loftsman 1.3 (b) NOTE 3) and the value with the nut shoulder-screw head above the housing top (889.55 / 890.39 at 1.3 (b) P2f2; Designer re-sign note 1) (Loftsman ruling, 1.1 (b);
 ```
-8. Insert after the line inserted by P2 item 9 (text begins "| Anchor block **42 square x 30**"), replacing that line's text.
+9. l.695, within the line (Designer re-sign item 3).
+```
+Old: floating nut (0.5 radial float, axially clamped, pinned against rotation)
+New: floating nut (0.5 radial float, axially located with 0.05 play by three shoulder screws that also stop rotation; Designer 1.3 (b) re-sign FIX A, Loftsman NOTE 3)
+```
+10. The echo row inserted by P2 item 9 (text begins "| Anchor block **42 square x 30**").
 ```
 Old: | Anchor block **42 square x 30**; bearing lines **280** and **1150** z_A, span L_t **870** |
 New: | Anchor block **42 square x 30**; bearing lines **280** and **1150** z_A, span L_t **870**; lift motor face **229** z_A (`liftmotor.coupling_length` 36, shaft gap 1); drawn screw bar **911.00** |
