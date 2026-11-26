@@ -46,7 +46,7 @@ SECTION_VIEWS = ("section_yz",)
 VIEW_NORMAL = {"side_xz": "Y", "section_xz": "Y", "plan_xy": "Z", "section_yz": "X"}
 VIEW_LABELS = {"side_xz": ("x (mm)", "z (mm)"), "section_xz": ("x (mm)", "z (mm)"), "section_yz": ("y (mm)", "z (mm)"),
                "plan_xy": ("x (mm)", "y (mm)"), "stock": ("length (mm)", "bar (mm)")}
-FIGSIZE = {"plan_xy": (10, 10)}
+FIGSIZE = {"plan_xy": (10, 10), "section_yz": (20, 30)}   # 1.3 (h) r3: section_yz per Designer r2 pick 1 (M1 S3 r1 F1, option A, about 2.45 px/mm)
 FIGSIZE_DEFAULT = (14, 10)
 DPI = 150
 CITATION = re.compile(r"\[CP §\s*\d+(\.\d+)*,\s*\d{1,2}:\d{2}\]|\[DN23\]")
@@ -2486,6 +2486,8 @@ def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
         return [f"sub-artist {sub} not declared in {fid} sub_artists"]
     if sub == "arc":   # 1.3 (h) r2 (Topologist TP1.3-13): the plan theta arc, no parent area needed
         return arc_issues(ctx, ax, pose, prow, arts)
+    if sub == "ext":   # 1.3 (h) r3 (Designer r2 item 3): dimension extension lines, the parent is a line row
+        return ext_issues(ctx, ax, pose, prow, arts)
     own = [x for x in tagged(ax).get(fid, []) if isinstance(x, Patch) and not getattr(x, "_sc_hidden_copy", False)]
     if not own:
         return [f"{sub} on {fid}: parent {fid} not drawn at this pose"]
@@ -2571,6 +2573,62 @@ def arc_issues(ctx, ax, pose, prow, arts):
             out.append("arc head points against theta (clockwise)")
         if abs((ang(head) - t1 + 180) % 360 - 180) > 5:
             out.append(f"arc head at {ang(head):.2f} deg, not at theta1 {t1:g}")
+    return out
+
+
+EXT_OVERSHOOT_MAX = 3.0   # mm: an extension line ends past its dimension line by 0 to this (Designer 1.3 (h) r2 e3)
+
+
+def ext_issues(ctx, ax, pose, prow, arts):
+    """1.3 (h) r3 (Designer r2 item 3, raised by The Designer). Admission of <row>:ext, the extension lines of a dimension
+    row. Premise: an extension line carries the measured feature out to the dimension line and states no part, so it is
+    admitted only where (e4) its parent is a reference row of kind line (spec ext {screw: row}); (e1) it is a horizontal
+    two-vertex solid Line2D at the z of one end of the parent's z_rule (TOL_Z), one line per end; (e2) it starts on the
+    measured feature, the screw edge facing the dimension line, u_c -+ place half_width (TOL_Z); (e3) it ends past the
+    dimension line (the parent's drawn vertical line) by 0 to EXT_OVERSHOOT_MAX and no further. The admitted artist has
+    no area; the parent's projected_x and projected_extent read the dimension line alone (gid <row>:ext is not the row)."""
+    fid = prow["id"]
+    if not prow.get("reference") or prow.get("kind") != "line":
+        return [f"ext on {fid}: parent is not a reference line row (e4)"]
+    spec_ext = prow.get("ext") or {}
+    scr = spec_ext.get("screw")
+    f, fs = _feat(ctx, pose, fid), _feat(ctx, pose, scr) if scr else {}
+    pl = (fs or {}).get("place")
+    if not scr or not pl or f.get("z_min") is None:
+        return [f"ext on {fid}: spec ext.screw names no placed row, or the parent has no z_rule"]
+    uc, half = sum(pl["x"]) / 2, pl["half_width"]
+    dim = [q for a in tagged(ax).get(fid, []) if isinstance(a, Line2D) for q in artist_polys(a)]
+    xs = [v[0] for q in dim for v in q]
+    if not xs:
+        return [f"ext on {fid}: dimension line {fid} not drawn"]
+    ud = sum(xs) / len(xs)
+    side = 1.0 if ud > uc else -1.0
+    u0 = uc + side * half
+    out, ends = [], []
+    for a in arts:
+        if not isinstance(a, Line2D) or len(artist_polys(a)[0]) != 2:
+            out.append(f"ext on {fid}: {type(a).__name__} is not a two-vertex Line2D")
+            continue
+        if a.get_linestyle() not in SOLID_STYLES:
+            out.append(f"ext on {fid}: drawn {a.get_linestyle()!r}, extension lines are solid")
+        (xa, za), (xb, zb) = artist_polys(a)[0]
+        if abs(za - zb) > TOL_Z:
+            out.append(f"ext on {fid}: not horizontal (dz {zb - za:.2f}) (e1)")
+            continue
+        z = (za + zb) / 2
+        near = min((f["z_min"], f["z_max"]), key=lambda e: abs(e - z))
+        if abs(near - z) > TOL_Z:
+            out.append(f"ext on {fid}: at z {z:.2f}, not at a z_rule end ({f['z_min']:.2f} or {f['z_max']:.2f}) (e1)")
+            continue
+        ends.append(near)
+        p_in, p_out = sorted(((xa, za), (xb, zb)), key=lambda q: abs(q[0] - uc))
+        if abs(p_in[0] - u0) > TOL_Z:
+            out.append(f"ext on {fid}: starts at u {p_in[0]:.2f}, not on the screw edge {u0:.2f} (e2)")
+        over = (p_out[0] - ud) * side
+        if over < -TOL_Z or over > EXT_OVERSHOOT_MAX + TOL_Z:
+            out.append(f"ext on {fid}: ends {over:.2f} past the dimension line u {ud:.2f} (0 to {EXT_OVERSHOOT_MAX:g}) (e3)")
+    if not out and sorted(ends) != sorted((f["z_min"], f["z_max"])):
+        out.append(f"ext on {fid}: one line per z_rule end needed, drawn at {sorted(round(e, 2) for e in ends)} (e1)")
     return out
 
 
@@ -4729,16 +4787,28 @@ def cut_hatch(ctx, pose, row, a):
     return HATCH.get(mat)
 
 
+def hatch_family(h):
+    """1.3 (h) r3 (Topologist R2-4): the line family of a hatch pattern, the set of its stroke characters, with '+' read
+    as '|' and '-' and 'x' / 'X' as '/' and '\'. A repeated character changes the density only, not the family."""
+    out = set()
+    for ch in str(h or ""):
+        out |= {"+": {"|", "-"}, "x": {"/", "\\"}, "X": {"/", "\\"}}.get(ch, {ch})
+    return frozenset(out)
+
+
 def hatch_alt_issues(spec):
-    """Lint (TP1.3-14): every section.hatch_alt value differs from every HATCH value and from every other alternate; a
-    row with hatch_split names a material that has an alternate."""
+    """Lint (TP1.3-14; 1.3 (h) r3 Topologist R2-4): every section.hatch_alt value differs in line family (hatch_family)
+    from every HATCH value and from every other alternate, so the cover reads as a separate piece and not as another
+    material; a row with hatch_split names a material that has an alternate."""
     alt = hatch_alt_table(spec)
+    fams = {k: hatch_family(v) for k, v in HATCH.items()}
     out = []
     for m, v in alt.items():
-        if v in HATCH.values():
-            out.append(f"spec error: section.hatch_alt {m} {v!r} equals a material pattern (HATCH)")
-        if list(alt.values()).count(v) > 1:
-            out.append(f"spec error: section.hatch_alt {m} {v!r} equals another alternate")
+        hit = sorted(k for k, f in fams.items() if f == hatch_family(v))
+        if hit:
+            out.append(f"spec error: section.hatch_alt {m} {v!r} in the line family of material pattern(s) {', '.join(hit)} (HATCH)")
+        if [hatch_family(w) for w in alt.values()].count(hatch_family(v)) > 1:
+            out.append(f"spec error: section.hatch_alt {m} {v!r} in the line family of another alternate")
     for r in (spec or {}).get("features", []):
         if r.get("hatch_split") and r.get("section_class") == "cut" and not alt.get(r.get("hatch") or "steel"):
             out.append(f"{r['id']}: hatch_split declared with no section.hatch_alt for {r.get('hatch') or 'steel'} (The Designer, TP1.3-14)")

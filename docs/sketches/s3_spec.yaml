@@ -31,7 +31,7 @@
 #   sub_artists: <row>:<sub> sub-artists the row may carry (balls, line, lever), admitted by K5 / K9 at P4 under the
 #     Topologist P0T section 4 pattern (mark admission); each needs its own Z and B there.
 #   leaders_to, value_from (callout and arrow labels), sense predicates look_direction, axes_not_inverted, points: P4.
-status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md"
+status: "draft for signature (Designer part list, Loftsman); 1.3 (b), The Engineer, 2026-11-26; P2f fix pass (Designer FIX 1 to 6, Loftsman FIX 1 to 6, orchestrator rulings); P2f2 (Designer re-sign FIX A to D, Loftsman FIX 8; nut shoulder screws per the revised orchestrator ruling), research/sean/cr_scratch/step1.3_engineer_spec_fixes.md; 1.3 P6 edits (a), (e), (f), step1.3_engineer_draw_r1.md; 1.3 (h) r2 edits for Designer re-sign (chain link kinds and the base-route reroute TP1.3-10, not_drawn omit fields TP1.3-12, plan_axes arc TP1.3-13, screw_c root lines TP1.3-15, lever u expressions TP1.3-19), step1.3_engineer_revision_r2.md; 1.3 (h) r3 edits (Designer r2 values picks 2, 3 (offset per orchestrator ruling u -110), 4 ('--' per orchestrator ruling), 5, 7, 8, 9; Loftsman LF1.3-10; Topologist R2-5), step1.3_engineer_revision_r3.md"
 sketch: s3
 script: s3_jackscrew_section.py    # K1 scans this file at 1.3 (d)
 view: section_yz
@@ -43,6 +43,7 @@ section:
   handedness: "u x z = toward viewer: Y x Z = X (right-handed); u equals plan y, so plan values read with no sign change"
   convention: {cut: "hatched, one pattern per material, legend in the figure note; hidden lines inside a cut part not drawn", unsectioned: "screw c, NEMA 17 shaft, NEMA 23 shaft c, coupling, standoffs, balls (circles): outline over the hatch of the part around them (ASME Y14.3)", beyond: "within 0 > x >= -profile.width, elevation, visible edges solid, edges behind a cut part dashed (renderer section convention, P4)", omitted: "beyond x < -profile.width and in front (x > 0): not drawn, listed in the figure note"}
   source: "Designer 1.3 (a) section 2; gameplan Design Notes 4 (screw c, Sean STOP S3-0)"
+  hatch_alt: {aluminium: "--"}   # 1.3 (h) r3: anchor cover above the joint (Designer r2 pick 4; '////' refused by the line-family lint, Topologist R2-4; orchestrator ruling '--')
 section_figure: {name: s3_jackscrew_section, pose: capture_end, png: "s3_jackscrew_section_r<k>.png", note: "one figure: section A-A at capture_end (cut case, loop closed) with the plan inset; nut stations at start and park as dash-dot ticks (rows nut_station_start, nut_station_park)"}
 insets:
   - id: inset_plan
@@ -116,14 +117,14 @@ poses:
 # phi_n), lambda = atan(lead / (pi mean_diameter)), phi_n = atan(mu / cos(thread_half_angle)), at both ends of thread_mu.
 # Values DERIVED (hand, step1.3_engineer_spec.md section 4); checks_s3 computes them from the keys at run time.
 load_cases:
-  W_kg: "ring.mass + drill.mass + gear.mass + pinion.count * pinion.motor_mass + jackscrew.count * jackscrew.nut_mass + bearing.mass + pinion.count * pinion.mass + gear.hub_mass + guide.count * guide.bushing_mass"
+  W_kg: "ring.mass + drill.mass + gear.mass + pinion.count * pinion.motor_mass + jackscrew.count * jackscrew.nut_mass + bearing.mass + pinion.count * pinion.mass + gear.hub_mass + guide.count * guide.bushing_mass + drill.top_block_mass"   # 1.3 (h) r3: top-end block in W (Designer r2 pick 7, LF1.3-2); 26.25 kg
   g: 9.81
   cases:
-    - {id: static, total: "W", direction: down, per_screw: 79.30, two_screw: 118.95, segment_below_nut: compression, kept_parts: 0, s3_2: true}
-    - {id: capture_lift, total: "W + liftload.core_mass_capture (10.4 kg)", direction: down, per_screw: 113.31, two_screw: 169.96, segment_below_nut: compression, kept_parts: 0, s3_2: true}
-    - {id: retract_bind, total: "W + liftload.f_bind", direction: down, per_screw: 179.30, cap: "F_stall per screw (343.18 at mu 0.15)", two_screw: 268.95, segment_below_nut: compression, kept_parts: 0, s3_2: true}
-    - {id: cut, total: "loads.axial_design - W", direction: "up on the cutter; the screws push the ring down", per_screw: 254.04, two_screw: 381.05, segment_below_nut: tension, stress_MPa: 4.48, kept_parts: "1000 compression (collet, holder, receiver, base plate); plate also takes 508.07 up at members a, b; member c's 254.04 goes to the -Y rail", s3_1: true}
-    - {id: stall_down, total: "3 F_stall", direction: "down into a jam through the cutter", per_screw: "343.18 / 282.21 (mu 0.15 / 0.20)", segment_below_nut: tension, kept_parts: "F_stall + W = 1267.43 / 1084.54"}
+    - {id: static, total: "W", direction: down, per_screw: 85.84, two_screw: 128.76, segment_below_nut: compression, kept_parts: 0, s3_2: true}
+    - {id: capture_lift, total: "W + liftload.core_mass_capture (10.4 kg)", direction: down, per_screw: 119.85, two_screw: 179.77, segment_below_nut: compression, kept_parts: 0, s3_2: true}
+    - {id: retract_bind, total: "W + liftload.f_bind", direction: down, per_screw: 185.84, cap: "F_stall per screw (343.18 at mu 0.15)", two_screw: 278.76, segment_below_nut: compression, kept_parts: 0, s3_2: true}
+    - {id: cut, total: "loads.axial_design - W", direction: "up on the cutter; the screws push the ring down", per_screw: 247.50, two_screw: 371.24, segment_below_nut: tension, stress_MPa: 4.36, kept_parts: "1000 compression (collet with its core seat, receiver, base plate; holder outside the route, TP1.3-10 (a)); plate also takes 495.00 up at members a, b; member c's 247.50 goes to the -Y rail", s3_1: true}
+    - {id: stall_down, total: "3 F_stall", direction: "down into a jam through the cutter", per_screw: "343.18 / 282.21 (mu 0.15 / 0.20)", segment_below_nut: tension, kept_parts: "F_stall + W = 1287.05 / 1104.16"}
     - {id: stall_up, total: "3 F_stall", direction: "up at the top of travel", per_screw: "343.18 / 282.21 (mu 0.15 / 0.20)", segment_below_nut: compression, kept_parts: 0, s3_2: true}
   source: "gameplan detail 1.3 load cases; Designer 1.3 (a) section 6 (Correction 1 masses, Correction 9 retract cap); Sean STOP S3-A, Design Notes 31 (F_bind 300 N, SF 3, masses ASSUMED)"
 
@@ -150,7 +151,7 @@ s3_checks:
     core_mass: liftload.core_mass_capture   # 10.4 kg (Designer 1.3 (b) section 7 item 9)
     stall: {torque: liftmotor.holding_torque, lead: jackscrew.lead, starts: jackscrew.starts, mean_diameter: jackscrew.mean_diameter, mu: jackscrew.thread_mu, half_angle: jackscrew.thread_half_angle, governing: "mu low end (largest F_stall)"}
     rule: "P_cr = pi^2 E I / (K L)^2, I = pi d_r^4 / 64; pass when P_cr / F >= sf for every case at the per-screw force; retract capped at F_stall per screw"
-    expected: {P_cr_N: 1363.8, least_margin: "3.97 (stall_up, mu 0.15)", margins: {static: 17.20, capture_lift: 12.04, retract_bind: 7.61, stall_up: 3.97}}
+    expected: {P_cr_N: 1363.8, least_margin: "3.97 (stall_up, mu 0.15)", margins: {static: 15.89, capture_lift: 11.38, retract_bind: 7.34, stall_up: 3.97}}
     source: "[DN23]; Design Notes 31 (SF 3, K 0.7 credit, F_bind 300 N); inputs ASSUMED"
   S3-3:
     form: cross_record                   # 1.3 open O11; P4 implements
@@ -191,8 +192,8 @@ chains:
     - {pair: [screw_c, nut_c], kind: thread, certifiers: ["S3 screw_c|nut_c"], note: "tension segment (S3-1)"}
     - {pair: [nut_c, nut_housing_c], kind: face, certifiers: ["S3 nut_housing_c|nut_c"], face: "counterbore shoulder under the flange, nut_z + jackscrew.nut_length / 2 - jackscrew.nut_flange_thickness, cut case", note: "cut case: flange on the counterbore shoulder; lifting cases through nut_screws_c (head on the flange top)"}
     - {pair: [nut_housing_c, ring], kind: one_body, certifiers: ["S3 ring|nut_housing_c"]}
-    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C", "S2 ring|bearing plan-contact", "S3 ring|bearing"]}
-    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "S2 drill_tube|bearing plan-contact", "declared (S6-5 draws the segment)"]}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "radial fit in the section; K7 certifiers dropped (Topologist R2-5)"}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "radial fit in the section; K7 certifiers dropped (Topologist R2-5)"}
     - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S3 declares C; S6-5 draws it)"], note: "S1 drill_head|drill_tube undeclared F; S2 drill_tube|drill_head undeclared F (z-touch)"}
   a:
     - {pair: [drill_head, core_750], kind: declared, certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
@@ -207,8 +208,8 @@ chains:
     - {pair: [screw_a, nut_a], kind: thread, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
     - {pair: [nut_a, nut_housing_a], kind: face, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
     - {pair: [nut_housing_a, ring], kind: one_body, certifiers: ["none"], note: "S1/S2 N; by symmetry, premise lint open"}
-    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C"]}
-    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "Topologist R2-5"}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "Topologist R2-5"}
     - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S6-5)"]}
   b:
     - {pair: [drill_head, core_750], kind: declared, certifiers: ["declared: load application (the cut force acts between cutter and core; row load_cut, S3-1 reads it +Z)"], note: "K7 holds head and core N by design; no record can certify it C (Loftsman 1.3 (b) FIX 6 (b))"}
@@ -223,8 +224,8 @@ chains:
     - {pair: [screw_b, nut_b], kind: thread, certifiers: ["none"], note: "as screw a"}
     - {pair: [nut_b, nut_housing_b], kind: face, certifiers: ["none"], note: "as screw a"}
     - {pair: [nut_housing_b, ring], kind: one_body, certifiers: ["none"], note: "as screw a"}
-    - {pair: [ring, bearing], kind: declared, certifiers: ["S1 ring|bearing C"]}
-    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["S1 drill_tube|bearing C", "declared (S6-5)"]}
+    - {pair: [ring, bearing], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "Topologist R2-5"}
+    - {pair: [bearing, drill_tube], kind: declared, certifiers: ["declared (S6-5 draws the axial seat)"], note: "Topologist R2-5"}
     - {pair: [drill_tube, drill_head], kind: declared, certifiers: ["declared (S6-5)"]}
 
 rubric_additions:
@@ -244,7 +245,7 @@ reported_items:
   - {id: f_stall, text: "F_stall total and per screw, both directions, mu range", source: "liftmotor.holding_torque, jackscrew.lead, mean_diameter, thread_mu, thread_half_angle", needs_drawing: false}
   - {id: wob_max, text: "largest WOB at holding torque (F_stall + W) against loads.axial_design 1000", source: "F_stall, W (load_cases.W_kg), loads.axial_design", needs_drawing: false}
   - {id: lift_torque, text: "motor torque per screw for the cut and for capture lift, against liftmotor.holding_torque", source: "load_cases, jackscrew.lead, eta over thread_mu", needs_drawing: false}
-  - {id: kept_axial, text: "axial force in collet, holder, receiver, base plate at 1000 N and at F_stall + W (N5)", source: "loads.axial_design; F_stall + W", needs_drawing: false}
+  - {id: kept_axial, text: "axial force in collet (core seat), receiver, base plate at 1000 N and at F_stall + W (N5); the holder is outside the cut-case route (Topologist TP1.3-10 (a))", source: "loads.axial_design; F_stall + W", needs_drawing: false}
   - {id: backdrive, text: "lead angle against friction angle, back-drive efficiency", source: "jackscrew.lead, mean_diameter, thread_mu, thread_half_angle", needs_drawing: false}
   - {id: screw_share, text: "per-screw (load / 3) and two-screw (load / 2) force per case", source: "load_cases", needs_drawing: false}
   - {id: tension_segment, text: "screw length in tension below the nut per S1 pose in the cut case", source: "drawn anchor bearing line (anchor_bearing_c:line) and check_stack nut_z per pose", needs_drawing: true}
@@ -260,10 +261,11 @@ not_drawn:
   - {part: "descent-stop pad and post", omit: off_plane, rows_s2: [descent_stop, descent_stop_post], reason: "theta 150, x -173 to -186, beyond the 60 band (Designer 1.3 (a) section 1 row 14); drawn in S1, S2"}
   - {part: "base-frame end members and plate supports", omit: off_plane, x: [[-262, -202], [-142, -82], [82, 142], [202, 262]], x_source: "S2 base_frame plan pieces at capture_end (MEASURED, 1.3 (h) r2)", reason: "at x +-232 and +-112, off the plane; drawn in S2"}
   - {part: "front M3 standoffs", omit: off_plane, x: [[liftmotor.bolt_pattern / 2 - liftmotor.standoff_af / 2, liftmotor.bolt_pattern / 2 + liftmotor.standoff_af / 2]], reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
-  - {part: "receiver shoulder bolts 4 x M5", omit: deferred, owner: "The Designer (receiver.shoulder_bolts PCD and azimuths, r1 open item D7)", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
+  - {part: "receiver shoulder bolts 4 x M5", omit: off_plane, x: [["-receiver.shoulder_bolt_pcd / 2 * sind(60) - receiver.shoulder_bolt_head_d / 2", "-receiver.shoulder_bolt_pcd / 2 * sind(60) + receiver.shoulder_bolt_head_d / 2"], ["receiver.shoulder_bolt_pcd / 2 * sind(60) - receiver.shoulder_bolt_head_d / 2", "receiver.shoulder_bolt_pcd / 2 * sind(60) + receiver.shoulder_bolt_head_d / 2"]], x_source: "PCD 180 at theta 30, 150, 210, 330, head D8.5 (Designer 1.3 (h) r2 D7)", reason: "x +-77.94, off the 60 band; drawn at S4-a"}
   - {part: "receiver spigot below the plate top", omit: deferred, owner: "S4-a", reason: "z_A 0 to 12 inside the plate hole; drawn at S4-a (z_rule z_min is the plate top, shared with S1 under X1)"}
-  - {part: "two nut shoulder screws", omit: off_plane, x: [["-ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "-ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"], ["ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"]], x_source: "PCD 32 at +-60 deg from the outboard radial, head D10 (Topologist TP1.3-12)", reason: "at +-60 deg from the outboard radial, x +-13.86, off the plane; leaf ring.nut_screw; the inboard screw is row nut_screws_c (Designer 1.3 (b) re-sign FIX A)"}
-figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; two nut shoulder screws (off the plane); receiver shoulder bolts 4 x M5 (layout open); receiver spigot below the plate top (S4-a). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
+  - {part: "front nut shoulder screw", omit: off_plane, x: [["ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"]], x_source: "PCD 32 at +60 deg from the outboard radial, head D10 (Topologist TP1.3-12)", reason: "x +13.86, in front of the plane (cut away); leaf ring.nut_screw"}
+  - {part: "rear nut shoulder screw", omit: deferred, owner: "Step 2 (nut housing model, ring.nut_screw)", reason: "x -13.86, beyond the plane inside the 60 band: by the stated convention the inboard screw (row nut_screws_c) stands for the set of three; head D10 behind the screw and nut outline adds no reading (Designer 1.3 (h) r2 item 5)"}
+figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; front nut shoulder screw (cut away); rear nut shoulder screw (the inboard screw stands for the set); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver spigot below the plate top (S4-a). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
 
 part_list:
   - {part: "base frame rails (cut across, slot notches, centre bore lines)", row: base_frame}
@@ -296,7 +298,7 @@ part_list:
   - {part: "inset: screws, housings, anchor blocks, lift motors, members, home switches a, b, c", row: "screw_a/_b/_c, nut_housing_a/_b/_c, anchor_a/_b/_c, liftmotor_a/_b/_c, frame_upper_a/_b/_c, home_switch_a/_b/_c"}
   - {part: "inset: controller callout, ring OD reference, cutting-plane line A-A, axes and theta arc", row: "sync_callout, ring_ref, section_line, plan_axes (sub-artist arc)"}
   - {part: "shop floor line (ground hatch)", row: floor}
-  - {part: "front standoffs, two nut shoulder screws, off-plane sets", row: not_drawn}
+  - {part: "front standoffs, front and rear nut shoulder screws, off-plane sets", row: not_drawn}
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups).
 neighbour_groups:
@@ -1049,7 +1051,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_cover_bore / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.anchor_block_width / 2', jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, jackscrew.anchor_z + jackscrew.anchor_allowance]
   hatch: aluminium
   label: {text: 'fixed anchor (2 x angular contact, back-to-back), block', key: jackscrew.anchor_block_width, fmt: .0f}
-  hatch_split: {at: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, above: reversed hatch (cover), joint_line: true, source: 'Designer 1.3 (b) re-sign FIX C; the cover pieces stay in anchor_c.section_u so the row extent matches the shared z_rule (X1, K6)'}
+  hatch_split: {at: jackscrew.anchor_bearing_z + jackscrew.anchor_bearing_width, above: 'section.hatch_alt (aluminium --, cover)', joint_line: true, source: 'Designer 1.3 (b) re-sign FIX C; the cover pieces stay in anchor_c.section_u so the row extent matches the shared z_rule (X1, K6)'}
 - id: anchor_bearing_c
   name: anchor bearings
   shape: 'two angular-contact bearings 10 x 26 x 8 back-to-back at the block mid-height (280 z_A): races hatched, balls as circles (sub-artist anchor_bearing_c:balls), contact lines converging outward; bearing line marked (sub-artist anchor_bearing_c:line at jackscrew.anchor_bearing_z) (Designer 1.3 (a) section 7); outer races between the block shoulder (272) and the cover (288), inner races between the locknut (272) and the screw shoulder (288)'
@@ -1632,7 +1634,7 @@ features:
   projection: line
   keys: [liftsync.method]
   z_rule: null
-  label: {text: 'one controller, three drivers, home switch per screw', key: liftsync.method, fmt: s}
+  label: {text: 'sync:', key: liftsync.method, fmt: s}
   neighbours: []
   sense: []
   chain: []
@@ -1648,7 +1650,7 @@ features:
   projection: line
   keys: [hold.device, jackscrew.lead, jackscrew.mean_diameter, jackscrew.thread_mu, jackscrew.thread_half_angle]
   z_rule: null
-  label: {text: 'power-off hold: self-locking Tr12x3, lambda 5.2 < phi 8.8', key: hold.device, fmt: s}
+  label: {text: 'power-off hold:', key: hold.device, fmt: s}
   neighbours: []
   sense: []
   chain: []
@@ -1689,11 +1691,11 @@ features:
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: ring.nut_housing_od / 2, footprint: round}
 - id: span_lt
   name: S3-2 span L_t
-  shape: dimension line beside screw c from the anchor bearing line 280 to the guide bearing line 1150, 'L_t 870, K 0.7' (Designer 1.3 (a) sections 2, 7)
+  shape: dimension line beside screw c at u -110 (r jackscrew.pitch_radius - jackscrew.span_dim_offset) from the anchor bearing line 280 to the guide bearing line 1150, two extension lines (sub-artist span_lt:ext) from the screw edge to the line, 'L_t 870, K 0.7' (Designer 1.3 (a) sections 2, 7; M1 S3 r1 F7; orchestrator ruling 1.3 (h) r3)
   kind: line
   axis: null
   projection: line
-  keys: [jackscrew.anchor_bearing_z, jackscrew.guide_bearing_z, jackscrew.end_factor_floating, jackscrew.pitch_radius, jackscrew.angle]
+  keys: [jackscrew.anchor_bearing_z, jackscrew.guide_bearing_z, jackscrew.end_factor_floating, jackscrew.pitch_radius, jackscrew.angle, jackscrew.span_dim_offset, jackscrew.nominal]
   z_rule: {z_min: jackscrew.anchor_bearing_z, z_max: jackscrew.guide_bearing_z}
   label: {text: 'S3-2 span L_t, K 0.7', key: jackscrew.guide_bearing_z, fmt: .0f, expr: jackscrew.guide_bearing_z - jackscrew.anchor_bearing_z}
   neighbours: []
@@ -1702,7 +1704,9 @@ features:
   moves: false
   axes: [section]
   reference: true
-  place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: 0, footprint: round}
+  place: {r_in: jackscrew.pitch_radius - jackscrew.span_dim_offset, theta: 'jackscrew.angle[2]', half_width: 0, footprint: round}
+  sub_artists: [ext]
+  ext: {screw: screw_c, source: 'Designer 1.3 (h) r2 item 3: extension lines e1 to e4'}
 - id: load_cut
   name: cut load
   shape: arrow up at the cutter tip on the axis, '1000 N cut' (loads.axial_design)

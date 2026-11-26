@@ -51,8 +51,8 @@ def masses(P, feats):
     out.append((f"nuts x{n_scr}", n_scr * g("jackscrew.nut_mass"), mid(feats["nut_a"]), "W, overlay ASSUMED"))
     out.append(("drill-to-ring bearing", g("bearing.mass"), mid(feats["bearing"]), "W, overlay ASSUMED"))
     out.append((f"guide bushings with housings x{g('guide.count')}", g("guide.count") * g("guide.bushing_mass"), mid(feats["guide_bushing_a"]), "W, overlay ASSUMED"))
-    # moving, outside W_kg
-    out.append(("top-end block", g("drill.top_block_mass"), mid(feats["drill_top_block"]), "moving, not in W_kg; overlay ASSUMED"))
+    # 1.3 (h) r3 (Designer r2 pick 7, Loftsman LF1.3-2): the top-end block rides on the drill and is in W_kg
+    out.append(("top-end block", g("drill.top_block_mass"), mid(feats["drill_top_block"]), "W, overlay ASSUMED"))
     if "core_750" in feats and "z_min" in feats["core_750"]:
         out.append(("0.75 m core", g("core.mass_kg_d105")[1], mid(feats["core_750"]), "params DERIVED (d 105)"))
     # fixed
@@ -135,7 +135,7 @@ def main(argv=None):
              f"top guides: jackscrew.top_guide_z {g('jackscrew.top_guide_z')} z_A, drawn {f0['guide_a']['z_min']:.2f} to {f0['guide_a']['z_max']:.2f} z_S; "
              f"screw length jackscrew.length {g('jackscrew.length')}.",
              f"- Park rule for Step 4: {spec['park_rule']['for_step4']}",
-             f"- Moving mass W (s3_spec.yaml load_cases.W_kg items): {data['load']['W_kg']:.2f} kg; top-end block {g('drill.top_block_mass')} kg is moving and outside W_kg.",
+             f"- Moving mass W (s3_spec.yaml load_cases.W_kg items): {data['load']['W_kg']:.2f} kg, the top-end block {g('drill.top_block_mass')} kg included (1.3 (h) r3, LF1.3-2).",
              f"- Tip force: horizontal force that tips the unbolted jig about the nearest base edge, lever {half_a:.0f} mm "
              f"(min footprint / 2, COM on the drill axis by three-fold symmetry), g {G}. Masses: overlay ASSUMED; structure DERIVED; "
              f"working densities {WORKING} ASSUMED. Receiver, collet, holder, wing nut, anchor and guide blocks omitted.",

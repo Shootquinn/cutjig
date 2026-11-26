@@ -487,7 +487,7 @@ def reported(ctx):
     lead = ld["lead"] / 1000.0
     items["lift_torque"] = {"value": "; ".join(f"mu {mu}: cut {ld['per_screw']['cut'] * lead / (2 * math.pi * v['eta']):.3f}, capture lift {ld['per_screw']['capture_lift'] * lead / (2 * math.pi * v['eta']):.3f} N m" for mu, v in th.items()) + f" against {ld['T']} N m",
                             "basis": "T = F lead / (2 pi eta), per screw", "tag": "DERIVED"}
-    items["kept_axial"] = {"value": f"{P.get('loads.axial_design'):g} N at the cut; " + "; ".join(f"mu {mu}: {ld['n'] * v['F_stall_per_screw'] + ld['W']:.2f} N at F_stall + W" for mu, v in th.items()) + " (collet, holder, receiver, base plate, compression)",
+    items["kept_axial"] = {"value": f"{P.get('loads.axial_design'):g} N at the cut; " + "; ".join(f"mu {mu}: {ld['n'] * v['F_stall_per_screw'] + ld['W']:.2f} N at F_stall + W" for mu, v in th.items()) + " (collet with its core seat, receiver, base plate, compression; the holder is outside the cut-case route, Topologist TP1.3-10 (a))",
                            "basis": "loads.axial_design; F_stall + W (N5)", "tag": "DERIVED"}
     items["backdrive"] = {"value": f"lambda {ld['lambda_deg']:.2f} deg; " + "; ".join(f"mu {mu}: phi_n {v['phi_n_deg']:.2f} deg, back-drive efficiency {v['eta_back']:.3f} (self-locking)" if v["eta_back"] < 0 else f"mu {mu}: phi_n {v['phi_n_deg']:.2f} deg, back-drive efficiency {v['eta_back']:.3f} (back-drives)" for mu, v in th.items()),
                           "basis": "lambda = atan(lead / (pi d2)), phi_n = atan(mu / cos 15)", "tag": "DERIVED"}

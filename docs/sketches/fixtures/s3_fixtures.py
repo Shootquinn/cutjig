@@ -172,6 +172,14 @@ def _draw_subs(ax, P, spec, stack, pid):
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(check_stack.eval_expr(e[0], P, names), check_stack.eval_expr(e[1], P, names) + shift) for e in (lv["from"], lv["to"])]
             sc.draw(f"{fid}:lever", Line2D([p[0] for p in pts], [p[1] for p in pts]), ax)
+        ex = row.get("ext")
+        if ex and "ext" in (row.get("sub_artists") or []):   # 1.3 (h) r3 (Designer r2 item 3): screw edge to the line + 2
+            sp = _reflect(pr["features"][ex["screw"]])
+            uc, half = sum(sp["u"]) / 2, pr["features"][ex["screw"]]["place"]["half_width"]
+            ud = sum(_reflect(pr["features"][fid])["u"]) / 2
+            side = 1 if ud > uc else -1
+            for zz in (pr["features"][fid]["z_min"], pr["features"][fid]["z_max"]):
+                sc.draw(f"{fid}:ext", Line2D([uc + side * half, ud + side * 2], [zz, zz]), ax)
         rt = row.get("root")
         if rt and "root" in (row.get("sub_artists") or []):   # 1.3 (h) r2 (TP1.3-15)
             uc = sum(_reflect(pr["features"][fid])["u"]) / 2
@@ -203,29 +211,24 @@ def _draw_inset(ax, P, spec, stack, pid, inset_rows):
                 _arrow(ax, fid, (0.0, y), (-40.0, y))
 
 
-def _draw_arc(ax, P, row, reverse=False, dr=0.0, gid=None):
+def _draw_arc(ax, P, row, reverse=False, dr=0.0, gid=None, head_from=None):
+    """The arc line and, as the live script draws it (Topologist R2-3), a head arrow from head_from (default theta1 - 10)
+    to theta1 on the circle."""
     arc = row["arc"]
     r = check_stack.eval_expr(str(arc["r"]), P, {}) + dr
     t0, t1 = float(arc["theta0"]), float(arc["theta1"])
     ts = [t0 + (t1 - t0) * k / 90 for k in range(91)]
     if reverse:
         ts = ts[::-1]
-    return sc.draw(gid or f"{row['id']}:arc", Line2D([r * math.cos(math.radians(t)) for t in ts], [r * math.sin(math.radians(t)) for t in ts]), ax)
+    g = gid or f"{row['id']}:arc"
+    a = sc.draw(g, Line2D([r * math.cos(math.radians(t)) for t in ts], [r * math.sin(math.radians(t)) for t in ts]), ax)
+    tb = t1 - 10 if head_from is None else head_from
+    pt = lambda t: (r * math.cos(math.radians(t)), r * math.sin(math.radians(t)))  # noqa: E731
+    sc.draw(g, FancyArrowPatch(pt(tb), pt(t1), arrowstyle="-|>", mutation_scale=8, shrinkA=0, shrinkB=0), ax)
+    return a
 
 
-# 1.3 (h) r2 scaffolding (remove when The Designer rules): the live spec carries two items pending The Designer, the
-# section.hatch_alt pattern for the anchor cover (TP1.3-14) and the convention for the rear nut shoulder screw in the beyond
-# band (TP1.3-12). The fixtures draw the live spec with these stand-ins (FIXTURE_ALT; the screw entry deferred) so every K8
-# control judges its own plant; pending=False draws the live spec as it stands (the pending reds).
-FIXTURE_ALT = "--"
-
-
-def _designer_pending(spec):
-    spec.setdefault("section", {})
-    spec["section"] = dict(spec["section"], hatch_alt=dict(spec["section"].get("hatch_alt") or {}, aluminium=FIXTURE_ALT))
-    for e in spec.get("not_drawn") or []:
-        if isinstance(e, dict) and str(e.get("part", "")).startswith("two nut shoulder screws"):
-            e["omit"], e["owner"] = "deferred", "fixture stand-in (The Designer, TP1.3-12)"
+FIXTURE_ALT = "--"   # the live section.hatch_alt aluminium (Designer r2 pick 4, orchestrator ruling 1.3 (h) r3), for plants
 
 
 def _ctx_of(P, spec, stack, figs):
@@ -259,7 +262,7 @@ def s3_draw(P, spec, stack, mutate=None, render=True, subs=True, skip=()):
     return figs
 
 
-def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None, pending=True):
+def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip=(), records=None, specs=None, spec=None):
     """Live S3 spec drawn faithfully (one figure at section_figure.pose). spec_mut(spec), values {key: value} as the S1/S2
     fixtures (a spec or params decision drawn faithfully); mutate(fig, ax, axi, P, spec, stack, pid) plants a drawing
     defect after the faithful draw. records: directory S3-3 reads; specs: the {name: spec} SYM reads."""
@@ -267,8 +270,6 @@ def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip
     for k, v in (values or {}).items():
         P.leaves[k] = dict(P.leaves[k], value=v)
     spec = copy.deepcopy(spec) if spec is not None else load_spec(S3_SPEC)
-    if pending:
-        _designer_pending(spec)
     if spec_mut:
         spec_mut(spec)
     stack = check_stack.evaluate_spec(P, spec)
@@ -870,12 +871,12 @@ def _k4_one(fid, text_fn, axes=MAIN):
 
 
 def k4_value_from_z():
-    """K4 Z (SW FIX 5, M17): load_tension_c prints its value_from value (load_cases cut per_screw 254.04)."""
-    return _k4_one("load_tension_c", lambda sp, P: f"{_row(sp, 'load_tension_c')['label']['text']} 254.04")
+    """K4 Z (SW FIX 5, M17): load_tension_c prints its value_from value (load_cases cut per_screw 247.5 at W 26.25 kg, 1.3 (h) r3)."""
+    return _k4_one("load_tension_c", lambda sp, P: f"{_row(sp, 'load_tension_c')['label']['text']} 247.5")
 
 
 def k4_value_from_b():
-    """K4 B (SW FIX 5, M17): load_tension_c prints 300 against its value_from value 254.04."""
+    """K4 B (SW FIX 5, M17): load_tension_c prints 300 against its value_from value 247.5."""
     return _k4_one("load_tension_c", lambda sp, P: f"{_row(sp, 'load_tension_c')['label']['text']} 300")
 
 
@@ -1239,7 +1240,7 @@ def root_solid():
 
 def _arc_mut(**kw):
     def m(fig, ax, axi, P, spec, *a):
-        for art in sc.tagged(axi).get("plan_axes:arc", []):
+        for art in list(sc.tagged(axi).get("plan_axes:arc", [])):
             art.remove()
         _draw_arc(axi, P, _row(spec, "plan_axes"), **kw)
     return s3_ctx(mutate=m)
@@ -1302,20 +1303,21 @@ def hatch_alt_equal():
 
 
 def hatch_alt_missing():
-    """K8 B4 (TP1.3-14 lint): the live spec as it stands, hatch_split with no alternate (The Designer pending)."""
+    """K8 B4 (TP1.3-14 lint): hatch_split with no alternate (the r2 live state)."""
     def sm(sp):
         sp["section"]["hatch_alt"] = {}
     return s3_ctx(spec_mut=sm)
 
 
 def nd_band_live():
-    """K8 B (TP1.3-12): the live not_drawn entry for the two nut shoulder screws (off_plane, x bands): the rear screw
-    (x -18.86 to -8.86) lies in the section band."""
+    """K8 B (TP1.3-12): 1.3 (h) r3 re-plant: the rear nut shoulder screw entry made off_plane with its band (x -18.86 to
+    -8.86), the r2 live state: it lies in the section band."""
     def sm(sp):
         for e in sp["not_drawn"]:
-            if str(e.get("part", "")).startswith("two nut shoulder screws"):
+            if e.get("part") == "rear nut shoulder screw":
                 e["omit"] = "off_plane"
                 e.pop("owner", None)
+                e["x"] = [["-ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "-ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"]]
     return s3_ctx(spec_mut=sm)
 
 
@@ -1385,3 +1387,87 @@ def s3_3_no_kind():
             if link["pair"] == ["nut_housing_c", "ring"]:
                 link.pop("kind")
     return _s33_spec_mut(fn)
+
+
+# ======================================================================== 1.3 (h) r3 (P9 r3, step1.3_engineer_revision_r3.md)
+# Designer r2 item 3 (span_lt:ext, e1 to e4), Topologist R2-1 to R2-4. Each B run on the r2 code (p9r3\pre) first.
+
+def arc_head_cw():
+    """K5 B43 (Topologist R2-3): the head drawn from 100 to 90 deg on the ccw line (clockwise head)."""
+    return _arc_mut(head_from=100.0)
+
+
+def _ext_mut(fn):
+    def m(fig, ax, axi, *a):
+        arts = sorted(sc.tagged(ax)["span_lt:ext"], key=lambda x: x.get_ydata()[0])
+        fn(arts)
+    return s3_ctx(mutate=m)
+
+
+def ext_off_end():
+    """K5 B44 (Designer e1): the lower extension line 5 above the z_rule end."""
+    return _ext_mut(lambda arts: arts[0].set_ydata([y + 5 for y in arts[0].get_ydata()]))
+
+
+def ext_off_edge():
+    """K5 B45 (Designer e2): the upper extension line starting 5 inboard of the screw edge."""
+    def f(arts):
+        x = list(arts[1].get_xdata())
+        x[0] = x[0] + 5
+        arts[1].set_xdata(x)
+    return _ext_mut(f)
+
+
+def ext_run_on():
+    """K5 B46 (Designer e3): the lower extension line run on 10 past the dimension line."""
+    def f(arts):
+        x = list(arts[0].get_xdata())
+        x[1] = x[1] + 8
+        arts[0].set_xdata(x)
+    return _ext_mut(f)
+
+
+def ext_non_reference():
+    """K5 B47 (Designer e4): screw_c declares ext and draws two extension lines (screw_c is no reference line row)."""
+    def sm(sp):
+        r = _row(sp, "screw_c")
+        r["sub_artists"] = list(r.get("sub_artists") or []) + ["ext"]
+        r["ext"] = {"screw": "screw_c"}
+    def m(fig, ax, axi, *a):
+        sc.draw("screw_c:ext", Line2D([-154.0, -150.0], [400.0, 400.0]), ax)
+    return s3_ctx(spec_mut=sm, mutate=m)
+
+
+def s3_3_face_no_z():
+    """S3-3 B16 (Topologist R2-1): frame_upper_c|bracket_anchor_c as kind face with no face z."""
+    def fn(s3):
+        for link in s3["chains"]["c"]:
+            if link["pair"] == ["frame_upper_c", "bracket_anchor_c"]:
+                link["kind"] = "face"
+                link.pop("face", None)
+    return _s33_spec_mut(fn)
+
+
+def s3_3_face_no_s3():
+    """S3-3 B17 (Topologist R2-1): base_plate|base_frame as kind face with record certifiers only."""
+    def fn(s3):
+        for link in s3["chains"]["c"]:
+            if link["pair"] == ["base_plate", "base_frame"]:
+                link["kind"] = "face"
+    return _s33_spec_mut(fn)
+
+
+def nd_no_owner():
+    """K8 B86 (Topologist R2-2): the rear nut shoulder screw entry deferred with its owner removed."""
+    def sm(sp):
+        for e in sp["not_drawn"]:
+            if e.get("part") == "rear nut shoulder screw":
+                e.pop("owner", None)
+    return s3_ctx(spec_mut=sm)
+
+
+def hatch_alt_family():
+    """K8 B87 (Topologist R2-4): section.hatch_alt aluminium '////', the aluminium line family at double density."""
+    def sm(sp):
+        sp["section"]["hatch_alt"] = {"aluminium": "////"}
+    return s3_ctx(spec_mut=sm)

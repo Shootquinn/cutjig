@@ -249,6 +249,14 @@ def draw_subs(ax, pz, spec):
             d, z0, z1 = pz.ev(rt["d"]), pz.zs(rt["from"]), pz.zs(rt["to"])
             for s_ in (-1, 1):
                 sc.draw(f"{fid}:root", Line2D([uc + s_ * d / 2] * 2, [z0, z1], color="k", linestyle=HIDDEN, linewidth=1), ax)
+        ex = row.get("ext")
+        if ex and "ext" in (row.get("sub_artists") or []):     # 1.3 (h) r3: extension lines, screw edge to the dimension line
+            sp = pz.feats[ex["screw"]]["place"]
+            uc, half = sum(pz.u(ex["screw"])) / 2, sp["half_width"]
+            ud = sum(pz.u(fid)) / 2
+            side = 1 if ud > uc else -1
+            for zz in pz.z(fid):
+                sc.draw(f"{fid}:ext", Line2D([uc + side * half, ud + side * 2], [zz, zz], color=LOAD, linewidth=1), ax)
         lv = row.get("lever")
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(pz.ev(e[0]), pz.zs(e[1])) for e in (lv["from"], lv["to"])]
@@ -390,9 +398,9 @@ def build(P, spec, stack):
     notes = [
         (None, f"section A-A: plane x = 0 through the drill axis and screw c at theta {g('jackscrew.angle')[2]:g} (u = r sin theta = "
                f"{g('jackscrew.pitch_radius') * check_stack.sind(g('jackscrew.angle')[2]):g}); viewer at +X, u = +Y right, z up (z_S plotted)"),
-        (None, "hatch by material: aluminium //, extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
+        (None, "hatch by material: aluminium // (anchor cover above the joint --), extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
                "outline over the hatch; beyond the plane within one profile width (rear standoffs): solid, dashed behind cut parts;\n"
-               "dash-dot: nut stations at start and park; red: loads and the S3-2 span; dashed: hidden edges (inside an unsectioned outline)"),
+               "dash-dot: nut stations at start and park; red: loads and the S3-2 span; dashed: hidden edges (inside an unsectioned outline), thread root inside screw c"),
         (None, AXIAL_LOOP_NOTE),
         (None, spec["figure_note"].replace("; ", ";\n"), sc.NOTE_GID),
     ]
