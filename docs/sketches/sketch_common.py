@@ -470,6 +470,16 @@ ANCHOR_STEP = 2.0           # mm: placer anchor candidates along each ink edge, 
 PLACER_PASSES = 3
 
 
+LEADER_SEP_MIN = 4.0   # mm, DECLARED (Designer P1Rf re-check FIX D4): least distance between two plan leaders, anchor ends included
+
+
+def seg_distance(a0, a1, b0, b1):
+    """Least distance between segments a0-a1 and b0-b1 (0 when they cross)."""
+    if _segs_cross(a0, a1, b0, b1):
+        return 0.0
+    return min(_pt_seg(a0, b0, b1), _pt_seg(a1, b0, b1), _pt_seg(b0, a0, a1), _pt_seg(b1, a0, a1))
+
+
 def leader_outlines(ctx, pose):
     """What the K4 outline rule reads at pose: cover_table's true outlines {id: (outline, box)} and z_max per row (every
     row with a stack record, labelled reference rows included)."""
@@ -489,7 +499,8 @@ def leader_outline_issue(outl, fid, p0, p1, zmax=None):
     plate, the base frame, a ring under a gear, lies behind the labelled part and every leader crosses it); a row with
     no z_max (a zone) counts every outline; (3) 1.3 P1Rf (Designer FIX D1): an outline that encloses the anchor (outline_
     encloses: its outer boundary with holes filled contains the anchor within TOL_Z; containing implies enclosing) is
-    exempt, since no straight leader from outside reaches that anchor without crossing it. A row with visible ink anchors
+    exempt, since no straight leader from outside reaches that anchor without crossing it. 1.3 P1Rf2 (TP1.3-8): the
+    exemption is strict (outline_encloses_deep: the anchor and every point within TOL_Z of it inside). A row with visible ink anchors
     on visible ink (rule (e1), anchor_visibility_issue), so for such a row a containing outline cannot occur at the anchor;
     a wholly hidden row (e2) ends inside its cover, and its label names the cover (clause (g), cover_name_issue).
     outl: cover_table's {id: (outline, box)}; zmax: {id: z_max} (None: every outline counts)."""
@@ -508,7 +519,7 @@ def leader_outline_issue(outl, fid, p0, p1, zmax=None):
         zo = (zmax or {}).get(oid)
         if zf is not None and (zo is None or zo <= zf + TOL_Z):
             continue
-        if outline_encloses(O, p1):
+        if outline_encloses_deep(O, p1):
             continue
         if O[0] == "annulus":
             k = sum(1 for q in pts if outline_contains(O, q))
@@ -527,6 +538,21 @@ def outline_encloses(O, p):
     if O[0] == "annulus":
         return math.hypot(*p) <= O[1][1] + TOL_Z
     return outline_outside(O, p) <= TOL_Z
+
+
+ENCLOSE_RING = 16   # points on the TOL_Z circle about an anchor tested by outline_encloses_deep
+
+
+def outline_encloses_deep(O, p):
+    """1.3 P1Rf2 (Topologist TP1.3-8, orchestrator ruling): the rule (e) exemption. The anchor and every point within
+    TOL_Z of it lie inside the outer boundary of O with holes filled: annulus (a, b) r <= b - TOL_Z; polys: the anchor
+    and ENCLOSE_RING points on the circle of radius TOL_Z about it each inside a convex piece. outline_encloses (+TOL_Z,
+    inclusive) stays the test for naming the cover (clause (g))."""
+    if O[0] == "annulus":
+        return math.hypot(*p) <= O[1][1] - TOL_Z
+    ring = [(p[0] + TOL_Z * math.cos(2 * math.pi * k / ENCLOSE_RING), p[1] + TOL_Z * math.sin(2 * math.pi * k / ENCLOSE_RING))
+            for k in range(ENCLOSE_RING)]
+    return all(any(len(q) >= 3 and _inside(x, q) for q in O[1]) for x in [p] + ring)
 
 
 def counted_outlines(outl, zmax, fid):
@@ -837,6 +863,9 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=()):
                 if _segs_cross(a0, a1, b0, b1):
                     out.setdefault(fa, []).append(("crosses leader", fb))
                     out.setdefault(fb, []).append(("crosses leader", fa))
+                elif margin and seg_distance(a0, a1, b0, b1) < LEADER_SEP_MIN:   # (h), 1.3 P1Rf2 (Designer FIX D4)
+                    out.setdefault(fa, []).append(("leader within 4.0 mm of", fb))
+                    out.setdefault(fb, []).append(("leader within 4.0 mm of", fa))
         return out
 
     choice = {}
@@ -1824,6 +1853,8 @@ def leader_issues(ctx):
     the visible end of the leader is its anchor. 1.3 P1R, plan view: (e) the last quarter of a leader lies outside every
     other row's true plan outline that does not contain its anchor (leader_outline_issue; Design Notes 30); (f) a label
     the placer recorded UNPLACEABLE (ax._sc_placer) fails with reason "unplaceable" and is not judged again by (a) to (e).
+    1.3 P1Rf2: (h) in plan, two leaders that do not cross keep at least LEADER_SEP_MIN (4.0 mm) apart, anchor ends
+    included (segment distance; Designer FIX D4).
     Containment of an area is as drawn (even-odd rings, clip region of a renderer piece)."""
     out = []
     plan = ctx.view == "plan_xy"
@@ -1886,6 +1917,10 @@ def leader_issues(ctx):
                 (fa, a0, a1), (fb, b0, b1) = legs[i], legs[j]
                 if _segs_cross(a0, a1, b0, b1):
                     out.append(f"{pose}: label leaders {fa} and {fb} cross")
+                elif plan:   # (h) 1.3 P1Rf2 (Designer FIX D4): leaders, anchor ends included, at least LEADER_SEP_MIN apart
+                    d = seg_distance(a0, a1, b0, b1)
+                    if d < LEADER_SEP_MIN:
+                        out.append(f"{pose}: label leaders {fa} and {fb} {d:.2f} mm apart (h, least {LEADER_SEP_MIN:g})")
     return out
 
 

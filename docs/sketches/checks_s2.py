@@ -316,7 +316,7 @@ def _reported_items(ctx, rows, toe, lm, lm_d):
     items["tip_force_footprint"] = {"value": " / ".join(f"{t:.0f}" for t in tips) + f" N (load, start, capture_end, park) over lever {ye:g}",
                                     "basis": "s1_mass_report_r7.json tip_force_at_com_N (accepted S1 report); lever icd.footprint_y / 2",
                                     "tag": "DERIVED"}
-    items["cutter_overhang"] = {"value": round(P.get("drill.head_od") / 2 - P.get("icd.keepout_radius"), 2),
+    items["cutter_overhang"] = {"value": f"{P.get('drill.head_od') / 2 - P.get('icd.keepout_radius'):.2f}",
                                 "basis": "drill.head_od / 2 - icd.keepout_radius (drill.head_od ASSUMED, Q2)", "tag": "DERIVED"}
     ce = ctx.stack["poses"]["capture_end"]["features"]
     zt, zr, R, w = ce["drill_head"]["z_min"], ce["ring"]["z_min"], P.get("ring.od") / 2, P.get("operator.watch_r")
@@ -330,10 +330,10 @@ def _reported_items(ctx, rows, toe, lm, lm_d):
     ring = _outline(ctx, "ring")
     rod = min(sc.outline_measure(ring, _outline(ctx, g), sc.TOL_C)[0] for g in ("guide_member", "guide_member_b"))
     mem = min(sc.outline_measure(ring, _outline(ctx, g), sc.TOL_C)[0] for g in ("frame_upper_a", "frame_upper_b", "frame_upper_c"))
-    items["tight_rim_to_rod"] = {"value": round(rod, 2), "basis": "plan outlines ring and guide_member, the K7 plan measure (G, g_min 10 identity)", "tag": "MEASURED"}
-    items["tight_rim_to_member"] = {"value": round(mem, 2), "basis": "plan outlines ring and frame_upper_a/b/c, the K7 plan measure", "tag": "MEASURED"}
+    items["tight_rim_to_rod"] = {"value": f"{rod:.2f}", "basis": "plan outlines ring and guide_member, the K7 plan measure (G, g_min 10 identity)", "tag": "MEASURED"}
+    items["tight_rim_to_member"] = {"value": f"{mem:.2f}", "basis": "plan outlines ring and frame_upper_a/b/c, the K7 plan measure", "tag": "MEASURED"}
     items["tight_liftmotor_sector"] = {"value": f"{lm:.2f} (bound) / {lm_d:.2f} (drawn square)", "basis": "circumscribed outline (S2-5a) / drawn pieces", "tag": "MEASURED"}
-    items["tight_pinion_toe_hub"] = {"value": round(toe, 2), "basis": "circumscribed outline (pinion radial footprint) against the hub annulus", "tag": "MEASURED"}
+    items["tight_pinion_toe_hub"] = {"value": f"{toe:.2f}", "basis": "circumscribed outline (pinion radial footprint) against the hub annulus", "tag": "MEASURED"}
     hp = [(q, v) for q, v, _ in rows if q.startswith("Highest point over parts")]
     items["highest_point_parts"] = {"value": "; ".join(f"{q.split(', ')[-1]} {v}" for q, v in hp),
                                     "basis": "check_stack, reference rows excluded (LF1.2-5)", "tag": "MEASURED"}

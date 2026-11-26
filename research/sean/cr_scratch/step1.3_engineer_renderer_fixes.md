@@ -134,9 +134,109 @@ Each planted figure was built with the P1Rf code and judged by the P1R `sketch_c
 2. TP1.3-2 cover (5): one line per artist; a fill of a row without z_max fails.
 3. D1 against the ring and tie a case: the ring now anchors on visible rim at (205.96, -40.97), and no counted outline is entered (DR-1 table). K4-B14 plants the r6 anchor and fires (e1).
 
+## P1Rf2
+
+Last round on K4 rule (e), by orchestrator ruling. Sources: `step1.3_designer_renderer_recheck.md` (FIX D4, D5, NOTE N5) and `step1.3_topologist_renderer_recheck.md` (FIX TP1.3-8; renderer signed). Runs MEASURED 2026-11-26. Dry-runs ran in scratchpad copies of `docs/sketches/` with `params.yaml` above them (`scratchpad/p1rf2/sketches`; `scratchpad/p1rf2/tp138/sketches` for TP1.3-8 alone).
+
+### Corrections to the brief
+
+1. **New control numbers.** Both raisers proposed "K4-B17". The numbers now assigned are:
+   - K4-B17 for TP1.3-8 (ring label in the old enclosure band);
+   - K4-B18 for D5 (tie a label under a planted nearer outline);
+   - K4-B19 for D4 (the r7 leaders forced).
+
+   The Designer's text names D4's control "K4-B18" and the Topologist's names TP1.3-8's "K4-B17".
+2. **D5 is shown red by deletion only.** The P1Rf code already carries the cover term for stand-in artists, so K4-B18 fires its (e1) line on the pre-change code. As the Designer specified, red-first is shown by deleting that term: with stand-in artists passed no covers in `row_visibility`, the (e1) line disappears and only the crossing remains (NO MATCH).
+3. **K4-B19 measures 1.87 mm on both pairs.** The base plate leader's start (322.00, 0.00) lies 1.87 mm from the r7 tube OD leader, not "about 2.2 mm" (Designer, from pixels). The drill_tube|drill_head pair is 1.87 mm as forecast (MEASURED, segment distance).
+4. **D4 moves pixels, so S2 r8 is drawn.** Under (h) the placer moves drill_tube to an ink anchor at (76.11, -3.75), and the base plate text drops to y 0.00. 14,247 pixels differ from r7 (MEASURED). S2 r7 is superseded by r8 as the drawing for the fresh M1.
+5. **Two existing controls change count.** K4-B8 goes from 2 to 4: its planted texts also bring two leader pairs under 4.0 mm. K4-B14 goes from 3 to 4: against the r8 layout, the r6 ring leader crosses drill_tube and keepout and runs 2.08 mm from drill_head.
+
+### Dry-run table
+
+| Dry-run | Expectation | Result (MEASURED) | Outcome |
+|---|---|---|---|
+| TP1.3-8 alone (P1Rf code plus the strict enclosure test, `tp138` copy) | S2 r7 byte-equal | s2_plan --rev 7 PNG byte-equal to wip/s2_plan_r7.png (`cmp`) | PASS |
+| | s2 19/19 | 19/19 | PASS |
+| | band anchors fire | ring anchors on the drawn rim at 0.010, 0.026 and 0.051 mm outside tie a (nearest drawn-rim samples to 0.008, 0.028, 0.047); each fires "ring: label leader ends inside the outline of guide_tie_a (41.0 mm)"; 0.059 mm also fires | PASS |
+| DR-4 (D4 with D5 and TP1.3-8, `p1rf2` copy) | K3, K4 with no UNPLACEABLE | K3 pass, K4 pass (14 labels), `unplaceable` empty | PASS |
+| | every label's anchor and least separation ≥ 4.0 mm | table below; least 5.21 mm (drill_tube \| drill_head) | PASS |
+| | K4-B17 to B19 red-first and match | section below | PASS |
+| | K4-B7 to B16 counts stated where (h) adds a line | K4-B8 2 → 4, K4-B14 3 → 4; the others unchanged | PASS |
+| D5 control | K4-B18 fires (e1); red by deleting the cover term | fires (e1) and one crossing (planted 2); deleted: crossing only, no (e1) | PASS |
+
+**DR-4 layout (S2 r8 placer record).**
+
+| Label | Column | Source | Anchor | Text | Least separation (mm, to) |
+|---|---|---|---|---|---|
+| base_plate | right | default | (322.00, 0.00) | (366.84, 0.00) | 15.87 (drill_head) |
+| slot_line_c | right | default | (322.00, 259.00) | (366.84, 259.00) | 23.84 (operator_sector) |
+| frame_upper_b | right | default | (278.27, 126.02) | (366.84, 126.02) | 32.06 (guide_tie_a) |
+| frame_upper_c | right | default | (30.00, -274.00) | (366.84, -274.00) | 198.15 (ring) |
+| screw_b | right | default | (142.56, 80.00) | (366.84, 74.99) | 16.69 (guide_tie_a) |
+| descent_stop | left | ink | (-166.21, 112.12) | (-366.84, 112.12) | 268.59 (drill_tube) |
+| ring | right | ink | (205.21, -44.32) | (366.84, -75.85) | 11.33 (keepout) |
+| gear | right | label_theta | (124.36, 21.93) | (366.84, 21.93) | 21.93 (base_plate) |
+| guide_tie_a | right | default | (265.04, 93.96) | (366.84, 93.96) | 16.69 (screw_b) |
+| drill_tube | right | ink | (76.11, -3.75) | (366.84, -37.93) | 5.21 (drill_head) |
+| keepout | right | label_theta | (84.82, -14.96) | (366.84, -56.89) | 10.12 (drill_tube) |
+| drill_head | right | label_theta | (88.90, 0.00) | (366.84, -18.96) | 5.21 (drill_tube) |
+| operator_sector | right | default | (282.84, 282.84) | (366.84, 282.84) | 23.84 (slot_line_c) |
+| sightline_f6 | right | default | (200.00, 346.41) | (366.84, 346.41) | 63.57 (operator_sector) |
+
+No FIX failed its dry-run, and every FIX landed.
+
+### Fix table with controls
+
+| FIX | Change (docs/sketches/) | Controls |
+|---|---|---|
+| TP1.3-8 | `sketch_common.outline_encloses_deep`. An annulus counts only when r ≤ b - 0.05. For polys, the anchor and 16 points on the 0.05 mm circle about it must each lie inside a convex piece. Rule (e) exempts an outline only when it encloses deep. Clause (g) keeps `outline_encloses` (+0.05) for naming the cover. | K4-B17 |
+| D5 | No code change; the cover term in `row_visibility` is the premise. A control now exercises it. | K4-B18 |
+| D4 | `LEADER_SEP_MIN = 4.0` (DECLARED, Designer) and `seg_distance`. K4 adds clause (h): two plan leaders that do not cross must be at least 4.0 mm apart, segment distance, anchor ends included. The placer treats a violation like a crossing (margin mode). | K4-Z3 (live r8 clean), K4-B19 |
+| N5 | `checks_s2._reported_items`: cutter_overhang, tight_rim_to_rod, tight_rim_to_member and tight_pinion_toe_hub are formatted to two decimals (2.70, 10.00, 34.00, 5.22 in `wip/s2_summary_r8.md`). | RPT on S2 r8 |
+
+**Red-first.** Each planted figure was built on the P1Rf2 code and judged with the P1Rf K4 (`scratchpad/p1rf2/pre`):
+
+| ID | Planted | Reason substrings (planted) | P1Rf check | P1Rf2 |
+|---|---|---|---|---|
+| K4-B17 | ring label anchor (201.76, 34.40), 0.028 mm outside tie a, text (366.84, 34.40) | "load/ring: label leader ends inside the outline of guide_tie_a (41.3 mm" (1) | pass, clean | fires 1, match |
+| K4-B18 | row lid (disk r 8, z 1300 to 1310 z_S) on the midpoint of tie a's right edge; tie a anchor at (261.70, 31.20) | "(e1)", "label leaders screw_b and guide_tie_a cross" (2) | with the cover term deleted: fires 1 (crossing only), no (e1). Unmodified P1Rf: fires both, because the premise is already in the code (Correction 2) | fires 2, match |
+| K4-B19 | drill_tube, base_plate, drill_head on their r7 anchors and texts | "base_plate and drill_tube 1.87 mm apart (h", "drill_tube and drill_head 1.87 mm apart (h" (2) | pass, clean | fires 2, match |
+
+### Check results
+
+| Run | Result | Wall (MEASURED) |
+|---|---|---|
+| s2_plan.py --rev 8 | wip/s2_plan_r8.png, 2634 x 1505 (w x h); pixel-equal to the DR-4 copy; SHA-256 27e6f54d8966b8de9bda43b9e7695b282a80ebc659d5cdc2d559308785cdd79a | n/a |
+| check_sketch.py s2 --rev 8 | **19/19 pass**: K1 to K9, S2-1 to S2-6, X1, RPT (12 items, two-decimal values) | 30 s |
+| s1_side_poses.py --rev 7 | four PNGs pixel-equal to the accepted r7 | n/a |
+| check_sketch.py s1 --rev 7 | 18/19; K5 red (pre-existing zero-area lint, until S1 r8) | n/a |
+| check_sketch.py --controls (12 jobs) | **285 controls (Z 75, B 208, smoke 2): all match** | 121.9 s |
+| --stale | 2 records, 0 differences | n/a |
+| --stale --include-unaccepted | 13 records, 0 differences | n/a |
+
+**SHA-256.** Committed files under docs/sketches/ (wip/ and __pycache__ excluded), before landing and after the last run. Four files differ, all edited on purpose:
+
+| File | Before | After |
+|---|---|---|
+| sketch_common.py | 0f54ead9b409… | e9450d79766d… |
+| checks_s2.py | c0c8bd2f7711… | 944f33cbc764… |
+| fixtures/builders.py | 64e6b11e316b… | da96d1f16cd8… |
+| fixtures/manifest.yaml | 4563df4b75d8… | 73a49a690142… |
+
+S2 r8 is the drawing for the fresh M1 (P8, KC11). The Designer and the Topologist sign from this dry-run table, under the orchestrator ruling.
+
 ## 6 Gameplan lines to change
 
-**l.138 (K4 row), rule cell.** Supersedes the P1R and P1Rd new text for the same cell.
+None of the P1R, P1Rt, P1Rd, P1Rf or re-check lines is in the gameplan yet. I checked each Old text below against the current `research/sean/gameplan.md`, and each occurs exactly once. Each New text folds in, for its line:
+- P1R (`step1.3_engineer_renderer.md` section 10);
+- P1Rt and P1Rd;
+- the P1Rf section 6 above;
+- both re-check files;
+- P1Rf2.
+
+This list supersedes those earlier lists for the lines it names.
+
+**l.138 (K4 row), rule cell.**
 
 Old:
 ```
@@ -144,10 +244,10 @@ a row may set label_side: left, a left label column under the same rules (1.2 (h
 ```
 New:
 ```
-a row may set label_side: left, a left label column under the same rules (1.2 (h) r4, Designer M1 S2 r3 N1); 1.3 P1R: plan labels are placed by one placer (sketch_common.place_plan_labels; candidates in order: label_side column then the other, label_theta ray hit, column default anchor, ink samples at most 2 mm apart; first candidate passing every leader rule, re-judged after column stacking); (e) only true outlines of rows higher than the labelled row by more than 0.05 (zones: every outline) count; (e1) a row with visible ink (renderer split, certified by K8 cover; a stand-in's convention line is visible ink) anchors on visible ink and its leader's last quarter lies outside every counted outline that does not enclose the anchor (outer boundary, holes filled); (e2) a wholly hidden row anchors on its hidden ink and its last quarter lies outside every counted outline that neither contains nor encloses the anchor (Design Notes 30; Designer P1Rd FIX D1); (f) a label with no passing candidate is recorded UNPLACEABLE with its candidate table in the K4 record and fails with reason "unplaceable", no silent fall-back; (g) the drawn label of a wholly hidden row contains "under " and the name of a counted row whose outline contains or encloses the anchor (1.3 P1Rf) |
+a row may set label_side: left, a left label column under the same rules (1.2 (h) r4, Designer M1 S2 r3 N1); 1.3 P1R: plan labels are placed by one placer (sketch_common.place_plan_labels; candidates in order: label_side column then the other, label_theta ray hit, column default anchor, ink samples at most 2 mm apart; first candidate passing every leader rule, re-judged after column stacking; left-column text clear of the y tick labels); (e) only true outlines of rows higher than the labelled row by more than 0.05 (zones: every outline) count; (e1) a row with visible ink (renderer split, certified by K8 cover; a stand-in's convention line is visible ink where no cover contains it) anchors on visible ink and its leader's last quarter lies outside every counted outline that does not enclose the anchor; (e2) a wholly hidden row anchors on its hidden ink and its last quarter lies outside every counted outline that does not enclose the anchor (Design Notes 30; Designer P1Rd FIX D1); an outline encloses for (e1) and (e2) only when the anchor and every point within 0.05 of it lie inside its outer boundary with holes filled (Topologist TP1.3-8); (f) a label with no passing candidate is recorded UNPLACEABLE with its candidate table in the K4 record and fails with reason "unplaceable", no silent fall-back; (g) the drawn label of a wholly hidden row contains "under " and the name of a counted row whose outline contains or encloses the anchor; (h) any two plan leaders that do not cross, anchor ends included, keep at least 4.0 mm apart (DECLARED, Designer P1Rf re-check FIX D4), judged and placed as a crossing is |
 ```
 
-**l.138 (K4 row), B cell.** Supersedes the P1R new text for the same cell.
+**l.138 (K4 row), B cell.**
 
 Old:
 ```
@@ -155,37 +255,43 @@ K4-B11 an area of another row over an anchor |
 ```
 New:
 ```
-K4-B11 an area of another row over an anchor (with (e1) on the hidden ink); K4-B12 the descent-stop leader at the r4/r5 anchor (inside tie b); K4-B13 a pad under an opaque lid (unplaceable); K4-B14 ring label at the r6 anchor on hidden rim inside tie a (e1); K4-B15 drill_head label without its "under ring gear" suffix (g); K4-B16 gear outline planted as an open C, not enclosing the cutter anchor (e2, g); K4-B8 re-planted at 1.3 P1Rf (texts below the anchors in reverse radial order) |
+K4-B11 an area of another row over an anchor (with (e1) on the hidden ink); K4-B12 the descent-stop leader at the r4/r5 anchor (inside tie b); K4-B13 a pad under an opaque lid (unplaceable); K4-B14 ring label at the r6 anchor on hidden rim inside tie a (e1); K4-B15 drill_head label without its "under ring gear" suffix (g); K4-B16 gear outline planted as an open C, not enclosing the cutter anchor (e2, g); K4-B17 ring label anchored 0.028 mm outside tie a, last quarter 41.3 mm inside it (TP1.3-8); K4-B18 tie a label anchored on its phantom line under a planted nearer disk (e1, Designer FIX D5); K4-B19 the S2 r7 tube OD, base plate and cutter leaders, 1.87 mm apart (h, Designer FIX D4); K4-B8 re-planted at 1.3 P1R and P1Rf; K4-B7, B8, B10 to B12, B14 counts re-read at P1R to P1Rf2 |
 ```
 
-**l.142 (K8 row), rule cell.** Apply after the P1R change. Old is the P1R new text ending:
+**l.142 (K8 row), rule cell.**
+
+Old:
 ```
-alpha-rule premise: no plan fill alpha in (0.5, 0.75) |
+within 0.05 (Designer sign-off r3) |
 ```
 New:
 ```
-alpha-rule premise: no plan fill alpha in (0.5, 0.75); 1.3 P1Rf: annulus samples also step at most 2.5 mm across the width (Topologist TP1.3-1); cover (5) an opaque fill of another row drawn above an artist over a drawn sample belongs to a row whose z_max is not lower than the artist's by more than 0.05, and a fill of a row without z_max hides nothing (TP1.3-2); render state per piece decided on samples at most 2.5 mm apart, the declared cover resolution (TP1.3-4); plan stand-ins drawn as a brown phantom line (Designer P1Rd FIX D3) |
+within 0.05 (Designer sign-off r3); 1.3 P1R plan renderer (sketch_common.render_plan, one entry point per plan figure): hidden = inside the true outline of a row higher by more than 0.05 or inside an opaque fill (rendered alpha >= 0.75) of another row drawn above; covered region exact (annulus as annulus with its bore, union as union; slab decomposition, circle sagitta 0.01); a partly covered piece keeps its style inside its visible clip region and a dashed unfilled copy draws its hidden region; cover samples are judged inside each artist's clip region; cover (2): a solid artist with a drawn sample covered by more than 0.05 fails (N2); annulus samples step at most 2.5 mm along the arc and across the width (TP1.2-19, TP1.3-1); alpha-rule premise: no plan fill alpha in (0.5, 0.75); cover (5): an opaque fill hides only what lies behind it, a fill of a row without z_max hides nothing (TP1.3-2); render state per piece decided on samples at most 2.5 mm apart, the declared cover resolution (TP1.3-4); plan stand-ins drawn as a brown phantom line (Designer P1Rd FIX D3) |
 ```
 
-**l.142 (K8 row), B cell.** Apply after the P1R change. Old is the P1R new text ending:
+**l.142 (K8 row), B cell.**
+
+Old:
 ```
-B22 re-rendered |
+B43 frame "polar" |
 ```
 New:
 ```
-B22 re-rendered; K8-B51 operator sector at alpha 0.95 set before the renderer (cover (5), TP1.3-2); K8-Z13 and K8-B52 filled annulus under a 10 x 10 cover between the r6 sample radii, rendered and unsplit (TP1.3-1); K8-B6, B32, B39, B49 planted counts 3, 5, 7, 7 under cover (5) |
+B43 frame "polar"; K8-Z9 to Z12 and B44 to B47 (annulus cover, hollow disk with its bore, union of covers, annulus arc sampling); B48 renderer bypassed for the ring (N2); B49 sector alpha 0.95; B50 sector alpha 0.6; K8-B51 sector alpha 0.95 set before the renderer (cover (5)); K8-Z13 and B52 filled annulus under a 10 x 10 cover between the r6 sample radii (TP1.3-1); K8-B6, B32, B39, B49 planted 3, 5, 7, 7 under the opaque-fill clause and cover (5); B22 re-rendered |
 ```
 
-**l.146 (K table pointer).** Apply after the P1R change. Old is the P1R new sentence:
+**l.146 (K table pointer).**
+
+Old:
 ```
-Step 1.3 P1R (`research/sean/cr_scratch/step1.3_engineer_renderer.md`) added K8-Z9 to Z12, K8-B44 to B50, K4-B12, K4-B13 and re-planted K4-B8 (276 controls: Z 74, B 200, smoke 2; 107.3 s at --jobs 12; K4-Z3 red on the drill_head UNPLACEABLE until the Designer's remedy).
+RPT-B3 to B6 and re-planted H1-B8 (263 controls: Z 70, B 191, smoke 2; 111 s at --jobs 12).
 ```
 New:
 ```
-Step 1.3 P1R (`research/sean/cr_scratch/step1.3_engineer_renderer.md`) added K8-Z9 to Z12, K8-B44 to B50, K4-B12, K4-B13 and re-planted K4-B8; P1Rf (`research/sean/cr_scratch/step1.3_engineer_renderer_fixes.md`) added K8-Z13, K8-B51, K8-B52, K4-B14 to B16, re-planted K4-B8 and re-counted K8-B6, B32, B39, B49, K4-B7, B10, B11, B12 (282 controls: Z 75, B 205, smoke 2, all match; 113.5 s at --jobs 12).
+RPT-B3 to B6 and re-planted H1-B8 (263 controls: Z 70, B 191, smoke 2; 111 s at --jobs 12). Step 1.3 P1R, P1Rf and P1Rf2 (`research/sean/cr_scratch/step1.3_engineer_renderer.md`, `step1.3_engineer_renderer_fixes.md`) added K8-Z9 to Z13, K8-B44 to B52, K4-B12 to B19, re-planted K4-B8 and re-counted K8-B6, B32, B39, B49, K4-B7, B10, B11, B12, B14 (285 controls: Z 75, B 208, smoke 2, all match; 121.9 s at --jobs 12).
 ```
 
-**l.264 (detail 1.2, Reported).** As the Designer wrote it (P1Rd).
+**l.264 (detail 1.2, Reported).**
 
 Old:
 ```
@@ -193,30 +299,46 @@ highest point over parts only (reference lines excluded, LF1.2-5).
 ```
 New:
 ```
-highest point over parts only (reference lines excluded, LF1.2-5). From S2 r7 (1.3 P1Rf) these are the spec field reported_items in s2_spec.yaml (12 ids, with members to plate edge, tip force, cutter overhang and F6 eye limits; Designer P1Rd section 5), read by RPT from checks_s2.reported items.
+highest point over parts only (reference lines excluded, LF1.2-5). From S2 r7 (1.3 P1Rf) these are the spec field reported_items in s2_spec.yaml (12 ids, with members to plate edge, tip force, cutter overhang and F6 eye limits; Designer P1Rd section 5, signed at the P1Rf re-check), read by RPT from checks_s2.reported items.
 ```
 
-**l.296 (detail 1.3 carried item 4).** Apply after the P1R change. Old is the P1R new text ending:
+**l.296 (detail 1.3 carried items), item (4).**
+
+Old:
 ```
-signatures P1Rt, P1Rd; section-view convention at P4;
+S2 re-runs under (i); The Engineer, with The Designer and The Topologist;
 ```
 New:
 ```
-signatures P1Rt, P1Rd; P1Rf (`research/sean/cr_scratch/step1.3_engineer_renderer_fixes.md`): Designer FIX D1 to D3 and Topologist FIX TP1.3-1, TP1.3-2 closed after dry-runs DR-1 to DR-3, reported_items added; S2 r7 19/19 (K4 with no UNPLACEABLE, RPT 12 items), S1 r7 PNGs pixel-equal; re-checks by the Designer and the Topologist, then the fresh M1 (P8); section-view convention at P4;
+S2 re-runs under (i); The Engineer, with The Designer and The Topologist; done at P1R to P1Rf2 (`research/sean/cr_scratch/step1.3_engineer_renderer.md`, `step1.3_engineer_renderer_fixes.md`): plan renderer and leader placer in sketch_common; renderer SIGNED by the Topologist (hand classification 8/8; TP1.3-1, TP1.3-2 closed by deletion tests; TP1.3-3 closed on S2 r7); conventions signed by the Designer (N2 closed, hidden-copy draw order, placer order, UNPLACEABLE record, stand-in visible-ink premise with its cover bound, reported_items); FIX D1 to D5 and TP1.3-8 landed after dry-runs; S2 r8 19/19 (K4 rule (e) by visible ink and strict enclosure, (g), (h) 4.0 mm; RPT 12 items), S1 r7 PNGs pixel-equal; fresh M1 on S2 r8 at P8;
 ```
 
-**l.666 (Design Notes 25, TP1.2-13 row).** As the Topologist wrote it (P1Rt); no further change from P1Rf.
+**l.666 (Design Notes 25, TP1.2-13 row).**
 
-**l.667 (Design Notes 25, TP1.2-18/19 and N2 renderer row).** Apply after the P1R change. Old is the P1R new text ending:
+Old:
 ```
-awaiting P1Rt and P1Rd signatures | 1.3 (S3) | The Topologist proposes; The Engineer; The Designer co-owns the renderer |
+| TP1.2-13 (cover over-cover) | K8 cover and hidden_rows sample piece vertices: a union of covers, an annulus cover or a hollow true disk (TP1.2-7) can mark a partly visible piece hidden; never passes a solid hidden part; live: base_frame rail top in the +Y notch (70 x 60) drawn dashed while visible; visible-drawn-dashed is unchecked | 1.3 (S3) | The Topologist proposes; The Engineer |
 ```
 New:
 ```
-P1Rt: arc step and alpha rule signed; P1Rd: N2 closed on S2 r6, hidden convention and hidden-copy draw order signed; P1Rf: radial step (TP1.3-1), opaque-fill depth premise cover (5) (TP1.3-2), rule (e) by visible ink and enclosure with clause (g) (D1, closes TP1.3-3 by orchestrator ruling), label suffixes naming the cover (D2), stand-ins as a brown phantom line (D3) landed in S2 r7; awaiting the P1Rf re-checks | 1.3 (S3) | The Topologist proposes; The Engineer; The Designer co-owns the renderer |
+| TP1.2-13 (cover over-cover) | K8 cover and hidden_rows sample piece vertices: a union of covers, an annulus cover or a hollow true disk (TP1.2-7) can mark a partly visible piece hidden; never passes a solid hidden part; live: base_frame rail top in the +Y notch (70 x 60) drawn dashed while visible; visible-drawn-dashed is unchecked. CLOSED at 1.3 P1Rt: live notch case drawn solid (hand check), union, annulus and hollow disk exact in the renderer split; Z9 to Z11 are not over-cover red-first (the r4 grid caught them), Z12/B47 is; drill_tube and drill_head outlines stay solid disks (TP1.2-7, S3/S6); residue NOTE TP1.3-4 | 1.3 (S3) | The Topologist proposes; The Engineer |
 ```
 
-**Design Notes 25, new row.** As the Topologist wrote it (P1Rt, TP1.3-4 to TP1.3-7). Add to its text: "TP1.3-6: an unresolved layout is recorded as UNPLACEABLE with its final issues (P1R code; no change at P1Rf)".
+**l.667 (Design Notes 25, TP1.2-18/19 and N2 renderer row).**
+
+Old:
+```
+| TP1.2-18, TP1.2-19 (cover limits), N2 renderer | stand_in_owner must name a Step or sketch id (1.3 step 0, K8-B42, signed P0T; overlay-key form deferred to S3 stand-ins); annulus cover samples step by angle (about 20.6 mm at r 210), not the 2.5 mm cap; is_opaque needs alpha 1; solid pieces under unfilled true covers (ring rim under the guide arms) draw no dashed hidden arc (Engineer r4 Correction 3); the descent-stop leader runs 60.1 mm inside tie b (Design Notes 30) | 1.3 (S3) | The Topologist proposes; The Engineer; The Designer co-owns the renderer |
+```
+New:
+```
+| TP1.2-18, TP1.2-19 (cover limits), N2 renderer | stand_in_owner must name a Step or sketch id (1.3 step 0, K8-B42, signed P0T; overlay-key form deferred to S3 stand-ins); annulus cover samples step by angle (about 20.6 mm at r 210), not the 2.5 mm cap; is_opaque needs alpha 1; solid pieces under unfilled true covers (ring rim under the guide arms) draw no dashed hidden arc (Engineer r4 Correction 3); the descent-stop leader runs 60.1 mm inside tie b (Design Notes 30). CLOSED at 1.3 P1R to P1Rf2: annulus samples at most 2.5 mm along the arc and across the width (TP1.3-1); alpha rule opaque at rendered alpha >= 0.75, band (0.5, 0.75) refused; cover (5) opaque-fill depth premise (TP1.3-2); renderer splits partly covered pieces, N2 closed on S2 r6 (ring rim dashed under the arms, ties and motors); renderer SIGNED (Topologist), conventions SIGNED (Designer); K4 rule (e) by visible ink and strict enclosure, clause (g), (h) 4.0 mm (FIX D1, D4, D5, TP1.3-8); label suffixes naming the cover (D2); stand-ins as a brown phantom line (D3); S2 r8 | 1.3 (S3) | The Topologist proposes; The Engineer; The Designer co-owns the renderer |
+```
+
+**Design Notes 25, new row.** Insert after the TP1.2-18, TP1.2-19 row (l.667), whose New text is above:
+```
+| TP1.3-4 to TP1.3-9 (renderer notes) | render state sampled at 2.5 mm (declared resolution; region_split decides at S3 if a part or gap narrower appears); stacked translucent fills compound (two 0.5 fills render 0.75); an unresolved layout is recorded as UNPLACEABLE with its final issues (P1R code); drawn_region reads private matplotlib attributes (re-check on upgrade); annulus edge band 0.02 x width exceeds 2.5 mm above width 125 mm (no live case; end fractions 1.25/w at S3 if one is drawn); Designer NOTEs N1 (ring face colour), N2 (descent-stop leader over member a hatch mid-length, M1), N3 (left-column tick clearance is a placer preference), N4 (right-column leader ends) | 1.3 (S3) | The Topologist proposes; The Engineer; The Designer (TP1.3-5, N1 to N4) |
+```
 
 **l.690 (Design Notes 30), end of entry.**
 
@@ -226,5 +348,5 @@ The 60.1 mm of leader inside tie b goes to Sean at M2 as a visual item and to th
 ```
 New:
 ```
-The 60.1 mm of leader inside tie b goes to Sean at M2 as a visual item and to the S3 hidden-line renderer item (N2). 1.3 P1R: placer rule (e) keeps the leader out of tie b (K4-B12); P1Rf (Designer FIX D1 and D2): the pad is wholly hidden, so its leader ends inside the containing top-guide bracket arm and its label says so ("under top-guide bracket arm"), S2 r7.
+The 60.1 mm of leader inside tie b goes to Sean at M2 as a visual item and to the S3 hidden-line renderer item (N2). 1.3 P1R: placer rule (e) keeps the leader out of tie b (K4-B12); P1Rf (Designer FIX D1 and D2): the pad is wholly hidden, so its leader ends inside the containing top-guide bracket arm and its label says so ("under top-guide bracket arm"); S2 r8.
 ```

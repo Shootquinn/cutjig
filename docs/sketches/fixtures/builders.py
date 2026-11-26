@@ -2790,3 +2790,67 @@ def k4_b16():
         if "gear" in pr["features"]:
             pr["features"]["gear"]["plan_pieces"] = pieces
     return c
+
+
+# ---------------------------------------------------------------- 1.3 P1Rf2 (step1.3_engineer_renderer_fixes.md, section P1Rf2)
+# Topologist TP1.3-8 (strict enclosure exemption), Designer FIX D5 (stand-in visible ink only where no cover contains
+# it) and FIX D4 (K4 (h), leaders at least 4.0 mm apart).
+
+def _set_label(ax, fid, xy, xytext=None):
+    t = next(t for t in ax.texts if t.get_gid() == f"label:{fid}")
+    t.xy = xy
+    if xytext is not None:
+        t.xyann = xytext
+    return t
+
+
+def k4_b17():
+    """TP1.3-8 B: live S2 with the ring label anchored on visible rim at (201.76, 34.40), 0.028 mm outside guide_tie_a
+    (inside the old +0.05 enclosure band), text at (366.84, 34.40): the last quarter runs 41.3 mm inside tie a."""
+    c = _script_ctx("s2")
+    _set_label(_s2_ax(c), "ring", (201.76, 34.40), (366.84, 34.40))
+    return c
+
+
+def _lid_row(c0):
+    """Spec row 'lid': a disk r 8 above every part (z 1300 to 1310 z_S) centred on the midpoint of guide_tie_a's edge
+    of greatest x mid-way in y (a nearer true outline over that stretch of the tie's phantom line)."""
+    def mut(spec):
+        spec["features"].append({"id": "lid", "name": "planted lid", "kind": "cylinder", "axis": "Z", "projection": "circle",
+                                 "z_rule": {"z_min": 1300, "z_max": 1310}, "place": dict(c0, half_width=8, footprint="round"),
+                                 "neighbours": [], "sense": [], "moves": False})
+    return mut
+
+
+def k4_b18():
+    """D5 B: guide_tie_a's label anchored on its phantom line where a planted nearer outline (row lid, disk r 8, z 1300
+    to 1310) covers it: (e1) fires. Red-first by deleting the cover term for stand-in artists in row_visibility."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    pts = [p for poly in sc.pieces(ax, "guide_tie_a") for p in poly]
+    xm = max(p[0] for p in pts)
+    edge = sorted([p for p in pts if abs(p[0] - xm) < 10], key=lambda p: p[1])
+    mid = ((edge[0][0] + edge[-1][0]) / 2, (edge[0][1] + edge[-1][1]) / 2)
+    r, th = math.hypot(*mid), math.degrees(math.atan2(mid[1], mid[0]))
+    c = _script_ctx("s2", spec_mut=_lid_row({"r_in": r, "r_out": r, "theta": th}))
+    ax = _s2_ax(c)
+    t = next(t for t in ax.texts if t.get_gid() == "label:guide_tie_a")
+    ink = [(q, True) for q in sc.pieces(ax, "guide_tie_a")]
+    best = min(((a[0] + (b[0] - a[0]) * k / 40, a[1] + (b[1] - a[1]) * k / 40) for poly, _ in ink for a, b in sc._edges(poly)
+                for k in range(41)), key=lambda q: math.hypot(q[0] - mid[0], q[1] - mid[1]))
+    t.xy = best
+    return c
+
+
+_R7 = {"drill_tube": ((76.1539, 1.8734), (366.8424, 1.8734)), "base_plate": ((322.0, 0.0), (366.8424, -17.0903)),
+       "drill_head": ((88.9, 0.0), (366.8424, -36.0539))}   # S2 r7 placer record (anchor, text), MEASURED
+
+
+def k4_b19():
+    """D4 B: live S2 with drill_tube, base_plate and drill_head put back on their S2 r7 leaders: the tube OD leader runs
+    1.87 mm above the cutter anchor and about 2.2 mm from the base plate leader start (h)."""
+    c = _script_ctx("s2")
+    ax = _s2_ax(c)
+    for f, (xy, xt) in _R7.items():
+        _set_label(ax, f, xy, xt)
+    return c
