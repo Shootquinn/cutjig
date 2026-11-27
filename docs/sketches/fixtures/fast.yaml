@@ -4,7 +4,7 @@
 # A --fast run is PARTIAL, not a record: it writes wip/fixtures/controls_results_partial.json, never read by
 # control_tally or --accept. Runs of record (end of (c), each revision's final run, accept, close) use the full set.
 # FAST-Z fails while a family's Z or B or a smoke control is missing.
-# 77 of 479 controls (37 families); 130 control-seconds at the last full run (DERIVED).
+# 77 of 479 controls (37 families) at P0f; 1.4 P4 adds S4-1, S4-2, S4-3 (Z and B each) and S4-FULL; 130 control-seconds at the last full run (DERIVED).
 fast:
   - K1-Z
   - K1-B1
@@ -83,3 +83,10 @@ fast:
   - DEPS-B3
   - M1C-Z
   - M1C-B1
+  - S4-1-Z
+  - S4-1-B1
+  - S4-2-Z
+  - S4-2-B2
+  - S4-3-Z
+  - S4-3-B2
+  - S4-FULL

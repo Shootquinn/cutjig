@@ -1885,7 +1885,8 @@ PRED_TARGET = {"below": "of", "above": "of", "clears_above": "of", "top_within":
                "mirror_about_axis": "axis", "azimuth": "expr", "taper": "narrows", "face_rises": "toward",
                "ticks_radial": "count", "outline_matches": "pieces",
                "look_direction": "toward", "axes_not_inverted": "pred", "points": "dir",   # 1.3 P4 (s3_spec)
-               "mirror_about_radial": "pred"}   # P5f (Topologist FIX 6)
+               "mirror_about_radial": "pred",   # P5f (Topologist FIX 6)
+               "between": "below", "vertical_edge": "piece"}   # 1.4 P4 (O6): washer between; S4-d bore vertical
 
 
 FRAME_VALUES = ("radial",)   # sense `frame` values a predicate may carry (outboard radial form, plan_xy only: TP1.2-1)
@@ -2989,6 +2990,12 @@ def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
         return [f"{sub} on {fid}: parent {fid} not drawn at this pose"]
     if sub == "root":   # 1.3 (h) r2 (Topologist TP1.3-15): the simplified thread, two dashed root lines
         return root_issues(ctx, ax, pose, prow, arts, own)
+    if sub == "slits":   # 1.4 P4: section-view tick class (Topologist P2r 3.1, form (a))
+        return slit_issues(ctx, ax, pose, prow, arts, own, rows)
+    if sub == "wing":   # 1.4 P4: beyond part by declared x_band (Designer P3a O3)
+        return wing_issues(ctx, ax, pose, prow, arts, own)
+    if sub == "sweep":   # 1.4 P4: S3 sweep form as a sub-artist
+        return sweep_issues(ctx, ax, pose, prow, arts, own)
     if sub == "balls":
         polys = [p for x in own for p in artist_polys(x)]
         out = []
@@ -3139,18 +3146,21 @@ def root_issues(ctx, ax, pose, prow, arts, own):
     if ctx.view not in SIDE_VIEWS:
         return [f"root on {prow['id']} admitted in a side or section view only (view {ctx.view})"]
     rt = prow.get("root") or {}
-    if not all(k in rt for k in ("from", "to", "d")):
-        return [f"root on {prow['id']} without root.from / to / d in the spec"]
+    if not all(k in rt for k in ("from", "to")) or not ("d" in rt or "r" in rt):
+        return [f"root on {prow['id']} without root.from / to / d (or r) in the spec"]
     names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
     z0 = _cs.to_shop_floor(_cs.eval_expr(str(rt["from"]), ctx.P, names), ctx.P)
     z1 = _cs.to_shop_floor(_cs.eval_expr(str(rt["to"]), ctx.P, names), ctx.P)
-    d = float(_cs.eval_expr(str(rt["d"]), ctx.P, names))
+    d = float(_cs.eval_expr(str(rt["d"]), ctx.P, names)) if "d" in rt else 2 * float(_cs.eval_expr(str(rt["r"]), ctx.P, names))
     polys = [q for x in own for q in artist_polys(x) if len(q) >= 3]
-    span = [q for q in polys if min(v[1] for v in q) <= z0 + TOL_Z and max(v[1] for v in q) >= z1 - TOL_Z]
-    if not span:
-        return [f"root on {prow['id']}: no drawn piece of {prow['id']} spans z {z0:.2f} to {z1:.2f}"]
-    xs = [v[0] for v in span[0]]
-    uc = (min(xs) + max(xs)) / 2
+    if prow.get("section_true"):   # 1.4 P4: a true section mirrored about u = 0 (section_true_issues): u_c is the axis
+        uc = 0.0
+    else:
+        span = [q for q in polys if min(v[1] for v in q) <= z0 + TOL_Z and max(v[1] for v in q) >= z1 - TOL_Z]
+        if not span:
+            return [f"root on {prow['id']}: no drawn piece of {prow['id']} spans z {z0:.2f} to {z1:.2f}"]
+        xs = [v[0] for v in span[0]]
+        uc = (min(xs) + max(xs)) / 2
     out = []
     if len(arts) != 2 or not all(isinstance(a, Line2D) and len(artist_polys(a)[0]) == 2 for a in arts):
         return [f"root on {prow['id']}: needs two two-vertex Line2D ({len(arts)} artists)"]
@@ -3265,6 +3275,8 @@ def k5(ctx):
             za = zero_area_issue(row, a)
             if za:
                 issues.append(f"{pose}/{gid}: {za}")
+                continue
+            if ctx.view in SIDE_VIEWS and st_admitted(ctx, pose, row, a):   # 1.4 P4 (O7): true-section piece
                 continue
             if ctx.view in SECTION_VIEWS:   # 1.3 P4 (O4): a radial axis X at its placed theta, against the section normal
                 want = expected_projection_par(row.get("kind"), row.get("axis"), axis_parallel(row, _feat(ctx, pose, gid), ctx.view, normal))
@@ -4869,6 +4881,13 @@ def k8(ctx):
                     if d_out > TOL_Z or d_in > TOL_Z:
                         issues.append(f"{pose}/{fid} sector: drawn wedge differs from the spec wedge (theta {sec['theta']:g}, half-angle "
                                       f"{sec['half_angle']:g}, r {sec['r']:g}): {d_out:.2f} outside, spec boundary {d_in:.2f} outside the drawing")
+            if side and row.get("section_true") and row.get("kind") not in NO_AREA_KINDS:   # 1.4 P4 (O7) premise
+                if me:
+                    n += 1
+                    issues += [f"{pose}/{fid} section_true: {t}" for t in section_true_issues(ctx, ax, pose, row)]
+                else:
+                    issues.append(f"{pose}/{fid} section_true: untestable, {fid} not drawn")
+                    absent += 1
             if ctx.view in SECTION_VIEWS and row.get("section_u"):
                 if me:
                     n += 1
@@ -4918,17 +4937,50 @@ def k8(ctx):
                     fy0, fy1 = pf["plan_y"]
                     if ey[0] < fy0 - TOL_Z or ey[1] > fy1 + TOL_Z:
                         issues.append(f"{pose}/{fid} projected_extent_y: drawn y [{ey[0]:.2f}, {ey[1]:.2f}] outside the plan_poly y [{fy0:.2f}, {fy1:.2f}]")
+            me_all = me
             for pr in row.get("sense") or []:
                 if id(pr) in bad or (pr.get("poses") and pose not in pr["poses"]):
                     continue
                 kind = pr["pred"]
-                other_id = pr.get("of") or pr.get("seat") or pr.get("axis")
+                other_id = None if kind == "between" else (pr.get("of") or pr.get("seat") or pr.get("axis"))
                 other = pieces(ax, other_id) if other_id else None
+                # 1.4 P4 (O6): piece / of_piece / seat_piece read the named section_true pieces only (PIECE_ATTR)
+                me = named_pieces(ax, fid, pr["piece"]) if pr.get("piece") else me_all
+                op = pr.get("of_piece") or pr.get("seat_piece")
+                if op and other:
+                    other = named_pieces(ax, other_id, op)
                 if not me or (other_id and not other):
-                    issues.append(f"{pose}/{fid} {kind} {other_id or ''}: untestable, {fid if not me else other_id} not drawn")
+                    nd = (f"{fid}" + (f" piece {pr['piece']}" if pr.get("piece") and me_all else "")) if not me else (f"{other_id}" + (f" piece {op}" if op else ""))
+                    issues.append(f"{pose}/{fid} {kind} {other_id or ''}: untestable, {nd} not drawn")
                     absent += 1
                     continue
                 n += 1
+                if kind == "between":   # 1.4 P4 (O6, Designer 1.4 (a) section 12): (z_mid - z_max(below)) (z_min(above) - z_mid) > 0
+                    lo_id, hi_id = pr.get("below"), pr.get("above")
+                    lo_p = named_pieces(ax, lo_id, pr["below_piece"]) if pr.get("below_piece") else pieces(ax, lo_id or "")
+                    hi_p = named_pieces(ax, hi_id, pr["above_piece"]) if pr.get("above_piece") else pieces(ax, hi_id or "")
+                    if not lo_id or not hi_id:
+                        issues.append(f"{pose}/{fid} between: spec error, needs below and above")
+                    elif not lo_p or not hi_p:
+                        issues.append(f"{pose}/{fid} between {lo_id} and {hi_id}: untestable, {lo_id if not lo_p else hi_id} not drawn")
+                        absent += 1
+                    else:
+                        ez_ = extent_z(me)
+                        zm = (ez_[0] + ez_[1]) / 2
+                        a_, b_ = zm - extent_z(lo_p)[1], extent_z(hi_p)[0] - zm
+                        if a_ * b_ <= 0:
+                            issues.append(f"{pose}/{fid} between {lo_id} and {hi_id}: (z_mid - {lo_id} z_max) {a_:.2f} x ({hi_id} z_min - z_mid) {b_:.2f} <= 0")
+                    continue
+                if kind == "vertical_edge":   # 1.4 P4: S4-d (Sean STOP S4-A), the bore edge of the piece vertical
+                    t = vertical_edge_issue(me, float(pr.get("tol", TOL_Z)))
+                    if t:
+                        issues.append(f"{pose}/{fid} vertical_edge {pr.get('piece')}: {t}")
+                    continue
+                if kind == "taper" and pr.get("edge") == "inner":   # 1.4 P4: holder bore cone narrows on its inner edge
+                    t = inner_taper_issue(me, pr["narrows"])
+                    if t:
+                        issues.append(f"{pose}/{fid} taper narrows {pr['narrows']} (inner edge): {t}")
+                    continue
                 if kind in ("below", "above"):
                     za, zb = centroid(me)[1], centroid(other)[1]
                     ok = za < zb if kind == "below" else za > zb
@@ -5038,7 +5090,7 @@ def k8(ctx):
             n += nc
             issues += ci
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
-                  n_issues=len(issues), cause=_cause(absent, len(issues)))
+                  n_issues=len(issues), cause=_cause(absent, len(issues)), issues=list(issues), absent=absent)
 
 
 # ======================================================================== 1.3 P4: arrows and the section convention
@@ -5302,7 +5354,8 @@ def bearing_width(me, seat):
 
 def hatch_adjacency_issues(ctx, ax, pose):
     """1.4 P2f (Designer P3a FIX 2, rule (h) premise lint): two cut rows that are separate bodies (no one_body declaration
-    either way) drawn with equal hatch patterns within section.hatch_adjacency_gap mm of each other read as one solid.
+    either way) drawn with hatch patterns of one line family (hatch_family; 1.4 P4, orchestrator ruling on Designer P2r
+    R2, the 1.3 R2-4 rule: density does not separate two parts) within section.hatch_adjacency_gap mm of each other read as one solid.
     Runs on a section Axes whose spec declares section.hatch_adjacency_gap (S4 from 1.4 (b); S3 r8 at P6, carried by
     name). Returns issues."""
     gap = ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap")
@@ -5323,12 +5376,13 @@ def hatch_adjacency_issues(ctx, ax, pose):
             best = None
             for ha, pa in drawn[a]:
                 for hb, pb in drawn[b]:
-                    if ha == hb:
+                    if hatch_family(ha) == hatch_family(hb):   # 1.4 P4 (orchestrator ruling on Designer P2r R2): line family
                         d = min_distance(pa, pb)
                         if best is None or d < best[0]:
-                            best = (d, ha)
+                            best = (d, ha, hb)
             if best is not None and best[0] <= float(gap) + 1e-9:
-                out.append(f"{pose}: {a}|{b}: separate cut bodies with the same hatch {best[1]!r} {best[0]:.2f} mm apart "
+                fam = "" if best[1] == best[2] else f" (line family of {best[2]!r})"
+                out.append(f"{pose}: {a}|{b}: separate cut bodies with the same hatch {best[1]!r}{fam} {best[0]:.2f} mm apart "
                            f"(<= section.hatch_adjacency_gap {float(gap):g}); set hatch_variant on one (Designer P3a FIX 2)")
     return out
 
@@ -5640,6 +5694,319 @@ def section_convention_issues(ctx, ax, pose):
     n += 1 if ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap") is not None else 0
     out += adj
     return n, out
+
+
+# ======================================================================== 1.4 P4: section_true (true sections), S4 sub-artists
+
+PIECE_ATTR = "_sc_piece"   # artist attribute: the section_true piece name a drawn area stands for (draw_piece)
+
+
+def _dedup(poly, tol=1e-9):
+    out = []
+    for v in poly:
+        if not out or math.hypot(v[0] - out[-1][0], v[1] - out[-1][1]) > tol:
+            out.append((float(v[0]), float(v[1])))
+    if len(out) > 1 and math.hypot(out[0][0] - out[-1][0], out[0][1] - out[-1][1]) <= tol:
+        out.pop()
+    return out
+
+
+def poly_match(a, b, tol=TOL_Z):
+    """Two drawn polygons are the same piece: equal vertex count (consecutive and closing duplicates dropped) and every
+    vertex of each within tol of a vertex of the other."""
+    a, b = _dedup(a), _dedup(b)
+    if len(a) != len(b):
+        return False
+    near = lambda p, Q: any(math.hypot(p[0] - q[0], p[1] - q[1]) <= tol for q in Q)  # noqa: E731
+    return all(near(p, b) for p in a) and all(near(q, a) for q in b)
+
+
+def section_true_polys(P, names, row, z_S=True):
+    """1.4 P4 (s4_spec section_true): [(piece name, side, polygon)] of a row's true section in the view plane, mirrored
+    about u = 0 (side +1 at u > 0, -1 at u < 0), z in z_S (z_A when z_S is False). A rectangle piece is [r_in, r_out,
+    z_lo, z_hi]; {poly: [[r, z], ...]} is a convex polygon. plane_cuts [{piece, side}] leave that piece out on that side
+    (outside X1, Loftsman P3b O2 (iii)). Mirroring is keyed on the field, never on `axis` (Loftsman P3b O2)."""
+    import check_stack as _cs
+    ev = lambda e: float(_cs.eval_expr(str(e), P, names))  # noqa: E731
+    zc = (lambda z: _cs.to_shop_floor(z, P)) if z_S else (lambda z: z)
+    cuts = {(c.get("piece"), c.get("side")) for c in row.get("plane_cuts") or []}
+    out = []
+    for name, spec in (row.get("section_true") or {}).items():
+        if isinstance(spec, dict):
+            rz = [(ev(r), zc(ev(z))) for r, z in spec["poly"]]
+        else:
+            r0, r1, z0, z1 = (ev(v) for v in spec)
+            rz = [(r0, zc(z0)), (r1, zc(z0)), (r1, zc(z1)), (r0, zc(z1))]
+        for side, tag in ((1, "+u"), (-1, "-u")):
+            if (name, tag) in cuts:
+                continue
+            pts = [(side * r, z) for r, z in rz]
+            out.append((name, side, pts if side > 0 else pts[::-1]))
+    return out
+
+
+def st_polys(ctx, pose, row):
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    return section_true_polys(ctx.P, names, row)
+
+
+def draw_piece(ax, fid, name, pts, **kw):
+    """Draw one section_true piece as a closed unfilled Polygon tagged gid = fid and PIECE_ATTR = name."""
+    kw.setdefault("fill", False)
+    a = draw(fid, Polygon(pts, closed=True, **kw), ax)
+    setattr(a, PIECE_ATTR, name)
+    return a
+
+
+def _piece_artists(ax, fid):
+    return [a for a in tagged(ax).get(fid, []) if isinstance(a, Patch) and not getattr(a, "_sc_hidden_copy", False)
+            and not isinstance(a, FancyArrowPatch)]
+
+
+def named_pieces(ax, fid, names):
+    """Drawn polygons of row fid whose artists carry a piece name in names (str or list)."""
+    names = [names] if isinstance(names, str) else list(names)
+    return [P for a in _piece_artists(ax, fid) if getattr(a, PIECE_ATTR, None) in names for P in artist_polys(a) if len(P) >= 3]
+
+
+def section_true_issues(ctx, ax, pose, row):
+    """1.4 P4 (O7), premise of reading a row's drawn pieces as its true section (K5 admission, K8 piece / of_piece,
+    K7): every spec piece (name, side; plane_cuts applied) is drawn as an artist carrying that piece name whose polygon
+    equals the spec polygon within TOL_Z (poly_match), and every drawn area artist of the row carries a piece name and
+    equals that spec piece on one side. Scope: every row with section_true in a side or section view."""
+    spec = st_polys(ctx, pose, row)
+    arts = _piece_artists(ax, row["id"])
+    out = []
+    for name, side, sp in spec:
+        if not any(getattr(a, PIECE_ATTR, None) == name and any(poly_match(P, sp) for P in artist_polys(a)) for a in arts):
+            out.append(f"piece {name} ({'+u' if side > 0 else '-u'}) not drawn as specified")
+    for a in arts:
+        nm = getattr(a, PIECE_ATTR, None)
+        if nm is None:
+            out.append(f"drawn {type(a).__name__} carries no section_true piece name")
+            continue
+        cand = [sp for n_, _, sp in spec if n_ == nm]
+        if not cand:
+            out.append(f"drawn piece {nm} is no section_true piece (or cut by plane_cuts)")
+        elif not all(any(poly_match(P, sp) for sp in cand) for P in artist_polys(a) if len(P) >= 3):
+            out.append(f"drawn piece {nm} differs from its spec polygon")
+    return out
+
+
+def st_admitted(ctx, pose, row, a):
+    """K5 admission (1.4 P4, O7): an area artist of a section_true row that carries a piece name and equals that spec
+    piece (poly_match) is the true section, admitted at any vertex count (receiver rim 5, collet cone 4 on a cone or
+    cylinder row); the premise is section_true_issues (K8)."""
+    nm = getattr(a, PIECE_ATTR, None)
+    if nm is None or not row.get("section_true"):
+        return False
+    cand = [sp for n_, _, sp in st_polys(ctx, pose, row) if n_ == nm]
+    polys = [P for P in artist_polys(a) if len(P) >= 3]
+    return bool(polys) and bool(cand) and all(any(poly_match(P, sp) for sp in cand) for P in polys)
+
+
+def inner_edge(poly, tol=TOL_Z):
+    """The non-horizontal edge of a piece nearest the axis (least mean |u|): ((u0, z0), (u1, z1)) ordered by z."""
+    n = len(poly)
+    eds = [(poly[i], poly[(i + 1) % n]) for i in range(n) if abs(poly[i][1] - poly[(i + 1) % n][1]) > tol]
+    if not eds:
+        return None
+    a, b = min(eds, key=lambda e: (abs(e[0][0]) + abs(e[1][0])) / 2)
+    return (a, b) if a[1] <= b[1] else (b, a)
+
+
+def vertical_edge_issue(polys, tol=TOL_Z):
+    """S4-d (Sean STOP S4-A; TP1.1-4): the inner (bore) edge of every selected piece keeps u constant within tol."""
+    if not polys:
+        return "no piece drawn"
+    for k, P in enumerate(polys):
+        e = inner_edge(P, tol)
+        if e is None:
+            return f"piece {k}: no non-horizontal edge"
+        if abs(e[1][0] - e[0][0]) > tol:
+            return f"piece {k}: inner edge u {e[0][0]:.2f} at z {e[0][1]:.2f} to u {e[1][0]:.2f} at z {e[1][1]:.2f} (du {abs(e[1][0] - e[0][0]):.2f} > {tol:g})"
+    return None
+
+
+def inner_taper_issue(polys, narrows, tol=TOL_Z):
+    """Taper on the inner (bore) edge (holder cone: the bore narrows upward while the material widens): narrows up needs
+    |u| at the edge top < |u| at its bottom - tol; down the converse."""
+    for k, P in enumerate(polys):
+        e = inner_edge(P, tol)
+        if e is None:
+            return f"piece {k}: no inner edge"
+        lo, hi = abs(e[0][0]), abs(e[1][0])
+        ok = hi < lo - tol if narrows == "up" else lo < hi - tol if narrows == "down" else None
+        if ok is None:
+            return f"unknown taper {narrows!r} on the inner edge"
+        if not ok:
+            return f"piece {k}: inner edge |u| {lo:.2f} at the bottom, {hi:.2f} at the top"
+    return None
+
+
+def _ev_S(ctx, pose, e):
+    return _z_S_expr(ctx, pose, str(e))
+
+
+def _ev(ctx, pose, e):
+    import check_stack as _cs
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    return float(_cs.eval_expr(str(e), ctx.P, names))
+
+
+def _side_polys(own, sign):
+    polys = [P for a in own for P in artist_polys(a) if len(P) >= 3]
+    return [P for P in polys if (centroid([P])[0] > 0) == (sign > 0)]
+
+
+def slit_spec(rows, prow):
+    sl = prow.get("slits") or {}
+    if sl.get("same_as"):
+        sl = (rows.get(sl["same_as"]) or {}).get("slits") or {}
+    return sl
+
+
+def slit_issues(ctx, ax, pose, prow, arts, own, rows):
+    """1.4 P4 tick admission for the section-view tick class (collet:slits; Topologist P2r 3.1, Designer/Topologist form
+    (a)). Premise: a slit behind the plane is shown by one dashed line per declared slit, from its open face to its closed
+    end, with a horizontal tick at the closed end, and the line states nothing else. Spec slits {count_drawn, lines
+    [{side, theta, open, from, to}], tick_length} (same_as: another row's slits). (n) count: count_drawn vertical lines
+    and as many ticks, one per spec line, every artist a two-vertex Line2D; each drawn line is read as the spec line of
+    nearest z mid. (i) sign: sin(theta) x u_drawn > 0 (the line sits on the side the slit lies). (ii) containment: both
+    ends inside the convex hull of the row's drawn pieces on the line's side within TOL_Z. (iii) open face: the open end
+    (top or bottom) at the side pieces' z extreme and on a horizontal face edge there (face_spans). (iv) dashed (hidden:
+    the slit lies behind the plane). (t) the closed end at the spec closed z and one horizontal tick there, tick_length
+    long, centred on the line within TOL_Z. Scope: every row with sub_artists slits in a side or section view."""
+    fid = prow["id"]
+    if ctx.view not in SIDE_VIEWS:
+        return [f"slits on {fid} admitted in a side or section view only (view {ctx.view})"]
+    sl = slit_spec(rows, prow)
+    lines = sl.get("lines") or []
+    if not lines or "count_drawn" not in sl:
+        return [f"slits on {fid} without slits.lines / count_drawn in the spec"]
+    out, verts, ticks = [], [], []
+    for a in arts:
+        if not isinstance(a, Line2D) or len(artist_polys(a)[0]) != 2:
+            out.append(f"slits on {fid}: {type(a).__name__} is not a two-vertex Line2D (n)")
+            continue
+        (xa, za), (xb, zb) = artist_polys(a)[0]
+        if abs(za - zb) <= TOL_Z:
+            ticks.append(a)
+        elif abs(xa - xb) <= TOL_Z:
+            verts.append(a)
+        else:
+            out.append(f"slits on {fid}: line neither vertical nor horizontal (n)")
+    want_n = int(sl["count_drawn"])
+    if len(verts) != want_n or len(lines) != want_n or len(ticks) != want_n:
+        out.append(f"slits on {fid}: {len(verts)} slit line(s) and {len(ticks)} tick(s) drawn, count_drawn {want_n}, spec lines {len(lines)} (n)")
+    if out:
+        return out
+    tl = _ev(ctx, pose, sl.get("tick_length", 0))
+    spec_l = []
+    for ln in lines:
+        z0, z1 = sorted((_ev_S(ctx, pose, ln["from"]), _ev_S(ctx, pose, ln["to"])))
+        spec_l.append((ln, z0, z1, math.sin(math.radians(_ev(ctx, pose, ln["theta"])))))
+    used = set()
+    for a in verts:
+        (xa, za), (xb, zb) = artist_polys(a)[0]
+        u, lo, hi = (xa + xb) / 2, min(za, zb), max(za, zb)
+        k = min((i for i in range(len(spec_l)) if i not in used), key=lambda i: abs((spec_l[i][1] + spec_l[i][2]) / 2 - (lo + hi) / 2))
+        used.add(k)
+        ln, s0, s1, sn = spec_l[k]
+        tag = f"slits on {fid}, theta {_ev(ctx, pose, ln['theta']):.0f} line at u {u:.2f}"
+        if sn * u <= 0:   # (i)
+            out.append(f"{tag}: sin(theta) {sn:+.4f} x u {u:+.2f} <= 0, drawn on the far side (i)")
+        side = _side_polys(own, 1 if u > 0 else -1)
+        if not side:
+            out.append(f"{tag}: no drawn piece of {fid} on that side (ii)")
+            continue
+        hull = convex_hull([q for P in side for q in P])
+        if not all(_hull_contains(hull, v) for v in ((u, lo), (u, hi))):   # (ii)
+            out.append(f"{tag}: leaves the drawn {fid} (z {lo:.2f} to {hi:.2f}; convex hull of its pieces on that side) (ii)")
+        top = ln.get("open") == "top"
+        zf = extent_z(side)[1] if top else extent_z(side)[0]
+        ze = hi if top else lo
+        spans = face_spans(side, zf)
+        if abs(ze - zf) > TOL_Z or not any(s0_ - TOL_Z <= u <= s1_ + TOL_Z for s0_, s1_ in spans):   # (iii)
+            out.append(f"{tag}: open {ln.get('open')} end at z {ze:.2f} does not meet the {ln.get('open')} face (z {zf:.2f}, "
+                       f"spans {', '.join(f'{x0:.2f} to {x1:.2f}' for x0, x1 in spans) or 'none'}) (iii)")
+        if a.get_linestyle() in SOLID_STYLES:   # (iv)
+            out.append(f"{tag}: drawn solid (hidden: the slit lies behind the plane) (iv)")
+        zc = lo if top else hi
+        zc_spec = s0 if top else s1
+        tk = [t for t in ticks if abs(sum(v[0] for v in artist_polys(t)[0]) / 2 - u) <= TOL_Z
+              and abs(artist_polys(t)[0][0][1] - zc) <= TOL_Z]
+        if abs(zc - zc_spec) > TOL_Z or len(tk) != 1 or abs(abs(artist_polys(tk[0])[0][1][0] - artist_polys(tk[0])[0][0][0]) - tl) > TOL_Z:   # (t)
+            out.append(f"{tag}: closed end at z {zc:.2f} (spec {zc_spec:.2f}) needs one horizontal tick {tl:.2f} long centred on the line ({len(tk)} found) (t)")
+    return out
+
+
+def wing_issues(ctx, ax, pose, prow, arts, own):
+    """1.4 P4 beyond sub-artist admission by declared x_band (Designer P3a O3; Topologist signs at (c)): a part of a row
+    lying past the beyond band (0 > x >= -profile.width, section convention 3) is admitted only as a hidden outline
+    occluded by its own row. Spec wing {u, z, x_band}. (w0) x_band declared (else the part is refused, as K8-B74 refuses a
+    beyond row past the band). (i) every artist dashed and unfilled. (ii) drawn u and z extents equal wing.u and wing.z
+    (z_S) within TOL_Z. (iii) every drawn vertex is occluded by a section_true piece of this row: the piece's z band holds
+    the vertex z, its r_out > |u| and r_out <= -x_band[1] (the revolved face at r_out lies between the viewer and the part
+    at |x| >= -x_band[1])."""
+    fid = prow["id"]
+    w = prow.get("wing") or {}
+    if not w.get("x_band"):
+        return [f"wing on {fid} without wing.x_band: a part past the beyond band is not drawn (w0)"]
+    if not all(k in w for k in ("u", "z")):
+        return [f"wing on {fid} without wing.u / wing.z in the spec"]
+    out = []
+    for a in arts:
+        if not isinstance(a, Patch) or a.get_linestyle() in SOLID_STYLES or a.get_fill():
+            out.append(f"wing on {fid}: {type(a).__name__} drawn {'filled' if isinstance(a, Patch) and a.get_fill() else 'solid'} (dashed, unfilled outline) (i)")
+    pts = [v for a in arts for P in artist_polys(a) for v in P]
+    if not pts:
+        return out + [f"wing on {fid}: nothing drawn"]
+    u0, u1 = sorted(_ev(ctx, pose, e) for e in w["u"])
+    z0, z1 = sorted(_ev_S(ctx, pose, e) for e in w["z"])
+    du = (min(v[0] for v in pts), max(v[0] for v in pts))
+    dz = (min(v[1] for v in pts), max(v[1] for v in pts))
+    if max(abs(du[0] - u0), abs(du[1] - u1), abs(dz[0] - z0), abs(dz[1] - z1)) > TOL_Z:   # (ii)
+        out.append(f"wing on {fid}: drawn u [{du[0]:.2f}, {du[1]:.2f}] z [{dz[0]:.2f}, {dz[1]:.2f}] against spec u [{u0:.2f}, {u1:.2f}] z [{z0:.2f}, {z1:.2f}] (ii)")
+    xb = sorted(_ev(ctx, pose, e) for e in w["x_band"])
+    r_lim = -xb[1]
+    occ = []
+    for name, side, sp in st_polys(ctx, pose, prow):
+        if side < 0:
+            continue
+        rs = [v[0] for v in sp]
+        occ.append((min(v[1] for v in sp), max(v[1] for v in sp), max(rs)))
+    bad = [v for v in pts if not any(zl - TOL_Z <= v[1] <= zh + TOL_Z and ro > abs(v[0]) and ro <= r_lim + TOL_Z for zl, zh, ro in occ)]
+    if bad:   # (iii)
+        out.append(f"wing on {fid}: {len(bad)} drawn vertex(es) not occluded by a section_true piece of {fid} (r_out <= {r_lim:.2f}), "
+                   f"e.g. ({bad[0][0]:.2f}, {bad[0][1]:.2f}) (iii)")
+    return out
+
+
+def sweep_issues(ctx, ax, pose, prow, arts, own):
+    """1.4 P4 (S3 sweep form as a sub-artist): the wing sweep is two dashed vertical two-vertex Line2D at u = -+ sweep.r
+    within TOL_Z over the row's drawn z extent. (s1) type and count; (s2) dashed; (s3) position and extent."""
+    fid = prow["id"]
+    sw = prow.get("sweep") or {}
+    if "r" not in sw:
+        return [f"sweep on {fid} without sweep.r in the spec"]
+    if len(arts) != 2 or not all(isinstance(a, Line2D) and len(artist_polys(a)[0]) == 2 for a in arts):
+        return [f"sweep on {fid}: needs two two-vertex Line2D ({len(arts)} artists) (s1)"]
+    r = _ev(ctx, pose, sw["r"])
+    ez = extent_z([P for a in own for P in artist_polys(a)])
+    out = []
+    got = []
+    for a in arts:
+        (xa, za), (xb, zb) = artist_polys(a)[0]
+        if a.get_linestyle() in SOLID_STYLES:
+            out.append(f"sweep on {fid} drawn solid (dashed extent line) (s2)")
+        got.append((xa + xb) / 2)
+        if abs(xa - xb) > TOL_Z or abs(min(za, zb) - ez[0]) > TOL_Z or abs(max(za, zb) - ez[1]) > TOL_Z:
+            out.append(f"sweep on {fid}: line u {xa:.2f} z {min(za, zb):.2f} to {max(za, zb):.2f} against vertical over {ez[0]:.2f} to {ez[1]:.2f} (s3)")
+    for w_, g in zip((-r, r), sorted(got)):
+        if abs(w_ - g) > TOL_Z:
+            out.append(f"sweep on {fid}: line at u {g:.2f} against {w_:.2f} (sweep.r) (s3)")
+    return out
 
 
 # ======================================================================== K9 coverage

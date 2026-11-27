@@ -285,6 +285,7 @@ def x1_lint(specs=None):
         for row in spec.get("features", []):
             by_id.setdefault(row["id"], []).append((name, row))
     issues, skipped, exempt, n = [], [], [], 0
+    st_n, st_one = 0, []
     for fid, occ in sorted(by_id.items()):
         if len(occ) < 2:
             continue
@@ -309,8 +310,23 @@ def x1_lint(specs=None):
                         keys = sorted(k for k in set(have[0][1]) | set(v) if _x1_norm(have[0][1].get(k)) != _x1_norm(v.get(k)))
                         sub = "." + ",".join(keys)
                     issues.append(f"{fid} {fld}{sub}: {ref_nm} and {nm} differ")
+        # 1.4 P4 (Loftsman P3b O2 (i); Sean STOP S4-A "X1 compares section"): section_true equal on every shared row that
+        # carries it in two or more specs (revolve half-profile only; plane_cuts and sub-artists are per spec, O2 (iii)).
+        # The presence rule O2 (ii) (a row carrying it in one spec carries it in every spec drawing it) lands at P6.
+        st = [(nm, r["section_true"]) for nm, r in occ if r.get("section_true") is not None]
+        if len(st) >= 2:
+            st_n += 1
+            ref_nm, ref = st[0]
+            for nm, v in st[1:]:
+                if json.dumps(_x1_norm(v), sort_keys=True) != json.dumps(_x1_norm(ref), sort_keys=True):
+                    keys = (sorted(k for k in set(ref) | set(v) if _x1_norm(ref.get(k)) != _x1_norm(v.get(k)))
+                            if isinstance(ref, dict) and isinstance(v, dict) else [])
+                    issues.append(f"{fid} section_true{'.' + ','.join(keys) if keys else ''}: {ref_nm} and {nm} differ")
+        elif len(st) == 1:
+            st_one.append(f"{fid} ({st[0][0]})")
     msg = f"{n} shared row(s) compared on {', '.join(X1_FIELDS)}; skipped {len(skipped)}: {', '.join(skipped) or 'none'}" + \
-          (f"; exempt: {', '.join(exempt)}" if exempt else "")
+          (f"; exempt: {', '.join(exempt)}" if exempt else "") + \
+          f"; section_true compared on {st_n} row(s); in one spec only (presence rule O2 (ii) at P6): {', '.join(st_one) or 'none'}"
     return {"id": "X1", "result": "pass" if not issues else "fail", "reason": (sc._summ(issues) + "; " + msg) if issues else msg,
             "measured": len(issues), "threshold": 0, "n_issues": len(issues), "cause": None if not issues else "content",
             "compared": n, "skipped": skipped}

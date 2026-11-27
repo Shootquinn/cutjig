@@ -138,28 +138,53 @@ def s4_1(ctx):
                      measured=round(got, 3), threshold=c["tol"], n_issues=len(issues))
 
 
+def _maybe(ctx, pose, fid, piece=None):
+    """Drawn pieces of fid (the named section_true pieces when piece is given), or None when not drawn."""
+    ax = _ax(ctx, pose)
+    p = sc.named_pieces(ax, fid, piece) if piece else sc.pieces(ax, fid)
+    return p or None
+
+
 def s4_2(ctx):
     """Short-core exposure and grip on the drawn configuration (Sean STOP S4-A): (a) core rests on the carrier and the
-    carrier on its core seat within 0.05; (b) drawn core top minus the drawn nut-plate top >= core.min_exposed; (c) the
-    grip member's drawn z extent covers the collet straight-bore band."""
+    carrier on its core seat within 0.05 (a carrier not drawn is an (a) issue: the core then rests on nothing named,
+    Loftsman P3b N3); (b) drawn core top minus the drawn nut-plate top (the wingnut plate piece, Loftsman N4) >=
+    core.min_exposed; (c) the grip member's drawn z extent covers the collet straight-bore band."""
     c = _cfg(ctx, "S4-2")
     names = lambda pose: ctx.stack["poses"][pose]["vars_z_A"]  # noqa: E731
-    mn = ctx.P.get(c["exposure"]["min"])
+    ex = c["exposure"]
+    mn = ctx.P.get(ex["min"])
     issues, worst = [], None
     for pose, pc in c["poses"].items():
-        ez = lambda fid: [_z_A(ctx, z) for z in sc.extent_z(_pieces(ctx, pose, fid))]  # noqa: E731
-        core, car, seat = ez(pc["core"]), ez(pc["carrier"]), ez(pc["seat"])
-        for a, b, za, zb in ((pc["core"], pc["carrier"], core[0], car[1]), (pc["carrier"], pc["seat"], car[0], seat[1])):
-            if abs(za - zb) > 0.05:
-                issues.append(f"{pose} (a): {a} bottom minus {b} top {za - zb:.3f}")
-        plate = ez(c["exposure"]["datum_row"])[1]
+        ez = lambda p: [_z_A(ctx, z) for z in sc.extent_z(p)]  # noqa: E731
+        core_p, seat_p = _maybe(ctx, pose, pc["core"]), _maybe(ctx, pose, pc["seat"])
+        if core_p is None or seat_p is None:
+            raise Absent(f"{pose}/{pc['core'] if core_p is None else pc['seat']} not drawn")
+        core, seat = ez(core_p), ez(seat_p)
+        car_p = _maybe(ctx, pose, pc["carrier"])
+        if car_p is None:
+            issues.append(f"{pose} (a): {pc['carrier']} not drawn: {pc['core']} bottom minus {pc['seat']} top {core[0] - seat[1]:.3f} (the core rests on no carrier)")
+        else:
+            car = ez(car_p)
+            for a, b, za, zb in ((pc["core"], pc["carrier"], core[0], car[1]), (pc["carrier"], pc["seat"], car[0], seat[1])):
+                if abs(za - zb) > 0.05:
+                    issues.append(f"{pose} (a): {a} bottom minus {b} top {za - zb:.3f}")
+        pl_p = _maybe(ctx, pose, ex["datum_row"], ex.get("datum_piece"))
+        if pl_p is None:
+            raise Absent(f"{pose}/{ex['datum_row']}" + (f" piece {ex['datum_piece']}" if ex.get("datum_piece") else "") + " not drawn")
+        plate = ez(pl_p)[1]
         exp = core[1] - plate
         m = exp - mn
         worst = m if worst is None else min(worst, m)
         if m < 0:
             issues.append(f"{pose} (b): exposure {exp:.2f} (core top {core[1]:.2f} - nut-plate top {plate:.2f}) < core.min_exposed {mn:.2f}")
         lo, hi = (check_stack.eval_expr(e, ctx.P, names(pose)) for e in pc["grip_band"])
-        g_ = ez(pc["grip_member"])
+        g_p = _maybe(ctx, pose, pc["grip_member"])
+        if g_p is None:
+            if pc["grip_member"] != pc["carrier"]:   # a missing carrier is reported once, under (a)
+                issues.append(f"{pose} (c): grip member {pc['grip_member']} not drawn")
+            continue
+        g_ = ez(g_p)
         if g_[0] > lo + 0.05 or g_[1] < hi - 0.05:
             issues.append(f"{pose} (c): {pc['grip_member']} drawn z [{g_[0]:.2f}, {g_[1]:.2f}] does not cover the grip band [{lo:.2f}, {hi:.2f}]")
     return sc.result("S4-2", not issues, sc._summ(issues) if issues else f"least exposure margin {worst:.2f} mm over core.min_exposed {mn:.2f}; rests_on and grip hold in every figure",
@@ -167,18 +192,20 @@ def s4_2(ctx):
 
 
 def s4_3(ctx):
-    """K8 sense predicates of the kept parts (spec s4_checks.S4-3.rows) in the section Axes: any issue fails. Reads the
-    section Axes K8 result restricted to the listed rows (P4 wires the per-row filter; piece / of_piece, vertical_edge,
-    between and seat_piece are new predicate forms signed by the Topologist at (c))."""
+    """K8 sense predicates of the kept parts (spec s4_checks.S4-3.rows) in the section Axes, and the section_true premise
+    of those rows (the pieces the predicates read): any issue naming a listed row fails. Untestable predicates of listed
+    rows (part not drawn) read cause absent when they are the only issues."""
     c = _cfg(ctx, "S4-3")
     sec = _section(ctx)
     for pose in _poses(ctx):
         _ax(ctx, pose)
     rows = set(c["rows"])
     k8 = sc.k8(sec)
-    mine = [t for t in (k8.get("issues") or []) if any(f"/{r} " in t for r in rows)]
-    if k8.get("absent"):
-        raise Absent(f"{k8.get('absent')} predicate(s) untestable (part not drawn)")
+    # sense predicates only: the section_true / section_u premise and placement lines are K8's own (their Bs are K8 controls)
+    mine = [t for t in (k8.get("issues") or []) if any(f"/{r} " in t for r in rows)
+            and not any(k in t for k in (" section_true:", " section_u:", " projected_"))]
+    if mine and all("untestable" in t for t in mine):
+        raise Absent(f"{len(mine)} predicate(s) of the kept parts untestable (part not drawn): {sc._summ(mine, 3)}")
     return sc.result("S4-3", not mine, sc._summ(mine) if mine else f"kept-part sense predicates hold ({', '.join(sorted(rows))})", n_issues=len(mine))
 
 
@@ -223,7 +250,8 @@ def reported(ctx):
     try:
         pose = _poses(ctx)[0]
         ez = lambda fid: [_z_A(ctx, z) for z in sc.extent_z(_pieces(ctx, pose, fid))]  # noqa: E731
-        core, plate = ez("core_100"), ez("wingnut")[1]
+        core = ez("core_100")
+        plate = [_z_A(ctx, z) for z in sc.extent_z(sc.named_pieces(_ax(ctx, pose), "wingnut", "plate") or _pieces(ctx, pose, "wingnut"))][1]
         items["q10_core_top"] = {"value": f"on the carrier {core[1]:.2f} (collar top {ct:.2f}); on the stop {n['core_top_on_stop']:.2f} ({ct - n['core_top_on_stop']:.2f} below the collar top)", "basis": "drawn core_100 (MEASURED); core on the stop DERIVED", "tag": "MEASURED"}
         items["q10_exposed"] = {"value": f"{core[1] - plate:.2f} on the carrier against {P.get('core.min_exposed'):.2f}; on the stop {n['core_top_on_stop'] - n['plate_top']:.2f}", "basis": "drawn core_100 and wingnut tops", "tag": "MEASURED"}
     except (Absent, Content):
