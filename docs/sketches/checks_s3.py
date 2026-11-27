@@ -391,6 +391,9 @@ def s3_3(ctx):
                         why.append(f"{head}: no accepted record")
                         continue
                     p, rec, diffs = recs[head]
+                    if not hasattr(ctx, "certifiers"):   # 1.4 step 0 R2: run_sketch records every resolved record in deps
+                        ctx.certifiers = {}
+                    ctx.certifiers[head.lower()] = p
                     if diffs:
                         why.append(f"{head} {p.name} stale ({len(diffs)} key(s), e.g. {diffs[0].split(': ', 1)[-1]})")
                         continue

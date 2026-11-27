@@ -396,7 +396,7 @@ def compare(entry, res):
 
 CONTROLS_RESULTS = "fixtures/controls_results.json"   # path under wip/ (written) and under docs/sketches/ (committed copy)
 CONTROLS_PARTIAL = "fixtures/controls_results_partial.json"   # --only runs (1.3 step 0, O9): never a record
-CONTROL_FIGS = "fixtures/figs"
+FAST_LIST = HERE / "fixtures" / "fast.yaml"
 MANIFEST = HERE / "fixtures" / "manifest.yaml"
 # Per-control equality between --jobs 1 and --jobs N (1.3 step 0 R1 b) covers these row fields; "seconds" (wall time of
 # the control in its worker) is excluded, as is the file timestamp.
@@ -436,29 +436,64 @@ def select_controls(man, only):
     return [e for e in man if any(fnmatch.fnmatchcase(e["id"], t) or e["check"] == t for t in toks)]
 
 
+def prior_seconds():
+    """{control id: seconds} from the last full controls results (wip/ first, then the committed copy); {} when absent
+    or unreadable. Used only to order pool submission (1.4 step 0 R1 e)."""
+    p = find_output(CONTROLS_RESULTS)
+    try:
+        return {r["id"]: float(r.get("seconds") or 0) for r in json.loads(p.read_text(encoding="utf-8"))["controls"]}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def submit_order(man, secs):
+    """Indices of man in pool submission order: longest prior time first, controls with no prior time ahead of all
+    (1.4 step 0 R1 e, longest-processing-time first; rows are still returned in manifest order)."""
+    return sorted(range(len(man)), key=lambda i: (-(secs.get(man[i]["id"], float("inf"))), i))
+
+
 def run_controls_rows(man, jobs):
     """Rows in manifest order. jobs 1: in this process; jobs > 1: a spawn pool, one entry per task (each worker keeps
-    its own module cache, so a control never sees another's state except through its own worker's caches)."""
+    its own module cache, so a control never sees another's state except through its own worker's caches). Tasks are
+    submitted longest first by the last run's seconds (submit_order); the order of the returned rows is the manifest's."""
     if jobs <= 1 or len(man) <= 1:
         return [control_row(e) for e in man]
     import multiprocessing as mp
     out = [None] * len(man)
+    order = submit_order(man, prior_seconds())
     with mp.get_context("spawn").Pool(min(jobs, len(man))) as pool:
-        for i, row in pool.imap_unordered(_control_task, list(enumerate(man)), chunksize=1):
+        for i, row in pool.imap_unordered(_control_task, [(i, man[i]) for i in order], chunksize=1):
             out[i] = row
     return out
 
 
-def controls_dst(man_path, only):
+def controls_dst(man_path, only, fast=False):
     """Where a --controls run writes (SW P0S FIX 1), pure: ("record", CONTROLS_RESULTS) only for the full live manifest;
-    ("partial", CONTROLS_PARTIAL) for --only on the live manifest; ("other", <manifest dir>/controls_results.json) for any
-    other manifest. Record and partial paths are relative to wip/ (sketch_loader.output_path)."""
+    ("partial", CONTROLS_PARTIAL) for --only or --fast (1.4 step 0 R1 c) on the live manifest; ("other", <manifest
+    dir>/controls_results.json) for any other manifest. Record and partial paths are relative to wip/
+    (sketch_loader.output_path)."""
     live = Path(man_path).resolve() == MANIFEST.resolve()
-    if live and not only:
+    if live and not only and not fast:
         return "record", CONTROLS_RESULTS
     if live:
         return "partial", CONTROLS_PARTIAL
     return "other", Path(man_path).parent / "controls_results.json"
+
+
+def fast_ids(path=None):
+    """The fast tier (1.4 step 0 R1 c): control ids listed in fixtures/fast.yaml (key fast), in manifest order when
+    selected. Raises ValueError on a listed id the manifest does not hold."""
+    data = load_yaml(path or FAST_LIST)
+    return list(data.get("fast") or [])
+
+
+def select_fast(man, ids):
+    known = {e["id"] for e in man}
+    unknown = [i for i in ids if i not in known]
+    if unknown:
+        raise ValueError(f"fast.yaml lists ids not in the manifest: {unknown}")
+    keep = set(ids)
+    return [e for e in man if e["id"] in keep]
 
 
 def controls(args):
@@ -467,6 +502,13 @@ def controls(args):
     man_path = Path(args.manifest) if getattr(args, "manifest", None) else MANIFEST
     man = load_yaml(man_path)["controls"]
     only = getattr(args, "only", None)
+    fast = bool(getattr(args, "fast", False))
+    if fast:   # 1.4 step 0 R1 c: the fast tier, PARTIAL, not a record
+        try:
+            man = select_fast(man, fast_ids())
+        except (ValueError, OSError) as e:
+            print(f"--fast: {e}")
+            return 1
     if only:
         man = select_controls(man, only)
         if not man:   # SW P0S FIX 1: an --only that selects nothing is an error, never a green run
@@ -490,30 +532,77 @@ def controls(args):
     summary = {"z_clean": sum(r["match"] == "yes" for r in z), "z_total": len(z),
                "b_fired": sum(r["match"] == "yes" for r in b), "b_total": len(b),
                "smoke_ok": sum(r["match"] == "yes" for r in sm), "smoke_total": len(sm)}
-    kind, dst = controls_dst(man_path, only)
-    record = kind == "record"
-    if record:   # control figures and key.json once, in this process, only for the full live set
-        figs = output_path(CONTROL_FIGS + "/key.json").parent   # wip/fixtures/figs (R4-c)
-        try:
-            mod = load_module(HERE / "fixtures" / "builders.py", "fixture_builders")
-            key = mod.control_figures(figs)
-            (figs / "key.json").write_text(json.dumps(key, indent=1), encoding="utf-8")
-        except Exception as e:  # noqa: BLE001
-            summary["ctrl_figs_error"] = f"{type(e).__name__}: {e}"
+    kind, dst = controls_dst(man_path, only, fast)   # 1.4 step 0 R3: control figures moved to --m1-controls (blinded)
     wall = round(time.perf_counter() - t0, 1)
     summary.update(jobs=jobs, wall_seconds=wall)
     out = {"run": 1, "timestamp": TIMESTAMP(), "summary": summary, "controls": rows}
     if kind == "partial":
-        out["partial"] = {"only": only, "note": "PARTIAL, not a record (never read by control_tally or --accept)"}
+        out["partial"] = {"only": only, "fast": fast, "note": "PARTIAL, not a record (never read by control_tally or --accept)"}
     elif kind == "other":
         out["manifest"] = str(man_path)
     dst = output_path(dst) if kind in ("record", "partial") else dst
     dst.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print(f"Z clean {summary['z_clean']}/{summary['z_total']}, B fired {summary['b_fired']}/{summary['b_total']}, "
           f"smoke {summary['smoke_ok']}/{summary['smoke_total']}; jobs {jobs}; wall {wall} s")
-    if only:
-        print(f"PARTIAL, not a record: {len(rows)} control(s) selected by --only {only!r}; written to {dst}")
+    if only or fast:
+        sel = " and ".join(x for x in ((f"--only {only!r}" if only else ""), ("--fast (fixtures/fast.yaml)" if fast else "")) if x)
+        print(f"PARTIAL, not a record: {len(rows)} control(s) selected by {sel}; written to {dst}")
     return 0 if all(r["match"] == "yes" for r in rows) else 1
+
+
+# ---------------------------------------------------------------- M1 reviewer controls, blinded (1.4 step 0 R3; gate G2)
+
+def m1_controls(out_dir, key_path, token=None, root=None):
+    """Draws the four reviewer control figures (fixtures/builders.control_figures) into out_dir as m1c_<token>.png, a
+    fresh token per figure (secrets.token_hex(3)), and writes the key [{token, role, criterion, expected}] as JSON to
+    key_path. Refused, with nothing written, when out_dir exists and is not empty, key_path lies inside the project root
+    (the directory holding params.yaml) or key_path lies inside out_dir. Returns (exit code, messages, tokens)."""
+    import secrets
+    token = token or (lambda: secrets.token_hex(3))
+    out_dir, key_path = Path(out_dir).resolve(), Path(key_path).resolve()
+    root = Path(root).resolve() if root else find_root_dir()
+    msgs = []
+
+    def inside(p, d):
+        return p == d or d in p.parents
+    if out_dir.exists() and (not out_dir.is_dir() or any(out_dir.iterdir())):
+        msgs.append(f"refused: out folder {out_dir} is not empty")
+    if inside(key_path, root):
+        msgs.append(f"refused: key path {key_path} lies inside the project root {root}")
+    if inside(key_path, out_dir):
+        msgs.append(f"refused: key path {key_path} lies inside the out folder {out_dir}")
+    if msgs:
+        return 1, msgs, []
+    mod = load_module(HERE / "fixtures" / "builders.py", "fixture_builders")
+    figs = mod.control_figures()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    key, tokens = [], []
+    for role, (fig, crit, verdict) in figs.items():
+        t = token()
+        while t in tokens:
+            t = token()
+        tokens.append(t)
+        fig.savefig(out_dir / f"m1c_{t}.png")
+        key.append({"token": t, "role": role, "criterion": crit, "expected": verdict})
+    key_path.parent.mkdir(parents=True, exist_ok=True)
+    key_path.write_text(json.dumps(sorted(key, key=lambda k: k["token"]), indent=1), encoding="utf-8")
+    msgs.append(f"wrote {len(tokens)} control figure(s) to {out_dir}; key to {key_path}")
+    return 0, msgs, tokens
+
+
+def find_root_dir():
+    from sketch_loader import find_root
+    return find_root()
+
+
+def m1_controls_cmd(args):
+    if not args.out or not args.key:
+        print("--m1-controls needs --out <dir> and --key <path>")
+        return 2
+    rc, msgs, _ = m1_controls(args.out, args.key)
+    for m in msgs:
+        print(m)
+    return rc
 
 
 def control_tally():
@@ -584,6 +673,7 @@ def run_sketch(args):
         sp.update(z_result=tally.get("SYM-P", {}).get("Z", ""), b_result=tally.get("SYM-P", {}).get("B", ""), source=K_SOURCES["SYM"])
         results.append(sp)
         rec["checks"] = results
+    rec["deps"] = record_deps(spec_path, script, getattr(ctx, "certifiers", None) or {})   # 1.4 step 0 R2 (G5)
     write_record(rec, args.wip_dir)
     exp = sketch_table(s, "STUB_EXPECT") if rev == 0 else {}
     for r in results:
@@ -696,6 +786,69 @@ def stale_diffs(P, records):
     return diffs
 
 
+# ---------------------------------------------------------------- deps (1.4 step 0 R2; Step 1.3 gate G5 and its class)
+
+# Records accepted before the deps rule (no deps field): --stale reads them exempt by record name. Any other accepted,
+# unsuperseded record without deps fails, a later revision of an exempt sketch included.
+DEPS_EXEMPT = {"s1_checks_r8.json": "S1 r8 accepted 2026-11-26 (Design Notes 13)",
+               "s2_checks_r9.json": "S2 r9 accepted 2026-11-26 (Design Notes 13)"}
+
+
+def _rel_here(p):
+    p = Path(p).resolve()
+    try:
+        return str(p.relative_to(HERE)).replace("\\", "/")
+    except ValueError:
+        return p.name
+
+
+def record_deps(spec_path, script, certifiers):
+    """deps of a sketch record: the spec and the script it ran ({path relative to docs/sketches/, sha256}) and every
+    accepted record a check resolved at run time (certifiers {sketch id: record path}; S3-3 today, through
+    checks_s3._records), each {sketch, path (record file name), rev, sha256} as read at run time."""
+    out = {"spec": {"path": _rel_here(spec_path), "sha256": _sha(spec_path)},
+           "script": {"path": _rel_here(script), "sha256": _sha(script)}, "certifiers": []}
+    for s, p in sorted(certifiers.items()):
+        out["certifiers"].append({"sketch": s, "path": Path(p).name, "rev": _rev_of(p), "sha256": _sha(p)})
+    return out
+
+
+def stale_deps(docs, wip, records=None):
+    """The --stale deps branch: (notes, differences). For each latest accepted, unsuperseded record in docs (or the
+    records given): no deps fails unless the record name is in DEPS_EXEMPT (a note); the spec and script SHA-256 are
+    recomputed from the files at their recorded paths under docs; each certifier must be the latest accepted,
+    unsuperseded record of its sketch in docs, at the recorded file name, with the recorded SHA-256."""
+    docs = Path(docs)
+    latest = {rec.get("sketch", Path(p).name.split("_")[0]): Path(p) for p, rec in stale_records(docs, wip)}
+    recs = stale_records(docs, wip) if records is None else records
+    notes, diffs = [], []
+    for p, rec in recs:
+        nm = Path(p).name
+        deps = rec.get("deps")
+        if deps is None:
+            if nm in DEPS_EXEMPT:
+                notes.append(f"{nm}: deps not recorded, exempt (accepted before deps): {DEPS_EXEMPT[nm]}")
+            else:
+                diffs.append(f"{nm}: deps not recorded (only {', '.join(sorted(DEPS_EXEMPT))} are exempt)")
+            continue
+        for kind in ("spec", "script"):
+            d = deps.get(kind) or {}
+            f = docs / str(d.get("path") or "")
+            if not d.get("path") or not f.is_file():
+                diffs.append(f"{nm}: deps {kind} {d.get('path')!r} absent under {docs.name}/")
+            elif _sha(f) != d.get("sha256"):
+                diffs.append(f"{nm}: deps {kind} {d['path']} sha256 recorded {str(d.get('sha256'))[:12]}, live {_sha(f)[:12]}")
+        for c in deps.get("certifiers") or []:
+            cur = latest.get(c.get("sketch"))
+            if cur is None:
+                diffs.append(f"{nm}: deps certifier {c.get('sketch')} {c.get('path')}: no accepted, unsuperseded record of {c.get('sketch')}")
+            elif cur.name != c.get("path"):
+                diffs.append(f"{nm}: deps certifier {c.get('sketch')} recorded {c.get('path')}, latest accepted is {cur.name} (certifier superseded)")
+            elif _sha(cur) != c.get("sha256"):
+                diffs.append(f"{nm}: deps certifier {c.get('path')} sha256 recorded {str(c.get('sha256'))[:12]}, live {_sha(cur)[:12]}")
+    return notes, diffs
+
+
 def stale(args):
     P = Params(args.params, args.overlay)
     docs, wip = _dirs(args)
@@ -706,9 +859,15 @@ def stale(args):
     for d in diffs:
         print("STALE", d)
     print(f"--stale: {len(recs)} record(s) checked, {len(diffs)} difference(s)")
+    notes, ddiffs = stale_deps(docs, wip)   # 1.4 step 0 R2: deps branch on the accepted, unsuperseded records
+    for n in notes:
+        print("deps", n)
+    for d in ddiffs:
+        print("STALE deps", d)
+    print(f"--stale deps: {len(stale_records(docs, wip))} record(s), {len(notes)} exempt, {len(ddiffs)} difference(s)")
     x1 = x1_lint()   # 1.2 (c): the shared-row premise runs with every --stale
     print(f"X1 {x1['result']}: {x1['reason']}")
-    return 1 if diffs or x1["result"] != "pass" else 0
+    return 1 if diffs or ddiffs or x1["result"] != "pass" else 0
 
 
 # ---------------------------------------------------------------- accept (H1)
@@ -749,8 +908,9 @@ def revision_outputs(d, s, k):
 
 
 def harness_outputs(wip):
-    """Verification records in wip/ that --accept copies up with the revision (R4-c): the --controls results and control
-    figures, and the --baseline record. Copied only when the wip/ controls run matched every control."""
+    """Verification records in wip/ that --accept copies up with the revision (R4-c): the --controls results and the
+    --baseline record. Copied only when the wip/ controls run matched every control. No control figure or key is
+    copied (1.4 step 0 R3: --m1-controls writes outside the project)."""
     wip = Path(wip)
     ctrl = wip / CONTROLS_RESULTS
     if not ctrl.is_file():
@@ -758,7 +918,7 @@ def harness_outputs(wip):
     data = json.loads(ctrl.read_text(encoding="utf-8"))
     if any(r.get("match") != "yes" for r in data.get("controls", [])):
         return []
-    out = [ctrl] + sorted(p for p in (wip / CONTROL_FIGS).glob("*") if p.is_file())
+    out = [ctrl]
     if (wip / BASELINE).is_file():
         out.append(wip / BASELINE)
     return out
@@ -951,6 +1111,10 @@ def main(argv=None):
     ap.add_argument("--jobs", type=int, help="--controls worker processes (default min(cpu_count - 2, 12))")
     ap.add_argument("--only", help="--controls subset: comma-separated id globs or check ids; PARTIAL, not a record")
     ap.add_argument("--manifest", help="--controls on another manifest (runner controls); results beside it")
+    ap.add_argument("--fast", action="store_true", help="--controls fast tier (fixtures/fast.yaml); PARTIAL, not a record")
+    ap.add_argument("--m1-controls", action="store_true", help="draw the four M1 reviewer control figures, blinded")
+    ap.add_argument("--out", help="--m1-controls: empty output folder for the figures")
+    ap.add_argument("--key", help="--m1-controls: key JSON path, outside the project root and the out folder")
     ap.add_argument("--baseline", metavar="sN")
     ap.add_argument("--accept", metavar="sN")
     ap.add_argument("--note")
@@ -964,6 +1128,8 @@ def main(argv=None):
         a.rev = 0
     if a.accept:
         return accept_cmd(a)
+    if a.m1_controls:
+        return m1_controls_cmd(a)
     if a.controls:
         return controls(a)
     if a.stale:

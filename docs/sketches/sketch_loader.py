@@ -63,9 +63,22 @@ def default_overlay_path():
     return HERE / "proposed_params.yaml"
 
 
+_YAML_CACHE = {}   # 1.4 step 0 R1 e: parsed YAML per process, keyed by the file's bytes; each call returns a fresh copy
+
+
 def load_yaml(path):
-    with open(path, "r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh) or {}
+    """A YAML file as plain data. The parse is cached per process under the SHA-256 of the file's bytes (a changed file is
+    a new key), and every call returns an independent deep copy (pickle round trip), so a caller that mutates the result
+    never reaches another caller's copy. Equal to yaml.safe_load on every file (1.4 step 0 R1 e: controls rows equal)."""
+    import pickle
+    with open(path, "rb") as fh:
+        raw = fh.read()
+    key = hashlib.sha256(raw).hexdigest()
+    blob = _YAML_CACHE.get(key)
+    if blob is None:
+        blob = pickle.dumps(yaml.safe_load(raw.decode("utf-8")) or {}, protocol=pickle.HIGHEST_PROTOCOL)
+        _YAML_CACHE[key] = blob
+    return pickle.loads(blob)
 
 
 def load_spec(path):

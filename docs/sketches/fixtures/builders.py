@@ -1958,25 +1958,29 @@ def _plan_control(mirror=False, title="plan control figure"):
     return fig
 
 
-def control_figures(out_dir):
-    """K8 Z figure and K8 B1 (drill tip-up) figure, same title text; plan controls ctrl_c (correct handedness) and ctrl_d
-    (mirrored), same title text (1.2 (c), O5). Returns the mapping written to key.json."""
+# M1 reviewer control figures by role (1.4 step 0 R3, Step 1.3 gate G2): {role: (figure, judging criterion, expected
+# verdict)}. File names and tokens belong to check_sketch.py --m1-controls; this module names no file.
+CONTROL_ROLES = {
+    "side_drill_tip_up": ("rubric V3, kept-part and drill orientation (the K8-B1 figure: drill flipped tip-up)", "FAIL"),
+    "side_correct": ("rubric V3, kept-part and drill orientation (the K8-Z figure: correct sense)", "PASS"),
+    "plan_ccw": ("plan handedness (mini spec, screws counter-clockwise from +X at their jackscrew.angle azimuths)", "PASS"),
+    "plan_mirrored": ("plan handedness (the same plan mirrored in y, azimuths clockwise)", "FAIL"),
+}
+
+
+def control_figures():
+    """The four M1 reviewer control figures, {role: (figure, criterion, expected verdict)}: the mini side view drawn
+    correctly and with the drill flipped tip-up (same title text), and the mini plan drawn correctly and mirrored in y
+    (same title text) (1.2 (c), O5; 1.4 step 0 R3)."""
     P = Params()
     spec = mini_side_spec()
     stack = check_stack.evaluate_spec(P, spec)
     title = "control figure"
     z = draw_mini(P, spec, stack, title=title)
     b1 = draw_mini(P, spec, stack, mutate=_flip_drill(P, stack, spec["poses"][0]["id"]), title=title)
-    out_dir = Path(out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    mapping = {"ctrl_a.png": "K8-B1 (drill flipped tip-up; must FAIL V3)", "ctrl_b.png": "K8-Z (correct sense; must PASS)",
-               "ctrl_c.png": "plan of the mini spec, screws counter-clockwise from +X at 30, 150, 270 (must PASS handedness)",
-               "ctrl_d.png": "the same plan mirrored in y, azimuths clockwise (must FAIL handedness)"}
-    list(b1.values())[0].savefig(out_dir / "ctrl_a.png")
-    list(z.values())[0].savefig(out_dir / "ctrl_b.png")
-    _plan_control().savefig(out_dir / "ctrl_c.png")
-    _plan_control(mirror=True).savefig(out_dir / "ctrl_d.png")
-    return mapping
+    figs = {"side_drill_tip_up": list(b1.values())[0], "side_correct": list(z.values())[0],
+            "plan_ccw": _plan_control(), "plan_mirrored": _plan_control(mirror=True)}
+    return {r: (figs[r], crit, verdict) for r, (crit, verdict) in CONTROL_ROLES.items()}
 
 
 # ---------------------------------------------------------------- 1.2 (h) r2 (research/sean/cr_scratch/step1.2_engineer_revision_r2.md)
