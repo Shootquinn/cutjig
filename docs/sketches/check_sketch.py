@@ -9,16 +9,23 @@
                                    the sketch superseded_by k. Refused (exit 1) when the record is absent, a check is not
                                    pass (RPT included; a record without an RPT row), the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
   check_sketch.py --stale          recorded key values of the latest accepted, unsuperseded record per sketch (docs/sketches/)
-                                   against live params and overlay; exit 1 on any difference (--include-unaccepted also
-                                   checks the unaccepted records in wip/).
-  check_sketch.py --controls [--jobs N] [--only ids]
+                                   against live params and overlay; then the deps branch (1.4 step 0 R2): each such record's
+                                   spec and script SHA-256 and its certifier records (latest accepted, recorded file name,
+                                   recorded SHA-256); a record without deps fails unless named in DEPS_EXEMPT. Exit 1 on
+                                   any difference (--include-unaccepted also checks the unaccepted records in wip/ by key).
+  check_sketch.py --controls [--jobs N] [--only ids] [--fast]
                                    every entry of fixtures/manifest.yaml against its expected result, in N spawn worker
                                    processes (default min(cpu_count - 2, 12); rows in manifest order, per-control results
-                                   equal to --jobs 1); writes wip/fixtures/controls_results.json and wip/fixtures/figs/
-                                   (ctrl PNGs, key.json, generated once in the main process). --only (comma-separated id
-                                   globs or check ids) runs a subset to wip/fixtures/controls_results_partial.json,
-                                   "PARTIAL, not a record": never read by control_tally() or --accept. --manifest runs
-                                   another manifest and writes its results beside it (runner controls).
+                                   equal to --jobs 1; submitted longest first by the last run's seconds); writes
+                                   wip/fixtures/controls_results.json (each row with its seconds). --only (comma-separated
+                                   id globs or check ids) or --fast (the fast tier, fixtures/fast.yaml) runs a subset to
+                                   wip/fixtures/controls_results_partial.json, "PARTIAL, not a record": never read by
+                                   control_tally() or --accept. --manifest runs another manifest and writes its results
+                                   beside it (runner controls).
+  check_sketch.py --m1-controls --out <dir> --key <path>
+                                   the four M1 reviewer control figures as m1c_<token>.png (fresh tokens) into an empty
+                                   <dir>, the key (token, role, criterion, expected verdict) to <path>; refused when <dir>
+                                   is not empty or <path> lies inside the project root or inside <dir> (1.4 step 0 R3).
   check_sketch.py --baseline sN    assembles wip/baseline_red.json: run 1 from controls_results.json (wip/ first), run 2
                                    for sN from sN_checks_r0.json (wip/ first, else docs/sketches/); prior records kept.
 Output rule (sketch_loader docstring, Design Notes 26 decision 1): every output goes to wip/; only --accept writes to

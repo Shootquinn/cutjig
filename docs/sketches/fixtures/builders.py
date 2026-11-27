@@ -1494,14 +1494,20 @@ def _s2_ctx(spec_mut=None, values=None, skip=(), note=None, cache=False):
     that way is a spec or params decision drawn faithfully). cache=True shares one read-only context among Z controls."""
     if cache and "ctx" in _S2_LIVE:
         return _S2_LIVE["ctx"]
-    P = Params()
-    for k, v in (values or {}).items():
-        P.leaves[k] = dict(P.leaves[k], value=v)
-    spec = load_spec(S2_SPEC)
-    if spec_mut:
-        spec_mut(spec)
-    stack = check_stack.evaluate_spec(P, spec)
-    figs = _s2_draw(P, spec, stack, skip=skip, note=note)
+
+    def make():
+        P = Params()
+        for k, v in (values or {}).items():
+            P.leaves[k] = dict(P.leaves[k], value=v)
+        spec = load_spec(S2_SPEC)
+        if spec_mut:
+            spec_mut(spec)
+        stack = check_stack.evaluate_spec(P, spec)
+        return P, spec, stack, _s2_draw(P, spec, stack, skip=skip, note=note)
+    if spec_mut is None and not values and not skip and note is None:   # 1.4 step 0 R1 e
+        P, spec, stack, figs = draw_cache("s2 fixture", [S2_SPEC], make)
+    else:
+        P, spec, stack, figs = make()
     ctx = sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=[], check_stack_path=CHECK_STACK_PATH)
     if cache:
         _S2_LIVE["ctx"] = ctx
@@ -1991,17 +1997,59 @@ def control_figures():
 S1_SPEC = HERE.parent / "s1_spec.yaml"
 
 
+_DRAW_CACHE = {}   # 1.4 step 0 R1 e: unmutated live drawings per worker process, pickled; every call gets a fresh copy
+
+
+def _fingerprint(mod):
+    """Identity of every callable a module holds: a fixture that patches one (k8_b51 patches s2_plan._style_visible)
+    changes the fingerprint, so draw_cache neither serves it a drawing made without the patch nor keeps its drawing for
+    others."""
+    d = mod if isinstance(mod, dict) else vars(mod)
+    return tuple(sorted((k, id(v)) for k, v in d.items() if callable(v)))
+
+
+def draw_cache(name, files, make, mods=()):
+    """(P, spec, stack, figs) from make(), cached per process under name, the SHA-256 of files (params.yaml, the overlay,
+    the spec, the drawing script) and the fingerprints of sketch_common, check_stack, this module and mods (the drawing
+    modules); each call returns an independent copy (pickle round trip, an Agg canvas re-attached to every figure), so a
+    control that mutates its copy never reaches another control's. Used only for drawings made with no spec_mut, values
+    or skip; a mutate step runs on the copy after it is returned. Controls rows are equal to the uncached run (1.4 step 0
+    R1 e)."""
+    import hashlib
+    import pickle
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from sketch_loader import default_overlay_path, default_params_path
+    key = (name,) + tuple(hashlib.sha256(Path(f).read_bytes()).hexdigest() for f in
+                          [default_params_path(), default_overlay_path()] + [Path(f) for f in files])
+    key += tuple(_fingerprint(m) for m in (sc, check_stack, globals()) + tuple(mods))
+    blob = _DRAW_CACHE.get(key)
+    if blob is None:
+        blob = pickle.dumps(make(), protocol=pickle.HIGHEST_PROTOCOL)
+        _DRAW_CACHE[key] = blob
+    P, spec, stack, figs = pickle.loads(blob)
+    for f in figs.values():
+        FigureCanvasAgg(sc.real_figure(f))
+    return P, spec, stack, figs
+
+
 def _script_ctx(s, spec_mut=None, script_paths=None):
-    """Live sketch drawn by its own script (s1_side_poses.py or s2_plan.py build), the drawing of record."""
+    """Live sketch drawn by its own script (s1_side_poses.py or s2_plan.py build), the drawing of record. With no
+    spec_mut the drawing comes from draw_cache (one build per worker, a fresh copy per call)."""
     import importlib
     name = {"s1": "s1_side_poses", "s2": "s2_plan", "s3": "s3_jackscrew_section"}[s]
     mod = importlib.import_module(name)
-    P = Params()
-    spec = load_spec(HERE.parent / f"{s}_spec.yaml")
-    if spec_mut:
-        spec_mut(spec)
-    stack = check_stack.evaluate_spec(P, spec)
-    figs = mod.build(P, spec, stack)
+
+    def make():
+        P = Params()
+        spec = load_spec(HERE.parent / f"{s}_spec.yaml")
+        if spec_mut:
+            spec_mut(spec)
+        stack = check_stack.evaluate_spec(P, spec)
+        return P, spec, stack, mod.build(P, spec, stack)
+    if spec_mut is None:
+        P, spec, stack, figs = draw_cache(f"script {s}", [HERE.parent / f"{s}_spec.yaml", HERE.parent / f"{name}.py"], make, mods=(mod,))
+    else:
+        P, spec, stack, figs = make()
     paths = [HERE.parent / f"{name}.py"] if script_paths is None else script_paths
     return sc.Ctx(P=P, spec=spec, figs=figs, stack=stack, view=spec["view"], script_paths=paths, check_stack_path=CHECK_STACK_PATH)
 

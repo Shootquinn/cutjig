@@ -266,14 +266,25 @@ def s3_ctx(spec_mut=None, values=None, mutate=None, render=True, subs=True, skip
     """Live S3 spec drawn faithfully (one figure at section_figure.pose). spec_mut(spec), values {key: value} as the S1/S2
     fixtures (a spec or params decision drawn faithfully); mutate(fig, ax, axi, P, spec, stack, pid) plants a drawing
     defect after the faithful draw. records: directory S3-3 reads; specs: the {name: spec} SYM reads."""
-    P = Params()
-    for k, v in (values or {}).items():
-        P.leaves[k] = dict(P.leaves[k], value=v)
-    spec = copy.deepcopy(spec) if spec is not None else load_spec(S3_SPEC)
-    if spec_mut:
-        spec_mut(spec)
-    stack = check_stack.evaluate_spec(P, spec)
-    figs = s3_draw(P, spec, stack, mutate=mutate, render=render, subs=subs, skip=skip)
+    plain = spec_mut is None and not values and spec is None and render and subs and not skip
+
+    def make(mut=None):
+        P = Params()
+        for k, v in (values or {}).items():
+            P.leaves[k] = dict(P.leaves[k], value=v)
+        sp = copy.deepcopy(spec) if spec is not None else load_spec(S3_SPEC)
+        if spec_mut:
+            spec_mut(sp)
+        stack = check_stack.evaluate_spec(P, sp)
+        return P, sp, stack, s3_draw(P, sp, stack, mutate=mut, render=render, subs=subs, skip=skip)
+    if plain:   # 1.4 step 0 R1 e: the faithful drawing from the per-worker cache, the plant applied to the copy
+        P, spec, stack, figs = _builders().draw_cache("s3 fixture", [S3_SPEC], make, mods=(globals(),))
+        if mutate:
+            pid = next(iter(figs))
+            fig = figs[pid]
+            mutate(fig, _axes(fig, MAIN), _axes(fig, INSET), P, spec, stack, pid)
+    else:
+        P, spec, stack, figs = make(mutate)
     c = _ctx_of(P, spec, stack, figs)
     if records is not None:
         c.records_dir, c.wip_dir = records, records

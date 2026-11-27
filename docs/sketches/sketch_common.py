@@ -244,6 +244,41 @@ def load_literal_issues(spec, P):
             continue
         if abs(v - comp[c["id"]]) > LOAD_TOL:
             out.append(f"load_cases {c['id']} per_screw literal {v:g} against loads() {comp[c['id']]:.4f} N (W or a load key changed)")
+        out += stall_literal_issues(c, spec, P)
+    return out
+
+
+_MU_LIST = re.compile(r"^(?P<vals>[^(]*)\(\s*mu\s+(?P<mus>[^)]*)\)")
+
+
+def stall_literal_issues(c, spec, P):
+    """1.4 step 0 R5 d (r6 reviewer NOTE on rule (j)): every number of a text per_screw literal of the form
+    '<v1> / <v2> ... (mu <m1> / <m2> ...)' is held, not only the first. Each mu is one of the thread_mu values loads()
+    uses, values and mus pair in order, and each value after the first (the first is held above against the governing
+    case) agrees with F_stall per screw at its mu within LOAD_TOL."""
+    txt = c.get("per_screw")
+    if not isinstance(txt, str) or "mu" not in txt:
+        return []
+    m = _MU_LIST.match(txt.strip())
+    if not m:
+        return [f"load_cases {c['id']} per_screw literal {txt!r}: numbers with no '(mu ...)' list (rule (j))"]
+    vals = [float(x) for x in NUMBER.findall(m.group("vals"))]
+    mus = [float(x) for x in NUMBER.findall(m.group("mus"))]
+    if len(vals) != len(mus):
+        return [f"load_cases {c['id']} per_screw literal {txt!r}: {len(vals)} value(s) against {len(mus)} mu (rule (j))"]
+    import importlib
+    if str(HERE) not in sys.path:
+        sys.path.insert(0, str(HERE))
+    th = importlib.import_module("checks_s3").loads(P, spec)["thread"]
+    out = []
+    for i, (v, mu) in enumerate(zip(vals, mus)):
+        k = next((x for x in th if abs(float(x) - mu) < 1e-9), None)
+        if k is None:
+            out.append(f"load_cases {c['id']} per_screw literal mu {mu:g} is not a thread_mu value {sorted(th)} (rule (j))")
+            continue
+        f = th[k]["F_stall_per_screw"]
+        if i and abs(v - f) > LOAD_TOL:
+            out.append(f"load_cases {c['id']} per_screw literal {v:g} at mu {mu:g} against loads() F_stall {f:.4f} N (rule (j), every number)")
     return out
 
 
@@ -1240,7 +1275,7 @@ def arrow_ends(a):
     return None
 
 
-def terminator_issues(ax, fid, pose):
+def terminator_issues(ax, fid, pose, script=False):
     """1.3 (h) r4 (Designer NOTE D-r3-1): premise of reading a reference line row's extent without its arrows. Every
     FancyArrowPatch of the row has its tail and head on the row's Line2D ink within TOL_Z (a terminator lies on the
     dimension line it ends), so an arrow cannot stand away from the line it marks."""
@@ -1257,7 +1292,45 @@ def terminator_issues(ax, fid, pose):
             d = min((_pt_seg(p, q[i], q[i + 1]) for q in ink for i in range(len(q) - 1)), default=float("inf"))
             if d > TOL_Z:
                 out.append(f"{pose}/{fid} terminator: arrow {nm} ({p[0]:.2f}, {p[1]:.2f}) {d:.2f} off the line (D-r3-1)")
+        out += terminator_shape_issues(a, ends, fid, pose, script)
     return out
+
+
+TERM_STYLE = ("CurveFilledB", 0.4, 0.2)   # 1.4 step 0 R5 c: the signed r4 terminator, arrowstyle '-|>' (head_length, head_width)
+TERM_MUTATION_SCALE = LABEL_FONTSIZE * 2   # points, as s3_jackscrew_section.py draws it (Designer r4 delta read: arrowheads PASS)
+
+
+def terminator_shape_issues(a, ends, fid, pose, script=False):
+    """1.4 step 0 R5 c (Designer NOTE DR4-2): the relief premise bounds the arrow's form and size, not only where it
+    sits. (1) The connection is straight: connection style Arc3 with rad 0 (a curved connection bulges off the line it
+    marks). (2) On a script-drawn figure the head is the signed r4 terminator: arrowstyle TERM_STYLE (class, head_length,
+    head_width) at mutation_scale TERM_MUTATION_SCALE, so its rendered half-width is fixed (head_width x mutation_scale
+    points at the figure dpi; 2.38 mm on S3 r7, DERIVED). A numeric bound in mm is The Designer's value (P0D)."""
+    out = []
+    cs_ = a.get_connectionstyle() if hasattr(a, "get_connectionstyle") else None
+    rad = getattr(cs_, "rad", None)
+    if cs_ is not None and (type(cs_).__name__ != "Arc3" or rad is None or abs(float(rad)) > 1e-12):
+        out.append(f"{pose}/{fid} terminator: connection style {type(cs_).__name__}"
+                   f"{'' if rad is None else f' rad {float(rad):g}'} is not straight (Arc3 rad 0; DR4-2)")
+    if script:
+        st = a.get_arrowstyle()
+        got = (type(st).__name__, getattr(st, "head_length", None), getattr(st, "head_width", None))
+        ms = float(a.get_mutation_scale())
+        if got != TERM_STYLE or abs(ms - TERM_MUTATION_SCALE) > 1e-9:
+            out.append(f"{pose}/{fid} terminator: arrowstyle {got[0]} (head_length {got[1]}, head_width {got[2]}) at mutation_scale "
+                       f"{ms:g}, not the signed terminator {TERM_STYLE[0]} ({TERM_STYLE[1]}, {TERM_STYLE[2]}) at {TERM_MUTATION_SCALE:g} (DR4-2)")
+    return out
+
+
+def terminator_half_width_mm(a):
+    """Rendered head half-width of an arrow in data mm at its figure's dpi: head_width x mutation_scale points (reported)."""
+    st, ax = a.get_arrowstyle(), a.axes
+    hw = getattr(st, "head_width", None)
+    if hw is None or ax is None:
+        return None
+    px = hw * float(a.get_mutation_scale()) * ax.figure.dpi / 72.0
+    (x0, y0), (x1, y1) = ax.transData.transform([(0, 0), (1, 0)])
+    return px / math.hypot(x1 - x0, y1 - y0)
 
 
 def geom_pieces(ax, row):
@@ -2241,47 +2314,138 @@ def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25):
     return best
 
 
+def _clip_box(p0, p1, x0, x1, y0, y1):
+    """Segment p0-p1 clipped to the box [x0, x1] x [y0, y1] (Liang-Barsky); None when it misses the box."""
+    dx, dy = p1[0] - p0[0], p1[1] - p0[1]
+    t0, t1 = 0.0, 1.0
+    for p, q in ((-dx, p0[0] - x0), (dx, x1 - p0[0]), (-dy, p0[1] - y0), (dy, y1 - p0[1])):
+        if abs(p) < 1e-12:
+            if q < 0:
+                return None
+            continue
+        r = q / p
+        if p < 0:
+            t0 = max(t0, r)
+        else:
+            t1 = min(t1, r)
+        if t0 > t1:
+            return None
+    return (p0[0] + t0 * dx, p0[1] + t0 * dy), (p0[0] + t1 * dx, p0[1] + t1 * dy)
+
+
+COLLINEAR_FAMILIES = ("reference line", "gridline", "part edge")   # 1.4 step 0 R4 (Step 1.3 gate G2, G3; C1.3-a)
+VIEW_AXES = {"side_xz": ("x", "z"), "plan_xy": ("x", "y"), "section_yz": ("u", "z"), "section_xz": ("u", "z")}
+
+
+def collinear_lines(ctx, ax, fid, every=None):
+    """The lines rule (l) holds a leader of row fid against, in the Axes ax: [(family, line id, (a, b), visible)] where
+    visible is None or a RegionIndex (the clip region a renderer piece draws in; a sample counts only where the line is
+    drawn). Families: reference line (every Line2D segment of a reference line row, its :sub-artists included); gridline
+    (major and minor, both axes, inside the limits); part edge (every edge of every ring of every tagged area artist
+    whose row is not fid, renderer hidden copies included, since they are drawn). every: the result of
+    collinear_lines(ctx, ax, None) for the same Axes state, filtered here by row (one geometry pass per Axes)."""
+    if every is not None:
+        return [ln for ln in every if not (ln[0] == "part edge" and ln[1].split(":")[0] == fid)]
+    (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
+    refs = {r["id"] for r in ctx.spec.get("features", []) if r.get("reference") and r.get("kind") == "line"}
+    hn, vn = VIEW_AXES.get(ctx.view, ("x", "z"))
+    out = []
+    for g, arts in tagged(ax).items():
+        row = g.split(":")[0]
+        for a in arts:
+            if row in refs and isinstance(a, Line2D):
+                q = artist_polys(a)[0]
+                out += [("reference line", g, (q[i], q[i + 1]), None) for i in range(len(q) - 1)]
+            elif row != fid and is_area(a):
+                reg = drawn_region(a)
+                for q in artist_polys(a):
+                    if len(q) < 2:
+                        continue
+                    ring = list(q) + [q[0]] if len(q) >= 3 else list(q)
+                    out += [("part edge", g, (ring[i], ring[i + 1]), reg) for i in range(len(ring) - 1)
+                            if math.hypot(ring[i + 1][0] - ring[i][0], ring[i + 1][1] - ring[i][1]) > 1e-9]
+    out += [("gridline", f"gridline {vn} %g" % v, ((x0, v), (x1, v)), None)
+            for v in sorted(set(ax.yaxis.get_majorticklocs()) | set(ax.yaxis.get_minorticklocs())) if y0 < v < y1]
+    out += [("gridline", f"gridline {hn} %g" % v, ((v, y0), (v, y1)), None)
+            for v in sorted(set(ax.xaxis.get_majorticklocs()) | set(ax.xaxis.get_minorticklocs())) if x0 < v < x1]
+    return out
+
+
+def _run_near_vis(p0, p1, a, b, reg, step=0.25):
+    """Longest run (mm) of segment p0-p1 within COLLINEAR_MM of segment a-b, counting a sample only where the nearest
+    point of a-b is drawn (reg None, or reg contains it or a point within 0.05 across the line)."""
+    if reg is None:
+        L = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+        return _run_near(p0, p1, a, ((b[0] - a[0]) / L, (b[1] - a[1]) / L), seg=(a, b), step=step)
+    L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    if L < 1e-9:
+        return 0.0
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    L2 = dx * dx + dy * dy
+    ln = math.sqrt(L2) or 1.0
+    nx, ny = -dy / ln, dx / ln
+    n = max(2, int(L / step) + 1)
+    best = run = 0.0
+    for k in range(n):
+        t = k / (n - 1)
+        q = (p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t)
+        s = 0.0 if L2 == 0 else max(0.0, min(1.0, ((q[0] - a[0]) * dx + (q[1] - a[1]) * dy) / L2))
+        c = (a[0] + s * dx, a[1] + s * dy)
+        near = math.hypot(q[0] - c[0], q[1] - c[1]) <= COLLINEAR_MM and any(
+            reg.contains((c[0] + e * nx, c[1] + e * ny)) for e in (0.0, 0.05, -0.05))
+        run = run + L / (n - 1) if near and k else (0.0 if not near else run)
+        best = max(best, run)
+    return best
+
+
 def collinear_issues(ctx):
-    """1.3 (h) r6 (M1 S3 r5 F1 and Rule 2 fix (b)). Premise: a leader is followed by eye only where it does not merge with
-    another line. On a script-drawn figure in a side or section view, no label leader (text position to anchor, data
-    coordinates) runs within COLLINEAR_DEG of, and within COLLINEAR_MM of, a reference line row's line (its Line2D and
-    :ext sub-artists) or a major or minor gridline inside the Axes, over more than COLLINEAR_RUN_MM. Scope at r6: section
-    views (the S3 rule raised at M1 S3 r5); S1 r8 height_target runs 32.2 mm along the z 2000 gridline, on which its own
-    target line lies, and goes to Sean at M2 (no S1 revision opens under the r6 ruling)."""
-    if not getattr(ctx, "script_paths", None) or ctx.view not in SECTION_VIEWS:
+    """K4 rule (l), leader collinearity. 1.3 (h) r6 (M1 S3 r5 F1 and Rule 2 fix (b)); 1.4 step 0 R4 (Step 1.3 gate G2 rule
+    scope, G3; C1.3-a; r6 reviewer N1). Premise: a leader is followed by eye only where it does not merge with another
+    line. On a script-drawn figure (the context's script, or its parent's for an inset Axes), in every view and every
+    declared Axes, no label leader (text position to anchor, data coordinates, clipped to the Axes box) runs within
+    COLLINEAR_DEG of, and within COLLINEAR_MM of, a line of the families in COLLINEAR_FAMILIES (collinear_lines: reference
+    lines, gridlines, part edges of other rows) over more than COLLINEAR_RUN_MM. One issue per leader and reference-line
+    segment or gridline (as at r6), one per leader and tagged artist id for part edges."""
+    sp = getattr(ctx, "script_paths", None) or getattr(getattr(ctx, "parent", None), "script_paths", None)
+    if not sp:
         return []
     out = []
-    refs = {r["id"] for r in ctx.spec.get("features", []) if r.get("reference") and r.get("kind") == "line"}
     for pose, fig in (ctx.figs or {}).items():
         ax = fig.axes[0]
         (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
-        lines = []
-        for g, arts in tagged(ax).items():
-            if g.split(":")[0] in refs:
-                for a in arts:
-                    if isinstance(a, Line2D):
-                        q = artist_polys(a)[0]
-                        lines += [(g, (q[i], q[i + 1])) for i in range(len(q) - 1)]
-        grid = [("gridline z %g" % v, ((x0, v), (x1, v))) for v in set(ax.yaxis.get_majorticklocs()) | set(ax.yaxis.get_minorticklocs()) if y0 < v < y1]
-        grid += [("gridline u %g" % v, ((v, y0), (v, y1))) for v in set(ax.xaxis.get_majorticklocs()) | set(ax.xaxis.get_minorticklocs()) if x0 < v < x1]
+        cache = {}
         for t in ax.texts:
             g = t.get_gid() or ""
             xt = getattr(t, "xyann", None)
             if not g.startswith("label:") or xt is None:
                 continue
-            p0, p1 = (float(xt[0]), float(xt[1])), (float(t.xy[0]), float(t.xy[1]))
-            if p0[0] > x1:   # the run inside the Axes (the text sits in the margin column)
-                p0 = (x1, p0[1] + (p1[1] - p0[1]) * (p0[0] - x1) / (p0[0] - p1[0])) if abs(p0[0] - p1[0]) > 1e-9 else p0
+            fid = g[len("label:"):]
+            seg = _clip_box((float(xt[0]), float(xt[1])), (float(t.xy[0]), float(t.xy[1])), x0, x1, y0, y1)
+            if seg is None:
+                continue
+            p0, p1 = seg
+            if math.hypot(p1[0] - p0[0], p1[1] - p0[1]) <= COLLINEAR_RUN_MM:
+                continue
             ang = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0]))
-            for nm, (a, b) in lines + grid:
+            if None not in cache:
+                cache[None] = collinear_lines(ctx, ax, None)
+            if fid not in cache:
+                cache[fid] = collinear_lines(ctx, ax, fid, every=cache[None])
+            seen = set()
+            for fam, nm, (a, b), reg in cache[fid]:
                 la = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
-                dd = abs((ang - la + 90) % 180 - 90)
-                if dd > COLLINEAR_DEG:
+                if abs((ang - la + 90) % 180 - 90) > COLLINEAR_DEG:
                     continue
-                Ll = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
-                run = _run_near(p0, p1, a, ((b[0] - a[0]) / Ll, (b[1] - a[1]) / Ll), seg=(a, b))
+                if seg_distance(p0, p1, a, b) > COLLINEAR_MM:
+                    continue
+                if fam == "part edge" and nm in seen:
+                    continue
+                run = _run_near_vis(p0, p1, a, b, reg)
                 if run > COLLINEAR_RUN_MM:
-                    out.append(f"{pose}/{g[len('label:'):]}: label leader runs {run:.1f} mm along {nm} within {COLLINEAR_MM:g} mm (K4 collinear)")
+                    if fam == "part edge":   # one issue per leader and tagged artist id (its edges and hidden copy)
+                        seen.add(nm)
+                    lab = nm if fam != "part edge" else f"part edge of {nm}"
+                    out.append(f"{pose}/{fid}: label leader runs {run:.1f} mm along {lab} within {COLLINEAR_MM:g} mm (K4 collinear)")
     return out
 
 
@@ -4583,7 +4747,7 @@ def k8(ctx):
                 # 1.3 (h) r4 (Designer D-r3-1): a dimension's arrowhead terminators are marks on its line, not its extent
                 # (the geom_pieces premise, P4); premise check: both ends of every arrow of the row lie on the row's line ink
                 me = geom_pieces(ax, row)
-                issues += terminator_issues(ax, fid, pose)
+                issues += terminator_issues(ax, fid, pose, script=bool(getattr(ctx, "script_paths", None)))
             # TP-3: every placed row sits at its projected position (x = r_c cos theta in side views; x and y in plan)
             pl = _feat(ctx, pose, fid).get("place")
             # 1.2 (c) plan: every drawn point lies inside the row's plan outline (premise of the K7 plan test and of the
@@ -5128,6 +5292,9 @@ def _other_sketch_bands(P, sketch, ids, pose):
     return out
 
 
+ND_KEY_REF = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_]")   # a dotted params or overlay key inside an expression
+
+
 def not_drawn_band_issues(ctx, parent):
     """1.3 (h) r2 (Topologist TP1.3-12): the not_drawn converse of the section convention. Premise of omitting a part
     from a section: it lies wholly in front of the plane or wholly past one profile width behind it (clause 4), or its
@@ -5167,6 +5334,10 @@ def not_drawn_band_issues(ctx, parent):
                 else:
                     bands.append((f"s2 {i}", xb))
         for k, b in enumerate(e.get("x") or []):
+            lit = [v for v in b if not ND_KEY_REF.search(str(v))]   # 1.4 step 0 R5 a (Topologist NOTE R2-6)
+            if lit:
+                out.append(f"spec error: not_drawn {head!r} x band {k + 1} bound {lit[0]!r} reads no key: write it as an expression "
+                           f"over keys (a key edit reaches it through keys_read and --stale; R2-6)")
             lo, hi = sorted(float(_cs.eval_expr(str(v), ctx.P, {})) for v in b)
             bands.append((f"x band {k + 1}", (lo, hi)))
         if not bands:
