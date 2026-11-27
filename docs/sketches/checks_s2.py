@@ -263,6 +263,14 @@ def accepted_s1_mass_report(ctx):
     path = d / f"s1_mass_report_r{best}.json"
     if not path.is_file():
         raise FileNotFoundError(f"accepted S1 r{best} has no mass report {path}")
+    # 1.4 P0f (Loftsman P0L FIX 3): the S1 record resolved here is a certifier of the S2 record, and the report read
+    # through it a certifier file; run_sketch writes both into deps, so --stale names S2 when either changes.
+    if not hasattr(ctx, "certifiers"):
+        ctx.certifiers = {}
+    ctx.certifiers["s1"] = d / f"s1_checks_r{best}.json"
+    if not hasattr(ctx, "certifier_files"):
+        ctx.certifier_files = {}
+    ctx.certifier_files["s1"] = sorted(set(ctx.certifier_files.get("s1") or []) | {path})
     return path
 
 

@@ -10,9 +10,10 @@
                                    pass (RPT included; a record without an RPT row), the note is empty, or a PNG of the same name in docs/sketches/ differs in pixels.
   check_sketch.py --stale          recorded key values of the latest accepted, unsuperseded record per sketch (docs/sketches/)
                                    against live params and overlay; then the deps branch (1.4 step 0 R2): each such record's
-                                   spec and script SHA-256 and its certifier records (latest accepted, recorded file name,
-                                   recorded SHA-256); a record without deps fails unless named in DEPS_EXEMPT. Exit 1 on
-                                   any difference (--include-unaccepted also checks the unaccepted records in wip/ by key).
+                                   spec, script and spec_read SHA-256 and its certifier records (latest accepted, recorded
+                                   file name, recorded SHA-256, and each certifier file's SHA-256); a record without deps
+                                   reads the deps its deps_exempt.json entry carries, and fails without one (1.4 P0f). Exit
+                                   1 on any difference (--include-unaccepted also checks the unaccepted records in wip/ by key).
   check_sketch.py --controls [--jobs N] [--only ids] [--fast]
                                    every entry of fixtures/manifest.yaml against its expected result, in N spawn worker
                                    processes (default min(cpu_count - 2, 12); rows in manifest order, per-control results
@@ -25,7 +26,9 @@
   check_sketch.py --m1-controls --out <dir> --key <path>
                                    the four M1 reviewer control figures as m1c_<token>.png (fresh tokens) into an empty
                                    <dir>, the key (token, role, criterion, expected verdict) to <path>; refused when <dir>
-                                   is not empty or <path> lies inside the project root or inside <dir> (1.4 step 0 R3).
+                                   is not empty or <path> lies inside the project root or inside <dir>, tested by file
+                                   identity and by the spelling-free path (1.4 step 0 R3; P0f, SW P0S FIX 5); figures
+                                   written in a shuffled order.
   check_sketch.py --baseline sN    assembles wip/baseline_red.json: run 1 from controls_results.json (wip/ first), run 2
                                    for sN from sN_checks_r0.json (wip/ first, else docs/sketches/); prior records kept.
 Output rule (sketch_loader docstring, Design Notes 26 decision 1): every output goes to wip/; only --accept writes to
@@ -571,7 +574,7 @@ def m1_controls(out_dir, key_path, token=None, root=None):
     msgs = []
 
     def inside(p, d):
-        return p == d or d in p.parents
+        return _inside_by_identity(p, d)
     if out_dir.exists() and (not out_dir.is_dir() or any(out_dir.iterdir())):
         msgs.append(f"refused: out folder {out_dir} is not empty")
     if inside(key_path, root):
@@ -584,7 +587,9 @@ def m1_controls(out_dir, key_path, token=None, root=None):
     figs = mod.control_figures()
     out_dir.mkdir(parents=True, exist_ok=True)
     key, tokens = [], []
-    for role, (fig, crit, verdict) in figs.items():
+    order = list(figs.items())
+    secrets.SystemRandom().shuffle(order)   # SW P0S NOTE 2: write order (file times) carries no role
+    for role, (fig, crit, verdict) in order:
         t = token()
         while t in tokens:
             t = token()
@@ -595,6 +600,37 @@ def m1_controls(out_dir, key_path, token=None, root=None):
     key_path.write_text(json.dumps(sorted(key, key=lambda k: k["token"]), indent=1), encoding="utf-8")
     msgs.append(f"wrote {len(tokens)} control figure(s) to {out_dir}; key to {key_path}")
     return 0, msgs, tokens
+
+
+def _norm_path(p):
+    """Spelling-free form of a path for containment: the extended-length prefix (question-mark and UNC forms) removed, absolute,
+    normalised, case-folded (SW P0S FIX 5)."""
+    import os
+    t = str(p)
+    for pre, rep in (("\\\\?\\UNC\\", "\\\\"), ("\\\\?\\", ""), ("//?/UNC/", "//"), ("//?/", "")):
+        if t.startswith(pre):
+            t = rep + t[len(pre):]
+            break
+    return os.path.normcase(os.path.abspath(t))
+
+
+def _inside_by_identity(p, d):
+    """p is d or lies under d (SW P0S FIX 5): by file identity, os.path.samefile of each existing ancestor of p (p
+    included) against d, so an extended-length or share spelling of the same folder is caught; and by the spelling-free
+    path when d does not exist yet."""
+    import os
+    p, d = Path(p), Path(d)
+    if _norm_path(p) == _norm_path(d) or _norm_path(p).startswith(_norm_path(d).rstrip("\\/") + os.sep):
+        return True
+    if not os.path.exists(str(d)):
+        return False
+    for anc in [p] + list(p.parents):
+        try:
+            if os.path.exists(str(anc)) and os.path.samefile(str(anc), str(d)):
+                return True
+        except OSError:
+            continue
+    return False
 
 
 def find_root_dir():
@@ -680,7 +716,10 @@ def run_sketch(args):
         sp.update(z_result=tally.get("SYM-P", {}).get("Z", ""), b_result=tally.get("SYM-P", {}).get("B", ""), source=K_SOURCES["SYM"])
         results.append(sp)
         rec["checks"] = results
-    rec["deps"] = record_deps(spec_path, script, getattr(ctx, "certifiers", None) or {})   # 1.4 step 0 R2 (G5)
+    # 1.4 step 0 R2 (G5); P0f: the specs sym_lint reads (Loftsman P0L FIX 2) and the certifier side files (FIX 3)
+    specs_read = sorted(HERE.glob("s*_spec.yaml")) if spec.get("chains") else []
+    rec["deps"] = record_deps(spec_path, script, getattr(ctx, "certifiers", None) or {}, specs_read,
+                              getattr(ctx, "certifier_files", None) or {})
     write_record(rec, args.wip_dir)
     exp = sketch_table(s, "STUB_EXPECT") if rev == 0 else {}
     for r in results:
@@ -795,10 +834,20 @@ def stale_diffs(P, records):
 
 # ---------------------------------------------------------------- deps (1.4 step 0 R2; Step 1.3 gate G5 and its class)
 
-# Records accepted before the deps rule (no deps field): --stale reads them exempt by record name. Any other accepted,
-# unsuperseded record without deps fails, a later revision of an exempt sketch included.
-DEPS_EXEMPT = {"s1_checks_r8.json": "S1 r8 accepted 2026-11-26 (Design Notes 13)",
-               "s2_checks_r9.json": "S2 r9 accepted 2026-11-26 (Design Notes 13)"}
+# Records accepted before the deps rule (no deps field). Each entry of deps_exempt.json carries the deps that record would
+# hold (the deps block of its re-record in wip/ by the same code and inputs: Loftsman P0L FIX 1, orchestrator ruling at
+# P0f), and --stale reads them as the record's own: an exemption by name alone is refused (a difference). Any other
+# accepted, unsuperseded record without deps fails, a later revision of an exempt sketch included (S1 r9, S2 r10,
+# S3 r8 carry their own deps). s3_checks_r7.json stays the accepted S3 record until S3 r8 (orchestrator ruling at P0f).
+DEPS_EXEMPT_FILE = HERE / "deps_exempt.json"
+
+
+def load_deps_exempt(path=None):
+    p = Path(path or DEPS_EXEMPT_FILE)
+    return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else {}
+
+
+DEPS_EXEMPT = load_deps_exempt()
 
 
 def _rel_here(p):
@@ -809,22 +858,31 @@ def _rel_here(p):
         return p.name
 
 
-def record_deps(spec_path, script, certifiers):
-    """deps of a sketch record: the spec and the script it ran ({path relative to docs/sketches/, sha256}) and every
-    accepted record a check resolved at run time (certifiers {sketch id: record path}; S3-3 today, through
-    checks_s3._records), each {sketch, path (record file name), rev, sha256} as read at run time."""
+def record_deps(spec_path, script, certifiers, specs_read=None, certifier_files=None):
+    """deps of a sketch record: the spec and the script it ran ({path relative to docs/sketches/, sha256}); every other spec
+    a check read at run time (spec_read; for a record with chains, the specs sym_lint reads: Loftsman P0L FIX 2); every
+    accepted record a check resolved at run time (certifiers {sketch id: record path}: S3-3 through checks_s3._records,
+    and the S2 tip-force report through checks_s2.accepted_s1_mass_report), each {sketch, path (record file name), rev,
+    sha256, files} as read at run time, files being the side files read through that record ({path, sha256}; the S1
+    mass report: Loftsman P0L FIX 3)."""
     out = {"spec": {"path": _rel_here(spec_path), "sha256": _sha(spec_path)},
-           "script": {"path": _rel_here(script), "sha256": _sha(script)}, "certifiers": []}
+           "script": {"path": _rel_here(script), "sha256": _sha(script)}, "spec_read": [], "certifiers": []}
+    own = Path(spec_path).resolve()
+    for q in sorted({Path(x).resolve() for x in (specs_read or [])}):
+        if q != own:
+            out["spec_read"].append({"path": _rel_here(q), "sha256": _sha(q)})
     for s, p in sorted(certifiers.items()):
-        out["certifiers"].append({"sketch": s, "path": Path(p).name, "rev": _rev_of(p), "sha256": _sha(p)})
+        files = [{"path": Path(f).name, "sha256": _sha(f)} for f in sorted((certifier_files or {}).get(s) or [])]
+        out["certifiers"].append({"sketch": s, "path": Path(p).name, "rev": _rev_of(p), "sha256": _sha(p), "files": files})
     return out
 
 
 def stale_deps(docs, wip, records=None):
     """The --stale deps branch: (notes, differences). For each latest accepted, unsuperseded record in docs (or the
-    records given): no deps fails unless the record name is in DEPS_EXEMPT (a note); the spec and script SHA-256 are
-    recomputed from the files at their recorded paths under docs; each certifier must be the latest accepted,
-    unsuperseded record of its sketch in docs, at the recorded file name, with the recorded SHA-256."""
+    records given): a record without deps reads the deps of its DEPS_EXEMPT entry (a note), fails when it has no entry
+    or the entry carries no deps; the spec, script and spec_read SHA-256 are recomputed from the files at their recorded
+    paths under docs; each certifier must be the latest accepted, unsuperseded record of its sketch in docs, at the
+    recorded file name, with the recorded SHA-256, and each of its files at its recorded SHA-256."""
     docs = Path(docs)
     latest = {rec.get("sketch", Path(p).name.split("_")[0]): Path(p) for p, rec in stale_records(docs, wip)}
     recs = stale_records(docs, wip) if records is None else records
@@ -833,11 +891,15 @@ def stale_deps(docs, wip, records=None):
         nm = Path(p).name
         deps = rec.get("deps")
         if deps is None:
-            if nm in DEPS_EXEMPT:
-                notes.append(f"{nm}: deps not recorded, exempt (accepted before deps): {DEPS_EXEMPT[nm]}")
-            else:
-                diffs.append(f"{nm}: deps not recorded (only {', '.join(sorted(DEPS_EXEMPT))} are exempt)")
-            continue
+            ex = DEPS_EXEMPT.get(nm)
+            if ex is None:
+                diffs.append(f"{nm}: deps not recorded (exempt: {', '.join(sorted(DEPS_EXEMPT)) or 'none'})")
+                continue
+            if not isinstance(ex, dict) or not isinstance(ex.get("deps"), dict):
+                diffs.append(f"{nm}: deps not recorded and its exemption carries no deps (an exemption by name alone is refused; Loftsman P0L FIX 1)")
+                continue
+            notes.append(f"{nm}: deps not recorded, exempt with the deps of its re-record: {ex.get('note')}")
+            deps = ex["deps"]
         for kind in ("spec", "script"):
             d = deps.get(kind) or {}
             f = docs / str(d.get("path") or "")
@@ -845,14 +907,28 @@ def stale_deps(docs, wip, records=None):
                 diffs.append(f"{nm}: deps {kind} {d.get('path')!r} absent under {docs.name}/")
             elif _sha(f) != d.get("sha256"):
                 diffs.append(f"{nm}: deps {kind} {d['path']} sha256 recorded {str(d.get('sha256'))[:12]}, live {_sha(f)[:12]}")
+        for d in deps.get("spec_read") or []:
+            f = docs / str(d.get("path") or "")
+            if not f.is_file():
+                diffs.append(f"{nm}: deps spec_read {d.get('path')!r} absent under {docs.name}/")
+            elif _sha(f) != d.get("sha256"):
+                diffs.append(f"{nm}: deps spec_read {d['path']} sha256 recorded {str(d.get('sha256'))[:12]}, live {_sha(f)[:12]}")
         for c in deps.get("certifiers") or []:
             cur = latest.get(c.get("sketch"))
             if cur is None:
                 diffs.append(f"{nm}: deps certifier {c.get('sketch')} {c.get('path')}: no accepted, unsuperseded record of {c.get('sketch')}")
-            elif cur.name != c.get("path"):
+                continue
+            if cur.name != c.get("path"):
                 diffs.append(f"{nm}: deps certifier {c.get('sketch')} recorded {c.get('path')}, latest accepted is {cur.name} (certifier superseded)")
-            elif _sha(cur) != c.get("sha256"):
+                continue
+            if _sha(cur) != c.get("sha256"):
                 diffs.append(f"{nm}: deps certifier {c.get('path')} sha256 recorded {str(c.get('sha256'))[:12]}, live {_sha(cur)[:12]}")
+            for fd in c.get("files") or []:
+                f = docs / str(fd.get("path") or "")
+                if not f.is_file():
+                    diffs.append(f"{nm}: deps certifier {c.get('sketch')} file {fd.get('path')!r} absent under {docs.name}/")
+                elif _sha(f) != fd.get("sha256"):
+                    diffs.append(f"{nm}: deps certifier {c.get('sketch')} file {fd['path']} sha256 recorded {str(fd.get('sha256'))[:12]}, live {_sha(f)[:12]}")
     return notes, diffs
 
 

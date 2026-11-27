@@ -255,10 +255,14 @@ def stall_literal_issues(c, spec, P):
     """1.4 step 0 R5 d (r6 reviewer NOTE on rule (j)): every number of a text per_screw literal of the form
     '<v1> / <v2> ... (mu <m1> / <m2> ...)' is held, not only the first. Each mu is one of the thread_mu values loads()
     uses, values and mus pair in order, and each value after the first (the first is held above against the governing
-    case) agrees with F_stall per screw at its mu within LOAD_TOL."""
+    case) agrees with F_stall per screw at its mu within LOAD_TOL. Designer P0D FIX J1: a text literal with two or more
+    numbers and no mu list fails (all but its first number would be unheld)."""
     txt = c.get("per_screw")
-    if not isinstance(txt, str) or "mu" not in txt:
+    if not isinstance(txt, str):
         return []
+    if "mu" not in txt:
+        n_ = len(NUMBER.findall(txt))
+        return [f"load_cases {c['id']} per_screw literal {txt!r}: {n_} numbers with no '(mu ...)' list (rule (j))"] if n_ > 1 else []
     m = _MU_LIST.match(txt.strip())
     if not m:
         return [f"load_cases {c['id']} per_screw literal {txt!r}: numbers with no '(mu ...)' list (rule (j))"]
@@ -2266,9 +2270,6 @@ def leader_issues(ctx):
     return out
 
 
-COLLINEAR_MM = 1.0      # 1.3 (h) r6: a leader within this of a line ...
-COLLINEAR_RUN_MM = 5.0  # ... over more than this run, and
-COLLINEAR_DEG = 2.0     # ... within this angle of it, runs along the line (M1 S3 r5 F1, Rule 2 fix (b))
 
 
 def anchor_record_issues(ctx):
@@ -2298,8 +2299,33 @@ def anchor_record_issues(ctx):
     return out
 
 
-def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25):
-    """Longest run (mm) of segment p0-p1 within COLLINEAR_MM of a line (point, unit direction; seg = (a, b) bounds it)."""
+# P0D FIX L1: thresholds in mm on paper at the figure dpi, converted per Axes to data mm. Premise of the FIX (Designer P0D
+# 1.2): equal to the signed 1.3 r6 S3 section values, 1.0 and 5.0 data mm at 2.45136 px per data mm and 150 dpi (0.41510,
+# 2.07549 paper mm, DERIVED), rounded up at the fourth decimal so the section reads D 1.00025, R 5.00027 data mm. The
+# sign-off's rounded 0.4 / 2.0 read D 0.9636 on the section and drop the K4-B28, K4-B29 r95 firing at 1.00 data mm
+# (P0f file, FIX L1 dry run); the constant goes back to The Designer for signature.
+COLLINEAR_PAPER_MM = 0.4152
+COLLINEAR_PAPER_RUN_MM = 2.0756
+COLLINEAR_DEG = 2.0            # 1.3 (h) r6: within this angle of a line a leader runs along it (M1 S3 r5 F1, Rule 2 fix (b))
+COLLINEAR_ASPECT_TOL = 1e-6    # premise of the paper conversion: px per data mm equal in x and y (relative)
+
+
+def collinear_scale(ax):
+    """Rule (l) thresholds of one Axes in data mm (P0D FIX L1): (D, R, premise issue or None). D = COLLINEAR_PAPER_MM and R =
+    COLLINEAR_PAPER_RUN_MM converted at the Axes' px per data mm (transData at the figure dpi; the dpi cancels, so the
+    result is the drawn length on paper). Premise: equal aspect (px per data mm equal in x and y within
+    COLLINEAR_ASPECT_TOL); an Axes that breaks it is reported and not judged."""
+    (a, b, c) = ax.transData.transform([(0, 0), (1, 0), (0, 1)])
+    kx, ky = math.hypot(b[0] - a[0], b[1] - a[1]), math.hypot(c[0] - a[0], c[1] - a[1])
+    if kx <= 0 or ky <= 0 or abs(kx - ky) > COLLINEAR_ASPECT_TOL * max(kx, ky):
+        return None, None, (f"rule (l) premise: px per data mm {kx:.4f} in x against {ky:.4f} in y; the paper-mm conversion needs "
+                            f"equal aspect (K4 collinear)")
+    f = ax.figure.dpi / 25.4 / kx
+    return COLLINEAR_PAPER_MM * f, COLLINEAR_PAPER_RUN_MM * f, None
+
+
+def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25, mm=1.0):
+    """Longest run (mm) of segment p0-p1 within mm of a line (point, unit direction; seg = (a, b) bounds it)."""
     L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
     if L < 1e-9:
         return 0.0
@@ -2309,7 +2335,7 @@ def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25):
         t = k / (n - 1)
         q = (p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t)
         d = _pt_seg(q, seg[0], seg[1]) if seg else abs((q[0] - line_pt[0]) * line_dir[1] - (q[1] - line_pt[1]) * line_dir[0])
-        run = run + L / (n - 1) if d <= COLLINEAR_MM and k else (0.0 if d > COLLINEAR_MM else run)
+        run = run + L / (n - 1) if d <= mm and k else (0.0 if d > mm else run)
         best = max(best, run)
     return best
 
@@ -2333,19 +2359,40 @@ def _clip_box(p0, p1, x0, x1, y0, y1):
     return (p0[0] + t0 * dx, p0[1] + t0 * dy), (p0[0] + t1 * dx, p0[1] + t1 * dy)
 
 
-COLLINEAR_FAMILIES = ("reference line", "gridline", "part edge")   # 1.4 step 0 R4 (Step 1.3 gate G2, G3; C1.3-a)
+# 1.4 step 0 R4 (Step 1.3 gate G2, G3; C1.3-a); P0f: drawn line (Designer P0D FIX L2, Topologist P0T TP1.4-1 "part line")
+# and leader (Designer P0D FIX L4).
+COLLINEAR_FAMILIES = ("reference line", "gridline", "part edge", "drawn line", "leader")
 VIEW_AXES = {"side_xz": ("x", "z"), "plan_xy": ("x", "y"), "section_yz": ("u", "z"), "section_xz": ("u", "z")}
+OWN_ROW_FAMILIES = ("part edge", "drawn line")   # the labelled row's own edges and lines are outside the rule (N-l3)
+
+
+def strokes_boundary(a):
+    """Topologist P0T TP1.4-1: a visible Patch whose boundary is drawn: a filled face or a hatch (is_area), or a stroked
+    edge (linewidth > 0, edge alpha > 0, line style not none): every renderer solid or dashed piece, stand-in outline and
+    unfilled part outline. A FancyArrowPatch is a mark, never a part boundary."""
+    if not isinstance(a, Patch) or isinstance(a, FancyArrowPatch) or not a.get_visible():
+        return False
+    if is_area(a):
+        return True
+    ec = a.get_edgecolor()
+    ls = a.get_linestyle()
+    return (float(a.get_linewidth() or 0) > 0 and ec is not None and ec[3] > 0
+            and not (isinstance(ls, str) and ls.strip().lower() in ("", "none")))
 
 
 def collinear_lines(ctx, ax, fid, every=None):
     """The lines rule (l) holds a leader of row fid against, in the Axes ax: [(family, line id, (a, b), visible)] where
-    visible is None or a RegionIndex (the clip region a renderer piece draws in; a sample counts only where the line is
-    drawn). Families: reference line (every Line2D segment of a reference line row, its :sub-artists included); gridline
-    (major and minor, both axes, inside the limits); part edge (every edge of every ring of every tagged area artist
-    whose row is not fid, renderer hidden copies included, since they are drawn). every: the result of
-    collinear_lines(ctx, ax, None) for the same Axes state, filtered here by row (one geometry pass per Axes)."""
+    visible is None or a RegionIndex (the clip region the artist draws in; a sample counts only where the line is drawn).
+    Families: reference line (every Line2D segment of a reference line row, its :sub-artists and the labelled row's own
+    included); gridline (major and minor, both axes, inside the limits); part edge (every edge of every ring of every
+    visible Patch of another row whose boundary is drawn: strokes_boundary, renderer solid and dashed pieces and stand-in
+    outlines included, counted inside their clip region; TP1.4-1); drawn line (every segment of every visible Line2D or
+    Collection of another row that is not a reference line row, counted inside its clip region; P0D FIX L2, TP1.4-1).
+    Hatch strokes, FancyArrowPatch marks and text are in no family. The leader family is added by collinear_issues.
+    every: the result of collinear_lines(ctx, ax, None) for the same Axes state, filtered here by row (one geometry pass
+    per Axes)."""
     if every is not None:
-        return [ln for ln in every if not (ln[0] == "part edge" and ln[1].split(":")[0] == fid)]
+        return [ln for ln in every if not (ln[0] in OWN_ROW_FAMILIES and ln[1].split(":")[0] == fid)]
     (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
     refs = {r["id"] for r in ctx.spec.get("features", []) if r.get("reference") and r.get("kind") == "line"}
     hn, vn = VIEW_AXES.get(ctx.view, ("x", "z"))
@@ -2356,7 +2403,9 @@ def collinear_lines(ctx, ax, fid, every=None):
             if row in refs and isinstance(a, Line2D):
                 q = artist_polys(a)[0]
                 out += [("reference line", g, (q[i], q[i + 1]), None) for i in range(len(q) - 1)]
-            elif row != fid and is_area(a):
+            elif row == fid:
+                continue
+            elif strokes_boundary(a):
                 reg = drawn_region(a)
                 for q in artist_polys(a):
                     if len(q) < 2:
@@ -2364,6 +2413,11 @@ def collinear_lines(ctx, ax, fid, every=None):
                     ring = list(q) + [q[0]] if len(q) >= 3 else list(q)
                     out += [("part edge", g, (ring[i], ring[i + 1]), reg) for i in range(len(ring) - 1)
                             if math.hypot(ring[i + 1][0] - ring[i][0], ring[i + 1][1] - ring[i][1]) > 1e-9]
+            elif row not in refs and isinstance(a, (Line2D, Collection)) and a.get_visible():
+                reg = drawn_region(a)
+                for q in artist_polys(a):
+                    out += [("drawn line", g, (q[i], q[i + 1]), reg) for i in range(len(q) - 1)
+                            if math.hypot(q[i + 1][0] - q[i][0], q[i + 1][1] - q[i][1]) > 1e-9]
     out += [("gridline", f"gridline {vn} %g" % v, ((x0, v), (x1, v)), None)
             for v in sorted(set(ax.yaxis.get_majorticklocs()) | set(ax.yaxis.get_minorticklocs())) if y0 < v < y1]
     out += [("gridline", f"gridline {hn} %g" % v, ((v, y0), (v, y1)), None)
@@ -2371,12 +2425,12 @@ def collinear_lines(ctx, ax, fid, every=None):
     return out
 
 
-def _run_near_vis(p0, p1, a, b, reg, step=0.25):
-    """Longest run (mm) of segment p0-p1 within COLLINEAR_MM of segment a-b, counting a sample only where the nearest
-    point of a-b is drawn (reg None, or reg contains it or a point within 0.05 across the line)."""
+def _run_near_vis(p0, p1, a, b, reg, step=0.25, mm=1.0):
+    """Longest run (mm) of segment p0-p1 within mm of segment a-b, counting a sample only where the nearest point of a-b
+    is drawn (reg None, or reg contains it or a point within 0.05 across the line)."""
     if reg is None:
         L = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
-        return _run_near(p0, p1, a, ((b[0] - a[0]) / L, (b[1] - a[1]) / L), seg=(a, b), step=step)
+        return _run_near(p0, p1, a, ((b[0] - a[0]) / L, (b[1] - a[1]) / L), seg=(a, b), step=step, mm=mm)
     L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
     if L < 1e-9:
         return 0.0
@@ -2391,61 +2445,103 @@ def _run_near_vis(p0, p1, a, b, reg, step=0.25):
         q = (p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t)
         s = 0.0 if L2 == 0 else max(0.0, min(1.0, ((q[0] - a[0]) * dx + (q[1] - a[1]) * dy) / L2))
         c = (a[0] + s * dx, a[1] + s * dy)
-        near = math.hypot(q[0] - c[0], q[1] - c[1]) <= COLLINEAR_MM and any(
+        near = math.hypot(q[0] - c[0], q[1] - c[1]) <= mm and any(
             reg.contains((c[0] + e * nx, c[1] + e * ny)) for e in (0.0, 0.05, -0.05))
         run = run + L / (n - 1) if near and k else (0.0 if not near else run)
         best = max(best, run)
     return best
 
 
+def _angle_off(p0, p1, a, b):
+    """Angle (deg, 0 to 90) between the directions p0-p1 and a-b."""
+    la = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0]))
+    lb = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+    return abs((la - lb + 90) % 180 - 90)
+
+
+def own_continuation(ax, row, t):
+    """Designer P0D FIX L3, terms (1) to (3): [(e, o)] segments of the labelled row's own open ink when the row is a line row
+    (kind line), the segment has an end e within TOL_Z of the leader's anchor, and the leader leaves e away from the ink
+    ((o - e) . (text - e) < 0). Term (4) (the segment runs along the line judged) is tested in collinear_issues."""
+    if row.get("kind") != "line":
+        return []
+    anc = (float(t.xy[0]), float(t.xy[1]))
+    tx = (float(t.xyann[0]), float(t.xyann[1]))
+    out = []
+    for poly, closed in ink_pieces(ax, row["id"]):
+        if closed:
+            continue
+        for i in range(len(poly) - 1):
+            for e, o in ((poly[i], poly[i + 1]), (poly[i + 1], poly[i])):
+                if (math.hypot(e[0] - anc[0], e[1] - anc[1]) <= TOL_Z
+                        and (o[0] - e[0]) * (tx[0] - e[0]) + (o[1] - e[1]) * (tx[1] - e[1]) < 0):
+                    out.append((e, o))
+    return out
+
+
 def collinear_issues(ctx):
     """K4 rule (l), leader collinearity. 1.3 (h) r6 (M1 S3 r5 F1 and Rule 2 fix (b)); 1.4 step 0 R4 (Step 1.3 gate G2 rule
-    scope, G3; C1.3-a; r6 reviewer N1). Premise: a leader is followed by eye only where it does not merge with another
-    line. On a script-drawn figure (the context's script, or its parent's for an inset Axes), in every view and every
-    declared Axes, no label leader (text position to anchor, data coordinates, clipped to the Axes box) runs within
-    COLLINEAR_DEG of, and within COLLINEAR_MM of, a line of the families in COLLINEAR_FAMILIES (collinear_lines: reference
-    lines, gridlines, part edges of other rows) over more than COLLINEAR_RUN_MM. One issue per leader and reference-line
-    segment or gridline (as at r6), one per leader and tagged artist id for part edges."""
+    scope, G3; C1.3-a; r6 reviewer N1); P0f (Designer P0D FIX L1 to L4, Topologist P0T TP1.4-1). Premise: a leader is
+    followed by eye only where it does not merge with another line. On a script-drawn figure (the context's script, or
+    its parent's for an inset Axes), in every view and every declared Axes, no label leader (text position to anchor,
+    data coordinates, clipped to the Axes box) runs within COLLINEAR_DEG of, and within D of, a line of the families in
+    COLLINEAR_FAMILIES (collinear_lines, plus every other label leader of the Axes, clipped the same way) over more than
+    R; D and R are COLLINEAR_PAPER_MM and COLLINEAR_PAPER_RUN_MM on paper, converted per Axes (collinear_scale; an Axes
+    without equal aspect is reported, premise). Relief (FIX L3): a line row's leader that leaves an end of its own open
+    ink away from the ink (own_continuation) is exempt against a line that ink segment itself runs along under the same
+    test (premise: the line marks the row's own position). One issue per leader and reference-line segment or gridline,
+    per leader and tagged artist id for part edges and drawn lines, per pair of leaders for the leader family."""
     sp = getattr(ctx, "script_paths", None) or getattr(getattr(ctx, "parent", None), "script_paths", None)
     if not sp:
         return []
+    rows_ = {r["id"]: r for r in ctx.spec.get("features", [])}
     out = []
     for pose, fig in (ctx.figs or {}).items():
         ax = fig.axes[0]
+        D, R, prem = collinear_scale(ax)
+        if prem:
+            out.append(f"{pose}: {prem}")
+            continue
         (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
-        cache = {}
+        legs = []
         for t in ax.texts:
             g = t.get_gid() or ""
             xt = getattr(t, "xyann", None)
             if not g.startswith("label:") or xt is None:
                 continue
-            fid = g[len("label:"):]
             seg = _clip_box((float(xt[0]), float(xt[1])), (float(t.xy[0]), float(t.xy[1])), x0, x1, y0, y1)
-            if seg is None:
+            if seg is None or math.hypot(seg[1][0] - seg[0][0], seg[1][1] - seg[0][1]) <= R:
                 continue
-            p0, p1 = seg
-            if math.hypot(p1[0] - p0[0], p1[1] - p0[1]) <= COLLINEAR_RUN_MM:
-                continue
-            ang = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0]))
-            if None not in cache:
-                cache[None] = collinear_lines(ctx, ax, None)
-            if fid not in cache:
-                cache[fid] = collinear_lines(ctx, ax, fid, every=cache[None])
+            legs.append((g[len("label:"):], seg[0], seg[1], t))
+        if not legs:
+            continue
+        every = collinear_lines(ctx, ax, None)
+        pairs = set()
+        for i, (fid, p0, p1, t) in enumerate(legs):
+            lines = collinear_lines(ctx, ax, fid, every=every) + [
+                ("leader", (j, ofid), (q0, q1), None) for j, (ofid, q0, q1, _) in enumerate(legs) if j != i]
+            own = own_continuation(ax, rows_.get(fid) or {}, t)
             seen = set()
-            for fam, nm, (a, b), reg in cache[fid]:
-                la = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
-                if abs((ang - la + 90) % 180 - 90) > COLLINEAR_DEG:
+            for fam, nm, (a, b), reg in lines:
+                if _angle_off(p0, p1, a, b) > COLLINEAR_DEG or seg_distance(p0, p1, a, b) > D:
                     continue
-                if seg_distance(p0, p1, a, b) > COLLINEAR_MM:
+                if fam in OWN_ROW_FAMILIES and nm in seen:
                     continue
-                if fam == "part edge" and nm in seen:
+                if fam == "leader" and frozenset((i, nm[0])) in pairs:
                     continue
-                run = _run_near_vis(p0, p1, a, b, reg)
-                if run > COLLINEAR_RUN_MM:
-                    if fam == "part edge":   # one issue per leader and tagged artist id (its edges and hidden copy)
-                        seen.add(nm)
-                    lab = nm if fam != "part edge" else f"part edge of {nm}"
-                    out.append(f"{pose}/{fid}: label leader runs {run:.1f} mm along {lab} within {COLLINEAR_MM:g} mm (K4 collinear)")
+                if own and any(_angle_off(oa, ob, a, b) <= COLLINEAR_DEG and _run_near_vis(oa, ob, a, b, None, mm=D) > R
+                               for oa, ob in own):
+                    continue
+                run = _run_near_vis(p0, p1, a, b, reg, mm=D)
+                if run <= R:
+                    continue
+                if fam in OWN_ROW_FAMILIES:   # one issue per leader and tagged artist id (its edges and hidden copy)
+                    seen.add(nm)
+                if fam == "leader":
+                    pairs.add(frozenset((i, nm[0])))
+                lab = {"part edge": f"part edge of {nm}", "drawn line": f"drawn line of {nm}",
+                       "leader": f"leader of {nm[1] if fam == 'leader' else ''}"}.get(fam, nm)
+                out.append(f"{pose}/{fid}: label leader runs {run:.1f} mm along {lab} within {D:.2f} mm (K4 collinear)")
     return out
 
 
