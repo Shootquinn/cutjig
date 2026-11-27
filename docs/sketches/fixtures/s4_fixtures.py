@@ -6,9 +6,8 @@ hatch-adjacency lint through the K8 call site (Designer P2r R1) and by line fami
 section_true (Loftsman P3b O2 (i)).
 
 The S4 fixture draws every row of the signed spec faithfully from check_stack values in both section figures (pose
-carrier: figure 1; pose liner: figure 2; spec section_figures), with the shared-row X1 edits of `x1_edits_at_p6`
-applied in memory (the P6 state S4 r1 is drawn in: holder z_max at the tube top 153.84, collar z_min 153.84, the S1
-stack tie offset collar.thickness), each edit asserting its Old text. Rows with section_true are drawn piece by piece
+carrier: figure 1; pose liner: figure 2; spec section_figures). The shared-row X1 edits (holder z_max at the tube top
+153.84, collar z_min 153.84, the S1 stack tie offset collar.thickness) are in the live specs since 1.4 P6. Rows with section_true are drawn piece by piece
 (sketch_common.draw_piece, mirrored about u = 0, plane_cuts applied); base_plate from section_u; carrier, core_100 and
 drill_head as unsectioned outlines over their depth bands; marks (<row>:line) at mark.z across the drawn width; the
 sub-artists collet:slits (form (a)), receiver:root, wingnut:wing and wingnut:sweep; the renderer section convention
@@ -77,33 +76,6 @@ def _draw_piece(ax, fid, name, pts):
 def _slit_spec(rows, row):
     sl = row.get("slits") or {}
     return (rows.get(sl["same_as"]) or {}).get("slits") or {} if sl.get("same_as") else sl
-
-
-# ---------------------------------------------------------------- the P6 spec state (x1_edits_at_p6 in memory)
-
-def _get(d, path):
-    for k in path[:-1]:
-        d = d[k]
-    return d, path[-1]
-
-
-def p6_state(spec):
-    """Apply x1_edits_at_p6 to the s4 spec in memory (items naming s4), each asserting its Old value."""
-    rows = {r["id"]: r for r in spec["features"]}
-    for e in spec.get("x1_edits_at_p6") or []:
-        if "s4" not in e.get("specs", []):
-            continue
-        f = e["field"]
-        if f.startswith("stack_ties."):
-            _, tid, fld = f.split(".")
-            t = next(t for t in spec["stack_ties"] if t["id"] == tid)
-            assert " ".join(str(t[fld]).split()) == " ".join(e["old"].split()), (f, t[fld])
-            t[fld] = e["new"]
-        else:
-            d, k = _get(rows[e["row"]], f.split("."))
-            assert " ".join(str(d[k]).split()) == " ".join(e["old"].split()), (e["row"], f, d[k])
-            d[k] = e["new"]
-    return spec
 
 
 # ---------------------------------------------------------------- drawing
@@ -274,7 +246,7 @@ def s4_ctx(spec_mut=None, values=None, mutate=None, render=True, skip=()):
         P = Params()
         for k, v in (values or {}).items():
             P.leaves[k] = dict(P.leaves[k], value=v)
-        sp = p6_state(load_spec(S4_SPEC))
+        sp = load_spec(S4_SPEC)   # 1.4 P6: x1_edits_at_p6 applied to the live spec (p6_state deleted with the field, SW NOTE 5)
         if spec_mut:
             spec_mut(sp)
         stack = check_stack.evaluate_spec(P, sp)
@@ -864,3 +836,134 @@ def hadj_family():
     the adjacency lint fires; section convention 1 also reads '////' against the material '//'."""
     import step14_fixtures
     return step14_fixtures._hadj(variant=None, drawn="////")
+
+
+# ---------------------------------------------------------------- 1.4 P6 (d): rules landed with S4 r1, S1 r9, S3 r8
+
+def _script(s, spec_mut=None):
+    return _builders()._script_ctx(s, spec_mut=spec_mut)
+
+
+def x1_presence_b():
+    """X1 B (Loftsman P3b O2 (ii), presence): the live specs with section_true removed from the s3 holder row; s1 and s4
+    still carry it and s3 draws the holder in section_yz."""
+    import check_sketch
+    specs = check_sketch.specs_in(SK)
+    next(r for r in specs["s3"]["features"] if r["id"] == "holder").pop("section_true")
+    return check_sketch.x1_lint(specs)
+
+
+def k8_material_s3_b():
+    """K8 B (Designer P2r 1.4 item 1, material truth): live S3 drawn by its script with the gear hatch field removed (the
+    renderer's default steel draws it): a cut row with no hatch in a spec that declares the gap."""
+    def sm(sp):
+        next(r for r in sp["features"] if r["id"] == "gear").pop("hatch")
+    return _script("s3", sm)
+
+
+def k8_adj_s3_receiver_b():
+    """K8 B (Designer P2r 1.4 item 3, the P6 B 'S3 receiver variant removed'): live S3 drawn by its script with the receiver
+    hatch_variant removed: receiver // beside holder // (0.25) and base plate // (0.00)."""
+    def sm(sp):
+        next(r for r in sp["features"] if r["id"] == "receiver").pop("hatch_variant")
+    return _script("s3", sm)
+
+
+def _rehatch(c, fid, h, poses=None):
+    for pose, fig in c.figs.items():
+        if poses and pose not in poses:
+            continue
+        for a in sc.tagged(fig.axes[0]).get(fid, []):
+            if isinstance(a, Polygon) or isinstance(a, Rectangle):
+                if a.get_hatch():
+                    a.set_hatch(h)
+    return c
+
+
+def k8_adj_s1_receiver_b():
+    """K8 B (Designer P2r 1.4 item 5, no-section_class form): live S1 r9 drawn by its script, the receiver pieces back to
+    the r8 '//': base_plate|receiver 0.00 in all four poses."""
+    return _rehatch(_script("s1"), "receiver", "//")
+
+
+def k8_adj_s1_descent_b():
+    """K8 B (Designer P2r 1.4 item 5, family compare): live S1 r9, the descent-stop pad back to the r8 '////': one line
+    family with the ring '//' (0.00 at capture_end), fires under the family compare only."""
+    return _rehatch(_script("s1"), "descent_stop", "////")
+
+
+def k4_sub_z():
+    """K4 Z (Designer P3a FIX 1, sub-artist labels and their reader; the placer's rule (l) option): live S4 drawn by
+    s4_base_section.py, both figures: the slit, root and wing labels printed from their keys, the slit label on the -u
+    line, every leader clean under rules (a) to (l)."""
+    return _script("s4")
+
+
+def _s4_label(c, pose, gid):
+    ax = c.figs[pose].axes[0]
+    return next(t for t in ax.texts if t.get_gid() == gid)
+
+
+def k4_sub_b_text():
+    """K4 B (s2): the carrier-figure slit label printed '12 slits, alternating, 24 long' (a hand-entered length)."""
+    c = _script("s4")
+    _s4_label(c, "carrier", "label:collet:slits").set_text("12 slits, alternating, 24 long")
+    return c
+
+
+def k4_sub_b_side():
+    """K4 B (s3): the carrier-figure slit label's leader ended on the +u slit line (u +57.40), not on the -u line its
+    label.on names."""
+    c = _script("s4")
+    ax = c.figs["carrier"].axes[0]
+    t = _s4_label(c, "carrier", "label:collet:slits")
+    xs = [v for a in sc.tagged(ax).get("collet:slits", []) for P_ in sc.artist_polys(a) for v in P_ if v[0] > 0]
+    top = max(xs, key=lambda v: v[1])
+    t.xy = (top[0], top[1])
+    return c
+
+
+def k4_sub_b_missing():
+    """K4 B (s1): the receiver:root label removed from the liner figure (root lines drawn, no annotation)."""
+    c = _script("s4")
+    _s4_label(c, "liner", "label:receiver:root").remove()
+    return c
+
+
+def k4_side_frac_b():
+    """K4 B (k) on S1 (Designer P0D section 4, side placer change): live S1 r9, the start-pose drill_tube leader and its
+    placer record put back on the default anchor (max x, mid z) of the tube, the pre-change side placer's choice."""
+    c = _script("s1")
+    ax = c.figs["start"].axes[0]
+    pts = [p for poly in sc.pieces(ax, "drill_tube") for p in poly]
+    anc = (max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2)
+    t = next(t for t in ax.texts if t.get_gid() == "label:drill_tube")
+    t.xy = anc
+    rec = getattr(ax, "_sc_placer", None)
+    if rec is not None:
+        rec["placed"]["drill_tube"].update(source="default", anchor=[round(anc[0], 2), round(anc[1], 2)])
+    return c
+
+
+def _load_res(text):
+    import step14_fixtures as s14
+    t = s14._tmp() / "s4_spec.yaml"
+    t.write_text(text, encoding="utf-8")
+    try:
+        load_spec(t)
+    except ValueError as e:
+        return s14._res("SPEC", True, str(e), str(e).count("key "))
+    return s14._res("SPEC", False, "spec loads, every key a string", 0)
+
+
+def spec_keys_z():
+    """SPEC Z (SW-1 class at any depth, 1.4 P6): the live s4_spec.yaml loads (every nested key a string)."""
+    return _load_res(S4_SPEC.read_text(encoding="utf-8"))
+
+
+def spec_keys_b():
+    """SPEC B: the live s4_spec.yaml with the collet.slits.label key written unquoted, `on: "-u"` (the P2 to P5f text):
+    YAML 1.1 reads it as True; load_spec refuses the spec and names the path."""
+    t = S4_SPEC.read_text(encoding="utf-8")
+    assert t.count('"on": "-u"') == 1
+    return _load_res(t.replace('"on": "-u"', 'on: "-u"'))

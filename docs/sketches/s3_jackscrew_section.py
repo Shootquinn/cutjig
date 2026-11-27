@@ -25,7 +25,7 @@ import check_stack  # noqa: E402
 import sketch_common as sc  # noqa: E402
 from sketch_loader import Params, load_spec, output_path  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Circle, FancyArrowPatch, Polygon  # noqa: E402
+from matplotlib.patches import Circle, FancyArrowPatch, Polygon, Rectangle  # noqa: E402
 
 MAIN = "section"
 INSET = "inset_plan"
@@ -102,6 +102,15 @@ def draw_section_row(ax, pz, spec, row):
     z0, z1 = f.get("z_min"), f.get("z_max")
     us = g("jackscrew.pitch_radius") * check_stack.sind(g("jackscrew.angle")[2])   # screw c in the plane, u = r sin 270
 
+    if row.get("section_true"):   # 1.4 P6 (S4-b, Design Notes 34): true section piece by piece, named (X1 equal to S1, S4)
+        for name, _side, pts in sc.section_true_polys(P, pz.names, row):
+            sc.draw_piece(ax, fid, name, pts)
+        return
+    if fid == "wingnut_sweep":   # 1.4 P6 (TP1.4-2): the sweep envelope as a reference row, dashed lines at -+ r
+        r = g("wingnut.sweep_clear_radius")
+        for s in (-1, 1):
+            sc.draw(fid, Line2D([s * r, s * r], [z0, z1], color="k", linestyle=HIDDEN, linewidth=1), ax)
+        return
     if fid == "keepout":
         r = g("icd.keepout_radius")
         for s in (-1, 1):
@@ -182,12 +191,6 @@ def draw_section_row(ax, pz, spec, row):
     if fid == "gear":
         sc.draw_gear_section(ax, fid, g("gear.bore") / 2, g("gear.od") / 2, z0, z1)
         return
-    if fid == "wingnut":                                 # body, two wings to the span, sweep radius dashed
-        sc.draw_rect(ax, fid, -g("wingnut.body_od") / 2, g("wingnut.body_od") / 2, z0, z1)
-        _mirror(ax, fid, g("wingnut.body_od") / 2, g("wingnut.span") / 2, z0, z0 + g("wingnut.wing_height"))
-        r_sw = g("wingnut.sweep_clear_radius")
-        sc.draw_rect(ax, fid, -r_sw, r_sw, z0, z1, linestyle=HIDDEN)
-        return
     if fid == "core_750":
         u0, u1 = f["depth"]
         sc.draw_rect(ax, fid, u0, u1, z0, z1, linewidth=2)
@@ -260,6 +263,11 @@ def draw_subs(ax, pz, spec):
             side = 1 if ud > uc else -1
             for zz in pz.z(fid):
                 sc.draw(f"{fid}:ext", Line2D([uc + side * half, ud + side * 2], [zz, zz], color=LOAD, linewidth=1), ax)
+        wg = row.get("wing")
+        if wg and "wing" in (row.get("sub_artists") or []):   # 1.4 P6 (Designer P3a O3, FIX 5 b): the -X wing, hidden, by x_band
+            u0, u1 = sorted(pz.ev(e) for e in wg["u"])
+            z0, z1 = sorted(pz.zs(e) for e in wg["z"])
+            sc.draw(f"{fid}:wing", Rectangle((u0, z0), u1 - u0, z1 - z0, fill=False, edgecolor="k", linestyle=HIDDEN, linewidth=1), ax)
         lv = row.get("lever")
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(pz.ev(e[0]), pz.zs(e[1])) for e in (lv["from"], lv["to"])]
@@ -403,7 +411,7 @@ def build(P, spec, stack):
     notes = [
         (None, f"section A-A: plane x = 0 through the drill axis and screw c at theta {g('jackscrew.angle')[2]:g} (u = r sin theta = "
                f"{g('jackscrew.pitch_radius') * check_stack.sind(g('jackscrew.angle')[2]):g}); viewer at +X, u = +Y right, z up (z_S plotted)"),
-        (None, "hatch by material: aluminium // (anchor cover above the joint ||), extrusion xx, steel \\\\, brass .. ; unsectioned (screw, shafts, coupling, core, head):\n"
+        (None, "hatch by material: aluminium // (receiver ||, anchor cover above the joint ||), extrusion xx (frame member c **), steel \\\\ (bearing, pinion c, anchor locknut ++), brass .., plastic oo; unsectioned (screw, shafts, coupling, core, head):\n"
                "outline over the hatch; beyond the plane within one profile width (rear standoffs): solid, dashed behind cut parts;\n"
                "dash-dot: nut stations at start and park; red: loads and the S3-2 span; dashed: hidden edges (inside an unsectioned outline), thread root inside screw c"),
         (None, AXIAL_LOOP_NOTE),

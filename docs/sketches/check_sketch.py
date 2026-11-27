@@ -312,8 +312,17 @@ def x1_lint(specs=None):
                     issues.append(f"{fid} {fld}{sub}: {ref_nm} and {nm} differ")
         # 1.4 P4 (Loftsman P3b O2 (i); Sean STOP S4-A "X1 compares section"): section_true equal on every shared row that
         # carries it in two or more specs (revolve half-profile only; plane_cuts and sub-artists are per spec, O2 (iii)).
-        # The presence rule O2 (ii) (a row carrying it in one spec carries it in every spec drawing it) lands at P6.
         st = [(nm, r["section_true"]) for nm, r in occ if r.get("section_true") is not None]
+        # 1.4 P6 (Loftsman P3b O2 (ii)): presence. A shared row carrying section_true in one spec carries it in every spec
+        # that draws the row in a side or section view (spec view in sc.SIDE_VIEWS, row in that figure's main Axes).
+        # Premise of comparing the true section by equality (O2 (i)): equality over the specs that carry it says nothing
+        # about a spec that draws the row from another section field.
+        if st:
+            have_st = [nm for nm, _ in st]
+            for nm, r in occ:
+                sp_ = specs[nm]
+                if r.get("section_true") is None and sp_.get("view") in sc.SIDE_VIEWS and sc.main_axes_id(sp_.get("view")) in sc.row_axes(r, sc.main_axes_id(sp_.get("view"))):
+                    issues.append(f"{fid} section_true: in {', '.join(have_st)}, absent in {nm}, which draws the row in {sp_.get('view')} (presence rule O2 (ii))")
         if len(st) >= 2:
             st_n += 1
             ref_nm, ref = st[0]
@@ -326,7 +335,7 @@ def x1_lint(specs=None):
             st_one.append(f"{fid} ({st[0][0]})")
     msg = f"{n} shared row(s) compared on {', '.join(X1_FIELDS)}; skipped {len(skipped)}: {', '.join(skipped) or 'none'}" + \
           (f"; exempt: {', '.join(exempt)}" if exempt else "") + \
-          f"; section_true compared on {st_n} row(s); in one spec only (presence rule O2 (ii) at P6): {', '.join(st_one) or 'none'}"
+          f"; section_true compared on {st_n} row(s); in one spec only (presence rule O2 (ii) holds where no other spec draws the row in a side or section view): {', '.join(st_one) or 'none'}"
     return {"id": "X1", "result": "pass" if not issues else "fail", "reason": (sc._summ(issues) + "; " + msg) if issues else msg,
             "measured": len(issues), "threshold": 0, "n_issues": len(issues), "cause": None if not issues else "content",
             "compared": n, "skipped": skipped}

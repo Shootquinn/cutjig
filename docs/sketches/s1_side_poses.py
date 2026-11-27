@@ -112,54 +112,25 @@ def draw_pose(P, spec, stack, pose):
     z0, z1 = z("base_plate")
     sc.draw_rect(ax, "base_plate", -half_fp, half_fp, z0, z1, hatch="//")
 
-    # receiver cup in section: floor either side of the debris hole, walls from the register bore to the spigot OD
-    z0, z1 = z("receiver")
-    zf = stack["poses"][pid]["vars_z_A"]["receiver_floor"] + (pr["tip_z_S"] - pr["tip_z_A"])
-    r_reg, r_out = g("receiver.register_bore_radius"), g("receiver.spigot_od") / 2
-    _sides(ax, "receiver", g("receiver.floor_hole_dia") / 2, r_reg, z0, zf, hatch="//")
-    _sides(ax, "receiver", r_reg, r_out, z0, z1, hatch="//")
-    # r8 (Design Notes 32): shoulder on the plate top, seat face at receiver.shoulder_z (spec section piece)
-    zs = check_stack.to_shop_floor(check_stack.eval_expr("receiver.shoulder_z", P, pr["vars_z_A"]), P)
-    _sides(ax, "receiver", r_out, g("receiver.shoulder_od") / 2, zs, zs + g("receiver.shoulder_thickness"), hatch="//")
-
-    # collet cone (bore at the core OD) and the core-seat ledge inside its bore bottom
-    z0, z1 = z("collet")
-    r_bore = g("core.diameter_nominal") / 2
-    _cone_sides(ax, "collet", r_bore, r_reg, z0, z1, g("cone.alpha"))
-    z0, z1 = z("core_seat")
-    _sides(ax, "core_seat", r_bore - g("collet.core_seat_width"), r_bore, z0, z1, fill=True, facecolor=DARK)
-
-    # holder tube (wall to the register bore) with the flange on top of holder.length (LF1.1-1). Over the collet height
-    # the bore follows the collet outer cone (spec bore_cone, TP1.1-3: contact on the cone face, class C); above the
-    # collet top the bore is at the core OD.
-    zc0, zc1 = z("collet")
-    tan_a = math.tan(math.radians(g("cone.alpha")))
-    z0, z1 = z("holder")
-    zfl = z1 - g("holder.flange_thickness")
-    zk = min(zc1, zfl)
-    if z0 < zk:
-        r_c0, r_c1 = r_reg - (z0 - zc0) * tan_a, r_reg - (zk - zc0) * tan_a
-        for s in (-1, 1):
-            pts = [(s * r_c0, z0), (s * r_reg, z0), (s * r_reg, zk), (s * r_c1, zk)]
-            sc.draw("holder", Polygon(pts, closed=True, fill=False), ax)
-    _sides(ax, "holder", r_bore, r_reg, max(z0, zk), zfl)
-    _sides(ax, "holder", r_bore, g("holder.flange_od") / 2, zfl, z1)
-
-    # wing nut: body, two wings at the bottom to the span, sweep radius as a dashed envelope
-    z0, z1 = z("wingnut")
-    sc.draw_rect(ax, "wingnut", -g("wingnut.body_od") / 2, g("wingnut.body_od") / 2, z0, z1)
-    _sides(ax, "wingnut", g("wingnut.body_od") / 2, g("wingnut.span") / 2, z0, z0 + g("wingnut.wing_height"))
+    # 1.4 P6 (S4-b, Sean STOP S4-A, Design Notes 34): the base stack in true section, piece by piece from each row's
+    # section_true (sketch_common.section_true_polys, mirrored about x = 0, every piece named; X1 equal to S3 and S4).
+    # Hatch by the S1 patterns (no material convention in S1): receiver || (Designer P2r 1.4 item 5), collar and base
+    # plate //, core seat dark fill; collet, holder, wing nut and washer outlined.
+    st_kw = {"receiver": {"hatch": "||"}, "collar": {"hatch": "//"}, "core_seat": {"fill": True, "facecolor": DARK}}
+    for fid in ("receiver", "collet", "core_seat", "holder", "wingnut", "washer", "collar"):
+        for name, _side, pts in sc.section_true_polys(P, pr["vars_z_A"], rows[fid]):
+            sc.draw_piece(ax, fid, name, pts, **st_kw.get(fid, {}))
+    # TP1.4-2 (Topologist P0T): the wing-nut sweep envelope is the reference row wingnut_sweep, two dashed lines at -+ r
+    z0, z1 = z("wingnut_sweep")
     r_sw = g("wingnut.sweep_clear_radius")
-    sc.draw_rect(ax, "wingnut", -r_sw, r_sw, z0, z1, linestyle="--")
-
-    # collar ring in section
-    z0, z1 = z("collar")
-    _sides(ax, "collar", g("collar.id") / 2, g("collar.od") / 2, z0, z1, hatch="//")
+    for s in (-1, 1):
+        sc.draw("wingnut_sweep", Line2D([s * r_sw] * 2, [z0, z1], color="k", linestyle="--", linewidth=1), ax)
 
     # capture core: solid outline, absent at park
     if on("core_750"):
         z0, z1 = z("core_750")
-        sc.draw_rect(ax, "core_750", -r_bore, r_bore, z0, z1, linewidth=2)
+        r_core = g("core.diameter_nominal") / 2
+        sc.draw_rect(ax, "core_750", -r_core, r_core, z0, z1, linewidth=2)
 
     # drill: head (cutter teeth strip, iris throat dashed), tube (bore dashed), top-end block (solid)
     z0, z1 = z("drill_head")
@@ -261,7 +232,7 @@ def draw_pose(P, spec, stack, pose):
     # descent stop pad (metal hatch)
     z0, z1 = z("descent_stop")
     x0, x1 = px("descent_stop")
-    sc.draw_rect(ax, "descent_stop", x0, x1, z0, z1, hatch="////")
+    sc.draw_rect(ax, "descent_stop", x0, x1, z0, z1, hatch=HATCH_PINION)   # 1.4 P6 (Designer P2r 1.4 item 5): metal pad, off the ring's / family
     # F3: post from the anchor arm top to the pad bottom
     z0, z1 = z("descent_stop_post")
     x0, x1 = px("descent_stop_post")

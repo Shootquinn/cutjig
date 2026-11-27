@@ -278,6 +278,39 @@ def reported(ctx):
         items["q10_exposed"] = {"value": f"{core[1] - plate:.2f} on the carrier against {P.get('core.min_exposed'):.2f}; on the stop {n['core_top_on_stop'] - n['plate_top']:.2f}", "basis": "drawn core_100 and wingnut tops", "tag": "MEASURED"}
     except (Absent, Content):
         pass
+    try:   # 1.4 P6: drawn grip (Loftsman P3b N2: the straight-chamfer convention of the drawn section, lip fillet not drawn)
+        gl = []
+        for pose, col, seat in (("carrier", "collet", "core_seat"), ("liner", "collet_105", "core_seat_105")):
+            if pose not in _poses(ctx):
+                continue
+            ax = _ax(ctx, pose)
+            cone = [q for q in sc.named_pieces(ax, col, "cone") if min(v[0] for v in q) > 0]
+            if not cone:
+                raise Absent(f"{pose}/{col} cone piece not drawn")
+            (_, zb), (_, zt) = sc.inner_edge(cone[0])
+            seat_top = sc.extent_z(_pieces(ctx, pose, seat))[1]
+            gl.append(f"{col}: {zt - seat_top:.2f} ({_z_A(ctx, seat_top):.2f} to {_z_A(ctx, zt):.2f})")
+        lip = P.get("collet.bore_lip_radius")
+        items["grip_length"] = {"value": "; ".join(gl) + f" (chamfer drawn straight; the true straight bore ends {lip * math.tan(math.radians(22.5)):.2f} lower at the "
+                                         f"{lip:g} bore-lip fillet, tangent length r tan 22.5, Loftsman P3b N2)",
+                                "basis": "drawn core-seat top to the top of the cone piece's inner (bore) edge (MEASURED)", "tag": "MEASURED"}
+    except (Absent, Content):
+        pass
+    try:   # 1.4 P6: the cut-case seat as drawn
+        pose = _poses(ctx)[0]
+        ax = _ax(ctx, pose)
+        foot = min(v[1] for q in sc.named_pieces(ax, "collet", "foot") for v in q)
+        floor = max(v[1] for q in sc.named_pieces(ax, "receiver", "floor") for v in q)
+        sh = min(v[1] for q in sc.named_pieces(ax, "receiver", "shoulder") for v in q)
+        plate = sc.extent_z(_pieces(ctx, pose, "base_plate"))[1]
+        hole = min(v[0] for q in _pieces(ctx, pose, "base_plate") for v in q if v[0] > 0)
+        spig = max(v[0] for q in _pieces(ctx, pose, "receiver_spigot") for v in q)
+        items["cut_case_seat"] = {"value": f"collet foot {_z_A(ctx, foot):.2f} on the receiver floor top {_z_A(ctx, floor):.2f} (gap {foot - floor:.2f}); "
+                                           f"receiver shoulder underside {_z_A(ctx, sh):.2f} on the plate top {_z_A(ctx, plate):.2f} (gap {sh - plate:.2f}); "
+                                           f"spigot radial gap {hole - spig:.2f} in the plate hole",
+                                  "basis": "drawn collet foot, receiver floor and shoulder pieces, base_plate and receiver_spigot (MEASURED, figure 1)", "tag": "MEASURED"}
+    except (Absent, Content, ValueError):
+        pass
     rows = [(k, v["value"], v["basis"]) for k, v in items.items()]
     return {"id": "reported", "result": "pass", "rows": rows, "items": items}
 

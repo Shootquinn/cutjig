@@ -339,6 +339,8 @@ def label_text(row, P, rec=None, spec=None):
     lab = row["label"]
     if "label_text_override" in row:
         return row["label_text_override"]
+    if lab.get("template"):   # 1.4 P6 (Designer P3a FIX 1): a sub-artist label printed from its keys
+        return label_template_text(lab, P)
     fmt = lab.get("fmt", ".1f")
     v = P.get(lab["key"])
     if lab.get("z_S") and isinstance(v, (int, float)) and fmt != "s":
@@ -355,6 +357,74 @@ def label_text(row, P, rec=None, spec=None):
     if edge and rec and edge in rec:
         txt += f"; {lab.get('z_edge_text', edge)} z_S {rec[edge]:.2f}"
     return txt
+
+
+_TEMPLATE_FIELD = re.compile(r"\{([A-Za-z_][\w.\[\]]*)(?::([^}]*))?\}")
+
+
+def label_template_text(lab, P):
+    """1.4 P6 (Designer P3a FIX 1): the text of a label {template, keys, map}: every {dotted.key[:fmt]} field of the
+    template is the key's value from P in fmt (str when no fmt); a key named in map prints map[key][value] (thread.hand
+    right -> RH). The printed value is read from params, never a spec literal (1.3 position)."""
+    mp = lab.get("map") or {}
+
+    def field(m):
+        k, fmt = m.group(1), m.group(2)
+        v = P.get(k)
+        if k in mp:
+            return str(mp[k].get(v, v))
+        return format(v, fmt) if fmt else str(v)
+    return _TEMPLATE_FIELD.sub(field, str(lab["template"]))
+
+
+def sub_label_rows(spec):
+    """1.4 P6 (Designer P3a FIX 1): label rows of declared sub-artists, one per sub-artist whose spec block carries a
+    label (collet:slits, collet_105:slits through same_as, receiver:root, wingnut:wing): {id: <row>:<sub>, label, poses,
+    sub_of, on}. on (+u or -u) names the side of the sub-artist the leader ends on."""
+    rows = {r["id"]: r for r in (spec or {}).get("features", [])}
+    out = []
+    for r in (spec or {}).get("features", []):
+        for sub in r.get("sub_artists") or []:
+            blk = slit_spec(rows, r) if sub == "slits" else r.get(sub)
+            lab = blk.get("label") if isinstance(blk, dict) else None
+            if lab:
+                out.append({"id": f"{r['id']}:{sub}", "label": lab, "poses": r.get("poses"), "sub_of": r["id"], "on": lab.get("on"),
+                            "kind": "sub"})
+    return out
+
+
+def sub_label_issues(ctx, ax, sr, ann):
+    """1.4 P6 (Designer P3a FIX 1), the K4 reader of a sub-artist label (sr from sub_label_rows; ann the Text gid
+    label:<row>:<sub> or None): (s1) the annotation exists; (s2) a template label prints label_template_text exactly and
+    every template field is listed in label.keys; a text/key label carries its text and the key value; (s3) a label with
+    on: +u / -u ends its leader on that side (sign of the anchor u). The leader rules (ink, cover, hatch, crossing,
+    collinearity) read it as any label (leader_issues, collinear_issues)."""
+    lab = sr["label"]
+    if ann is None:
+        return [f"no annotation label:{sr['id']} (sub-artist label, Designer P3a FIX 1)"]
+    txt = ann.get_text()
+    out = []
+    if lab.get("template"):
+        miss = [m.group(1) for m in _TEMPLATE_FIELD.finditer(str(lab["template"])) if m.group(1) not in (lab.get("keys") or [])]
+        if miss:
+            out.append(f"spec error: template field(s) {', '.join(miss)} not in label.keys")
+        want = label_template_text(lab, ctx.P)
+        if txt != want:
+            out.append(f"label {txt!r} differs from its template printed from the keys {want!r}")
+    else:
+        want = label_value(lab, ctx.P, ctx.spec)
+        if lab.get("text") not in txt:
+            out.append(f"label {txt!r} lacks text {lab.get('text')!r}")
+        elif want is not None and not any(abs(float(m) - float(want)) < 1e-9 for m in NUMBER.findall(txt.replace(lab["text"], " "))):
+            out.append(f"label {txt!r} number differs from {lab.get('key')} = {want}")
+    on = sr.get("on")
+    if on in ("+u", "-u") and hasattr(ann, "xy"):
+        u = float(ann.xy[0])
+        if (u > TOL_Z) != (on == "+u") or abs(u) <= TOL_Z:
+            out.append(f"label leader ends at u {u:.2f}, not on the {on} side named by label.on")
+    elif on is not None and on not in ("+u", "-u"):
+        out.append(f"spec error: label.on {on!r} (known: +u, -u)")
+    return out
 
 
 LABEL_FONTSIZE = 7
@@ -457,6 +527,12 @@ def in_drawn(a, p, polys=None):
     return reg is None or reg.contains(p)
 
 
+def _own_gid(g, fid):
+    """g is ink of the labelled row fid: the row itself or one of its sub-artists (a sub-artist label's parent row is not
+    its own ink; no relief for it, 1.4 P6)."""
+    return g == fid or g.startswith(fid + ":")
+
+
 def covering_areas(ax, fid, p, rank=None):
     """gids of area artists of other rows that contain p and draw above every artist of row fid that carries ink at p.
     1.3 P1R: containment as drawn (even-odd rings, clip region of a renderer piece)."""
@@ -466,7 +542,7 @@ def covering_areas(ax, fid, p, rank=None):
     out = []
     for a in artists(ax):
         g = a.get_gid()
-        if not g or g == fid or g.startswith(fid + ":") or not is_area(a) or rank[id(a)] <= top:
+        if not g or _own_gid(g, fid) or not is_area(a) or rank[id(a)] <= top:
             continue
         if in_drawn(a, p):
             out.append(g)
@@ -493,7 +569,7 @@ def leader_hatch(fid, p0, p1, hatches):
     hit, gids = 0, set()
     for k in ks:
         q = (p0[0] + (p1[0] - p0[0]) * k / ANCHOR_SAMPLES, p0[1] + (p1[1] - p0[1]) * k / ANCHOR_SAMPLES)
-        inq = {h[0] for h in hatches if h[0] != fid and not h[0].startswith(fid + ":") and
+        inq = {h[0] for h in hatches if not _own_gid(h[0], fid) and
                (in_drawn(h[2], q, h[1]) if len(h) > 2 else any(_inside(q, pp) for pp in h[1]))}
         if inq:
             hit += 1
@@ -521,18 +597,29 @@ def _reanchor(ax, fid, anc, text_xy, hatches, rank, left=False):
     return anc
 
 
-def label_anchor(ax, row):
+def label_anchor(ax, row, zr=None):
     """Leader end of a row's label, on the row's ink (1.2 (h), Designer M1 r1 F4 and F5). A row with label_theta (deg,
     spec field; concentric circles) anchors where the ray from the drill axis at that azimuth leaves its ink. Otherwise
     (max x, mid y) of the drawn pieces when that point is on the ink (a rectangle's or circle's right edge), else the
-    drawn vertex of greatest x (nearest mid y among equals): the observer end of a slanted line, the corner of a wedge."""
+    drawn vertex of greatest x (nearest mid y among equals): the observer end of a slanted line, the corner of a wedge.
+    1.4 P6 (Designer P0D section 4, side placer change): a row with label_anchor_frac anchors at frac_anchor on its
+    column-side face (zr: the row's stack z range, as the plan placer and the K4 anchor record read it)."""
+    return label_anchor_src(ax, row, zr)[0]
+
+
+def label_anchor_src(ax, row, zr=None):
+    """(anchor, source) of label_anchor; source label_theta, label_anchor_frac, default or ink (the uncovered-ink search)."""
     ink = ink_pieces(ax, row["id"])
     if not ink:
-        return None
+        return None, None
     if row.get("label_theta") is not None:
         hit = _ray_hit(ink, float(row["label_theta"]))
         if hit is not None:
-            return hit
+            return hit, "label_theta"
+    if row.get("label_anchor_frac") is not None:
+        q = frac_anchor(ink, row["label_anchor_frac"], "left" if row.get("label_side") == "left" else "right", zr)
+        if q is not None:
+            return q, "label_anchor_frac"
     pts = [p for poly, _ in ink for p in poly]
     xm = max(p[0] for p in pts)
     ym = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
@@ -543,7 +630,7 @@ def label_anchor(ax, row):
         first = min(cand, key=lambda p: abs(p[1] - ym))
     rank = _rank(ax)
     if not covering_areas(ax, row["id"], first, rank):
-        return first
+        return first, "default"
     # r3 (Designer M1 S1 r6 F1): the anchor lies on ink no other row's area covers; search the ink edges, greatest x
     # first, then nearest the first choice
     cands = []
@@ -554,8 +641,8 @@ def label_anchor(ax, row):
     cands.sort(key=lambda p: (-round(p[0], 3), math.hypot(p[0] - first[0], p[1] - first[1])))
     for c in cands:
         if not covering_areas(ax, row["id"], c, rank):
-            return c
-    return first
+            return c, "ink"
+    return first, "default"
 
 
 def _stack_z(wants, hs, zlo, zhi, gap):
@@ -577,16 +664,21 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
     Call after finish_axes (the column reads the final limits). notes: (anchor (x, z) or None, text[, gid]) tuples;
     a note without a gid is untagged (the figure note carries gid note:figure_note, Designer 1.2 (c) FIX R1)."""
     items, left_ids = [], set()
+    record = {"pose": pose, "placed": {}, "unplaceable": {}}   # 1.4 P6 (Designer P0D section 4): the K4 anchor record (k) on S1
     for row in spec.get("features", []):
         if not row.get("label") or (pose and row.get("poses") and pose not in row["poses"]):
             continue
-        anc = label_anchor(ax, row)
+        rec = (stack_pose or {}).get(row["id"])
+        zr_ = (rec["z_min"], rec["z_max"]) if rec and rec.get("z_min") is not None and rec.get("z_max") is not None and rec["z_max"] > rec["z_min"] else None
+        anc, src = label_anchor_src(ax, row, zr_)
         if anc is None:
             continue
-        rec = (stack_pose or {}).get(row["id"])
         items.append((anc, label_text(row, P, rec, spec), f"label:{row['id']}"))
+        record["placed"][row["id"]] = {"column": "left" if row.get("label_side") == "left" else "right", "source": src,
+                                       "anchor": [round(anc[0], 2), round(anc[1], 2)]}
         if row.get("label_side") == "left":
             left_ids.add(f"label:{row['id']}")
+    ax._sc_placer = record
     if not margin:
         for (x, z), txt, gid in items:
             ann = ax.annotate(txt, xy=(x, z), xytext=(x + 60, z + 20), fontsize=LABEL_FONTSIZE,
@@ -608,6 +700,8 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
         tx = x_left if gid in left_ids else x_col
         if anc and fid and leader_hatch(fid, (tx, anc[1]), anc, hatches):
             items[i] = (_reanchor(ax, fid, anc, (tx, anc[1]), hatches, rank, left=gid in left_ids), txt, gid)
+            if fid in record["placed"] and tuple(items[i][0]) != tuple(anc):
+                record["placed"][fid].update(source="reanchor", anchor=[round(items[i][0][0], 2), round(items[i][0][1], 2)])
     left = sorted([it for it in items if it[2] in left_ids], key=lambda it: -it[0][1])   # r4: label_side left
     items = [it for it in items if it[2] not in left_ids]
     for it, z in zip(left, _stack_z([it[0][1] for it in left], [line * (it[1].count("\n") + 1) for it in left], zlo, zhi, gap)):
@@ -888,7 +982,7 @@ class _LeaderCtx:
         """covering_areas on the cached rings."""
         mine = [a for a in self.by_gid.get(fid, []) if self._art_dist(a, p) <= TOL_Z]
         top = max((self.rank[id(a)] for a in mine), default=(-1e9, -1))
-        return sorted({h.gid for h in self.areas if h.gid != fid and not h.gid.startswith(fid + ":")
+        return sorted({h.gid for h in self.areas if not _own_gid(h.gid, fid)
                        and self.rank[id(h.a)] > top and h.contains(p)})
 
     def hatch_end(self, fid, p0, p1):
@@ -896,7 +990,7 @@ class _LeaderCtx:
         k0 = int(ANCHOR_SAMPLES * (1 - LEADER_END))
         ks = list(range(k0, ANCHOR_SAMPLES))
         hit, gids = 0, set()
-        hs = [h for h in self.hatch if h.gid != fid and not h.gid.startswith(fid + ":")]
+        hs = [h for h in self.hatch if not _own_gid(h.gid, fid)]
         for k in ks:
             q = (p0[0] + (p1[0] - p0[0]) * k / ANCHOR_SAMPLES, p0[1] + (p1[1] - p0[1]) * k / ANCHOR_SAMPLES)
             inq = {h.gid for h in hs if h.contains(q)}
@@ -1003,7 +1097,7 @@ def anchor_candidates(lc, row, column, zr=None):
     return uniq
 
 
-def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edge_leaders=False):
+def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edge_leaders=False, collinear=False):
     """The plan leader placer (1.3 P1R R3; rules in the block comment above). margin=True: labels in a right column
     (x = right axes limit + one text line, left-aligned) and a left column (left limit - one line, right-aligned),
     stacked in anchor-y order with LABEL_GAP_LINES between boxes, as place_labels(margin=True), no left-column text box
@@ -1020,6 +1114,7 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
     vis = row_visibility(ctx, ax, pose) if ctx.view == "plan_xy" and ctx.stack is not None else {}
     lc = _LeaderCtx(ax, outl, zmx, vis)
     rows = [r for r in spec.get("features", []) if r.get("label") and applies(r, pose) and lc.ink(r["id"])]
+    rows += [r for r in sub_label_rows(spec) if applies(r, pose) and lc.ink(r["id"])]   # 1.4 P6 (Designer P3a FIX 1)
     order = [r["id"] for r in rows]
     byid = {r["id"]: r for r in rows}
     texts = {r["id"]: label_text(r, P, (stack_pose or {}).get(r["id"]), ctx.spec) for r in rows}
@@ -1029,6 +1124,9 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
         f_ = (stack_pose or {}).get(r["id"]) or {}
         zr_ = (f_["z_min"], f_["z_max"]) if f_.get("z_min") is not None and f_.get("z_max") is not None and f_["z_max"] > f_["z_min"] else None
         cands[r["id"]] = [(col, src, anc) for col in cols for src, anc in anchor_candidates(lc, r, col, zr_)]
+        if r.get("on") in ("+u", "-u"):   # 1.4 P6: a sub-artist label ends on the side its label.on names
+            sg = 1 if r["on"] == "+u" else -1
+            cands[r["id"]] = [c for c in cands[r["id"]] if c[2][0] * sg > TOL_Z]
     ax.apply_aspect()
     (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
     line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)
@@ -1064,11 +1162,31 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
         return pos
 
     memo = {}
+    # 1.4 P6 (S4 r1), option collinear: a candidate also passes K4 rule (l) against the figure's reference lines,
+    # gridlines, part edges and drawn lines (collinear_lines; D and R from collinear_scale; the leader family is judged by
+    # the check), so the placer takes the first anchor whose leader does not merge with a line. Off by default: S2 and S3
+    # place as accepted, their rule (l) firings held by spec anchors (Designer P0D section 4).
+    col_every = collinear_lines(ctx, ax, None) if collinear else None
+    col_D, col_R, _prem = collinear_scale(ax) if collinear else (None, None, None)
+
+    def col_fail(f, txy, anc):
+        """K4 rule (l) on one leader at this text position (the test of collinear_issues, without the leader family)."""
+        (x0_, x1_), (y0_, y1_) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
+        seg = _clip_box((float(txy[0]), float(txy[1])), (float(anc[0]), float(anc[1])), x0_, x1_, y0_, y1_)
+        if seg is None or math.hypot(seg[1][0] - seg[0][0], seg[1][1] - seg[0][1]) <= col_R:
+            return None
+        p0, p1 = seg
+        for fam, nm, (a_, b_), reg in collinear_lines(ctx, ax, f, every=col_every):
+            if _angle_off(p0, p1, a_, b_) > COLLINEAR_DEG or seg_distance(p0, p1, a_, b_) > col_D:
+                continue
+            if _run_near_vis(p0, p1, a_, b_, reg, mm=col_D) > col_R:
+                return ("rule (l)", f"{fam} {nm}")
+        return None
 
     def fail1(f, txy, anc):
         k = (f, round(txy[0], 9), round(txy[1], 9), anc)
         if k not in memo:
-            memo[k] = lc.fail(f, txy, anc)
+            memo[k] = lc.fail(f, txy, anc) or (col_fail(f, txy, anc) if collinear and not _prem else None)
         return memo[k]
 
     def tick_clash(f, col, txy):
@@ -2172,6 +2290,15 @@ def k4(ctx):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} carries no number (want {want} from {lab['key']})")
             elif not any(abs(float(m) - float(want)) < 1e-9 for m in nums):
                 issues.append(f"{pose}/{row['id']}: label {txt!r} number differs from {('expr ' + lab['expr']) if lab.get('expr') else lab['key']} = {want}")
+    for pose, fig in ctx.figs.items():   # 1.4 P6 (Designer P3a FIX 1): sub-artist labels, read where the sub-artist is drawn
+        ax_ = fig.axes[0]
+        drawn_ = tagged(ax_)
+        anns_ = {t.get_gid(): t for t in ax_.texts if t.get_gid()}
+        for sr in sub_label_rows(ctx.spec):
+            if not applies(sr, pose) or not drawn_.get(sr["id"]):
+                continue
+            n += 1
+            issues += [f"{pose}/{sr['id']}: {m}" for m in sub_label_issues(ctx, ax_, sr, anns_.get(f"label:{sr['id']}"))]
     issues += figure_note_issues(ctx)
     issues += leader_issues(ctx)
     issues += text_overlap_issues(ctx)   # 1.3 (h) r2: K4 (i), Designer M1 S3 r1 F2, F3
@@ -5089,6 +5216,9 @@ def k8(ctx):
             nc, ci = section_convention_issues(ctx, ax, pose)
             n += nc
             issues += ci
+        elif ctx.view in SIDE_VIEWS and ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap") is not None:
+            n += 1   # 1.4 P6 (Designer P2r 1.4 item 5): the adjacency lint on every Axes of a spec that declares the gap (S1 r9)
+            issues += hatch_adjacency_issues(ctx, ax, pose)
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
                   n_issues=len(issues), cause=_cause(absent, len(issues)), issues=list(issues), absent=absent)
 
@@ -5361,14 +5491,24 @@ def hatch_adjacency_issues(ctx, ax, pose):
     gap = ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap")
     if gap is None:
         return []
-    rows = [r for r in ctx.spec.get("features", []) if r.get("section_class") == "cut"]
-    ob = {frozenset((r["id"], n["id"])) for r in ctx.spec.get("features", []) for n in (r.get("neighbours") or []) if n.get("kind") == "one_body"}
+    feats = ctx.spec.get("features", [])
+    out = []
+    # 1.4 P6 (Designer P2r 1.4 item 1, material truth first): in a spec that declares the gap, every cut row names its
+    # material; the default steel of cut_hatch is refused there (premise: a pattern the drawing carries is a material
+    # the spec states, so two parts read alike only when the spec says they are one material).
+    out += [f"{pose}: {r['id']}: cut row with no hatch in a spec that declares section.hatch_adjacency_gap" for r in feats
+            if r.get("section_class") == "cut" and not r.get("hatch")]
+    # 1.4 P6 (Designer P2r 1.4 item 5): a spec whose rows carry no section_class (S1 side views) takes every row drawn
+    # with a hatched area; the drawn hatch is read from the artist and family-compared (no material convention assumed).
+    has_cls = any(r.get("section_class") for r in feats)
+    rows = [r for r in feats if r.get("section_class") == "cut"] if has_cls else [r for r in feats if r.get("kind") not in NO_AREA_KINDS]
+    ob = {frozenset((r["id"], n["id"])) for r in feats for n in (r.get("neighbours") or []) if n.get("kind") == "one_body"}
     drawn = {}
     for r in rows:
         arts = [a for a in _area_artists(ax, r["id"]) if not getattr(a, "_sc_hidden_copy", False) and a.get_hatch()]
         if arts:
             drawn[r["id"]] = [(a.get_hatch(), P) for a in arts for P in artist_polys(a) if len(P) >= 3]
-    out, ids = [], list(drawn)
+    ids = list(drawn)
     for i, a in enumerate(ids):
         for b in ids[i + 1:]:
             if frozenset((a, b)) in ob:

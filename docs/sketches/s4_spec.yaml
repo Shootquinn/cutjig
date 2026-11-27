@@ -6,11 +6,11 @@
 # drawn; S4-2 as short-core exposure and grip on the drawn configuration; cast-on liner in a second figure.
 # No drawing before the signed spec. Report: research/sean/cr_scratch/step1.4_engineer_spec.md.
 #
-# Shared rows (receiver, collet, core_seat, holder, wingnut, collar, base_plate, drill_head, floor): place, z_rule and
-# plan_poly are copied from s3_spec.yaml (= s1_spec.yaml) unchanged, so X1 passes today. The S4-b z_rule edits (holder
-# z_max to the tube top, collar z_min to the ring underside) and the S1 stack-tie offset are X1 fields shared with S1 and
-# S3: they are listed in `x1_edits_at_p6` and applied to s1, s3 and s4 together at P6 (S1 r9, S3 r8), when the scripts
-# draw the true sections. S1/S3 r8-era `section` fields are copied as they stand; `section_true` carries the true section.
+# Shared rows (receiver, collet, core_seat, holder, wingnut, washer, collar, base_plate, drill_head, floor): place,
+# z_rule, plan_poly and section_true equal in s1, s3 and s4 (X1). 1.4 P6: the S4-b z_rule edits (holder z_max to the
+# tube top 153.84, collar z_min to the ring underside 153.84) and the S1 stack-tie offset collar.thickness were applied to
+# s1, s3 and s4 in one save point with S1 r9 and S3 r8 drawn the same session (the former x1_edits_at_p6 field, deleted).
+# S1/S3 r8-era `section` fields are copied as they stand; `section_true` carries the drawn true section.
 #
 # New spec fields at 1.4 (b) (declared here; check_stack ignores them today; K3 to K9 and X1 read them from P4 (c)):
 #   section_true: the true section of a round row in the plane, named pieces, mirrored about u = 0 on every row that
@@ -24,7 +24,6 @@
 #   new predicate kinds: vertical_edge (S4-d), between (washer), seat_piece on rests_on (collet foot on the floor top).
 #   poses carrier and liner: two figures at one drill pose (tip at stop.height_z); rows carry `poses` (K9 pose set).
 #   section_figures: one figure per pose; section_figure (the carrier figure) keeps the S3 single-figure readers.
-#   x1_edits_at_p6: the shared-row X1 field edits, applied to every listed spec in one save point at P6.
 #   section_true holds the revolve half-profile only (Loftsman P3b O2 (iii)); plane-dependent features are per-spec:
 #   plane_cuts: [{piece, side, reason}] a section_true piece absent on one side in this plane (outside X1).
 #   hatch_variant: alt on a cut row: every piece carries section.hatch_alt[material] (Designer P3a FIX 2).
@@ -32,7 +31,7 @@
 #   min_bearing on rests_on: least radial overlap of the member's bottom face with the seat's top face per side (K8).
 #   label {template, keys, map} on a sub-artist: text printed from the keys (str.format; map turns a key value into
 #     text), anchored on the line named by `on` (Designer P3a FIX 1).
-status: "draft for sign-off at 1.4 (b): The Designer (part list) P3a, The Loftsman P3b. Written 2026-11-27 (P2)."
+status: "signed at 1.4 (b) (Designer P3a, Loftsman P3b, re-check P2r); (c) edits P4, P5f (signed P5r); P6: x1_edits_at_p6 applied to s1, s3, s4 and the field deleted, legend brass pattern (Designer P5D N2). Written 2026-11-27 (P2)."
 sketch: s4
 script: s4_base_section.py        # K1 scans this file at 1.4 (d)
 view: section_yz
@@ -66,7 +65,7 @@ k7_tolerance: "as s3_spec.yaml: G passes at distance >= g_min - 0.05 mm; C at di
 load_plane: {term: core_stop, feature: core_seat, edge: z_max, offset: 0}
 entry_plane: {term: collar_top, feature: collar, edge: z_max, offset: 0}
 stack_ties:
-  - {id: holder_flange, term: collar_top, feature: holder, edge: z_max, offset: "nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate", source: "as s1_spec.yaml (Loftsman 1.1 (e) LF1.1-1; test_P18 stack); offset becomes collar.thickness at P6 with the holder z_max (x1_edits_at_p6 item 3)"}
+  - {id: holder_flange, term: collar_top, feature: holder, edge: z_max, offset: "collar.thickness", source: "as s1_spec.yaml (Loftsman 1.1 (e) LF1.1-1; test_P18 stack); 1.4 P6: the holder z_max is the tube top 153.84, collar.thickness below the collar top (former x1_edits_at_p6 item 3)"}
 undeclared_pairs: F
 poses:
   - id: carrier
@@ -75,13 +74,6 @@ poses:
   - id: liner
     tip_z: "stop.height_z"
     purpose: "figure 2: as carrier with the cast-on liner OD 106 in the d 105 collet"
-
-# x1_edits_at_p6: shared-row X1 fields that S4-b changes (Sean STOP S4-A, scope (i)). Applied at P6 to every spec named,
-# in one save point, with S1 r9 and S3 r8 drawn the same session. Until then every spec carries the old value (X1 pass).
-x1_edits_at_p6:
-  - {item: 1, row: holder, field: z_rule.z_max, specs: [s1, s3, s4], old: "holder_bottom + holder.length + holder.flange_thickness", new: "holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play", value_old: 145.09, value_new: 153.84, source: "build_parts/holder.py dims() z_top: the tube runs through the nut plate to the collar underside (Designer 1.4 (a) section 2, Correction 4)"}
-  - {item: 2, row: collar, field: z_rule.z_min, specs: [s1, s3, s4], old: "collar_top - collar.top_above_plate", new: "collar_top - collar.thickness", value_old: 153.09, value_new: 153.84, source: "holder.py collar ring z_top to z_top + collar.thickness; 153.09 to 153.84 is nut.lift_play (Designer Correction 4)"}
-  - {item: 3, row: holder, field: stack_ties.holder_flange.offset, specs: [s1, s4], old: "nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate", new: "collar.thickness", source: "the tie follows the holder z_max (item 1); holder z_max + collar.thickness = collar_top 159.84 (test_P18 stack: 8 = nut.plate_thickness + washer proud, collar.top_above_plate = nut.lift_play + collar.thickness)"}
 
 # S4 checks (gameplan detail 1.4 table as ruled; read by checks_s4.py).
 s4_checks:
@@ -151,7 +143,7 @@ not_drawn:
   - {part: "0.75 m install core and its 177.27 stub", omit: deferred, owner: "S1", reason: "drawn in S1 (core_750); S4 draws the Q10 100 mm core only and reports the 0.75 m slice count: 7 slices, stub on the stop 177.27 (axis) moved onto the carrier (Designer 1.4 (a) section 10; Loftsman P3b FIX 5)"}
   - {part: "push rod, pucks, liner push-pop (advance options A, B, E)", omit: deferred, owner: "Step 2", reason: "rejected at STOP S4-A (Design Notes 34: collet grip 23.20 against the least slice 56.02 to 76.44); not drawn"}
   - {part: "taller collet alternate (Q5 Delta 25, 50)", omit: deferred, owner: "Step 2", reason: "kept 32 mm collet ruled (Design Notes 34); the Delta table is a reported item"}
-figure_note: "Not drawn: base-frame rails (outside the crop); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver key slot, holder key, collet foot key (theta 37, in front); washer notch and anti-rotation tab (theta 37, in front); +X wing of the wing nut (cut away); hidden detail behind the cut faces: holder M6 inserts and collar holes; witness ruler (receiver) and holder flange tick; wing-nut tommy bosses; collet slits other than the two ticks; washer windows at 210 and 330 (the theta 90 window lies in the plane: +u pocket rim absent); nut press pads (not placed); 0.75 m install core and its 177.27 stub (S1); push rod, pucks, liner push-pop (rejected); taller collet alternate (kept 32 mm). Advance: the lift lowers the drill one slice per cut; the core stays on the stop. Hatch: aluminium // (receiver ||), brass, plastic oo (liner --); carrier and core unsectioned."
+figure_note: "Not drawn: base-frame rails (outside the crop); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver key slot, holder key, collet foot key (theta 37, in front); washer notch and anti-rotation tab (theta 37, in front); +X wing of the wing nut (cut away); hidden detail behind the cut faces: holder M6 inserts and collar holes; witness ruler (receiver) and holder flange tick; wing-nut tommy bosses; collet slits other than the two ticks; washer windows at 210 and 330 (the theta 90 window lies in the plane: +u pocket rim absent); nut press pads (not placed); 0.75 m install core and its 177.27 stub (S1); push rod, pucks, liner push-pop (rejected); taller collet alternate (kept 32 mm). Advance: the lift lowers the drill one slice per cut; the core stays on the stop. Hatch: aluminium // (receiver ||), brass .., plastic oo (liner --); carrier and core unsectioned."
 
 part_list:
   - {part: "base plate with spigot-hole break at the crop", row: base_plate}
@@ -335,7 +327,7 @@ features:
     tick: wall   # P5f (Topologist P5T F1 a, d): the dashed tick spans the wall at the closed end (the 8.00 tick_length form left the part at d 100 by 0.187 and cannot fit the d 105 wall 6.234); shape to The Designer for confirmation
     u: "+u: the top-face mid-radius (top piece r_in + r_out) / 2, the line revolved into the plane at its own side (Designer/Topologist P2r form (a)); -u: r_mid sin(theta), r_mid the wall mid-radius at the line's mid-height"
     admission: "sketch_common.slit_issues (1.4 P4; Topologist P2r 3.1; P5f Topologist F1): (i0) every line behind the plane, cos(theta) < 0; (n) count_drawn lines and ticks; (i) sin(theta) x u > 0; (ii) every point of the line (sampled at <= 0.5) inside the union of the row's drawn pieces on that side within 0.05; (iii) the u > 0 line touching the top face, the u < 0 line the floor (open end on a face edge); (iv) line and tick dashed; (t) closed end at the spec z with one horizontal tick spanning the wall chord that holds the line (tick: wall)"
-    label: {template: "{collet.slit_count:.0f} slits, alternating, {collet.slit_length:.0f} long", keys: [collet.slit_count, collet.slit_length], on: "-u", source: "Designer P3a FIX 1 (printed from the keys); anchored on the -u line, which passes its admission in either +u form"}
+    label: {template: "{collet.slit_count:.0f} slits, alternating, {collet.slit_length:.0f} long", keys: [collet.slit_count, collet.slit_length], "on": "-u", source: "Designer P3a FIX 1 (printed from the keys); anchored on the -u line, which passes its admission in either +u form"}
     source: "Designer 1.4 (a) section 2a: nearest slit behind the plane on each side, opposite types (theta 112 top-open, z 47.00 to 72.00; theta 262 bottom-open, z 40.00 to 65.00); one dashed vertical line per side from the open face to the relief-hole centre, a dashed horizontal tick across the wall at the closed end (P5f, Topologist F1; P4 drew 8.0, collet.relief_hole_dia); label '12 slits, alternating, 25 long'. The Topologist signs the admission at (c). Slit k at phi0 + 360 k / collet.slit_count, phi0 = receiver.key_offset_deg + 15 (build_parts/collet_family.py build_solid; the 15 is a literal there, no params leaf); even k opens at the top face (k 2, theta 112), odd k at the foot (k 7, theta 262)"
   neighbours:
   - {id: core_seat, class: C, kind: one_body, g_min: 0, source: "S4-c: one body, the ledge is the collet bore bottom"}
@@ -441,7 +433,7 @@ features:
   axis: Z
   projection: rectangle
   keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate, receiver.register_bore_radius, register.g_reg, chain.t_h, chain.H, nut.lift_play]
-  z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness}
+  z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play}
   section:
   - [core.diameter_nominal / 2, receiver.register_bore_radius, holder_bottom, holder_bottom + holder.length]
   - [core.diameter_nominal / 2, holder.flange_od / 2, holder_bottom + holder.length, holder_bottom + holder.length + holder.flange_thickness]
@@ -456,7 +448,7 @@ features:
     tube: ["receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha)", "receiver.register_bore_radius - register.g_reg", "holder_bottom + chain.H", "holder_bottom + holder.length"]
     flange: ["receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha)", "holder.flange_od / 2", "holder_bottom + holder.length", "holder_bottom + holder.length + holder.flange_thickness"]
     neck: ["receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha)", "receiver.register_bore_radius - register.g_reg", "holder_bottom + holder.length + holder.flange_thickness", "holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play"]
-  section_true_note: "section_true runs to the tube top 153.84; the shared z_rule moves there at P6 (x1_edits_at_p6 item 1); bore_cone and section are the S1/S3 r8-era fields, retired at P6 with the stand-in note (Design Notes 25 S4-b)"
+  section_true_note: "section_true runs to the tube top 153.84, the shared z_rule z_max (1.4 P6); bore_cone and section are the S1/S3 r8-era fields, not read for drawing once section_true is drawn (Design Notes 25 S4-b)"
   depth: [-holder.flange_od / 2, holder.flange_od / 2]
   label: {text: "holder flange OD", key: holder.flange_od, fmt: .2f}
   neighbours:
@@ -480,11 +472,11 @@ features:
   axis: Z
   projection: rectangle
   keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z, collar.thickness]
-  z_rule: {z_min: collar_top - collar.top_above_plate, z_max: collar_top}
+  z_rule: {z_min: collar_top - collar.thickness, z_max: collar_top}
   section: [collar.id / 2, collar.od / 2]
   section_true:
     ring: [collar.id / 2, collar.od / 2, collar_top - collar.thickness, collar_top]
-  section_true_note: "the shared z_rule z_min moves to collar_top - collar.thickness at P6 (x1_edits_at_p6 item 2)"
+  section_true_note: "the shared z_rule z_min is collar_top - collar.thickness, the ring underside 153.84 (1.4 P6)"
   depth: [-collar.od / 2, collar.od / 2]
   label: {text: "collar top", key: stop.collar_top_z, fmt: .2f, z_S: true}
   neighbours:
@@ -551,6 +543,7 @@ features:
     ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]
   depth: [-washer.od / 2, washer.od / 2]
   label: {text: "PTFE washer", key: washer.thickness, fmt: .1f}
+  label_anchor_frac: 0.69   # 1.4 P6 (S4 r1 placer dry run): leader at z_A 145.99, 0.40 off the relief top 145.59 and the plate underside 146.39 (rule (l) D 0.30 on the S4 section)
   neighbours: []
   sense:
   - {pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: "Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0"}

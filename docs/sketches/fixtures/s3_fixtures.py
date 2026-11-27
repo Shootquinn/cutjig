@@ -83,10 +83,14 @@ def _draw_section_row(ax, P, spec, stack, pid, row):
     fr = _reflect(f)
     kind = row.get("kind")
     z0, z1 = f.get("z_min"), f.get("z_max")
-    if fid == "keepout":
-        r = P.get("icd.keepout_radius")
+    if fid in ("keepout", "wingnut_sweep"):   # 1.4 P6: wingnut_sweep, the sweep envelope reference row (TP1.4-2)
+        r = P.get("icd.keepout_radius") if fid == "keepout" else P.get("wingnut.sweep_clear_radius")
         for u in (-r, r):
             sc.draw(fid, Line2D([u, u], [z0, z1], linestyle="--"), ax)
+        return
+    if row.get("section_true") and kind != "line":   # 1.4 P6: the true section, as the S3 r8 script draws it
+        for name, _side, pts in sc.section_true_polys(P, names, row):
+            sc.draw_piece(ax, fid, name, pts)
         return
     if kind == "line":
         if z0 is None:
@@ -168,6 +172,11 @@ def _draw_subs(ax, P, spec, stack, pid):
                     xs, ys = [p[0] for p in poly], [p[1] for p in poly]
                     w, h = max(xs) - min(xs), max(ys) - min(ys)
                     sc.draw(f"{fid}:balls", Circle(((max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2), 0.3 * min(w, h), fill=False), ax)
+        wg = row.get("wing")
+        if wg and "wing" in (row.get("sub_artists") or []):   # 1.4 P6: the -X wing, hidden, by x_band (as S4)
+            us = sorted(check_stack.eval_expr(e, P, names) for e in wg["u"])
+            zs = sorted(check_stack.eval_expr(e, P, names) + shift for e in wg["z"])
+            sc.draw(f"{fid}:wing", Rectangle((us[0], zs[0]), us[1] - us[0], zs[1] - zs[0], fill=False, linestyle="--"), ax)
         lv = row.get("lever")
         if lv and "lever" in (row.get("sub_artists") or []):
             pts = [(check_stack.eval_expr(e[0], P, names), check_stack.eval_expr(e[1], P, names) + shift) for e in (lv["from"], lv["to"])]
@@ -784,6 +793,9 @@ def _k4_expr(number):
         for r in spec["features"]:
             if r["id"] != "span_lt":
                 r["label"] = None
+                for sub in r.get("sub_artists") or []:   # 1.4 P6: sub-artist labels (Designer P3a FIX 1) removed with the row's
+                    if isinstance(r.get(sub), dict):
+                        r[sub] = {k: v for k, v in r[sub].items() if k != "label"}
 
     def m(fig, ax, axi, P, spec, stack, pid):
         ln = sc.tagged(ax)["span_lt"][0]
@@ -870,6 +882,9 @@ def _k4_one(fid, text_fn, axes=MAIN):
         for r in spec["features"]:
             if r["id"] != fid:
                 r["label"] = None
+                for sub in r.get("sub_artists") or []:   # 1.4 P6: sub-artist labels (Designer P3a FIX 1) removed with the row's
+                    if isinstance(r.get(sub), dict):
+                        r[sub] = {k: v for k, v in r[sub].items() if k != "label"}
 
     def m(fig, ax, axi, P, spec, stack, pid):
         tgt = ax if axes == MAIN else axi
@@ -905,6 +920,9 @@ def k4_label_off_home():
         for r in spec["features"]:
             if r["id"] != "keepout":
                 r["label"] = None
+                for sub in r.get("sub_artists") or []:   # 1.4 P6: sub-artist labels (Designer P3a FIX 1) removed with the row's
+                    if isinstance(r.get(sub), dict):
+                        r[sub] = {k: v for k, v in r[sub].items() if k != "label"}
     return s3_ctx(spec_mut=sm, mutate=m)
 
 
@@ -1309,14 +1327,14 @@ def hatch_block_alt():
 def hatch_alt_equal():
     """K8 B3 (TP1.3-14 lint): section.hatch_alt aluminium equal to the steel pattern."""
     def sm(sp):
-        sp["section"]["hatch_alt"] = {"aluminium": sc.HATCH["steel"]}
+        sp["section"]["hatch_alt"] = dict(sp["section"]["hatch_alt"], aluminium=sc.HATCH["steel"])   # 1.4 P6: other alternates kept
     return s3_ctx(spec_mut=sm)
 
 
 def hatch_alt_missing():
     """K8 B4 (TP1.3-14 lint): hatch_split with no alternate (the r2 live state)."""
     def sm(sp):
-        sp["section"]["hatch_alt"] = {}
+        sp["section"]["hatch_alt"] = {k: v for k, v in sp["section"]["hatch_alt"].items() if k != "aluminium"}   # 1.4 P6: other alternates kept
     return s3_ctx(spec_mut=sm)
 
 
@@ -1480,7 +1498,7 @@ def nd_no_owner():
 def hatch_alt_family():
     """K8 B87 (Topologist R2-4): section.hatch_alt aluminium '////', the aluminium line family at double density."""
     def sm(sp):
-        sp["section"]["hatch_alt"] = {"aluminium": "////"}
+        sp["section"]["hatch_alt"] = dict(sp["section"]["hatch_alt"], aluminium="////")   # 1.4 P6: other alternates kept
     return s3_ctx(spec_mut=sm)
 
 

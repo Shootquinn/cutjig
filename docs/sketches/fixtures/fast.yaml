@@ -90,3 +90,5 @@ fast:
   - S4-3-Z
   - S4-3-B2
   - S4-FULL
+  - SPEC-Z   # 1.4 P6: family SPEC (nested spec keys)
+  - SPEC-B1

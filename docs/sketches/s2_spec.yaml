@@ -219,6 +219,7 @@ features:
       - [["-(icd.footprint_x / 2)", "-(icd.footprint_y / 2)"], ["-base.column_notch_x", "-(icd.footprint_y / 2)"], ["-base.column_notch_x", "-(icd.footprint_y / 2 - base.column_notch[1])"], ["-(icd.footprint_x / 2)", "-(icd.footprint_y / 2 - base.column_notch[1])"]]
       - [[base.column_notch_x, "-(icd.footprint_y / 2)"], ["icd.footprint_x / 2", "-(icd.footprint_y / 2)"], ["icd.footprint_x / 2", "-(icd.footprint_y / 2 - base.column_notch[1])"], [base.column_notch_x, "-(icd.footprint_y / 2 - base.column_notch[1])"]]
     label: {text: "base plate (open), x", key: icd.footprint_x, fmt: ".0f"}
+    label_theta: 5   # 1.4 P6 rule (l) anchor (Designer P0D section 4): off gridline y 0
     neighbours:
       - {id: base_frame, class: C, g_min: 0, source: "icd.datum_a: frame top plane = plate underside (S1 base_frame|base_plate)"}
     sense:
@@ -541,6 +542,7 @@ features:
     z_rule: {z_min: jackscrew.anchor_z, z_max: jackscrew.top_guide_z}
     place: {r_in: jackscrew.pitch_radius, theta: "jackscrew.angle[0]", half_width: "jackscrew.nominal / 2", footprint: round}
     label: {text: "screw pitch r", key: jackscrew.pitch_radius, fmt: ".0f"}
+    label_theta: 28   # 1.4 P6 rule (l) anchor (Designer P0D section 4): off gridline y 80
     neighbours:
       - {id: nut_b, class: "N", source: "R6: screw in its nut"}
       - {id: anchor_b, class: "N", source: "R6: screw bottom in the anchor thrust bearing"}
@@ -1340,7 +1342,7 @@ features:
     z_rule: {z_min: receiver_floor, z_max: top_block_top}
     place: {r_in: 0, theta: 0, half_width: icd.keepout_radius, footprint: round}
     label: {text: "keep-out r", key: icd.keepout_radius, fmt: ".1f"}
-    label_theta: 350   # Designer M1 r1 F5
+    label_theta: 355   # Designer M1 r1 F5; 1.4 P6 (Designer P0r 2.3): 355 from 350, clear of the pinion_b toe edge
     neighbours:
       - {id: screw_a, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}
       - {id: screw_b, class: G, g_min: 0, group: "S2-a", source: "S2-a: fixed part against the keep-out (g_min seed, gameplan detail 1.0; Designer 1.2 (a) sections 7, 10)"}

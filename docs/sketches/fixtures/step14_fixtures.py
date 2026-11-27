@@ -164,6 +164,13 @@ import atexit  # noqa: E402
 atexit.register(lambda: [shutil.rmtree(t, ignore_errors=True) for t in _TMPS])
 
 
+# 1.4 P6: the accepted S1 r8, S2 r9, S3 r7 records name the specs and scripts as they stood at the 1.4 P0f re-records
+# (deps_exempt.json carries their SHA-256). P6 edited the live s1, s2, s3 specs and the S1 and S3 scripts (S1 r9, S2 r10,
+# S3 r8 not yet accepted), so the temporary tree takes those files from fixtures/deps_tree/ (byte copies of the
+# pre-P6 files), the premise of every DEPS control: the tree matches its records.
+FROZEN = SK / "fixtures" / "deps_tree"
+
+
 def _deps_tree(with_s3=True, s3_deps=True):
     """Temporary docs/ and wip/: the accepted S1 r8 and S2 r9 records (exempt), copies of s3_spec.yaml and
     s3_jackscrew_section.py, and an accepted S3 r7 record whose deps name them and the two certifier records (a refreshed
@@ -174,7 +181,8 @@ def _deps_tree(with_s3=True, s3_deps=True):
     wip.mkdir()
     for n in ("s1_checks_r8.json", "s2_checks_r9.json", "s3_spec.yaml", "s3_jackscrew_section.py", "s1_spec.yaml", "s1_side_poses.py",
               "s2_spec.yaml", "s2_plan.py", "s1_mass_report_r8.json"):
-        shutil.copyfile(SK / n, docs / n)
+        src = FROZEN / n if (FROZEN / n).is_file() else SK / n   # 1.4 P6: specs and scripts as at the accepted records
+        shutil.copyfile(src, docs / n)
     if with_s3:
         rec = json.loads((SK / "s3_checks_r7.json").read_text(encoding="utf-8"))
         rec.pop("superseded_by", None)
@@ -773,6 +781,13 @@ def k4_l_paper_side():
     """K4 B (Designer P0D FIX L1, paper thresholds): live S1 at pose start: the drill_tube leader 1.0 px off gridline z 1350
     over 278 data mm (0.53 px per data mm; D 4.50 data mm on S1) fires. Read with the 1.0 data mm of step 0 it is clean."""
     c = _live("s1")
+    # 1.4 P6: S1 r9 anchors drill_tube at label_anchor_frac 0.45 (Designer P0D section 4); the plant puts the leader back
+    # on the r8 geometry, anchor (max x, mid z) of the tube and the text at the anchor height
+    ax = c.figs["start"].axes[0]
+    pts = [p for poly in sc.pieces(ax, "drill_tube") for p in poly]
+    anc = (max(p[0] for p in pts), (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2)
+    tx = next(x for x in ax.texts if x.get_gid() == "label:drill_tube")
+    tx.xy, tx.xyann = anc, (float(tx.xyann[0]), anc[1])
     return _lres(_l(c, row="drill_tube", pose="start"), "S1 start drill_tube")
 
 

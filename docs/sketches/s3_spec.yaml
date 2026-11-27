@@ -43,7 +43,8 @@ section:
   handedness: "u x z = toward viewer: Y x Z = X (right-handed); u equals plan y, so plan values read with no sign change"
   convention: {cut: "hatched, one pattern per material, legend in the figure note; hidden lines inside a cut part not drawn", unsectioned: "screw c, NEMA 17 shaft, NEMA 23 shaft c, coupling, standoffs, balls (circles): outline over the hatch of the part around them (ASME Y14.3)", beyond: "within 0 > x >= -profile.width, elevation, visible edges solid, edges behind a cut part dashed (renderer section convention, P4)", omitted: "beyond x < -profile.width and in front (x > 0): not drawn, listed in the figure note"}
   source: "Designer 1.3 (a) section 2; gameplan Design Notes 4 (screw c, Sean STOP S3-0)"
-  hatch_alt: {aluminium: "||"}   # 1.3 (h) r4 (orchestrator ruling on the Designer objection D-r3-2: '--' read as a doubled joint line); 1.3 (h) r3: anchor cover above the joint (Designer r2 pick 4; '////' refused by the line-family lint, Topologist R2-4; orchestrator ruling '--')
+  hatch_alt: {aluminium: "||", plastic: "--", steel: "++", extrusion: "**"}   # 1.4 P6 (Designer P2r 1.4 item 3): steel ++ (bearing, pinion c, anchor locknut), extrusion ** (frame member c), plastic as S4; 1.3 (h) r4 (orchestrator ruling on the Designer objection D-r3-2: '--' read as a doubled joint line); 1.3 (h) r3: anchor cover above the joint (Designer r2 pick 4; '////' refused by the line-family lint, Topologist R2-4; orchestrator ruling '--')
+  hatch_adjacency_gap: 0.5   # 1.4 P6 (Designer P2r 1.4, carried from S4 P2f): separate cut bodies with one hatch line family within 0.5 are an issue
 section_figure: {name: s3_jackscrew_section, pose: capture_end, png: "s3_jackscrew_section_r<k>.png", note: "one figure: section A-A at capture_end (cut case, loop closed) with the plan inset; nut stations at start and park as dash-dot ticks (rows nut_station_start, nut_station_park)"}
 insets:
   - id: inset_plan
@@ -263,14 +264,15 @@ not_drawn:
   - {part: "front M3 standoffs", omit: off_plane, x: [[liftmotor.bolt_pattern / 2 - liftmotor.standoff_af / 2, liftmotor.bolt_pattern / 2 + liftmotor.standoff_af / 2]], reason: "two of four at x +15.5, in front of the plane; the two rear standoffs are row standoffs_c"}
   - {part: "receiver shoulder bolts 4 x M5", omit: off_plane, x: [["-receiver.shoulder_bolt_pcd / 2 * sind(60) - receiver.shoulder_bolt_head_d / 2", "-receiver.shoulder_bolt_pcd / 2 * sind(60) + receiver.shoulder_bolt_head_d / 2"], ["receiver.shoulder_bolt_pcd / 2 * sind(60) - receiver.shoulder_bolt_head_d / 2", "receiver.shoulder_bolt_pcd / 2 * sind(60) + receiver.shoulder_bolt_head_d / 2"]], x_source: "PCD 180 at theta 30, 150, 210, 330, head D8.5 (Designer 1.3 (h) r2 D7)", reason: "x +-77.94, off the 60 band; drawn at S4-a"}
   - {part: "receiver spigot below the plate top", omit: deferred, owner: "S4-a", reason: "z_A 0 to 12 inside the plate hole; drawn at S4-a (z_rule z_min is the plate top, shared with S1 under X1)"}
+  - {part: "+X wing of the wing nut", omit: off_plane, x: [["wingnut.body_od / 2", "wingnut.span / 2"]], reason: "in front of the plane (x > 0), cut away; the -X wing is drawn beyond, hidden (Designer P3a O3, FIX 5 b; as s4_spec.yaml)"}
   - {part: "front nut shoulder screw", omit: off_plane, x: [["ring.nut_screw_pcd / 2 * sind(60) - ring.nut_screw_head_d / 2", "ring.nut_screw_pcd / 2 * sind(60) + ring.nut_screw_head_d / 2"]], x_source: "PCD 32 at +60 deg from the outboard radial, head D10 (Topologist TP1.3-12)", reason: "x +13.86, in front of the plane (cut away); leaf ring.nut_screw"}
   - {part: "rear nut shoulder screw", omit: deferred, owner: "Step 2 (nut housing model, ring.nut_screw)", reason: "x -13.86, beyond the plane inside the 60 band: by the stated convention the inboard screw (row nut_screws_c) stands for the set of three; head D10 behind the screw and nut outline adds no reading (Designer 1.3 (h) r2 item 5)"}
-figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; front nut shoulder screw (cut away); rear nut shoulder screw (the inboard screw stands for the set); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver spigot below the plate top (S4-a). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
+figure_note: "Not drawn: screw a set (beyond); screw b set (in front); pinions a and b; NEMA 23 a and b; guide rods, lugs, housings and ties; descent-stop pad and post (beyond); base-frame end members and plate supports; front M3 standoffs; front nut shoulder screw (cut away); rear nut shoulder screw (the inboard screw stands for the set); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver spigot below the plate top (S4-a); +X wing of the wing nut (cut away); wing-nut washer window at theta 90 lies in the plane: +u pocket rim absent (Designer P2r 1.2). Hatch: aluminium, extrusion, steel, brass, plastic (legend)."
 
 part_list:
   - {part: "base frame rails (cut across, slot notches, centre bore lines)", row: base_frame}
   - {part: "base plate with spigot-hole gap", row: base_plate}
-  - {part: "receiver, collet, core seat, holder, wing nut, collar, capture core", row: "receiver, collet, core_seat, holder, wingnut, collar, core_750"}
+  - {part: "receiver, collet, core seat, holder, wing nut (-X wing hidden, sweep lines), PTFE washer, collar, capture core", row: "receiver, collet, core_seat, holder, wingnut (sub-artist wing), wingnut_sweep, washer, collar, core_750"}
   - {part: "drill head with cutter ticks, drill tube walls, top-end block", row: "drill_head, drill_tube, drill_top_block"}
   - {part: "keep-out lines / circle", row: keepout}
   - {part: "ring plate pieces", row: ring}
@@ -443,54 +445,70 @@ features:
   kind: cylinder
   axis: Z
   projection: rectangle
-  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]
+  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z, receiver.register_chamfer, thread.major, thread.minor, thread.pitch, thread.run_turns, thread.runout_land, thread.lead_in_length, chain.h]
   z_rule: {z_min: base.plate_thickness, z_max: receiver_floor + receiver.rim_above_floor}
   section:
   - [receiver.floor_hole_dia / 2, receiver.register_bore_radius, base.plate_thickness, receiver_floor]
   - [receiver.register_bore_radius, receiver.spigot_od / 2]
   - [receiver.spigot_od / 2, receiver.shoulder_od / 2, receiver.shoulder_z, receiver.shoulder_z + receiver.shoulder_thickness]
   depth: [-receiver.shoulder_od / 2, receiver.shoulder_od / 2]
+  section_true:
+    floor: [receiver.floor_hole_dia / 2, receiver.spigot_od / 2, base.plate_thickness, receiver_floor]
+    wall: [receiver.register_bore_radius, receiver.spigot_od / 2, receiver_floor, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land]
+    land: [receiver.register_bore_radius, thread.minor / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch]
+    thread: [receiver.register_bore_radius, thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch, receiver_floor + receiver.rim_above_floor - thread.lead_in_length]
+    rim: {poly: [[receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [(thread.major - chain.h) / 2, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius + receiver.register_chamfer, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - receiver.register_chamfer]]}
+    shoulder: [receiver.spigot_od / 2, receiver.shoulder_od / 2, receiver.shoulder_z, receiver.shoulder_z + receiver.shoulder_thickness]
   label: null
   neighbours:
   - {id: collet, class: C, g_min: 0, source: 'R6: collet foot on the receiver floor, outer edge at the register bore (TP1.1-3: section rows, N refused)'}
   - {id: core_seat, class: C, g_min: 0, source: 'R6: core-seat ledge on the receiver floor top (TP1.1-3: section rows, N refused)'}
-  - {id: holder, class: C, g_min: 0, source: 'R6: holder tube in the register bore (S1 draws holder OD = register bore; build_parts/holder.py has g_reg 0.25), flange above the rim (TP1.1-3)'}
-  - {id: wingnut, class: N, source: 'R6: wing nut threaded on the receiver'}
+  - {id: holder, class: G, g_min: 0.25, source: 'S4-b, S4-c (Sean STOP S4-A, Design Notes 34): holder OD r 67.04 in the register bore r 67.29, register.g_reg 0.25; flange 8.59 above the rim'}
+  - {id: wingnut, class: C, source: 'S4-c (Design Notes 34): thread flank contact drawn on the receiver major cylinder r 74.79; fit.c_r 0.35 and fit.g_a 0.30 not drawn'}
   sense: []
   chain: [axial]
   moves: false
   axes: [section]
   section_class: cut
+  hatch: aluminium   # 1.4 P6 (Designer P2r 1.4 item 1, 3)
+  hatch_variant: alt
 - id: collet
   name: collet
   shape: 'collet cone in section, two four-vertex sides mirrored about the axis: foot ring on the receiver floor, outer cone narrowing upward at cone.alpha 10 deg, slit ticks'
   kind: cone
   axis: Z
   projection: trapezoid
-  keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha]
+  keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha, fit.seat_clearance, fit.model_contact_gap, collet.foot_ring_width, holder.bottom_above_floor_Kmax, core.diameter_nominal, core.tol, collet.c_i, collet.grip_window_hi, collet.min_wall, collet.chamfer_cap, collet.chamfer_band_lo, collet.chamfer_band_hi, collet.core_seat_height]
   z_rule: {z_min: receiver_floor, z_max: receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2}
   section: [core.diameter_nominal / 2, receiver.register_bore_radius]
   depth: [-receiver.register_bore_radius, receiver.register_bore_radius]
+  section_true:
+    foot: [(core.diameter_nominal + collet.grip_window_hi) / 2, receiver.register_bore_radius - fit.seat_clearance, receiver_floor, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap]
+    cone: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (holder.bottom_above_floor_Kmax - fit.model_contact_gap - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)']]}
+    top: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2], ['(core.diameter_nominal + collet.grip_window_hi) / 2 + min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)', receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2]]}
   label: null
   neighbours:
-  - {id: core_seat, class: C, g_min: 0, source: 'R6: core-seat ledge at the collet bore bottom, outer edge on the bore (TP1.1-3: section rows, N refused)'}
+  - {id: core_seat, class: C, kind: one_body, g_min: 0, source: 'R6: core-seat ledge at the collet bore bottom, outer edge on the bore (TP1.1-3: section rows, N refused); one body (S4 form, 1.4 P6, Designer P2r 1.4 item 2)'}
   - {id: holder, class: C, g_min: 0, source: 'R6: holder clamps the collet cone; contact on the cone face (TP1.1-3: r1 drew 313.12 mm2 per side of interference under N)'}
   sense:
-  - {pred: taper, narrows: up, source: 'TP-2 ruling (Design Notes 22): build_parts/collet_family.py dims() r(z) = r0 - (z - z_cone) tan(cone.alpha)'}
+  - {pred: taper, narrows: up, piece: cone, source: '1.4 P6: read on the cone piece of the true section (S4 form; the foot ring is a rectangle); TP-2 ruling (Design Notes 22): build_parts/collet_family.py dims() r(z) = r0 - (z - z_cone) tan(cone.alpha)'}
   chain: [axial]
   moves: false
   axes: [section]
   section_class: cut
+  hatch: plastic   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: core_seat
   name: collet core seat
   shape: core-seat ledge, collet.core_seat_height 2.5 tall and core_seat_width 3 wide, inside the collet bore bottom; core bottom bears on its top
   kind: prism
   axis: null
   projection: rectangle
-  keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z]
+  keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z, collet.grip_window_hi]
   z_rule: {z_min: receiver_floor, z_max: receiver_floor + collet.core_seat_height}
   section: [core.diameter_nominal / 2 - collet.core_seat_width, core.diameter_nominal / 2]
   depth: [-core.diameter_nominal / 2, core.diameter_nominal / 2]
+  section_true:
+    ledge: [(core.diameter_nominal + collet.grip_window_hi) / 2 - collet.core_seat_width, (core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor, receiver_floor + collet.core_seat_height]
   label: null
   neighbours: []
   sense: []
@@ -498,63 +516,121 @@ features:
   moves: false
   axes: [section]
   section_class: cut
+  hatch: plastic   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: holder
   name: holder
   shape: holder tube in section with flange and collar ring on top; flange above the receiver rim by the stroke gap
   kind: cylinder
   axis: Z
   projection: rectangle
-  keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate]
-  z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness}
+  keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate, receiver.register_bore_radius, register.g_reg, chain.t_h, chain.H, nut.lift_play]
+  z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play}
   section:
   - [core.diameter_nominal / 2, receiver.register_bore_radius, holder_bottom, holder_bottom + holder.length]
   - [core.diameter_nominal / 2, holder.flange_od / 2, holder_bottom + holder.length, holder_bottom + holder.length + holder.flange_thickness]
   bore_cone: collet
   depth: [-holder.flange_od / 2, holder.flange_od / 2]
+  section_true:
+    cone: {poly: [[receiver.register_bore_radius - register.g_reg - chain.t_h, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H], [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder_bottom + chain.H]]}
+    tube: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H, holder_bottom + holder.length]
+    flange: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder.flange_od / 2, holder_bottom + holder.length, holder_bottom + holder.length + holder.flange_thickness]
+    neck: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play]
   label: null
   neighbours:
-  - {id: wingnut, class: N, source: 'R6: wing nut over the holder flange'}
+  - {id: washer, class: C, source: "S4-c: flange top bears on the PTFE washer at pose K (as s4_spec.yaml)", face: {z: "holder_bottom + holder.length + holder.flange_thickness", side: washer on the flange top}}
+  - {id: wingnut, class: G, g_min: 0.50, source: 'S4-c (Design Notes 34): pocket floor 0.50 above the flange top, radial 1.00 at the plate hole'}
   sense: []
   chain: [axial]
   moves: false
   axes: [section]
   section_class: cut
+  hatch: aluminium   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: wingnut
   name: wing nut
-  shape: 'wing nut: body wingnut.body_od x nut.overall_height, two wings to span 230, sweep radius 115 as dashed extent lines'
+  shape: 'wing nut in true section, cut, brass (as s4_spec.yaml; build_parts/nut.py): thread body drawn at the receiver major r 74.79 to r 83.14 from 97.09; relief bore r 75.34 over 139.09 to 145.59; pocket rim r 71.90 to 83.14 over 145.59 to 146.39 on the -u side only (theta 90 washer window at +u, plane_cuts); nut plate r 68.04 to 83.14 over 146.39 to 153.09; dust skirt rim 2.0 then a slope; PTFE washer in the pocket (row washer); -X wing hidden over its whole extent, dashed, labelled (sub-artist wing); sweep r 115 as dashed extent lines (row wingnut_sweep, TP1.4-2); +X wing in front of the plane (not_drawn) (Designer P3a FIX 5 b)'
   kind: prism
   axis: null
   projection: rectangle
-  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span]
+  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, nut.washer_window_width, nut.washer_window_count, wingnut.wing_count, wingnut.wing_height, wingnut.wing_thickness]
   z_rule: {z_min: collar_top - collar.top_above_plate - nut.overall_height, z_max: collar_top - collar.top_above_plate}
   depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]
-  label: {text: wing nut sweep r, key: wingnut.sweep_clear_radius, fmt: .0f}
-  neighbours: []
+  section_true:
+    body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z]
+    relief: [nut.relief_r, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]
+    pocket_rim: [nut.washer_pocket_od / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness]
+    plate: [nut.plate_hole_dia / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness, collar_top - collar.top_above_plate]
+    skirt: {poly: [[wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo + nut.skirt_rim], [wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi]]}
+  section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'
+  plane_cuts: [{piece: pocket_rim, side: +u, theta: 180 / wingnut.wing_count, reason: 'washer window at theta 180 / wingnut.wing_count + 360 / nut.washer_window_count * k = 90 (k 0) lies on the plane, u = +Y: build_parts/nut.py box_at(90, r_pk - 1, r_body + 1, nut.washer_window_width / 2, z_pu, z_pu + pd) removes the +u pocket rim over r 70.90 to 84.14, z 145.59 to 146.39; theta 270 is solid (windows at 210, 330 are 60 deg off) (Loftsman P3b FIX 2; Designer rules the form at P2r, the alternative is the rim drawn with a drafting reason)'}]
+  sub_artists: [wing]
+  wing: {u: [-wingnut.wing_thickness / 2, wingnut.wing_thickness / 2], z: [collar_top - collar.top_above_plate - wingnut.wing_height, collar_top - collar.top_above_plate], x_band: [-wingnut.span / 2, -wingnut.body_od / 2], style: 'hidden: dashed outline over the whole extent, unfilled (occluded by the row''s own body and plate, Designer P3a D3)', label: {text: '-X wing (behind), span', key: wingnut.span, fmt: .0f, source: 'Designer P3a FIX 4: the leader lands outside the carrier outline'}, admission: 'P3a O3 (Topologist signs at (c)); P5f (Topologist F2, Designer D-c1, N1): (i) dashed, unfilled and unhatched; (ii) drawn u and z extents equal the spec within 0.05; (iii) every drawn edge covered over its whole z extent (gaps > 0.05 fail) by the z bands of this row''s section_true revolve pieces (plane_cuts ignored) with r_out > max |u| of the edge and r_out <= -x_band[1], premise asin(max |u| / r_in) < 45 deg for every occluder read (plane_cuts at theta 90 / 270, K8 lint); Bs: wing solid, wing hatched, wing u at 9, x_band deleted, plate and body pieces deleted, relief deleted, wing u +-90, x_band near end -70, wing u +-60', source: 'Designer 1.4 (a) section 2 row wingnut; Designer P3a O3 ruling (Sean: wings drawn beyond, Design Notes 34)'}
+  label: null   # 1.4 P6: the sweep label is on row wingnut_sweep (TP1.4-2)
+  neighbours:
+  - {id: washer, class: C, source: "S4-c: washer in the pocket, three press pads (contact class P, ASSEMBLY.md; as s4_spec.yaml)"}
   sense:
   - {pred: below, of: drill_head}
   chain: []
   moves: false
   axes: [section]
-  section_class: unsectioned
+  section_class: cut
+  hatch: brass
+- id: wingnut_sweep
+  name: wing nut sweep
+  shape: 'wing-nut sweep envelope: two dashed vertical reference lines at u -+ wingnut.sweep_clear_radius 115 over the wing-nut height (TP1.3-20; Topologist P0T FIX TP1.4-2: a reference row, not part ink of the wing nut)'
+  kind: line
+  axis: null
+  projection: line
+  keys: [wingnut.sweep_clear_radius, stop.collar_top_z, collar.top_above_plate, nut.overall_height]
+  z_rule: {z_min: collar_top - collar.top_above_plate - nut.overall_height, z_max: collar_top - collar.top_above_plate}
+  depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]
+  label: {text: wing nut sweep r, key: wingnut.sweep_clear_radius, fmt: .0f}
+  neighbours: []
+  sense: []
+  chain: []
+  moves: false
+  reference: true
+  axes: [section]
+  section_class: reference
+- id: washer
+  name: PTFE washer
+  shape: PTFE ring r 68.40 to 71.60, 1.30 thick, z 145.09 to 146.39, cut, in the nut-plate pocket, 0.50 proud onto the holder flange top; notch at theta 37 off the plane (Designer 1.4 (a) section 2 row washer)
+  kind: cylinder
+  axis: Z
+  projection: rectangle
+  keys: [washer.id, washer.od, washer.thickness, holder.length, holder.flange_thickness]
+  z_rule: {z_min: holder_bottom + holder.length + holder.flange_thickness, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness}
+  section_true: {ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]}
+  depth: [-washer.od / 2, washer.od / 2]
+  label: null   # 1.4 P6: no S3 label. The washer is 1.30 thick between the relief top and the plate underside 0.80 apart; every horizontal leader to it runs within the S3 rule (l) D 1.00 of a wing-nut edge (placer dry run). Labelled in S4 (D 0.30)
+  neighbours: []
+  sense: [{pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: 'Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0'}]
+  chain: [axial]
+  moves: false
+  axes: [section]
+  section_class: cut
+  hatch: plastic
 - id: collar
   name: holder collar ring
   shape: holder collar ring in section, collar.od wide, from the wing-nut top (collar.top_above_plate above the wing-nut top) to stop.collar_top_z; the highest clamped base feature and the g_stop reference (collar top, wings included)
   kind: cylinder
   axis: Z
   projection: rectangle
-  keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z]
-  z_rule: {z_min: collar_top - collar.top_above_plate, z_max: collar_top}
+  keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z, collar.thickness]
+  z_rule: {z_min: collar_top - collar.thickness, z_max: collar_top}
   section: [collar.id / 2, collar.od / 2]
   depth: [-collar.od / 2, collar.od / 2]
+  section_true:
+    ring: [collar.id / 2, collar.od / 2, collar_top - collar.thickness, collar_top]
   label: null
   neighbours:
-  - {id: holder, class: F, source: 'TP1.1-3: section rows, N refused. S1 draws the holder to its flange top (145.09 z_A) and the collar from the plate top (153.09): the nut plate lies between, 8.00. build_parts/holder.py runs the tube up to the collar underside; the Designer rules the tube above the flange at M1'}
-  - {id: wingnut, class: N, source: 'wing nut under the collar ring, over the holder flange'}
+  - {id: holder, class: C, kind: one_body, source: 'S4-b (Design Notes 34): collar ring fused on the holder tube top 153.84 (build_parts/holder.py)'}
+  - {id: wingnut, class: G, g_min: 0.75, source: 'S4-c (Design Notes 34): nut.lift_play 0.75, nut-plate top to the collar underside'}
   sense: []
   chain: [axial]
   moves: false
   axes: [section]
   section_class: cut
+  hatch: aluminium   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: core_750
   name: capture core (0.75 m install core)
   shape: capture core (0.75 m install core) upright, bottom on the core seat, 607.66 inside the drill bore at capture_end; unsectioned outline (solid stock)
@@ -635,6 +711,7 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1)
   section: [drill.tube_id / 2, drill.tube_od / 2]
 - id: drill_top_block
   name: top-end block
@@ -698,10 +775,10 @@ features:
   - &id001 {use: s1_5b_base}
   - &id002 {use: fixed_g10}
   - {id: bearing, class: C, source: bearing outer race in the clearance bore (ring.bearing_seat; S1)}
-  - {id: nut_housing_c, class: C, source: 'one body: the ring pieces stop at the housing outline u -185 and -135 (Designer 1.3 (a) section 2); two section rows, N refused'}
+  - {id: nut_housing_c, class: C, kind: one_body, source: 'one body: the ring pieces stop at the housing outline u -185 and -135 (Designer 1.3 (a) section 2); two section rows, N refused'}
   - {id: nut_c, class: F, source: 'nut inside the housing bore, clear of the ring pieces'}
   - {id: screw_c, class: F, source: 'screw through the housing bore, clear of the ring pieces'}
-  - {id: motor_mount_c, class: C, source: NEMA 23 standoff on the ring top face (S1/S2)}
+  - {id: motor_mount_c, class: C, kind: one_body, source: 'NEMA 23 standoff on the ring top face (S1/S2); hatched with the ring, one body (1.4 P6, Designer P2r 1.4 item 2)'}
   - {id: home_switch_c, class: G, g_min: 10, source: 'g_min seed l.148 (moving part against a fixed part); ring top at park 1101.84 to switch bottom 1122: 20.16 (Designer 1.3 (a) section 9)'}
   sense:
   - {pred: above, of: core_seat}
@@ -828,6 +905,8 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1, 3)
+  hatch_variant: alt
 - id: gear
   name: ring gear
   shape: 'bevel ring gear in section: two four-vertex sides mirrored about the drill axis; flat back face on top; tooth face underneath rising outward at the pitch cone (1 in 3) toward the heel at gear.od; tooth ticks on the lower face toward the pinions'
@@ -852,6 +931,7 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: gear_hub
   name: gear hub
   shape: 'gear hub: rectangles per side from the tube OD to gear.bore, same height as the gear, clamped on the tube; turns with the drill'
@@ -870,6 +950,7 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: aluminium   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: pinion_c
   name: bevel pinion
   shape: 'bevel pinion c (theta 90, axis radial along +u, in the plane): true half-section, four-vertex trapezoid narrowing toward the axis, toe tip r 95.22, heel r 125, hub to r 140; tooth ticks on the upper face under the gear'
@@ -892,6 +973,8 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1, 3)
+  hatch_variant: alt
 - id: motor23_c
   name: NEMA 23
   shape: 'NEMA 23 c cut through its radial axis (theta 90): body 57 x 76, flange face at r 142, on its mount on the ring top face, u +142 to +218'
@@ -912,6 +995,7 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: motor_shaft_c
   name: NEMA 23 shaft
   shape: 'NEMA 23 output shaft, axis in the plane: unsectioned, r 121 to 142, 8 high, on the pinion axis (ASME Y14.3)'
@@ -949,6 +1033,7 @@ features:
   moves: true
   axes: [section]
   section_class: cut
+  hatch: aluminium   # 1.4 P6 (Designer P2r 1.4 item 1)
 - id: pinion_axis_c
   name: pinion centreline
   shape: 'pinion axis: dash-dot radial chain line from the pinion toe tip r 95.22 through the motor to r 218'
@@ -1111,6 +1196,7 @@ features:
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.locknut_od / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) - jackscrew.journal_d / 2', jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width - jackscrew.locknut_thickness, jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width]
   - ['jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.journal_d / 2', 'jackscrew.pitch_radius * sind(jackscrew.angle[2]) + jackscrew.locknut_od / 2', jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width - jackscrew.locknut_thickness, jackscrew.anchor_bearing_z - jackscrew.anchor_bearing_width]
   hatch: steel
+  hatch_variant: alt   # 1.4 P6 (Designer P2r 1.4 item 3)
 - id: guide_c
   name: top guide (radial only)
   shape: 'top-guide block D42 x 30 hatched, one radial bearing (row guide_bearing_c), journal through with no shoulder: radial support only (Designer 1.3 (a) section 7)'
@@ -1226,6 +1312,7 @@ features:
   section_u:
   - [-(frame_upper.radius + profile.width / 2), -(frame_upper.radius - profile.width / 2), 0, frame_upper.member_length_rail]
   hatch: extrusion
+  hatch_variant: alt   # 1.4 P6 (Designer P2r 1.4 item 3)
 - id: liftmotor_c
   name: NEMA 17 lift motor
   shape: 'NEMA 17 cut through its axis: body 42 x 48 (z 181 to 229 at liftmotor.coupling_length 36), pilot (row liftmotor_pilot_c), shaft (row liftmotor_shaft_c) up into the coupling, hung on four M3 standoffs 36 long from the block underside; 42 square dashed under the block in the inset (Designer 1.3 (a) section 7)'
@@ -1237,7 +1324,7 @@ features:
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: liftmotor.body / 2 * sqrt(2), footprint: round}
   neighbours:
   - {id: standoffs_c, class: C, source: standoffs on the motor face}
-  - {id: liftmotor_pilot_c, class: C, source: pilot on the motor face}
+  - {id: liftmotor_pilot_c, class: C, kind: one_body, source: 'pilot on the motor face; cut with the motor, one body (1.4 P6, Designer P2r 1.4 item 2)'}
   sense:
   - {pred: mirror_about_radial, axes: inset_plan, source: 'Topologist 1.3 (c) P5T FIX 6 (P6 declaration)'}
   - {pred: below, of: anchor_c}
@@ -1247,6 +1334,7 @@ features:
   notes: ['place: the S1 circumscribing circle r 29.70 (FIX 4b), admitted for F and G relief; the drawn 42 square lies inside it (narrower than its footprint: TP-n, left to M1)']
   axes: [section, inset_plan]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1)
   projection_by_axes: {section: rectangle, inset_plan: rectangle}
 - id: liftmotor_pilot_c
   name: NEMA 17 pilot
@@ -1266,6 +1354,7 @@ features:
   moves: false
   axes: [section]
   section_class: cut
+  hatch: steel   # 1.4 P6 (Designer P2r 1.4 item 1)
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[2]', half_width: 'liftmotor.pilot[0] / 2', footprint: round}
 - id: liftmotor_shaft_c
   name: NEMA 17 shaft
@@ -1355,6 +1444,7 @@ features:
   moves: false
   axes: [section, inset_plan]
   section_class: cut
+  hatch: plastic   # 1.4 P6 (Designer P2r 1.4 item 1)
   projection_by_axes: {section: rectangle, inset_plan: rectangle}
   place: {r_in: liftsync.switch_r_in, r_out: liftsync.switch_r_out, theta: 'jackscrew.angle[2]', half_width: liftsync.switch_width / 2, footprint: radial}
   sub_artists: [lever]
@@ -1474,6 +1564,7 @@ features:
   z_rule: {z_min: jackscrew.anchor_z, z_max: jackscrew.top_guide_z}
   place: {r_in: jackscrew.pitch_radius, theta: 'jackscrew.angle[0]', half_width: jackscrew.nominal / 2, footprint: round}
   label: {text: screw pitch r, key: jackscrew.pitch_radius, fmt: .0f}
+  label_theta: 28   # 1.4 P6 rule (l) anchor (Designer P0D section 4): the inset leader off gridline y 80
   neighbours:
   - {id: anchor_b, class: N, source: screw bottom in the anchor bearings}
   - {id: nut_housing_b, class: N, source: screw through the housing (plan)}

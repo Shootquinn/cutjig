@@ -95,6 +95,16 @@ def load_spec(path):
             for item in (items if isinstance(items, list) else [items]):
                 if isinstance(item, dict):
                     bad += [f"row {rid} {fld}: key {k!r}" for k in item if not isinstance(k, str)]
+        # 1.4 P6 (SW-1 class at any depth: the s4 collet.slits.label `on:` key arrived as True): every nested mapping of a
+        # row (sub-artist blocks, their labels, section_true, plane_cuts) holds string keys only
+        stack = [(f"row {rid} {k}", v) for k, v in row.items() if isinstance(k, str) and k not in ("sense", "neighbours", "place", "label", "z_rule")] if isinstance(row, dict) else []
+        while stack:
+            at, v = stack.pop()
+            if isinstance(v, dict):
+                bad += [f"{at}: key {k!r}" for k in v if not isinstance(k, str)]
+                stack += [(f"{at}.{k}", x) for k, x in v.items()]
+            elif isinstance(v, list):
+                stack += [(f"{at}[{i}]", x) for i, x in enumerate(v)]
     if bad:
         raise ValueError(f"spec {Path(path).name}: non-string keys (quote on/off/yes/no or rename): " + "; ".join(bad))
     return spec

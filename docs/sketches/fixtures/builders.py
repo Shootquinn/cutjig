@@ -946,10 +946,16 @@ def _s1_draw_pose(P, spec, stack, pid):
         if f is None or "z_min" not in f:
             continue
         z0, z1 = f["z_min"], f["z_max"]
-        if fid == "keepout":
-            r = P.get("icd.keepout_radius")
+        if fid in ("keepout", "wingnut_sweep"):   # 1.4 P6: wingnut_sweep, the sweep envelope reference row (TP1.4-2)
+            r = P.get("icd.keepout_radius") if fid == "keepout" else P.get("wingnut.sweep_clear_radius")
             for x in (-r, r):
                 sc.draw(fid, Line2D([x, x], [z0, z1]), ax)
+            continue
+        if row.get("section_true") and row["kind"] != "line":   # 1.4 P6: the true section, as the S1 r9 script draws it
+            pcs = sc.section_true_polys(P, stack["poses"][pid]["vars_z_A"], row)
+            dz = z0 - min(v[1] for _, _, pts in pcs for v in pts)   # a _s1_ctx shift plant moves the drawn pieces
+            for name, _side, pts in pcs:
+                sc.draw_piece(ax, fid, name, [(x, z + dz) for x, z in pts])
             continue
         if row["kind"] == "line":
             # r3: a placed line (pinion centreline) runs over its projected x; else over its depth band or the footprint
@@ -1185,7 +1191,15 @@ def k7_b14():
 def k7_b15():
     """TP1.1-3 drawing: the r1 holder (bore at the core OD down to the holder bottom, no bore_cone) against the C
     declaration: 313.12 mm2 per side inside the collet cone, every pose."""
-    return _s1_ctx(spec_mut=lambda s: next(r for r in s["features"] if r["id"] == "holder").pop("bore_cone"))
+    # 1.4 P6: S1 r9 draws the holder as its true section, so the bore_cone field no longer shapes the drawing; the plant is
+    # the class of the r1 drawing on the true section: the holder cone piece drawn 5 mm toward the axis on each side,
+    # into the collet cone (collet|holder C, overlap), every pose.
+    c = _s1_ctx()
+    for fig in c.figs.values():
+        for a in sc.tagged(fig.axes[0]).get("holder", []):
+            if getattr(a, sc.PIECE_ATTR, None) == "cone":
+                a.set_xy([(x - 5 * (1 if x > 0 else -1), z) for x, z in a.get_xy()])
+    return c
 
 
 def k5_b6():
@@ -2036,7 +2050,7 @@ def _script_ctx(s, spec_mut=None, script_paths=None):
     """Live sketch drawn by its own script (s1_side_poses.py or s2_plan.py build), the drawing of record. With no
     spec_mut the drawing comes from draw_cache (one build per worker, a fresh copy per call)."""
     import importlib
-    name = {"s1": "s1_side_poses", "s2": "s2_plan", "s3": "s3_jackscrew_section"}[s]
+    name = {"s1": "s1_side_poses", "s2": "s2_plan", "s3": "s3_jackscrew_section", "s4": "s4_base_section"}[s]
     mod = importlib.import_module(name)
 
     def make():
