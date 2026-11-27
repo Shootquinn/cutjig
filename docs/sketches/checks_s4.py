@@ -96,12 +96,21 @@ def slice_numbers(P):
     min_top = plate_top + g("core.min_exposed")
     cs_ = check_stack.core_stop_z_A(P)
     sl_axis, sl_surf = min_top - pole, min_top - surf
-    sliceable = cs_ + g("core.length_install") - min_top
+    sliceable = cs_ + g("core.length_install") - min_top   # tip span between the first and the last cut (P3b FIX 5)
     car_top = cs_ + g("carrier.length")
+    stub075 = pole - cs_                                    # 0.75 m stub on the stop after the last cut at the stop (axis)
+    top_car075 = car_top + stub075                          # that stub moved onto the carrier (axis)
     return {"kerf_centre": kc, "dome_pole": pole, "sphere_at_core_surface": surf, "plate_top": plate_top, "min_core_top": min_top,
             "slice_min_axis": sl_axis, "slice_min_surface": sl_surf, "min_on_stop": min_top - cs_,
             "min_on_stop_collar_datum": check_stack.collar_top_z_A(P) + g("core.min_exposed") - cs_,
-            "sliceable_075": sliceable, "slices_075": math.floor(sliceable / sl_axis + 1e-9),
+            "min_on_carrier": min_top - car_top,
+            # Loftsman P3b FIX 5: cuts = intervals + 1 (fencepost); tip span = sliceable
+            "sliceable_075": sliceable, "first_tip_075": cs_ + g("core.length_install") - (min_top - tip), "last_tip_075": tip,
+            "slices_075": math.floor(sliceable / sl_axis + 1e-9) + 1, "removed_075": cs_ + g("core.length_install") - pole,
+            "stub_075_axis": stub075, "stub_075_surface": surf - cs_,
+            "stub_075_on_carrier_top": top_car075, "stub_075_on_carrier_exposure": top_car075 - plate_top,
+            "stub_075_on_carrier_slices": math.floor((top_car075 - min_top) / sl_axis + 1e-9) + 1 if top_car075 >= min_top else 0,
+            "stub_075_on_carrier_removed": top_car075 - pole,
             "core_top_on_stop": cs_ + g("core.length_short"), "core_top_on_carrier": car_top + g("core.length_short"),
             "stub_axis": pole - car_top, "stub_surface": surf - car_top}
 
@@ -181,7 +190,11 @@ def reported(ctx):
     items = {}
     items["q10_min_on_stop"] = {"value": f"{n['min_on_stop']:.2f} (nut-plate datum); {n['min_on_stop_collar_datum']:.2f} (collar-top datum)", "basis": "nut-plate top + core.min_exposed - core stop", "tag": "DERIVED"}
     items["advance"] = {"value": (f"option D: the lift lowers the drill one slice per cut; least slice {n['slice_min_axis']:.2f} (axis), {n['slice_min_surface']:.2f} (r {P.get('core.diameter_nominal') / 2:g}); "
-                                  f"0.75 m core sliceable {n['sliceable_075']:.2f}, {n['slices_075']} slices; 100 mm core on the carrier: 1 slice, stub {n['stub_axis']:.2f} (axis) to {n['stub_surface']:.2f} (surface)"),
+                                  f"0.75 m core: tip span {n['sliceable_075']:.2f} ({n['first_tip_075']:.2f} to {n['last_tip_075']:.2f}), {n['slices_075']} slices, {n['removed_075']:.2f} removed; "
+                                  f"stub on the stop {n['stub_075_axis']:.2f} (axis) to {n['stub_075_surface']:.2f} (surface), below the least core on the stop {n['min_on_stop']:.2f}; "
+                                  f"on the carrier: top {n['stub_075_on_carrier_top']:.2f}, exposure {n['stub_075_on_carrier_exposure']:.2f}, {n['stub_075_on_carrier_slices']} slices, {n['stub_075_on_carrier_removed']:.2f} removed "
+                                  f"(least core on the carrier {n['min_on_carrier']:.2f}); "
+                                  f"100 mm core on the carrier: 1 slice, stub {n['stub_axis']:.2f} (axis) to {n['stub_surface']:.2f} (surface)"),
                         "basis": "F4: core top >= kerf centre + stop.margin at the stop", "tag": "DERIVED"}
     T = P.get("loads.torque_design") * 1000.0
     r = P.get("core.diameter_nominal") / 2
@@ -193,8 +206,20 @@ def reported(ctx):
     items["liner_wall"] = {"value": f"D = d + {P.get('liner.od_offset'):g}, free wall {P.get('liner.wall'):.2f}; d 105 core: no liner ({105 + P.get('liner.od_offset'):g} > collets.envelope_max {P.get('collets.envelope_max'):g})",
                            "basis": "liner.od_offset, liner.wall", "tag": "DERIVED"}
     items["kept_axial"] = {"value": "as S3 r7 kept_axial (1000 N at the cut; F_stall + W 1287.05 / 1104.16 N)", "basis": "checks_s3.loads (P4 reads it from the S3 spec)", "tag": "DERIVED"}
-    for k, txt in (("q10_core_top", None), ("q10_exposed", None), ("grip_length", None), ("cut_case_seat", None)):
+    for k, txt in (("q10_core_top", None), ("q10_exposed", None), ("grip_length", None), ("cut_case_seat", None), ("seat_bearing", None)):
         items[k] = {"value": None, "basis": "needs the drawing (1.4 (d))", "tag": None}
+    try:   # Designer P3a FIX 3: drawn bearing widths (sketch_common.bearing_width, the K8 rests_on min_bearing read)
+        bw = []
+        for pose, mem, seat in (("carrier", "carrier", "core_seat"), ("liner", "carrier", "core_seat_105"), ("liner", "liner", "core_seat_105")):
+            if pose in _poses(ctx):
+                w, _ = sc.bearing_width(_pieces(ctx, pose, mem), _pieces(ctx, pose, seat))
+                bw.append(f"{pose}: {mem} on {seat} {w:.2f}")
+        T_kept = 1287.05   # F_stall + W, Design Notes 32 (S3 r7 record), DECLARED
+        r0, r1 = (P.get("liner.collet_d") + P.get("collet.grip_window_hi")) / 2 - P.get("collet.core_seat_width"), (P.get("core.diameter_nominal") + P.get("collet.grip_window_hi")) / 2
+        items["seat_bearing"] = {"value": "; ".join(bw) + f"; all of F_stall + W on the carrier annulus r {r0:.2f} to {r1:.2f}: {T_kept / (math.pi * (r1 ** 2 - r0 ** 2)):.2f} MPa",
+                                 "basis": "drawn bottom and seat faces (MEASURED); stress DERIVED", "tag": "MEASURED"}
+    except (Absent, Content):
+        pass
     try:
         pose = _poses(ctx)[0]
         ez = lambda fid: [_z_A(ctx, z) for z in sc.extent_z(_pieces(ctx, pose, fid))]  # noqa: E731

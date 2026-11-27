@@ -1007,3 +1007,102 @@ def term_angle_rad0():
     """K8 B (P0r SWE FIX 8 (b), class repeat; orchestrator ruling): one span_lt terminator drawn with connectionstyle
     angle,angleA=90,angleB=0,rad=0. Angle carries rad 0, so only the Arc3 class test catches it (K8-B94's Angle3 has no rad)."""
     return _span_arrow(connectionstyle="angle,angleA=90,angleB=0,rad=0")
+
+
+# ======================================================================== P2f (research/sean/cr_scratch/step1.4_engineer_spec_fixes.md)
+# Designer P3a FIX 3 (K8 rests_on min_bearing) and FIX 2 (hatch_variant, hatch adjacency premise lint). Each B run on the
+# pre-change code (copy of docs/sketches/ before the first P2f edit): there the min_bearing field and the adjacency lint do
+# not exist and cut_hatch ignores hatch_variant, so every B reads clean (P2f file, section 2).
+
+def _s3_bearing(narrow=None):
+    """Live S3 (script) with min_bearing 0.25 on the core_750 rests_on core_seat predicate; narrow: the drawn core
+    (and its hidden copy) redrawn at u -narrow to narrow, bottom still on the seat top."""
+    def sm(sp):
+        r = next(f for f in sp["features"] if f["id"] == "core_750")
+        for pr in r.get("sense") or []:
+            if pr.get("pred") == "rests_on":
+                pr["min_bearing"] = 0.25
+    c = _builders()._script_ctx("s3", spec_mut=sm)
+    if narrow is not None:
+        for a in sc.tagged(_ax_of(c, "section"))["core_750"]:
+            a.set_x(-narrow)
+            a.set_width(2 * narrow)
+    return c
+
+
+def bearing_z():
+    """K8 Z (Designer P3a FIX 3): S3 core_750 rests_on core_seat with min_bearing 0.25; drawn bearing 3.00 per side."""
+    return _s3_bearing()
+
+
+def bearing_b_narrow():
+    """K8 B (Designer P3a FIX 3): the S3 core drawn at r 46.50 inside the ledge r 47 to 50, bottom on the seat top
+    (z-only rests_on passes; bearing 0 on both sides)."""
+    return _s3_bearing(narrow=46.5)
+
+
+def _hadj(variant="alt", one_body=True, mat_r="aluminium", drawn=None):
+    """Synthetic section Axes in the S4 base-stack layout (both sides): receiver wall r 67.29 to 80 (40 to 76.50), holder
+    tube r 56.75 to 67.04 (49.09 to 153.84; 0.25 to the wall), collar r 55 to 76.20 (153.84 to 159.84, on the tube).
+    Issues: hatch_adjacency_issues (absent on the pre-change code: no issue), hatch_alt_issues, and every drawn hatch
+    against cut_hatch (section convention 1). drawn: the receiver's drawn hatch (default: cut_hatch)."""
+    import matplotlib.pyplot as plt
+    from types import SimpleNamespace
+    rec = {"id": "receiver", "section_class": "cut", "hatch": mat_r}
+    if variant is not None:
+        rec["hatch_variant"] = variant
+    spec = {"section": {"hatch_alt": {"aluminium": "||", "plastic": "--"}, "hatch_adjacency_gap": 0.5},
+            "features": [rec, {"id": "holder", "section_class": "cut", "hatch": "aluminium",
+                               "neighbours": [dict({"id": "collar", "class": "C"}, **({"kind": "one_body"} if one_body else {}))]},
+                         {"id": "collar", "section_class": "cut", "hatch": "aluminium"}]}
+    ctx = SimpleNamespace(spec=spec, stack=None, P=None)
+    fig, ax = plt.subplots()
+    geo = {"receiver": (67.29, 80.0, 40.0, 76.5), "holder": (56.75, 67.04, 49.09, 153.84), "collar": (55.0, 76.2, 153.84, 159.84)}
+    rows = {r["id"]: r for r in spec["features"]}
+    for fid, (r0, r1, z0, z1) in geo.items():
+        h = sc.cut_hatch(ctx, "p", rows[fid], None)
+        if fid == "receiver" and drawn is not None:
+            h = drawn
+        for s in (1, -1):
+            u0, u1 = sorted((s * r0, s * r1))
+            sc.draw(fid, Rectangle((u0, z0), u1 - u0, z1 - z0, hatch=h, fill=False), ax)
+    iss = list(sc.hatch_adjacency_issues(ctx, ax, "p")) if hasattr(sc, "hatch_adjacency_issues") else []
+    iss += sc.hatch_alt_issues(spec)
+    for fid in geo:
+        want = sc.cut_hatch(ctx, "p", rows[fid], None)
+        for a in sc.tagged(ax)[fid]:
+            if a.get_hatch() != want:
+                iss.append(f"p/{fid}: hatch {a.get_hatch()!r} against material {rows[fid]['hatch']} {want!r} (section convention 1)")
+                break
+    plt.close(fig)
+    return _res("K8", bool(iss), " | ".join(iss) if iss else "hatch adjacency, hatch_variant and drawn hatches clean", len(iss))
+
+
+def hadj_z():
+    """K8 Z (Designer P3a FIX 2): receiver hatch_variant alt (||) 0.25 from the holder (//); collar|holder one_body."""
+    return _hadj()
+
+
+def hadj_b_variant():
+    """K8 B (Designer P3a FIX 2, B1 form): receiver variant removed: receiver|holder // at 0.25."""
+    return _hadj(variant=None)
+
+
+def hadj_b_one_body():
+    """K8 B (Designer P3a FIX 2, one_body branch): the collar|holder one_body declaration removed: // at 0.00."""
+    return _hadj(one_body=False)
+
+
+def hvar_b_no_alt():
+    """K8 B (Designer P3a FIX 2, lint clause): hatch_variant on a brass receiver, no brass alternate."""
+    return _hadj(mat_r="brass")
+
+
+def hvar_b_value():
+    """K8 B (Designer P3a FIX 2, lint clause): hatch_variant 'alt2' (unknown); the receiver then draws // beside the holder."""
+    return _hadj(variant="alt2")
+
+
+def hvar_b_drawn():
+    """K8 B (Designer P3a FIX 2, cut_hatch branch): hatch_variant alt declared, receiver drawn // (the plain pattern)."""
+    return _hadj(drawn="//")

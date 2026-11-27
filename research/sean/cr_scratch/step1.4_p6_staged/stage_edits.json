@@ -1,0 +1,271 @@
+{
+ "s1": [
+  {
+   "why": "x1_edits_at_p6 item 1 (holder z_max to the tube top 153.84)",
+   "old": "z_rule: {z_min: holder_bottom, z_max: \"holder_bottom + holder.length + holder.flange_thickness\"}",
+   "new": "z_rule: {z_min: holder_bottom, z_max: \"holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play\"}"
+  },
+  {
+   "why": "x1_edits_at_p6 item 2 (collar z_min to the ring underside 153.84)",
+   "old": "z_rule: {z_min: \"collar_top - collar.top_above_plate\", z_max: collar_top}",
+   "new": "z_rule: {z_min: \"collar_top - collar.thickness\", z_max: collar_top}"
+  },
+  {
+   "why": "x1_edits_at_p6 item 3 (tie offset)",
+   "old": "feature: holder, edge: z_max, offset: \"nut.plate_thickness + washer.thickness - nut.washer_pocket_depth + collar.top_above_plate\", source: \"Loftsman 1.1 (e) LF1.1-1; check_stack.collar_top_z_A (test_P18)\"}",
+   "new": "feature: holder, edge: z_max, offset: \"collar.thickness\", source: \"Loftsman 1.1 (e) LF1.1-1; check_stack.collar_top_z_A (test_P18); 1.4 S4-b (s4_spec x1_edits_at_p6 item 3): the holder z_max is the tube top, collar.thickness below the collar top\"}"
+  },
+  {
+   "why": "holder keys read by section_true",
+   "old": "keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate]",
+   "new": "keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate, receiver.register_bore_radius, register.g_reg, chain.t_h, chain.H, nut.lift_play]"
+  },
+  {
+   "why": "collar keys",
+   "old": "keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z]",
+   "new": "keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z, collar.thickness]"
+  },
+  {
+   "why": "receiver keys (S4 list less the root-label key)",
+   "old": "keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]",
+   "new": "keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z, receiver.register_chamfer, thread.major, thread.minor, thread.pitch, thread.run_turns, thread.runout_land, thread.lead_in_length, chain.h]"
+  },
+  {
+   "why": "collet keys (S4 list less the slit tick keys)",
+   "old": "keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha]",
+   "new": "keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha, fit.seat_clearance, fit.model_contact_gap, collet.foot_ring_width, holder.bottom_above_floor_Kmax, core.diameter_nominal, core.tol, collet.c_i, collet.grip_window_hi, collet.min_wall, collet.chamfer_cap, collet.chamfer_band_lo, collet.chamfer_band_hi, collet.core_seat_height]"
+  },
+  {
+   "why": "core_seat keys",
+   "old": "keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z]",
+   "new": "keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z, collet.grip_window_hi]"
+  },
+  {
+   "why": "wingnut keys (S4 list less the wing and window keys)",
+   "old": "keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span]",
+   "new": "keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z]"
+  },
+  {
+   "why": "receiver section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "    depth: [\"-receiver.shoulder_od / 2\", \"receiver.shoulder_od / 2\"]",
+   "new": "    depth: [\"-receiver.shoulder_od / 2\", \"receiver.shoulder_od / 2\"]\n    section_true:\n      floor: [receiver.floor_hole_dia / 2, receiver.spigot_od / 2, base.plate_thickness, receiver_floor]\n      wall: [receiver.register_bore_radius, receiver.spigot_od / 2, receiver_floor, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land]\n      land: [receiver.register_bore_radius, thread.minor / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch]\n      thread: [receiver.register_bore_radius, thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch, receiver_floor + receiver.rim_above_floor - thread.lead_in_length]\n      rim: {poly: [[receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [(thread.major - chain.h) / 2, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius + receiver.register_chamfer, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - receiver.register_chamfer]]}\n      shoulder: [receiver.spigot_od / 2, receiver.shoulder_od / 2, receiver.shoulder_z, receiver.shoulder_z + receiver.shoulder_thickness]"
+  },
+  {
+   "why": "collet section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "    depth: [\"-receiver.register_bore_radius\", \"receiver.register_bore_radius\"]",
+   "new": "    depth: [\"-receiver.register_bore_radius\", \"receiver.register_bore_radius\"]\n    section_true:\n      foot: [(core.diameter_nominal + collet.grip_window_hi) / 2, receiver.register_bore_radius - fit.seat_clearance, receiver_floor, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap]\n      cone: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (holder.bottom_above_floor_Kmax - fit.model_contact_gap - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)']]}\n      top: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2], ['(core.diameter_nominal + collet.grip_window_hi) / 2 + min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)', receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2]]}"
+  },
+  {
+   "why": "core_seat section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "    depth: [\"-core.diameter_nominal / 2\", \"core.diameter_nominal / 2\"]",
+   "new": "    depth: [\"-core.diameter_nominal / 2\", \"core.diameter_nominal / 2\"]\n    section_true:\n      ledge: [(core.diameter_nominal + collet.grip_window_hi) / 2 - collet.core_seat_width, (core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor, receiver_floor + collet.core_seat_height]"
+  },
+  {
+   "why": "holder section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "    depth: [\"-holder.flange_od / 2\", \"holder.flange_od / 2\"]",
+   "new": "    depth: [\"-holder.flange_od / 2\", \"holder.flange_od / 2\"]\n    section_true:\n      cone: {poly: [[receiver.register_bore_radius - register.g_reg - chain.t_h, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H], [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder_bottom + chain.H]]}\n      tube: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H, holder_bottom + holder.length]\n      flange: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder.flange_od / 2, holder_bottom + holder.length, holder_bottom + holder.length + holder.flange_thickness]\n      neck: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play]"
+  },
+  {
+   "why": "collar section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "    depth: [\"-collar.od / 2\", \"collar.od / 2\"]",
+   "new": "    depth: [\"-collar.od / 2\", \"collar.od / 2\"]\n    section_true:\n      ring: [collar.id / 2, collar.od / 2, collar_top - collar.thickness, collar_top]"
+  },
+  {
+   "why": "wingnut section_true (as s4_spec.yaml; Sean STOP S4-A scope (i)); section_true_note (Designer P3a FIX 5 a)",
+   "old": "    depth: [\"-wingnut.sweep_clear_radius\", \"wingnut.sweep_clear_radius\"]",
+   "new": "    depth: [\"-wingnut.sweep_clear_radius\", \"wingnut.sweep_clear_radius\"]\n    section_true:\n      body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z]\n      relief: [nut.relief_r, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]\n      pocket_rim: [nut.washer_pocket_od / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness]\n      plate: [nut.plate_hole_dia / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness, collar_top - collar.top_above_plate]\n      skirt: {poly: [[wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo + nut.skirt_rim], [wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi]]}\n    section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'"
+  },
+  {
+   "why": "receiver|holder C -> G 0.25",
+   "old": "- {id: holder, class: C, g_min: 0, source: \"R6: holder tube in the register bore (S1 draws holder OD = register bore; build_parts/holder.py has g_reg 0.25), flange above the rim (TP1.1-3)\"}",
+   "new": "- {id: holder, class: G, g_min: 0.25, source: \"S4-b, S4-c (Sean STOP S4-A, Design Notes 34): holder OD r 67.04 in the register bore r 67.29, register.g_reg 0.25; flange 8.59 above the rim\"}"
+  },
+  {
+   "why": "receiver|wingnut N -> C (wing nut in true section)",
+   "old": "- {id: wingnut, class: N, source: \"R6: wing nut threaded on the receiver\"}",
+   "new": "- {id: wingnut, class: C, source: \"S4-c (Design Notes 34): thread flank contact drawn on the receiver major cylinder r 74.79; fit.c_r 0.35 and fit.g_a 0.30 not drawn\"}"
+  },
+  {
+   "why": "holder|wingnut N -> G 0.50",
+   "old": "- {id: wingnut, class: N, source: \"R6: wing nut over the holder flange\"}",
+   "new": "- {id: wingnut, class: G, g_min: 0.50, source: \"S4-c (Design Notes 34): pocket floor 0.50 above the flange top, radial 1.00 at the plate hole\"}"
+  },
+  {
+   "why": "collar|holder F -> C one_body",
+   "old": "- {id: holder, class: F, source: \"TP1.1-3: section rows, N refused. S1 draws the holder to its flange top (145.09 z_A) and the collar from the plate top (153.09): the nut plate lies between, 8.00. build_parts/holder.py runs the tube up to the collar underside; the Designer rules the tube above the flange at M1\"}",
+   "new": "- {id: holder, class: C, kind: one_body, source: \"S4-b (Design Notes 34): collar ring fused on the holder tube top 153.84 (build_parts/holder.py)\"}"
+  },
+  {
+   "why": "collar|wingnut N -> G 0.75",
+   "old": "- {id: wingnut, class: N, source: \"wing nut under the collar ring, over the holder flange\"}",
+   "new": "- {id: wingnut, class: G, g_min: 0.75, source: \"S4-c (Design Notes 34): nut.lift_play 0.75, nut-plate top to the collar underside\"}"
+  },
+  {
+   "why": "holder stand-in note retired (Design Notes 25 S4-b)",
+   "old": "  - \"Holder section is a stand-in; S4 governs (build_parts/holder.py: OD 67.04, inner cone 62.04 to 56.75 over chain.H 30, bore 56.75, tube through the nut plate to the collar). Designer M1 r2 section 7; no S1 check value moves.\"",
+   "new": "  - \"Holder, collar, collet, core seat, receiver and wing nut carry their true sections (section_true, as s4_spec.yaml; S4-b, Sean STOP S4-A, Design Notes 34); the r8 stand-in note is retired at S1 r9. No S1 check value moves (S1-4, S1-5b, drill_head|collar 25.000 unchanged).\""
+  },
+  {
+   "why": "C-meaning note (S4-c landed)",
+   "old": "  - \"Class C means 'located on that face'. Fit values (holder g_reg 0.25, spigot hole 0.10 per side, collar lift play) belong to S4 (base stack) and Step 4 tolerancing; no C pair states a clearance. Designer M1 r2 section 7 (Loftsman R2-1).\"",
+   "new": "  - \"Class C means 'located on that face'. Base-stack fits are set in s4_spec.yaml (S4-c, Design Notes 34: receiver|holder G 0.25, receiver_spigot|base_plate G 0.10, wingnut|holder G 0.50, collar|wingnut G 0.75); other fits belong to Step 4 tolerancing. Designer M1 r2 section 7 (Loftsman R2-1).\""
+  },
+  {
+   "why": "holder|washer C (Designer P3a FIX 5 c)",
+   "old": "    neighbours:  (row holder)",
+   "new": "    neighbours:\n      - {id: washer, class: C, source: \"S4-c: flange top bears on the PTFE washer at pose K (as s4_spec.yaml)\", face: {z: \"holder_bottom + holder.length + holder.flange_thickness\", side: washer on the flange top}}"
+  },
+  {
+   "why": "wingnut|washer C (Designer P3a FIX 5 c)",
+   "old": "    neighbours:  (row wingnut)",
+   "new": "    neighbours:\n      - {id: washer, class: C, source: \"S4-c: washer in the pocket, three press pads (contact class P, ASSEMBLY.md; as s4_spec.yaml)\"}"
+  },
+  {
+   "why": "washer row added after wingnut (Designer P3a FIX 5 c)",
+   "old": "  - id: collar  (row after wingnut)",
+   "new": "  - id: washer\n    name: PTFE washer\n    shape: PTFE ring r 68.40 to 71.60, 1.30 thick, z 145.09 to 146.39, cut, in the nut-plate pocket, 0.50 proud onto the holder flange top; notch at theta 37 off the plane (Designer 1.4 (a) section 2 row washer)\n    kind: cylinder\n    axis: Z\n    projection: rectangle\n    keys: [washer.id, washer.od, washer.thickness, holder.length, holder.flange_thickness]\n    z_rule: {z_min: holder_bottom + holder.length + holder.flange_thickness, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness}\n    section_true: {ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]}\n    depth: [-washer.od / 2, washer.od / 2]\n    label: {text: PTFE washer, key: washer.thickness, fmt: .1f}\n    neighbours: []\n    sense: [{pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: 'Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0'}]\n    chain: [axial]\n    moves: false\n    notes: [\"shared with s3 and s4 (X1); S1 draws the wing nut in true section from r9, so the washer it stands on is drawn (Designer P3a FIX 5 c)\"]\n  - id: collar"
+  }
+ ],
+ "s3": [
+  {
+   "why": "x1_edits_at_p6 item 1 (holder z_max to the tube top 153.84)",
+   "old": "z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness}",
+   "new": "z_rule: {z_min: holder_bottom, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play}"
+  },
+  {
+   "why": "x1_edits_at_p6 item 2 (collar z_min to the ring underside 153.84)",
+   "old": "z_rule: {z_min: collar_top - collar.top_above_plate, z_max: collar_top}",
+   "new": "z_rule: {z_min: collar_top - collar.thickness, z_max: collar_top}"
+  },
+  {
+   "why": "holder keys read by section_true",
+   "old": "keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate]",
+   "new": "keys: [seat.holder_bottom_R, holder.stroke_gap_R, witness.zone_high, holder.length, holder.flange_od, holder.flange_thickness, cone.alpha, nut.plate_thickness, washer.thickness, nut.washer_pocket_depth, collar.top_above_plate, receiver.register_bore_radius, register.g_reg, chain.t_h, chain.H, nut.lift_play]"
+  },
+  {
+   "why": "collar keys",
+   "old": "keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z]",
+   "new": "keys: [collar.od, collar.id, collar.top_above_plate, stop.collar_top_z, collar.thickness]"
+  },
+  {
+   "why": "receiver keys (S4 list less the root-label key)",
+   "old": "keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z]",
+   "new": "keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z, receiver.register_chamfer, thread.major, thread.minor, thread.pitch, thread.run_turns, thread.runout_land, thread.lead_in_length, chain.h]"
+  },
+  {
+   "why": "collet keys (S4 list less the slit tick keys)",
+   "old": "keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha]",
+   "new": "keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha, fit.seat_clearance, fit.model_contact_gap, collet.foot_ring_width, holder.bottom_above_floor_Kmax, core.diameter_nominal, core.tol, collet.c_i, collet.grip_window_hi, collet.min_wall, collet.chamfer_cap, collet.chamfer_band_lo, collet.chamfer_band_hi, collet.core_seat_height]"
+  },
+  {
+   "why": "core_seat keys",
+   "old": "keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z]",
+   "new": "keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z, collet.grip_window_hi]"
+  },
+  {
+   "why": "wingnut keys (S4 list; S3 r8 draws the -X wing and the theta 90 window, P2f)",
+   "old": "keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span]",
+   "new": "keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, nut.washer_window_width, nut.washer_window_count, wingnut.wing_count, wingnut.wing_height, wingnut.wing_thickness]"
+  },
+  {
+   "why": "receiver section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "  depth: [-receiver.shoulder_od / 2, receiver.shoulder_od / 2]",
+   "new": "  depth: [-receiver.shoulder_od / 2, receiver.shoulder_od / 2]\n  section_true:\n    floor: [receiver.floor_hole_dia / 2, receiver.spigot_od / 2, base.plate_thickness, receiver_floor]\n    wall: [receiver.register_bore_radius, receiver.spigot_od / 2, receiver_floor, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land]\n    land: [receiver.register_bore_radius, thread.minor / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch - thread.runout_land, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch]\n    thread: [receiver.register_bore_radius, thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch, receiver_floor + receiver.rim_above_floor - thread.lead_in_length]\n    rim: {poly: [[receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [thread.major / 2, receiver_floor + receiver.rim_above_floor - thread.lead_in_length], [(thread.major - chain.h) / 2, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius + receiver.register_chamfer, receiver_floor + receiver.rim_above_floor], [receiver.register_bore_radius, receiver_floor + receiver.rim_above_floor - receiver.register_chamfer]]}\n    shoulder: [receiver.spigot_od / 2, receiver.shoulder_od / 2, receiver.shoulder_z, receiver.shoulder_z + receiver.shoulder_thickness]"
+  },
+  {
+   "why": "collet section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "  depth: [-receiver.register_bore_radius, receiver.register_bore_radius]",
+   "new": "  depth: [-receiver.register_bore_radius, receiver.register_bore_radius]\n  section_true:\n    foot: [(core.diameter_nominal + collet.grip_window_hi) / 2, receiver.register_bore_radius - fit.seat_clearance, receiver_floor, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap]\n    cone: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (holder.bottom_above_floor_Kmax - fit.model_contact_gap - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)']]}\n    top: {poly: [[(core.diameter_nominal + collet.grip_window_hi) / 2, 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], ['receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap) - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2', 'receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)'], [receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.tol + collet.c_i - collet.grip_window_hi) / 2, receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2], ['(core.diameter_nominal + collet.grip_window_hi) / 2 + min(receiver.register_bore_radius - fit.seat_clearance - collet.foot_ring_width - (collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2 - holder.bottom_above_floor_Kmax) * sind(cone.alpha) / cosd(cone.alpha) - (core.diameter_nominal + core.tol + collet.c_i) / 2 - collet.min_wall, collet.chamfer_cap)', receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2]]}"
+  },
+  {
+   "why": "core_seat section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "  depth: [-core.diameter_nominal / 2, core.diameter_nominal / 2]",
+   "new": "  depth: [-core.diameter_nominal / 2, core.diameter_nominal / 2]\n  section_true:\n    ledge: [(core.diameter_nominal + collet.grip_window_hi) / 2 - collet.core_seat_width, (core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor, receiver_floor + collet.core_seat_height]"
+  },
+  {
+   "why": "holder section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "  depth: [-holder.flange_od / 2, holder.flange_od / 2]",
+   "new": "  depth: [-holder.flange_od / 2, holder.flange_od / 2]\n  section_true:\n    cone: {poly: [[receiver.register_bore_radius - register.g_reg - chain.t_h, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom], [receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H], [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder_bottom + chain.H]]}\n    tube: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + chain.H, holder_bottom + holder.length]\n    flange: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), holder.flange_od / 2, holder_bottom + holder.length, holder_bottom + holder.length + holder.flange_thickness]\n    neck: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play]"
+  },
+  {
+   "why": "collar section_true (as s4_spec.yaml; Sean STOP S4-A scope (i))",
+   "old": "  depth: [-collar.od / 2, collar.od / 2]",
+   "new": "  depth: [-collar.od / 2, collar.od / 2]\n  section_true:\n    ring: [collar.id / 2, collar.od / 2, collar_top - collar.thickness, collar_top]"
+  },
+  {
+   "why": "wingnut section_true (as s4_spec.yaml; Sean STOP S4-A scope (i)); section_true_note (Designer P3a FIX 5 a)",
+   "old": "  depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]",
+   "new": "  depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]\n  section_true:\n    body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z]\n    relief: [nut.relief_r, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]\n    pocket_rim: [nut.washer_pocket_od / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness]\n    plate: [nut.plate_hole_dia / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness, collar_top - collar.top_above_plate]\n    skirt: {poly: [[wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo + nut.skirt_rim], [wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi]]}\n  section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'"
+  },
+  {
+   "why": "receiver|holder C -> G 0.25",
+   "old": "- {id: holder, class: C, g_min: 0, source: 'R6: holder tube in the register bore (S1 draws holder OD = register bore; build_parts/holder.py has g_reg 0.25), flange above the rim (TP1.1-3)'}",
+   "new": "- {id: holder, class: G, g_min: 0.25, source: 'S4-b, S4-c (Sean STOP S4-A, Design Notes 34): holder OD r 67.04 in the register bore r 67.29, register.g_reg 0.25; flange 8.59 above the rim'}"
+  },
+  {
+   "why": "receiver|wingnut N -> C",
+   "old": "- {id: wingnut, class: N, source: 'R6: wing nut threaded on the receiver'}",
+   "new": "- {id: wingnut, class: C, source: 'S4-c (Design Notes 34): thread flank contact drawn on the receiver major cylinder r 74.79; fit.c_r 0.35 and fit.g_a 0.30 not drawn'}"
+  },
+  {
+   "why": "holder|wingnut N -> G 0.50",
+   "old": "- {id: wingnut, class: N, source: 'R6: wing nut over the holder flange'}",
+   "new": "- {id: wingnut, class: G, g_min: 0.50, source: 'S4-c (Design Notes 34): pocket floor 0.50 above the flange top, radial 1.00 at the plate hole'}"
+  },
+  {
+   "why": "collar|holder F -> C one_body",
+   "old": "- {id: holder, class: F, source: 'TP1.1-3: section rows, N refused. S1 draws the holder to its flange top (145.09 z_A) and the collar from the plate top (153.09): the nut plate lies between, 8.00. build_parts/holder.py runs the tube up to the collar underside; the Designer rules the tube above the flange at M1'}",
+   "new": "- {id: holder, class: C, kind: one_body, source: 'S4-b (Design Notes 34): collar ring fused on the holder tube top 153.84 (build_parts/holder.py)'}"
+  },
+  {
+   "why": "collar|wingnut N -> G 0.75",
+   "old": "- {id: wingnut, class: N, source: 'wing nut under the collar ring, over the holder flange'}",
+   "new": "- {id: wingnut, class: G, g_min: 0.75, source: 'S4-c (Design Notes 34): nut.lift_play 0.75, nut-plate top to the collar underside'}"
+  },
+  {
+   "why": "wingnut section_class unsectioned -> cut, hatch brass (true section)",
+   "old": "  section_class: unsectioned  (row wingnut)",
+   "new": "  section_class: cut\n  hatch: brass"
+  },
+  {
+   "why": "wingnut shape string to the drawn pieces (Designer P3a FIX 5 b)",
+   "old": "  shape: 'wing nut: body wingnut.body_od x nut.overall_height, two wings to span 230, sweep radius 115 as dashed extent lines'\n",
+   "new": "  shape: 'wing nut in true section, cut, brass (as s4_spec.yaml; build_parts/nut.py): thread body drawn at the receiver major r 74.79 to r 83.14 from 97.09; relief bore r 75.34 over 139.09 to 145.59; pocket rim r 71.90 to 83.14 over 145.59 to 146.39 on the -u side only (theta 90 washer window at +u, plane_cuts); nut plate r 68.04 to 83.14 over 146.39 to 153.09; dust skirt rim 2.0 then a slope; PTFE washer in the pocket (row washer); -X wing hidden over its whole extent, dashed, labelled (sub-artist wing); sweep r 115 as dashed extent lines (sub-artist sweep); +X wing in front of the plane (not_drawn) (Designer P3a FIX 5 b)'\n"
+  },
+  {
+   "why": "wingnut plane_cuts (Loftsman P3b FIX 2, same plane as S4), sub-artists wing and sweep (Designer P3a FIX 4, 5 b)",
+   "old": "  section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'  (row wingnut)",
+   "new": "  section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'\n  plane_cuts: [{piece: pocket_rim, side: +u, reason: 'washer window at theta 180 / wingnut.wing_count + 360 / nut.washer_window_count * k = 90 (k 0) lies on the plane, u = +Y: build_parts/nut.py box_at(90, r_pk - 1, r_body + 1, nut.washer_window_width / 2, z_pu, z_pu + pd) removes the +u pocket rim over r 70.90 to 84.14, z 145.59 to 146.39; theta 270 is solid (windows at 210, 330 are 60 deg off) (Loftsman P3b FIX 2; Designer rules the form at P2r, the alternative is the rim drawn with a drafting reason)'}]\n  sub_artists: [wing, sweep]\n  wing: {u: [-wingnut.wing_thickness / 2, wingnut.wing_thickness / 2], z: [collar_top - collar.top_above_plate - wingnut.wing_height, collar_top - collar.top_above_plate], x_band: [-wingnut.span / 2, -wingnut.body_od / 2], style: 'hidden: dashed outline over the whole extent, unfilled (occluded by the row''s own body and plate, Designer P3a D3)', label: {text: '-X wing (behind), span', key: wingnut.span, fmt: .0f, source: 'Designer P3a FIX 4: the leader lands outside the carrier outline'}, admission: 'P3a O3 (Topologist signs at (c)): (i) dashed and unfilled; (ii) drawn u and z extents equal the spec within 0.05; (iii) every vertex occluded by a section_true piece of this row (piece z band holds the vertex z, r_out > |u|, r_out <= -x_band[1]); Bs: wing solid, wing u at 9, x_band deleted, plate and body pieces deleted', source: 'Designer 1.4 (a) section 2 row wingnut; Designer P3a O3 ruling (Sean: wings drawn beyond, Design Notes 34)'}\n  sweep: {r: wingnut.sweep_clear_radius, style: dashed, source: S3 form}"
+  },
+  {
+   "why": "+X wing not_drawn (Designer P3a FIX 5 b)",
+   "old": "  - {part: \"receiver spigot below the plate top\", omit: deferred, owner: \"S4-a\", reason: \"z_A 0 to 12 inside the plate h ...",
+   "new": "  - {part: \"receiver spigot below the plate top\", omit: deferred, owner: \"S4-a\", reason: \"z_A 0 to 12 inside the plate h ...\n  - {part: \"+X wing of the wing nut\", omit: off_plane, reason: \"in front of the plane (x > 0), cut away; the -X wing is drawn beyond, hidden (Designer P3a O3, FIX 5 b; as s4_spec.yaml)\"}"
+  },
+  {
+   "why": "figure_note names the +X wing (Designer P3a FIX 5 b)",
+   "old": "receiver spigot below the plate top (S4-a). Hatch:",
+   "new": "receiver spigot below the plate top (S4-a); +X wing of the wing nut (cut away). Hatch:"
+  },
+  {
+   "why": "part list names the washer and the wing-nut sub-artists (Designer P3a FIX 5 b, c)",
+   "old": "  - {part: \"receiver, collet, core seat, holder, wing nut, collar, capture core\", row: \"receiver, collet, core_seat, holder, wingnut, collar, core_750\"}",
+   "new": "  - {part: \"receiver, collet, core seat, holder, wing nut (-X wing hidden, sweep lines), PTFE washer, collar, capture core\", row: \"receiver, collet, core_seat, holder, wingnut (sub-artists wing, sweep), washer, collar, core_750\"}"
+  },
+  {
+   "why": "holder|washer C (Designer P3a FIX 5 c)",
+   "old": "  neighbours:  (row holder)",
+   "new": "  neighbours:\n  - {id: washer, class: C, source: \"S4-c: flange top bears on the PTFE washer at pose K (as s4_spec.yaml)\", face: {z: \"holder_bottom + holder.length + holder.flange_thickness\", side: washer on the flange top}}"
+  },
+  {
+   "why": "wingnut|washer C (Designer P3a FIX 5 c)",
+   "old": "  label: {text: wing nut sweep r, key: wingnut.sweep_clear_radius, fmt: .0f}\n  neighbours: []\n",
+   "new": "  label: {text: wing nut sweep r, key: wingnut.sweep_clear_radius, fmt: .0f}\n  neighbours:\n  - {id: washer, class: C, source: \"S4-c: washer in the pocket, three press pads (contact class P, ASSEMBLY.md; as s4_spec.yaml)\"}\n"
+  },
+  {
+   "why": "washer row added after wingnut (Designer P3a FIX 5 c)",
+   "old": "- id: collar  (row after wingnut)",
+   "new": "- id: washer\n  name: PTFE washer\n  shape: PTFE ring r 68.40 to 71.60, 1.30 thick, z 145.09 to 146.39, cut, in the nut-plate pocket, 0.50 proud onto the holder flange top; notch at theta 37 off the plane (Designer 1.4 (a) section 2 row washer)\n  kind: cylinder\n  axis: Z\n  projection: rectangle\n  keys: [washer.id, washer.od, washer.thickness, holder.length, holder.flange_thickness]\n  z_rule: {z_min: holder_bottom + holder.length + holder.flange_thickness, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness}\n  section_true: {ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]}\n  depth: [-washer.od / 2, washer.od / 2]\n  label: {text: PTFE washer, key: washer.thickness, fmt: .1f}\n  neighbours: []\n  sense: [{pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: 'Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0'}]\n  chain: [axial]\n  moves: false\n  axes: [section]\n  section_class: cut\n  hatch: plastic\n- id: collar"
+  }
+ ]
+}

@@ -13,7 +13,8 @@
 # draw the true sections. S1/S3 r8-era `section` fields are copied as they stand; `section_true` carries the true section.
 #
 # New spec fields at 1.4 (b) (declared here; check_stack ignores them today; K3 to K9 and X1 read them from P4 (c)):
-#   section_true: the true section of a round row in the plane, named pieces, mirrored about u = 0 (axis-Z rows):
+#   section_true: the true section of a round row in the plane, named pieces, mirrored about u = 0 on every row that
+#     carries it (not keyed on `axis`: wingnut and core_seat carry axis null as a shared X1 field; Loftsman P3b O2):
 #     a rectangle [r_in, r_out, z_lo, z_hi], or {poly: [[r, z], ...]} a convex polygon (counter-clockwise in (r, z));
 #     z in z_A stack names. Supersedes `section` for drawing, K5, K7 and K8 on the row at P4; X1 compares it at P4 on
 #     every shared row (Sean STOP S4-A: "X1 compares section"). Drafting conventions: mated threads drawn at the
@@ -24,6 +25,13 @@
 #   poses carrier and liner: two figures at one drill pose (tip at stop.height_z); rows carry `poses` (K9 pose set).
 #   section_figures: one figure per pose; section_figure (the carrier figure) keeps the S3 single-figure readers.
 #   x1_edits_at_p6: the shared-row X1 field edits, applied to every listed spec in one save point at P6.
+#   section_true holds the revolve half-profile only (Loftsman P3b O2 (iii)); plane-dependent features are per-spec:
+#   plane_cuts: [{piece, side, reason}] a section_true piece absent on one side in this plane (outside X1).
+#   hatch_variant: alt on a cut row: every piece carries section.hatch_alt[material] (Designer P3a FIX 2).
+#   section.hatch_adjacency_gap: two separate cut bodies with equal drawn hatch within this gap are an issue (K8).
+#   min_bearing on rests_on: least radial overlap of the member's bottom face with the seat's top face per side (K8).
+#   label {template, keys, map} on a sub-artist: text printed from the keys (str.format; map turns a key value into
+#     text), anchored on the line named by `on` (Designer P3a FIX 1).
 status: "draft for sign-off at 1.4 (b): The Designer (part list) P3a, The Loftsman P3b. Written 2026-11-27 (P2)."
 sketch: s4
 script: s4_base_section.py        # K1 scans this file at 1.4 (d)
@@ -34,9 +42,10 @@ section:
   look: "from +X toward -X"
   axes: {u: "+Y, right", z: "+Z, up (z_S plotted)", toward_viewer: "+X"}
   handedness: "u x z = toward viewer: Y x Z = X (right-handed); u equals plan y"
-  convention: {cut: "hatched, one pattern per material, legend in the figure note", unsectioned: "core_100, carrier, drill head (outline over the hatch around them, ASME Y14.3)", beyond: "within 0 > x >= -profile.width, elevation, edges behind a cut part dashed; the -X wing of the wing nut lies at x -83.14 to -115, past the band (open item for the Topologist at (c): beyond_depth or not_drawn)", omitted: "in front (x > 0) and past the beyond band: not drawn, listed in the figure note"}
+  convention: {cut: "hatched, one pattern per material, legend in the figure note", unsectioned: "core_100, carrier, drill head (outline over the hatch around them, ASME Y14.3)", beyond: "within 0 > x >= -profile.width, elevation, edges behind a cut part dashed; a sub-artist with a declared x_band past the band is admitted only as a hidden outline occluded by its own row (P3a O3; Topologist signs at (c)): the -X wing of the wing nut at x -83.14 to -115", omitted: "in front (x > 0) and past the beyond band: not drawn, listed in the figure note"}
   source: "Designer 1.4 (a) section 1; Sean STOP S4-A, Design Notes 34 (section_yz; S3 machinery)"
-  hatch_alt: {aluminium: "||"}
+  hatch_alt: {aluminium: "||", plastic: "--"}   # Designer P3a FIX 2: receiver and spigot ||, liner --
+  hatch_adjacency_gap: 0.5   # Designer P3a FIX 2 (rule (h) premise lint, K8 hatch_adjacency_issues); S3 r8 carried to P6 by name
 crop: {u: [-130, 130], z_A: [-60, 330], source: "Designer 1.4 (a) section 10: floor to about 330, u +-130 with plate break lines; base-frame rails (|u| 244 to 304) outside the crop"}
 section_figure: {name: s4_base_section, pose: carrier, png: "s4_base_section_r<k>.png", note: "figure 1: the base stack at K d+1 with the d 100 collet, the 160 carrier and the 100 mm core; drill at the stop (tip stop.height_z)"}
 section_figures:
@@ -103,7 +112,8 @@ s4_checks:
 rubric_additions:
   - "V3 (S4): the collet foot ring is at the bottom on the receiver floor and its outer cone narrows upward; the holder cone narrows upward on it (K8 taper, piece cone)"
   - "V3 (S4): the wing nut sits above the PTFE washer, which sits on the holder flange (K8 between, clears_above)"
-  - "V3 (S4): the 100 mm core and the carrier stand upright, chamfer mark at the core top, the core top above the minimum-exposure line (S4-2)"
+  - "V4 (S4): the carrier stands on the core stop, gripped by the collet; the 100 mm core stands on the carrier, chamfer mark at the top; the core top above the minimum-exposure line (Design Notes 34: the core bottom is on the carrier, not on the stop)"
+  - "V7 (S4, figure 2): the liner reads as one sleeve around carrier and core, gripped by the d 105 collet; the carrier and the liner bottoms both on the ledge"
   - "V7 (S4): the two slit ticks show one top-open slit (u > 0) and one bottom-open slit (u < 0); the receiver thread reads by its root lines (collet:slits, receiver:root)"
   - "V10 (S4): the operator rows of Designer 1.4 (a) section 11 (set a short core, advance by the lift, take the slice off at park, change a collet) (visual-only)"
   - "section handedness: viewer at +X, u = +Y right; the u > 0 slit tick is the theta 112 slit (behind the plane), the u < 0 tick theta 262 (K8 side on the sub-artist)"
@@ -113,12 +123,13 @@ reported_items:
   - {id: q10_exposed, text: "exposed length of the drawn 100 mm core above the nut-plate top against core.min_exposed 143.12 (on the stop -10.59; on the carrier 149.41)", source: "core.min_exposed, collet.core_stop_z, carrier.length; drawn core_100 and wingnut tops", needs_drawing: true}
   - {id: q10_min_on_stop, text: "minimum core length on the stop 253.71 (nut-plate datum; 260.46 at the collar-top datum)", source: "core.min_exposed, stop.collar_top_z, collar.top_above_plate, collet.core_stop_z", needs_drawing: false}
   - {id: grip_length, text: "collet straight-bore grip, d 100: 23.20 (d 105: 25.70)", source: "collet_family dims: slit_length, slit_ligament, relief_hole_dia, chamfer (collet.chamfer_*), core_seat_height", needs_drawing: true}
-  - {id: advance, text: "advance per slice and slices per core for the drawn option D: the lift lowers the drill one slice per cut; least slice under F4 76.44 on the axis, 56.02 at r 50; 0.75 m core: sliceable 496.29, 6 slices, stub 253.71 onto the carrier; 100 mm core on the carrier: 1 slice, stub 17.27 (axis) to 37.69 (surface)", source: "drill.kerf_standoff, drill.dome_pole_offset, iris.face_radius_core, stop.margin, core.length_install, core.length_short, carrier.length", needs_drawing: false}
+  - {id: advance, text: "advance per slice and slices per core for the drawn option D: the lift lowers the drill one slice per cut; least slice under F4 76.44 on the axis, 56.02 at r 50; 0.75 m core: tip span 496.29 (681.13 to 184.84), 7 slices at the F4 least slice 76.44, 572.73 removed; stub on the stop 177.27 (axis) to 197.69 (surface), onto the carrier for further slices (top 379.77, exposure 226.68, 2 slices, 160.00 removed, stub 17.27 to 37.69 left on the carrier); 253.71 is the least core that takes a cut on the stop, 93.71 on the carrier; 100 mm core on the carrier: 1 slice, stub 17.27 (axis) to 37.69 (surface) (Loftsman P3b FIX 5)", source: "drill.kerf_standoff, drill.dome_pole_offset, iris.face_radius_core, stop.margin, core.length_install, core.length_short, carrier.length", needs_drawing: false}
   - {id: carrier_torque, text: "carrier-joint shear at 10 N m: 50.9 kPa on the bottom face; liner side shear 6.37 kPa over 100", source: "loads.torque_design", needs_drawing: false}
   - {id: q5_delta, text: "collet length options: collar top, stop, minimum core on the stop and S1 park highest point per Delta 0 / 25 / 50 (159.84 / 184.84 / 209.84; 253.71 / 278.71 / 303.71; 1969.84 / 1994.84 / 2019.84 z_S); kept 32 mm (Design Notes 34)", source: "stop.collar_top_z, stop.g_stop, Designer 1.4 (a) section 7", needs_drawing: false}
   - {id: liner_wall, text: "liner per core size: D = d + 5, free wall 2.0 (drawn 2.50 at K d+1); d 105 core has no liner (110 above collets.envelope_max 106.585)", source: "liner.od_offset, liner.wall, collet.min_wall, collets.envelope_max", needs_drawing: false}
   - {id: cut_case_seat, text: "cut-case seat as drawn: collet foot on the receiver floor top (40.00), receiver shoulder underside on the plate top (12.00); spigot radial gap 0.20 in the plate hole", source: "drawn collet, receiver, receiver_spigot, base_plate (section Axes)", needs_drawing: true}
   - {id: kept_axial, text: "axial force in collet, receiver, base plate at 1000 N and at F_stall + W 1287.05 N (unchanged from S3 r7)", source: "S3 load_cases (checks_s3.loads)", needs_drawing: false}
+  - {id: seat_bearing, text: "core-seat bearing widths: carrier 3.00 (figure 1); carrier 0.50 and liner 2.50 on the d 105 ledge (figure 2); 8.15 MPa if all of F_stall + W bears on the carrier annulus", source: "drawn carrier, liner, core_seat, core_seat_105 (sketch_common.bearing_width); F_stall + W 1287.05 N (Design Notes 32) (Designer P3a FIX 3)", needs_drawing: true}
 reported:
   - "the reported_items above (RPT); no threshold, never asserted"
 
@@ -129,13 +140,13 @@ not_drawn:
   - {part: "holder M6 inserts and collar holes", omit: off_plane, reason: "at theta 45 + 90k on r 62 (holder.insert_circle_radius), off the plane"}
   - {part: "witness ruler and holder flange tick", omit: off_plane, reason: "at theta 127 (witness.azimuth_deg), off the plane"}
   - {part: "wing-nut tommy bosses", omit: off_plane, reason: "at theta 45 + 90k, off the plane"}
-  - {part: "+X wing of the wing nut", omit: off_plane, reason: "in front of the plane (x > 0), cut away; the -X wing is drawn beyond (open item at (c))"}
+  - {part: "+X wing of the wing nut", omit: off_plane, reason: "in front of the plane (x > 0), cut away; the -X wing is drawn beyond, hidden (Designer P3a O3)"}
   - {part: "collet slits other than the two ticks", omit: off_plane, reason: "12 slits at phase 52 + 30k: none in the plane; the nearest behind the plane on each side (theta 112, 262) are drawn as ticks (collet:slits), the rest are off the plane (Designer 1.4 (a) section 2a)"}
-  - {part: "washer notch, nut press pads, anti-rotation tab, windows", omit: off_plane, reason: "at theta 37 and the window azimuths, off the plane"}
-  - {part: "0.75 m install core and its 253.71 stub", omit: deferred, owner: "S1", reason: "drawn in S1 (core_750); S4 draws the Q10 100 mm core only and reports the 0.75 m slice count (Designer 1.4 (a) section 10)"}
+  - {part: "washer notch, nut press pads, anti-rotation tab, washer windows at theta 210 and 330", omit: off_plane, reason: "at theta 37 and 210, 330, off the plane; the theta 90 window is in the plane and shown by the absent +u pocket rim (wingnut plane_cuts, Loftsman P3b FIX 2)"}
+  - {part: "0.75 m install core and its 177.27 stub", omit: deferred, owner: "S1", reason: "drawn in S1 (core_750); S4 draws the Q10 100 mm core only and reports the 0.75 m slice count: 7 slices, stub on the stop 177.27 (axis) moved onto the carrier (Designer 1.4 (a) section 10; Loftsman P3b FIX 5)"}
   - {part: "push rod, pucks, liner push-pop (advance options A, B, E)", omit: deferred, owner: "Step 2", reason: "rejected at STOP S4-A (Design Notes 34: collet grip 23.20 against the least slice 56.02 to 76.44); not drawn"}
   - {part: "taller collet alternate (Q5 Delta 25, 50)", omit: deferred, owner: "Step 2", reason: "kept 32 mm collet ruled (Design Notes 34); the Delta table is a reported item"}
-figure_note: "Not drawn: base-frame rails (outside the crop); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver key slot, holder key, collet foot key (theta 37); holder M6 inserts and collar holes; witness ruler and holder flange tick; wing-nut tommy bosses; +X wing of the wing nut (cut away); collet slits other than the two ticks; washer notch, nut press pads, anti-rotation tab, windows; 0.75 m install core and its 253.71 stub (S1); push rod, pucks, liner push-pop (rejected); taller collet alternate (kept 32 mm). Advance: the lift lowers the drill one slice per cut; the core stays on the stop. Hatch: aluminium, steel, brass, plastic, nylon (legend)."
+figure_note: "Not drawn: base-frame rails (outside the crop); receiver shoulder bolts 4 x M5 (off the plane, PCD 180); receiver key slot, holder key, collet foot key (theta 37); holder M6 inserts and collar holes; witness ruler and holder flange tick; wing-nut tommy bosses; +X wing of the wing nut (cut away); collet slits other than the two ticks; washer notch, nut press pads, anti-rotation tab, washer windows at 210 and 330; 0.75 m install core and its 177.27 stub (S1); push rod, pucks, liner push-pop (rejected); taller collet alternate (kept 32 mm). Advance: the lift lowers the drill one slice per cut; the core stays on the stop. Hatch: aluminium // (receiver ||), brass, plastic oo (liner --); carrier and core unsectioned."
 
 part_list:
   - {part: "base plate with spigot-hole break at the crop", row: base_plate}
@@ -238,13 +249,14 @@ features:
   axes: [section]
   section_class: cut
   hatch: aluminium
+  hatch_variant: alt   # Designer P3a FIX 2: || against the plate // (0.20)
 - id: receiver
   name: receiver
   shape: 'receiver cup in true section, cut (Designer 1.4 (a) section 2 row receiver; build_parts/receiver.py profile): floor annulus r 40.00 to 80.00 from the plate top 12.00 to the floor top 40.00 (floor hole r 40; the spigot below 12 is row receiver_spigot); wall r 67.29 to 80.00 from 40.00 to 76.50; runout land r 67.29 to 72.29 at 76.50 to 80.50; thread zone r 67.29 to 74.79 at 80.50 to the rim 128.50, register chamfer 1.0 x 45 and thread lead-in 1.25 at the rim; shoulder r 80.00 to 100.00, z 12.00 to 20.00 on the plate top (Design Notes 32); thread root lines at r 72.29 over 80.50 to 128.50 (sub-artist receiver:root); key slot at 37 and bolts off the plane'
   kind: cylinder
   axis: Z
   projection: rectangle
-  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z, receiver.register_chamfer, thread.major, thread.minor, thread.pitch, thread.run_turns, thread.runout_land, thread.lead_in_length, chain.h]
+  keys: [base.plate_thickness, icd.floor_above_datum_a, receiver.rim_above_floor, receiver.spigot_od, receiver.floor_hole_dia, receiver.register_bore_radius, receiver.shoulder_od, receiver.shoulder_thickness, receiver.shoulder_z, receiver.register_chamfer, thread.major, thread.minor, thread.pitch, thread.run_turns, thread.runout_land, thread.lead_in_length, chain.h, thread.hand]
   z_rule: {z_min: base.plate_thickness, z_max: receiver_floor + receiver.rim_above_floor}
   section:
   - [receiver.floor_hole_dia / 2, receiver.register_bore_radius, base.plate_thickness, receiver_floor]
@@ -266,7 +278,7 @@ features:
   depth: [-receiver.shoulder_od / 2, receiver.shoulder_od / 2]
   label: {text: "receiver thread", key: thread.major, fmt: .2f}
   sub_artists: [root]
-  root: {r: thread.minor / 2, from: "receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch", to: "receiver_floor + receiver.rim_above_floor", source: "Designer 1.4 (a) section 2b: the signed screw_c:root form (K5-B37 to B39), two dashed vertical root lines at r thread.minor / 2 inside the drawn wall; label 'thread 149.58 x 8 RH, 6 turns'"}
+  root: {r: thread.minor / 2, from: "receiver_floor + receiver.rim_above_floor - thread.run_turns * thread.pitch", to: "receiver_floor + receiver.rim_above_floor", label: {template: "thread {thread.major:.2f} x {thread.pitch:.0f} {thread.hand}, {thread.run_turns:.0f} turns", keys: [thread.major, thread.pitch, thread.hand, thread.run_turns], map: {thread.hand: {right: RH, left: LH}}, source: "Designer P3a FIX 1"}, source: "Designer 1.4 (a) section 2b: the signed screw_c:root form (K5-B37 to B39), two dashed vertical root lines at r thread.minor / 2 inside the drawn wall; label 'thread 149.58 x 8 RH, 6 turns'"}
   neighbours:
   - {id: collet, class: C, g_min: 0, source: "S4-c: collet foot on the receiver floor top (axial face, the cut-case seat); radial 0.30 to the register bore (fit.seat_clearance)", face: {z: receiver_floor, side: collet foot on the receiver floor (cut case)}, poses: [carrier]}
   - {id: collet_105, class: C, g_min: 0, source: "as collet (liner figure)", poses: [liner]}
@@ -282,6 +294,7 @@ features:
   axes: [section]
   section_class: cut
   hatch: aluminium
+  hatch_variant: alt   # Designer P3a FIX 2: || against the holder // (0.25) and the plate // (0.00)
 - id: collet
   name: collet d 100
   shape: 'clamped d 100 collet (pose K d+1) in true section, cut, both walls (Designer 1.4 (a) section 2 row collet; build_parts/collet_family.py dims(p, 100) with the clamp shift 0.50 = (core.tol + collet.c_i - collet.grip_window_hi) / 2 on bore and cone): foot ring r 50.50 to 66.99, z 40.00 to 41.995 (0.30 radial to the register bore); outer cone r 63.29 at 41.995 narrowing upward at cone.alpha 10 to r 58.00 at the top 72.00; straight bore r 50.50 from the core-seat top 42.50 to the chamfer start 65.70 (the grip, 23.20); 45 deg chamfer to r 56.80 at the top face; top face r 56.80 to 58.00 (collet.min_wall 1.2 before the clamp shift); ledge r 47.50 to 50.50 is row core_seat; slit ticks: sub-artist collet:slits (Designer 1.4 (a) section 2a)'
@@ -316,6 +329,8 @@ features:
     - {side: "-u", theta: "receiver.key_offset_deg + 15 + 7 * 360 / collet.slit_count", open: bottom, from: receiver_floor, to: "receiver_floor + collet.slit_length"}
     tick_length: collet.relief_hole_dia
     u: "r_mid sin(theta), r_mid the wall mid-radius at the line's mid-height"
+    u_form_open: "+u line: Loftsman P3b FIX 1, the projected line u +51.32 leaves the drawn hull above 66.52; form (a) schematic at the top-face mid-radius u +57.40 or (b) the projected line ended on the chamfer edge at 66.52, returned to The Designer and The Topologist (P2f section 5)"
+    label: {template: "{collet.slit_count:.0f} slits, alternating, {collet.slit_length:.0f} long", keys: [collet.slit_count, collet.slit_length], on: "-u", source: "Designer P3a FIX 1 (printed from the keys); anchored on the -u line, which passes its admission in either +u form"}
     source: "Designer 1.4 (a) section 2a: nearest slit behind the plane on each side, opposite types (theta 112 top-open, z 47.00 to 72.00; theta 262 bottom-open, z 40.00 to 65.00); one dashed vertical line per side from the open face to the relief-hole centre, a horizontal tick 8.0 (collet.relief_hole_dia) at the closed end; label '12 slits, alternating, 25 long'. The Topologist signs the admission at (c). Slit k at phi0 + 360 k / collet.slit_count, phi0 = receiver.key_offset_deg + 15 (build_parts/collet_family.py build_solid; the 15 is a literal there, no params leaf); even k opens at the top face (k 2, theta 112), odd k at the foot (k 7, theta 262)"
   neighbours:
   - {id: core_seat, class: C, kind: one_body, g_min: 0, source: "S4-c: one body, the ledge is the collet bore bottom"}
@@ -324,7 +339,7 @@ features:
   sense:
   - {pred: taper, narrows: up, piece: cone, source: "TP-2 ruling (Design Notes 22); collet_family.dims r(z) = r0 - (z - z_cone) tan(cone.alpha); Designer 1.4 (a) section 12"}
   - {pred: below, of: holder, piece: foot, source: "Designer 1.4 (a) section 12: foot ring under the cone, narrow end up (foot below the holder)"}
-  - {pred: rests_on, seat: receiver, seat_piece: floor, tol: 0.05, source: "Designer 1.4 (a) section 12: collet z_min on the receiver floor top within 0.05"}
+  - {pred: rests_on, seat: receiver, seat_piece: floor, tol: 0.05, min_bearing: 0.25, source: "Designer 1.4 (a) section 12: collet z_min on the receiver floor top within 0.05; min_bearing 0.25 (Designer P3a FIX 3, ASSUMED)"}
   - {pred: vertical_edge, piece: cone, edge: inner, tol: 0.05, source: "S4-d adopted (Sean STOP S4-A): both bore edges between the core-seat top and the chamfer start keep u constant within 0.05 (TP1.1-4)"}
   chain: [axial]
   moves: false
@@ -359,7 +374,7 @@ features:
   kind: cone
   axis: Z
   projection: trapezoid
-  keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha, fit.seat_clearance, fit.model_contact_gap, collet.foot_ring_width, holder.bottom_above_floor_Kmax, liner.collet_d, core.tol, collet.c_i, collet.grip_window_hi, collet.min_wall, collet.chamfer_cap, collet.core_seat_height, collet.slit_count]
+  keys: [icd.floor_above_datum_a, collet.slit_length, collet.slit_ligament, collet.relief_hole_dia, receiver.register_bore_radius, cone.alpha, fit.seat_clearance, fit.model_contact_gap, collet.foot_ring_width, holder.bottom_above_floor_Kmax, liner.collet_d, core.tol, collet.c_i, collet.grip_window_hi, collet.min_wall, collet.chamfer_cap, collet.core_seat_height, collet.slit_count, receiver.key_offset_deg]
   z_rule: {z_min: receiver_floor, z_max: receiver_floor + collet.slit_length + collet.slit_ligament + collet.relief_hole_dia / 2}
   section_true:
     foot: ["(liner.collet_d + collet.grip_window_hi) / 2", "receiver.register_bore_radius - fit.seat_clearance", receiver_floor, "receiver_floor + holder.bottom_above_floor_Kmax - fit.model_contact_gap"]
@@ -386,7 +401,7 @@ features:
   sense:
   - {pred: taper, narrows: up, piece: cone, source: "as collet"}
   - {pred: below, of: holder, piece: foot, source: "as collet"}
-  - {pred: rests_on, seat: receiver, seat_piece: floor, tol: 0.05, source: "as collet"}
+  - {pred: rests_on, seat: receiver, seat_piece: floor, tol: 0.05, min_bearing: 0.25, source: "as collet"}
   - {pred: vertical_edge, piece: cone, edge: inner, tol: 0.05, source: "S4-d, as collet"}
   chain: [axial]
   moves: false
@@ -482,22 +497,30 @@ features:
   hatch: aluminium
 - id: wingnut
   name: wing nut
-  shape: 'wing nut cut through its body (Designer 1.4 (a) section 2 row wingnut; build_parts/nut.py profile): thread bore drawn at the receiver major r 74.79 (mated-thread convention; true crest r 72.64, fit.c_r 0.35), body to r 83.14 from the skirt bottom 97.09 to the pocket floor 145.59; pocket rim r 71.90 to 83.14 over 145.59 to 146.39 (washer pocket r 68.04 to 71.90, 0.80 deep, open); nut plate r 68.04 to 83.14 over 146.39 to 153.09; dust skirt r 83.14 to 95.14 over 102.09 to 111.09; -X wing beyond at u +-7, z 113.09 to 153.09 (sub-artist wingnut:wing, dashed where the core is in front); sweep r 115 as dashed extent lines (sub-artist wingnut:sweep, S3 form)'
+  shape: 'wing nut cut through its body (Designer 1.4 (a) section 2 row wingnut; build_parts/nut.py profile): thread bore drawn at the receiver major r 74.79 (mated-thread convention; true crest r 72.64, fit.c_r 0.35), body to r 83.14 from the skirt bottom 97.09 to the pocket floor 145.59; relief bore r 75.34 over 139.09 to 145.59 (body r 74.79 to 83.14 below 139.09); pocket rim r 71.90 to 83.14 over 145.59 to 146.39 on the -u side only (the theta 90 washer window removes it at +u, plane_cuts; washer pocket r 68.04 to 71.90, 0.80 deep, holds the washer); nut plate r 68.04 to 83.14 over 146.39 to 153.09; dust skirt r 83.14 to 95.14: rim 2.0 at 102.09 to 104.09, sloping to the body at 111.09; -X wing beyond at u +-7, z 113.09 to 153.09, hidden over its whole extent, dashed (sub-artist wingnut:wing, labelled -X wing (behind), span 230); sweep r 115 as dashed extent lines (sub-artist wingnut:sweep, S3 form)'
   kind: prism
   axis: null
   projection: rectangle
-  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, wingnut.wing_height, wingnut.wing_thickness]
+  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, nut.washer_window_width, nut.washer_window_count, wingnut.wing_count, wingnut.wing_height, wingnut.wing_thickness]
   z_rule: {z_min: collar_top - collar.top_above_plate - nut.overall_height, z_max: collar_top - collar.top_above_plate}
   section_true:
-    body: [thread.major / 2, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height", "collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth"]
+    body: [thread.major / 2, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height", "collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z"]
+    relief: [nut.relief_r, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z", "collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth"]
     pocket_rim: [nut.washer_pocket_od / 2, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth", "collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness"]
     plate: [nut.plate_hole_dia / 2, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness", collar_top - collar.top_above_plate]
-    skirt: [wingnut.body_od / 2, nut.skirt_r_out, "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo", "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi"]
-  section_true_note: "the wing nut is not in the ruled scope list (holder, collar, collet, receiver wall); its true section is drawn in S4 and, for the X1 class, staged for S1 r9 and S3 r8 (open item for the Designer at P3a)"
+    skirt:
+      poly:
+      - [wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo"]
+      - [nut.skirt_r_out, "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo"]
+      - [nut.skirt_r_out, "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo + nut.skirt_rim"]
+      - [wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi"]
+  section_true_note: "true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)"
+  plane_cuts:
+  - {piece: pocket_rim, side: "+u", reason: "washer window at theta 180 / wingnut.wing_count + 360 / nut.washer_window_count * k = 90 (k 0) lies on the plane, u = +Y: build_parts/nut.py box_at(90, r_pk - 1, r_body + 1, nut.washer_window_width / 2, z_pu, z_pu + pd) removes the +u pocket rim over r 70.90 to 84.14, z 145.59 to 146.39; theta 270 is solid (windows at 210, 330 are 60 deg off) (Loftsman P3b FIX 2; Designer rules the form at P2r, the alternative is the rim drawn with a drafting reason)"}
   depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]
   label: {text: wing nut sweep r, key: wingnut.sweep_clear_radius, fmt: .0f}
   sub_artists: [wing, sweep]
-  wing: {u: ["-wingnut.wing_thickness / 2", "wingnut.wing_thickness / 2"], z: ["collar_top - collar.top_above_plate - wingnut.wing_height", collar_top - collar.top_above_plate], x_band: ["-wingnut.span / 2", "-wingnut.body_od / 2"], style: "beyond: solid where visible, dashed behind core_100 and carrier", source: "Designer 1.4 (a) section 2 row wingnut; beyond the 60 band (open item)"}
+  wing: {u: ["-wingnut.wing_thickness / 2", "wingnut.wing_thickness / 2"], z: ["collar_top - collar.top_above_plate - wingnut.wing_height", collar_top - collar.top_above_plate], x_band: ["-wingnut.span / 2", "-wingnut.body_od / 2"], style: "hidden: dashed outline over the whole extent, unfilled (occluded by the row's own body and plate, Designer P3a D3)", label: {text: "-X wing (behind), span", key: wingnut.span, fmt: .0f, source: "Designer P3a FIX 4: the leader lands outside the carrier outline"}, admission: "P3a O3 (Topologist signs at (c)): (i) dashed and unfilled; (ii) drawn u and z extents equal the spec within 0.05; (iii) every vertex occluded by a section_true piece of this row (piece z band holds the vertex z, r_out > |u|, r_out <= -x_band[1]); Bs: wing solid, wing u at 9, x_band deleted, plate and body pieces deleted", source: "Designer 1.4 (a) section 2 row wingnut; Designer P3a O3 ruling (Sean: wings drawn beyond, Design Notes 34)"}
   sweep: {r: wingnut.sweep_clear_radius, style: dashed, source: "S3 form"}
   neighbours:
   - {id: washer, class: C, source: "S4-c: washer in the pocket, three press pads 2.40 mm3 designed (contact class P, ASSEMBLY.md)"}
@@ -545,12 +568,12 @@ features:
   mark: {z: core_stop + carrier.length, source: "bond line at the carrier top (mark admission M1 to M5, Topologist 1.3 P0T section 4)"}
   neighbours:
   - {id: core_seat, class: C, source: "S4-c: carrier bottom on the core-seat ledge (axial face, core weight)", poses: [carrier]}
-  - {id: core_seat_105, class: C, source: "liner figure: the carrier bottom bears on the ledge r 50.00 to 50.50 only (0.50 radial; open item)", poses: [liner]}
+  - {id: core_seat_105, class: C, source: "liner figure: bearing annulus r 50.00 to 50.50 (0.50, 157.9 mm2); the liner bears on r 50.50 to 53.00 (812.9 mm2); worst case 1287.05 N on the carrier annulus 8.15 MPa (Designer P3a O5)", poses: [liner]}
   - {id: liner, class: C, source: "cast-on liner around carrier and core (liner ID 101 = carrier d 101)", poses: [liner]}
   - {id: drill_head, class: N, source: "carrier top 202.50 is 17.66 above the cutter tip 184.84 at the stop: the second cut runs into the carrier (sacrificial, R12; Designer 1.4 (a) section 9)"}
   sense:
-  - {pred: rests_on, seat: core_seat, tol: 0.05, poses: [carrier], source: "S4-2 (a); Designer 1.4 (a) section 12"}
-  - {pred: rests_on, seat: core_seat_105, tol: 0.05, poses: [liner], source: "S4-2 (a), liner figure"}
+  - {pred: rests_on, seat: core_seat, tol: 0.05, min_bearing: 0.25, poses: [carrier], source: "S4-2 (a); Designer 1.4 (a) section 12; min_bearing 0.25, half the least drawn bearing 0.50 (Designer P3a FIX 3, ASSUMED)"}
+  - {pred: rests_on, seat: core_seat_105, tol: 0.05, min_bearing: 0.25, poses: [liner], source: "S4-2 (a), liner figure; drawn bearing 0.50 (r 50.00 to 50.50)"}
   chain: [axial]
   moves: false
   axes: [section]
@@ -572,7 +595,7 @@ features:
   - {id: drill_head, class: N, source: "core top 302.50 inside the drill bore above the cutter tip at the stop: the slice being cut (Designer 1.4 (a) section 9)"}
   - {id: liner, class: C, source: "cast-on liner, bonded over the side (liner ID 101)", poses: [liner]}
   sense:
-  - {pred: rests_on, seat: carrier, tol: 0.05, source: "S4-2 (a); Designer 1.4 (a) section 12: core upright on the carrier"}
+  - {pred: rests_on, seat: carrier, tol: 0.05, min_bearing: 0.25, source: "S4-2 (a); Designer 1.4 (a) section 12: core upright on the carrier"}
   - {pred: above, of: carrier, source: "core above its carrier"}
   chain: [axial]
   moves: false
@@ -595,13 +618,14 @@ features:
   - {id: core_seat_105, class: C, source: "liner bottom r 50.50 to 53.00 on the d 105 ledge"}
   - {id: drill_head, class: N, source: "liner top with the core top inside the drill bore (cut with each slice, R12)"}
   sense:
-  - {pred: rests_on, seat: core_seat_105, tol: 0.05, source: "liner on the d 105 core seat"}
+  - {pred: rests_on, seat: core_seat_105, tol: 0.05, min_bearing: 0.25, source: "liner on the d 105 core seat; drawn bearing 2.50 (r 50.50 to 53.00)"}
   chain: [axial]
   moves: false
   poses: [liner]
   axes: [section]
   section_class: cut
   hatch: plastic
+  hatch_variant: alt   # Designer P3a FIX 2: -- against collet_105 and core_seat_105 oo (0.00)
 - id: drill_head
   name: drill head
   shape: 'cutter and iris head at the stop (tip 184.84 z_A, stop.height_z), unsectioned outline, cutter teeth strip at the bottom; 25.00 above the collar top (stop.g_stop) (Designer 1.4 (a) section 2 row drill_head; as s3_spec.yaml)'

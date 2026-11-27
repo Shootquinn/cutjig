@@ -4948,6 +4948,11 @@ def k8(ctx):
                     d = extent_z(me)[0] - extent_z(other)[1]
                     if abs(d) > pr.get("tol", TOL_Z):
                         issues.append(f"{pose}/{fid} rests_on {other_id}: bottom minus seat top {d:.3f} mm")
+                    if pr.get("min_bearing") is not None:   # 1.4 P2f (Designer P3a FIX 3): radial bearing, not z only
+                        w, per = bearing_width(me, other)
+                        if w < float(pr["min_bearing"]) - 1e-9:
+                            issues.append(f"{pose}/{fid} rests_on {other_id}: bearing width {w:.3f} mm on the seat top face "
+                                          f"(per side {', '.join(f'{v:.3f}' for v in per) or 'none'}), needs >= {float(pr['min_bearing']):g} (min_bearing)")
                 elif kind == "mirror_about_axis":
                     x0 = centroid(other)[0]
                     pts = [p for poly in me for p in poly]
@@ -5259,6 +5264,75 @@ def occlusion_issues(ctx, ax, pose):
     return out
 
 
+def face_spans(polys, z, tol=TOL_Z):
+    """Merged x intervals of the horizontal polygon edges lying at height z (within tol)."""
+    sp = []
+    for q in polys:
+        n = len(q)
+        for i in range(n):
+            a, b = q[i], q[(i + 1) % n]
+            if abs(a[1] - z) <= tol and abs(b[1] - z) <= tol and abs(a[0] - b[0]) > 1e-9:
+                sp.append([min(a[0], b[0]), max(a[0], b[0])])
+    sp.sort()
+    out = []
+    for s in sp:
+        if out and s[0] <= out[-1][1] + 1e-9:
+            out[-1][1] = max(out[-1][1], s[1])
+        else:
+            out.append(s)
+    return out
+
+
+def bearing_width(me, seat):
+    """1.4 P2f (Designer P3a FIX 3): radial bearing of a member on its seat as drawn. The member's bottom-face spans
+    (horizontal edges at its z_min) overlapped with the seat's top-face spans (at its z_max), per side of the member's
+    centroid x (a round row drawn mirrored about its axis). Returns (least side width, [width per side with a member
+    face]); 0 when a side has a member face and no seat face under it."""
+    zb, zt = extent_z(me)[0], extent_z(seat)[1]
+    mb, st = face_spans(me, zb), face_spans(seat, zt)
+    x0 = centroid(me)[0]
+    per = []
+    for lo, hi in ((-math.inf, x0), (x0, math.inf)):
+        ms = [(max(a, lo), min(b, hi)) for a, b in mb if min(b, hi) - max(a, lo) > 1e-9]
+        if not ms:
+            continue
+        per.append(sum(max(0.0, min(b1, b2) - max(a1, a2)) for a1, b1 in ms for a2, b2 in st))
+    return (min(per) if per else 0.0), per
+
+
+def hatch_adjacency_issues(ctx, ax, pose):
+    """1.4 P2f (Designer P3a FIX 2, rule (h) premise lint): two cut rows that are separate bodies (no one_body declaration
+    either way) drawn with equal hatch patterns within section.hatch_adjacency_gap mm of each other read as one solid.
+    Runs on a section Axes whose spec declares section.hatch_adjacency_gap (S4 from 1.4 (b); S3 r8 at P6, carried by
+    name). Returns issues."""
+    gap = ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap")
+    if gap is None:
+        return []
+    rows = [r for r in ctx.spec.get("features", []) if r.get("section_class") == "cut"]
+    ob = {frozenset((r["id"], n["id"])) for r in ctx.spec.get("features", []) for n in (r.get("neighbours") or []) if n.get("kind") == "one_body"}
+    drawn = {}
+    for r in rows:
+        arts = [a for a in _area_artists(ax, r["id"]) if not getattr(a, "_sc_hidden_copy", False) and a.get_hatch()]
+        if arts:
+            drawn[r["id"]] = [(a.get_hatch(), P) for a in arts for P in artist_polys(a) if len(P) >= 3]
+    out, ids = [], list(drawn)
+    for i, a in enumerate(ids):
+        for b in ids[i + 1:]:
+            if frozenset((a, b)) in ob:
+                continue
+            best = None
+            for ha, pa in drawn[a]:
+                for hb, pb in drawn[b]:
+                    if ha == hb:
+                        d = min_distance(pa, pb)
+                        if best is None or d < best[0]:
+                            best = (d, ha)
+            if best is not None and best[0] <= float(gap) + 1e-9:
+                out.append(f"{pose}: {a}|{b}: separate cut bodies with the same hatch {best[1]!r} {best[0]:.2f} mm apart "
+                           f"(<= section.hatch_adjacency_gap {float(gap):g}); set hatch_variant on one (Designer P3a FIX 2)")
+    return out
+
+
 def hatch_alt_table(spec):
     """section.hatch_alt {material: pattern} (1.3 (h) r2, Topologist TP1.3-14): the alternate pattern a hatch_split row
     carries on its pieces above the split. Values are The Designer's."""
@@ -5279,8 +5353,10 @@ def cut_hatch(ctx, pose, row, a):
     """Hatch a cut artist carries: HATCH[material]; on a hatch_split row, a piece wholly above the split carries
     section.hatch_alt[material] (when declared)."""
     mat = row.get("hatch") or "steel"
-    zs = hatch_split_z(ctx, pose, row)
     alt = hatch_alt_table(ctx.spec).get(mat)
+    if row.get("hatch_variant") == "alt" and alt:   # 1.4 P2f (Designer P3a FIX 2): the whole row carries the alternate
+        return alt
+    zs = hatch_split_z(ctx, pose, row)
     if zs is not None and alt:
         polys = [q for q in artist_polys(a) if len(q) >= 3]
         if polys and min(v[1] for q in polys for v in q) >= zs - TOL_Z:
@@ -5313,6 +5389,11 @@ def hatch_alt_issues(spec):
     for r in (spec or {}).get("features", []):
         if r.get("hatch_split") and r.get("section_class") == "cut" and not alt.get(r.get("hatch") or "steel"):
             out.append(f"{r['id']}: hatch_split declared with no section.hatch_alt for {r.get('hatch') or 'steel'} (The Designer, TP1.3-14)")
+        hv = r.get("hatch_variant")   # 1.4 P2f (Designer P3a FIX 2)
+        if hv is not None and hv != "alt":
+            out.append(f"spec error: {r['id']}: hatch_variant {hv!r} (known: alt)")
+        elif hv and r.get("section_class") == "cut" and not alt.get(r.get("hatch") or "steel"):
+            out.append(f"{r['id']}: hatch_variant declared with no section.hatch_alt for {r.get('hatch') or 'steel'} (The Designer, P3a FIX 2)")
     return out
 
 
@@ -5555,6 +5636,9 @@ def section_convention_issues(ctx, ax, pose):
             out.append(f"{pose}/{fid}: cut row the plane x = 0 does not cut (depth x [{dep[0]:.2f}, {dep[1]:.2f}]) (section convention 1)")
     out += occlusion_issues(ctx, ax, pose)   # 1.3 (h) r2: clause (6), Topologist TP1.3-11
     out += [f"{pose}: {m}" for m in hatch_alt_issues(ctx.spec)]   # 1.3 (h) r2: TP1.3-14
+    adj = hatch_adjacency_issues(ctx, ax, pose)   # 1.4 P2f: Designer P3a FIX 2 premise lint
+    n += 1 if ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap") is not None else 0
+    out += adj
     return n, out
 
 

@@ -1,0 +1,32 @@
+{
+ "live": {
+  "specs": [
+   "s1",
+   "s2",
+   "s3",
+   "s4"
+  ],
+  "result": "pass",
+  "reason": "70 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2, s3), base_plate plan_poly (only in s2, s3, s4), keepout place (only in s2, s3)",
+  "section_true_equal": {}
+ },
+ "staged_p6": {
+  "specs": [
+   "s1",
+   "s2",
+   "s3",
+   "s4"
+  ],
+  "result": "pass",
+  "reason": "71 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s3, s2), base_plate plan_poly (only in s3, s4, s2), keepout place (only in s3, s2)",
+  "section_true_equal": {
+   "receiver": true,
+   "collet": true,
+   "core_seat": true,
+   "holder": true,
+   "wingnut": true,
+   "washer": true,
+   "collar": true
+  }
+ }
+}

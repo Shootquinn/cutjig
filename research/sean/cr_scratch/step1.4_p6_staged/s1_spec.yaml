@@ -348,6 +348,7 @@ features:
       neck: [receiver.register_bore_radius - register.g_reg - chain.t_h - chain.H * sind(cone.alpha) / cosd(cone.alpha), receiver.register_bore_radius - register.g_reg, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness - nut.washer_pocket_depth + nut.plate_thickness + nut.lift_play]
     label: null
     neighbours:
+      - {id: washer, class: C, source: "S4-c: flange top bears on the PTFE washer at pose K (as s4_spec.yaml)", face: {z: "holder_bottom + holder.length + holder.flange_thickness", side: washer on the flange top}}
       - {id: wingnut, class: G, g_min: 0.50, source: "S4-c (Design Notes 34): pocket floor 0.50 above the flange top, radial 1.00 at the plate hole"}
       - {id: core_750, class: N, source: "R6: core in the holder bore"}
     sense: []
@@ -360,20 +361,40 @@ features:
     kind: prism
     axis: null
     projection: rectangle
-    keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi]
+    keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z]
     z_rule: {z_min: "collar_top - collar.top_above_plate - nut.overall_height", z_max: "collar_top - collar.top_above_plate"}
     depth: ["-wingnut.sweep_clear_radius", "wingnut.sweep_clear_radius"]
     section_true:
-      body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]
+      body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z]
+      relief: [nut.relief_r, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]
       pocket_rim: [nut.washer_pocket_od / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness]
       plate: [nut.plate_hole_dia / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness, collar_top - collar.top_above_plate]
-      skirt: [wingnut.body_od / 2, nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi]
+      skirt: {poly: [[wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo], [nut.skirt_r_out, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_lo + nut.skirt_rim], [wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.skirt_z_hi]]}
+    section_true_note: 'true section in S4, S1 and S3 (Designer P3a O4: follows from the S4-c fits Sean adopted; X1 class); revolve half-profile from build_parts/nut.py (relief bore r nut.relief_r over nut.relief_z to the pocket floor; skirt rim nut.skirt_rim then a slope to the body, Loftsman P3b FIX 3, 4)'
     label: {text: "wing nut sweep r", key: wingnut.sweep_clear_radius, fmt: ".0f"}
     neighbours:
+      - {id: washer, class: C, source: "S4-c: washer in the pocket, three press pads (contact class P, ASSEMBLY.md; as s4_spec.yaml)"}
       - {id: core_750, class: N, source: "R6: core through the wing nut bore"}
     sense: [{pred: below, of: drill_head}]
     chain: []
     moves: false
+
+  - id: washer
+    name: PTFE washer
+    shape: PTFE ring r 68.40 to 71.60, 1.30 thick, z 145.09 to 146.39, cut, in the nut-plate pocket, 0.50 proud onto the holder flange top; notch at theta 37 off the plane (Designer 1.4 (a) section 2 row washer)
+    kind: cylinder
+    axis: Z
+    projection: rectangle
+    keys: [washer.id, washer.od, washer.thickness, holder.length, holder.flange_thickness]
+    z_rule: {z_min: holder_bottom + holder.length + holder.flange_thickness, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness}
+    section_true: {ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]}
+    depth: [-washer.od / 2, washer.od / 2]
+    label: {text: PTFE washer, key: washer.thickness, fmt: .1f}
+    neighbours: []
+    sense: [{pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: 'Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0'}]
+    chain: [axial]
+    moves: false
+    notes: ["shared with s3 and s4 (X1); S1 draws the wing nut in true section from r9, so the washer it stands on is drawn (Designer P3a FIX 5 c)"]
 
   - id: collar
     name: holder collar ring
