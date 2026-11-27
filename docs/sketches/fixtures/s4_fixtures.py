@@ -171,6 +171,30 @@ def _slit_u(P, stack, pid, row, ln, rows):
     return (r_in + r_out) / 2 * math.sin(th)
 
 
+def _chord(poly, z):
+    xs, n = [], len(poly)
+    for i in range(n):
+        (x0, z0), (x1, z1) = poly[i], poly[(i + 1) % n]
+        if abs(z1 - z0) <= 1e-12:
+            if abs(z - z0) <= 1e-9:
+                xs += [x0, x1]
+        elif min(z0, z1) - 1e-9 <= z <= max(z0, z1) + 1e-9:
+            xs.append(x0 + (x1 - x0) * (z - z0) / (z1 - z0))
+    return (min(xs), max(xs)) if xs else None
+
+
+def _wall(P, stack, pid, row, z, u):
+    """The merged chord of the row's section_true pieces on the side of u at height z (z_S) that holds u."""
+    iv = sorted(c for c in (_chord(pts, z) for nm, s, pts in _st_polys(P, _names(stack, pid), row) if (s > 0) == (u > 0)) if c)
+    out = []
+    for a, b in iv:
+        if out and a <= out[-1][1] + 0.05:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return next((a, b) for a, b in out if a - 0.05 <= u <= b + 0.05)
+
+
 def _draw_subs(ax, P, spec, stack, pid, rows_here):
     rows = {r["id"]: r for r in spec["features"]}
     for row in rows_here:
@@ -184,14 +208,18 @@ def _draw_subs(ax, P, spec, stack, pid, rows_here):
             sc.draw(f"{fid}:line", Line2D([min(xs), max(xs)], [z, z], color="k", lw=1.0), ax)
         if "slits" in subs:
             sl = _slit_spec(rows, row)
-            tl = _ev(P, stack, pid, sl["tick_length"])
             for ln in sl["lines"]:
                 u = _slit_u(P, stack, pid, row, ln, rows)
                 za, zb = _zs(P, stack, pid, ln["from"]), _zs(P, stack, pid, ln["to"])
                 lo, hi = sorted((za, zb))
                 sc.draw(f"{fid}:slits", Line2D([u, u], [lo, hi], linestyle=HIDDEN, lw=0.8), ax)
                 zc = lo if ln["open"] == "top" else hi
-                sc.draw(f"{fid}:slits", Line2D([u - tl / 2, u + tl / 2], [zc, zc], lw=0.8), ax)
+                if sl.get("tick") == "wall":   # P5f (Topologist F1 a, d): dashed tick across the wall at the closed end
+                    t0, t1 = _wall(P, stack, pid, row, zc, u)
+                else:   # the P4 form (tick_length centred on the line), kept for the pre-change spec
+                    tl = _ev(P, stack, pid, sl["tick_length"])
+                    t0, t1 = u - tl / 2, u + tl / 2
+                sc.draw(f"{fid}:slits", Line2D([t0, t1], [zc, zc], linestyle=HIDDEN if sl.get("tick") == "wall" else "-", lw=0.8), ax)
         if "root" in subs:
             rt = row["root"]
             r = _ev(P, stack, pid, rt["r"]) if "r" in rt else _ev(P, stack, pid, rt["d"]) / 2
@@ -478,7 +506,8 @@ def _slit_lines(figs, pid="carrier", fid="collet"):
     ticks = [a for a in arts if a not in verts]
     pos = next(a for a in verts if a.get_xdata()[0] > 0)
     neg = next(a for a in verts if a.get_xdata()[0] < 0)
-    tick = lambda v: next(t for t in ticks if abs(sum(t.get_xdata()) / 2 - v.get_xdata()[0]) < 1e-6)  # noqa: E731
+    # P5f: the tick of a line is the horizontal tick on its side (tick: wall; the P4 form centred it on the line)
+    tick = lambda v: next(t for t in ticks if (sum(t.get_xdata()) > 0) == (v.get_xdata()[0] > 0))  # noqa: E731
     return pos, neg, tick(pos), tick(neg)
 
 
@@ -497,23 +526,26 @@ def slits_count():
 
 
 def slits_sign():
-    """K5 B (i): the +u line (theta 112) and its tick moved to u -57.40 (figure 1)."""
+    """K5 B (i): the +u line (theta 112) moved to u -57.40 and its tick mirrored to the -u wall (figure 1; P5f re-plant:
+    the tick spans the wall, so the mirrored tick passes (t) and only (i) fires)."""
     def mut(figs, *a):
         pos, _, tp, _ = _slit_lines(figs)
         u0 = pos.get_xdata()[0]
         pos.set_data([-u0, -u0], pos.get_ydata())
-        tp.set_data([x - 2 * u0 for x in tp.get_xdata()], tp.get_ydata())
+        tp.set_data([-x for x in tp.get_xdata()], tp.get_ydata())
     return s4_ctx(mutate=mut)
 
 
-def _move_pos(figs, u=None, z_hi=None, solid=False):
+def _move_pos(figs, u=None, z_hi=None, solid=False, tick=False):
+    """Plant on the +u slit line (figure 1). P5f: the tick spans the wall, so it moves with the line only when tick."""
     pos, _, tp, _ = _slit_lines(figs)
     u0 = pos.get_xdata()[0]
     lo, hi = sorted(pos.get_ydata())
     if u is not None:
         pos.set_data([u, u], [lo, hi])
-        tx = tp.get_xdata()
-        tp.set_data([x - u0 + u for x in tx], tp.get_ydata())
+        if tick:
+            tx = tp.get_xdata()
+            tp.set_data([x - u0 + u for x in tx], tp.get_ydata())
     if z_hi is not None:
         uu = pos.get_xdata()[0]
         pos.set_data([uu, uu], [lo, z_hi])
@@ -643,6 +675,179 @@ def x1_st_b():
         h = next(r for r in specs["s3"]["features"] if r["id"] == "holder")
         h["section_true"]["flange"][1] = "holder.flange_od / 2 + 1"
     return _x1_specs(ch)
+
+
+# ---------------------------------------------------------------- P5f (1.4 (c) fix pass): Software Engineer FIX 1 to 4
+
+def s4_1_b2():
+    """S4-1 B2 (SW FIX 1, E3): the collar drawn 1.00 high in figure 1: drawn collar top 160.84 against the formula."""
+    return s4_ctx(mutate=lambda figs, *a: _shift(figs, "carrier", "collar", 1.0))
+
+
+def s4_1_b3():
+    """S4-1 B3 (SW FIX 1, E4): spec s4_checks.S4-1.formula without ' + holder.flange_thickness' (151.84)."""
+    def sm(sp):
+        f = sp["s4_checks"]["S4-1"]["formula"]
+        assert " + holder.flange_thickness" in f
+        sp["s4_checks"]["S4-1"]["formula"] = f.replace(" + holder.flange_thickness", "", 1)
+    return s4_ctx(spec_mut=sm)
+
+
+def s4_2_b4():
+    """S4-2 B4 (SW FIX 4, E12): core_100 drawn 2.00 high in figure 1: (a) core bottom minus carrier top 2.000."""
+    return s4_ctx(mutate=lambda figs, *a: _shift(figs, "carrier", "core_100", 2.0))
+
+
+def s4_2_b5():
+    """S4-2 B5 (SW FIX 2, E5): the liner's area artists removed in figure 2: (c) grip member liner not drawn."""
+    def mut(figs, *a):
+        for x in _row_area(figs, "liner", "liner"):
+            x.remove()
+    return s4_ctx(mutate=mut)
+
+
+def sweep_count():
+    """K5 B (sweep (s1); SW FIX 3, Topologist F3): the +u sweep line removed in figure 1."""
+    def mut(figs, *a):
+        next(a for a in _arts(figs, "carrier", "wingnut:sweep") if a.get_xdata()[0] > 0).remove()
+    return s4_ctx(mutate=mut)
+
+
+# ---------------------------------------------------------------- P5f: Topologist F1 (slit ticks)
+
+def slits_tick_past():
+    """K5 B (F1 a, (t)): the -u tick in figure 2 drawn 1.00 past the outer cone edge (-60.23 against the wall -59.23)."""
+    def mut(figs, *a):
+        _, neg, _, tn = _slit_lines(figs, "liner", "collet_105")
+        x0, x1 = sorted(tn.get_xdata())
+        tn.set_data([x0 - 1.0, x1], tn.get_ydata())
+    return s4_ctx(mutate=mut)
+
+
+def slits_union():
+    """K5 B (F1 b, (ii)): the -u line moved to u -59.80 in figure 1 (inside the convex hull of the side pieces, outside
+    their union above z_A 64.0); the tick stays across the wall."""
+    def mut(figs, *a):
+        _, neg, _, _ = _slit_lines(figs)
+        neg.set_data([-59.80, -59.80], neg.get_ydata())
+    return s4_ctx(mutate=mut)
+
+
+def slits_front():
+    """K5 B (F1 c, (i0)): the +u spec line at slit k 1 (theta 82: in front of the plane, sin > 0), drawn faithfully."""
+    def sm(sp):
+        ln = next(r for r in sp["features"] if r["id"] == "collet")["slits"]["lines"][0]
+        assert "2 * 360" in ln["theta"]
+        ln["theta"] = ln["theta"].replace("2 * 360", "1 * 360")
+    return s4_ctx(spec_mut=sm)
+
+
+def slits_tick_solid():
+    """K5 B (F1 d): the +u tick drawn solid (figure 1)."""
+    return s4_ctx(mutate=lambda figs, *a: _slit_lines(figs)[2].set_linestyle("-"))
+
+
+# ---------------------------------------------------------------- P5f: Topologist F2, Designer D-c1 and N1 (wing)
+
+def _wing_spec(fn):
+    def sm(sp):
+        fn(next(r for r in sp["features"] if r["id"] == "wingnut"))
+    return sm
+
+
+def wing_relief_gone():
+    """K5 B (F2 a, (iii) edges): the relief piece deleted from wingnut section_true (drawn faithfully): the wing edges
+    cross 139.09 to 145.59 z_A with no occluder (the four corners stay occluded)."""
+    return s4_ctx(spec_mut=_wing_spec(lambda r: r["section_true"].pop("relief")))
+
+
+def wing_wide():
+    """K5 B (Designer D-c1, term r_out > |u|): spec wing.u -90 to 90, drawn so: no piece with r_out <= 83.14 is wider."""
+    return s4_ctx(spec_mut=_wing_spec(lambda r: r["wing"].__setitem__("u", ["-90", "90"])))
+
+
+def wing_band_inside():
+    """K5 B (Designer D-c1, term r_out <= -x_band[1]): spec wing.x_band near end -70 (inside the body r 83.14)."""
+    return s4_ctx(spec_mut=_wing_spec(lambda r: r["wing"].__setitem__("x_band", ["-wingnut.span / 2", "-70"])))
+
+
+def wing_sight_wide():
+    """K5 B ((iii) premise, F2 c): spec wing.u -60 to 60, drawn so: the edges are covered, but every occluder read has
+    asin(60 / r_in) >= 45 deg (in-front material reaches toward the plane cuts at theta 90 / 270)."""
+    return s4_ctx(spec_mut=_wing_spec(lambda r: r["wing"].__setitem__("u", ["-60", "60"])))
+
+
+def wing_hatched():
+    """K5 B (Designer N1, (i)): the -X wing drawn dashed and unfilled with hatch '//' (figure 1)."""
+    return s4_ctx(mutate=lambda figs, *a: _wing(figs).set_hatch("//"))
+
+
+def plane_cut_side():
+    """K8 B (F2 c, plane_cuts lint): the wingnut pocket_rim plane cut on side +u given theta 270."""
+    def sm(sp):
+        c = next(r for r in sp["features"] if r["id"] == "wingnut")["plane_cuts"][0]
+        c["theta"] = "270"
+    return s4_ctx(spec_mut=sm)
+
+
+# ---------------------------------------------------------------- P5f: Topologist F4 (between order)
+
+def s4_3_b8():
+    """S4-3 B (F4): washer 1.5 low and wing nut 2.5 low in figure 1: (z_mid - flange top) -0.85 and (plate bottom -
+    z_mid) -0.35, product +0.30 (the product form passed); wingnut clears_above fires as well."""
+    def mut(figs, *a):
+        _shift(figs, "carrier", "washer", -1.5)
+        _shift(figs, "carrier", "wingnut", -2.5)
+    return s4_ctx(mutate=mut)
+
+
+# ---------------------------------------------------------------- P5f: Topologist F5 (not_drawn omit: hidden)
+
+def _nd_plant(entry):
+    def sm(sp):
+        sp["not_drawn"] = list(sp.get("not_drawn") or []) + [entry]
+    return s4_ctx(spec_mut=sm)
+
+
+def hidden_in_plane():
+    """K8 B (F5 (h1)): a hidden holder insert at theta 90 (in the plane)."""
+    return _nd_plant({"part": "plant insert at theta 90", "omit": "hidden", "rows": ["holder"], "theta": [90],
+                      "r": ["holder.insert_circle_radius - holder.insert_dia / 2", "holder.insert_circle_radius + holder.insert_dia / 2"],
+                      "z": ["collar_top - collar.thickness - holder.insert_depth", "collar_top - collar.thickness"], "t": 0})
+
+
+def hidden_front_uncut():
+    """K8 B (F5 (h2)): a hidden feature at theta 0 (in front) on the unsectioned carrier, r 49.50 to 50.50, z_A 100 to 110."""
+    return _nd_plant({"part": "plant carrier feature at theta 0", "omit": "hidden", "rows": ["carrier"], "theta": [0],
+                      "r": ["carrier.diameter / 2 - 1", "carrier.diameter / 2"], "z": ["core_stop + 57.5", "core_stop + 67.5"], "t": 0})
+
+
+def hidden_unoccluded():
+    """K8 B (F5 (h3)): a hidden insert on the holder bore at theta 110, r 56.75 to 57.75, z_A 130 to 136 (in the gap
+    between carrier and holder bore: nothing drawn in front of part of it)."""
+    return _nd_plant({"part": "plant insert at theta 110", "omit": "hidden", "rows": ["holder"], "theta": [110],
+                      "r": ["holder.insert_circle_radius - 5.25", "holder.insert_circle_radius - 4.25"],
+                      "z": ["holder_bottom + 80.91", "holder_bottom + 86.91"], "t": 0})
+
+
+# ---------------------------------------------------------------- P5f: Software Engineer FIX 5 (RPT from checks_s3.loads)
+
+def deps_run_s4():
+    """DEPS Z (SW FIX 5): a live s4 run (stub, rev 0; record to a temporary wip/) lists s3_spec.yaml in deps.spec_read
+    with its SHA-256 (the RPT kept_axial and seat_bearing values read checks_s3.loads on it), and nothing else there."""
+    import json
+    import check_sketch as cs
+    import step14_fixtures as s14
+    t = s14._tmp()
+    cs.main(["s4", "--rev", "0", "--wip-dir", str(t)])   # the stub record's checks are not judged here
+    rec = json.loads((t / "s4_checks_r0.json").read_text(encoding="utf-8"))
+    sr = {(x.get("path"), x.get("sha256")) for x in (rec.get("deps") or {}).get("spec_read") or []}
+    want = {("s3_spec.yaml", cs._sha(SK / "s3_spec.yaml"))}
+    iss = [] if sr == want else [f"deps spec_read {sorted(sr)} against {sorted(want)}"]
+    kept = ((rec.get("reported_drawn") or {}).get("items") or {}).get("kept_axial") or {}
+    if "checks_s3.loads" not in str(kept.get("basis")):
+        iss.append(f"kept_axial basis {kept.get('basis')!r}")
+    return s14._res("DEPS", bool(iss), sc._summ(iss) if iss else "s4 run records deps.spec_read s3_spec.yaml (RPT kept_axial from checks_s3.loads)", len(iss))
 
 
 def full_draw():

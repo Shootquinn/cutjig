@@ -209,11 +209,32 @@ def s4_3(ctx):
     return sc.result("S4-3", not mine, sc._summ(mine) if mine else f"kept-part sense predicates hold ({', '.join(sorted(rows))})", n_issues=len(mine))
 
 
+def s3_loads(ctx):
+    """checks_s3.loads on s3_spec.yaml (the S3 load cases: W, F_stall per mu), the computing function of the S3 r7
+    kept_axial (P5f, Software Engineer FIX 5). The spec read is recorded on ctx.specs_read, so the S4 record lists
+    s3_spec.yaml in deps.spec_read and --stale flags a W or thread edit against S4."""
+    import importlib
+    from sketch_loader import load_spec
+    p = HERE / "s3_spec.yaml"
+    sr = getattr(ctx, "specs_read", None)
+    if sr is None:
+        sr = []
+        try:
+            ctx.specs_read = sr
+        except AttributeError:
+            pass
+    if p not in sr:
+        sr.append(p)
+    return importlib.import_module("checks_s3").loads(ctx.P, load_spec(p))
+
+
 def reported(ctx):
     """RPT items (spec reported_items). Arithmetic from the keys; needs_drawing items read the drawn rows and read
     'not drawn' on the stub."""
     P = ctx.P
     n = slice_numbers(P)
+    ld = s3_loads(ctx)
+    kept = {mu: ld["n"] * v["F_stall_per_screw"] + ld["W"] for mu, v in ld["thread"].items()}
     items = {}
     items["q10_min_on_stop"] = {"value": f"{n['min_on_stop']:.2f} (nut-plate datum); {n['min_on_stop_collar_datum']:.2f} (collar-top datum)", "basis": "nut-plate top + core.min_exposed - core stop", "tag": "DERIVED"}
     items["advance"] = {"value": (f"option D: the lift lowers the drill one slice per cut; least slice {n['slice_min_axis']:.2f} (axis), {n['slice_min_surface']:.2f} (r {P.get('core.diameter_nominal') / 2:g}); "
@@ -232,7 +253,8 @@ def reported(ctx):
                          "basis": "Designer 1.4 (a) section 7", "tag": "DERIVED"}
     items["liner_wall"] = {"value": f"D = d + {P.get('liner.od_offset'):g}, free wall {P.get('liner.wall'):.2f}; d 105 core: no liner ({105 + P.get('liner.od_offset'):g} > collets.envelope_max {P.get('collets.envelope_max'):g})",
                            "basis": "liner.od_offset, liner.wall", "tag": "DERIVED"}
-    items["kept_axial"] = {"value": "as S3 r7 kept_axial (1000 N at the cut; F_stall + W 1287.05 / 1104.16 N)", "basis": "checks_s3.loads (P4 reads it from the S3 spec)", "tag": "DERIVED"}
+    items["kept_axial"] = {"value": f"as S3 r7 kept_axial ({P.get('loads.axial_design'):g} N at the cut; F_stall + W " + " / ".join(f"{kept[mu]:.2f}" for mu in sorted(kept)) + " N)",
+                           "basis": "checks_s3.loads on s3_spec.yaml (F_stall total + W per mu; spec read recorded in deps)", "tag": "DERIVED"}
     for k, txt in (("q10_core_top", None), ("q10_exposed", None), ("grip_length", None), ("cut_case_seat", None), ("seat_bearing", None)):
         items[k] = {"value": None, "basis": "needs the drawing (1.4 (d))", "tag": None}
     try:   # Designer P3a FIX 3: drawn bearing widths (sketch_common.bearing_width, the K8 rests_on min_bearing read)
@@ -241,7 +263,7 @@ def reported(ctx):
             if pose in _poses(ctx):
                 w, _ = sc.bearing_width(_pieces(ctx, pose, mem), _pieces(ctx, pose, seat))
                 bw.append(f"{pose}: {mem} on {seat} {w:.2f}")
-        T_kept = 1287.05   # F_stall + W, Design Notes 32 (S3 r7 record), DECLARED
+        T_kept = max(kept.values())   # F_stall + W at the governing mu (Design Notes 32), from checks_s3.loads (P5f, SW FIX 5)
         r0, r1 = (P.get("liner.collet_d") + P.get("collet.grip_window_hi")) / 2 - P.get("collet.core_seat_width"), (P.get("core.diameter_nominal") + P.get("collet.grip_window_hi")) / 2
         items["seat_bearing"] = {"value": "; ".join(bw) + f"; all of F_stall + W on the carrier annulus r {r0:.2f} to {r1:.2f}: {T_kept / (math.pi * (r1 ** 2 - r0 ** 2)):.2f} MPa",
                                  "basis": "drawn bottom and seat faces (MEASURED); stress DERIVED", "tag": "MEASURED"}

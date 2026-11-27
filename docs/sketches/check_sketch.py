@@ -734,6 +734,7 @@ def run_sketch(args):
         rec["checks"] = results
     # 1.4 step 0 R2 (G5); P0f: the specs sym_lint reads (Loftsman P0L FIX 2) and the certifier side files (FIX 3)
     specs_read = sorted(HERE.glob("s*_spec.yaml")) if spec.get("chains") else []
+    specs_read += list(getattr(ctx, "specs_read", None) or [])   # P5f (SW FIX 5): specs a check read at run time (S4 RPT: s3_spec.yaml)
     rec["deps"] = record_deps(spec_path, script, getattr(ctx, "certifiers", None) or {}, specs_read,
                               getattr(ctx, "certifier_files", None) or {})
     write_record(rec, args.wip_dir)

@@ -4955,7 +4955,7 @@ def k8(ctx):
                     absent += 1
                     continue
                 n += 1
-                if kind == "between":   # 1.4 P4 (O6, Designer 1.4 (a) section 12): (z_mid - z_max(below)) (z_min(above) - z_mid) > 0
+                if kind == "between":   # 1.4 P4 (O6, Designer 1.4 (a) section 12); P5f: min(z_mid - z_max(below), z_min(above) - z_mid) > 0
                     lo_id, hi_id = pr.get("below"), pr.get("above")
                     lo_p = named_pieces(ax, lo_id, pr["below_piece"]) if pr.get("below_piece") else pieces(ax, lo_id or "")
                     hi_p = named_pieces(ax, hi_id, pr["above_piece"]) if pr.get("above_piece") else pieces(ax, hi_id or "")
@@ -4968,8 +4968,8 @@ def k8(ctx):
                         ez_ = extent_z(me)
                         zm = (ez_[0] + ez_[1]) / 2
                         a_, b_ = zm - extent_z(lo_p)[1], extent_z(hi_p)[0] - zm
-                        if a_ * b_ <= 0:
-                            issues.append(f"{pose}/{fid} between {lo_id} and {hi_id}: (z_mid - {lo_id} z_max) {a_:.2f} x ({hi_id} z_min - z_mid) {b_:.2f} <= 0")
+                        if min(a_, b_) <= 0:   # P5f (Topologist F4): the order, both factors > 0 (the product passed two negatives)
+                            issues.append(f"{pose}/{fid} between {lo_id} and {hi_id}: (z_mid - {lo_id} z_max) {a_:.2f}, ({hi_id} z_min - z_mid) {b_:.2f}, needs both > 0")
                     continue
                 if kind == "vertical_edge":   # 1.4 P4: S4-d (Sean STOP S4-A), the bore edge of the piece vertical
                     t = vertical_edge_issue(me, float(pr.get("tol", TOL_Z)))
@@ -5489,8 +5489,122 @@ def omitted_row_issues(ctx, parent):
     return out
 
 
-ND_OMIT = ("off_plane", "deferred")
+ND_OMIT = ("off_plane", "deferred", "hidden")
 _OTHER_STACKS = {}
+ND_SAMPLE = 2.5   # omit: hidden sample step along r and z (mm), ends included
+
+
+def _nd_steps(lo, hi, h=ND_SAMPLE):
+    n = max(1, math.ceil((hi - lo) / h - 1e-9))
+    return [lo + (hi - lo) * i / n for i in range(n + 1)]
+
+
+def hidden_occluders(ctx, parent, pose, ax):
+    """omit: hidden (h3) occluders at a pose, read from the rows drawn in the figure: [("cut", row, piece, (r, z_A) poly)]
+    the section_true revolve half-profile pieces of each drawn row (plane_cuts ignored: the occluder is the profile;
+    premise the K8 plane_cuts lint and section_true premise, drawn = spec), and [("whole", row, half-width, (z0, z1)
+    z_A)] each drawn unsectioned row, drawn whole over its depth band. Feature voids in an occluder are neglected (the
+    drafting convention, section.convention.omitted)."""
+    import check_stack as _cs
+    st = parent.stack["poses"][pose]
+    names = st["vars_z_A"]
+    drawn = tagged(ax)
+    out = []
+    for r in parent.spec.get("features", []):
+        if not applies(r, pose) or r["id"] not in drawn or r.get("kind") in NO_AREA_KINDS or r.get("reference"):
+            continue
+        if r.get("section_true"):
+            prof = {k: v for k, v in r.items() if k != "plane_cuts"}
+            for nm, side, sp in section_true_polys(ctx.P, names, prof, z_S=False):
+                if side > 0:
+                    out.append(("cut", r["id"], nm, sp))
+        elif r.get("section_class") == "unsectioned":
+            f = st["features"].get(r["id"]) or {}
+            band = (f.get("place") or {}).get("y") or f.get("depth")
+            if f.get("z_min") is None or not band:
+                continue
+            z0, z1 = sorted((_cs.from_shop_floor(f["z_min"], ctx.P), _cs.from_shop_floor(f["z_max"], ctx.P)))
+            out.append(("whole", r["id"], max(abs(v) for v in band), (z0, z1)))
+    return out
+
+
+def hidden_entry_issues(ctx, parent, e, head):
+    """P5f (Topologist F5; Designer section 3: one hidden-detail convention): not_drawn omit: hidden. Premise of omitting a
+    feature of a drawn row: it lies behind the plane and is occluded along its sight line (ASME Y14.3 omits hidden lines
+    in a section; declared sub-artists are the stated exceptions). Entry {rows (parent row ids), theta [deg expressions],
+    r [lo, hi], z [lo, hi] (z_A expressions over keys, R2-6), t (tangential half-width), source}. Samples: r and z at <=
+    ND_SAMPLE with both ends, t at -t, 0, +t (theta shifted by atan(t / r), r_f = hypot(r, t)), at every figure pose
+    where a listed row is drawn; x = r_f cos theta, u = r_f sin theta. (h1) |x| <= TOL_Z: the plane cuts the feature (draw
+    it, or list it as a plane_cuts entry). (h2) x > TOL_Z: cut away with the front half, only when every listed row
+    drawn at the pose is section_class cut (an unsectioned parent is drawn whole). (h3) x < -TOL_Z: an occluder drawn at
+    the pose covers the sample: a section_true revolve piece whose chord [a, b] at z has a < r_f - TOL_Z and b > |u| +
+    TOL_Z, or an unsectioned row drawn whole whose half-width exceeds |u| + TOL_Z over z (hidden_occluders)."""
+    import check_stack as _cs
+    out = []
+    rows = {r["id"]: r for r in parent.spec.get("features", [])}
+    need = ("rows", "theta", "r", "z")
+    if any(not e.get(k) for k in need) or "t" not in e:
+        return [f"spec error: not_drawn {head!r} hidden without {', '.join(k for k in need + ('t',) if k not in e or (k != 't' and not e.get(k)))}"]
+    unknown = [i for i in e["rows"] if i not in rows]
+    if unknown:
+        return [f"spec error: not_drawn {head!r} hidden names unknown row(s) {', '.join(unknown)}"]
+    for k in ("r", "z"):   # R2-6: bounds read keys or stack names (a stack name is evaluated from keys)
+        lit = [v for v in e[k] if not ND_KEY_REF.search(str(v)) and not re.search(r"[A-Za-z_]", str(v))]
+        if lit:
+            out.append(f"spec error: not_drawn {head!r} {k} bound {lit[0]!r} reads no key: write it as an expression over keys (R2-6)")
+    if out:
+        return out
+    for pose, fig in ctx.figs.items():
+        if pose not in parent.stack["poses"]:
+            continue
+        ax = fig.axes[0]
+        drawn = tagged(ax)
+        par = [rows[i] for i in e["rows"] if applies(rows[i], pose) and i in drawn]
+        if not par:
+            continue
+        names = parent.stack["poses"][pose]["vars_z_A"]
+        ev = lambda x: float(_cs.eval_expr(str(x), ctx.P, names))  # noqa: E731
+        r0, r1 = sorted(ev(v) for v in e["r"])
+        z0, z1 = sorted(ev(v) for v in e["z"])
+        t = abs(ev(e["t"]))
+        occ = hidden_occluders(ctx, parent, pose, ax)
+        all_cut = all(p.get("section_class") == "cut" for p in par)
+        n = inpl = front = bad = 0
+        ex = None
+        for th0 in (ev(v) for v in e["theta"]):
+            for rr in _nd_steps(r0, r1):
+                for tt in sorted({-t, 0.0, t}):
+                    th = th0 + math.degrees(math.atan2(tt, rr))
+                    rf = math.hypot(rr, tt)
+                    x, u = rf * math.cos(math.radians(th)), rf * math.sin(math.radians(th))
+                    for zz in _nd_steps(z0, z1):
+                        n += 1
+                        if abs(x) <= TOL_Z:
+                            inpl += 1
+                        elif x > TOL_Z:
+                            front += 0 if all_cut else 1
+                        else:
+                            hit = False
+                            for kind, rid, nm, g in occ:
+                                if kind == "whole":
+                                    hit = g[0] - TOL_Z <= zz <= g[1] + TOL_Z and nm > abs(u) + TOL_Z
+                                else:
+                                    c = poly_chord(g, zz)
+                                    hit = c is not None and c[0] < rf - TOL_Z and c[1] > abs(u) + TOL_Z
+                                if hit:
+                                    break
+                            if not hit:
+                                bad += 1
+                                ex = ex or (th, rf, zz)
+        if inpl:
+            out.append(f"{pose}: not_drawn {head!r} hidden: {inpl} of {n} samples in the plane (|x| <= {TOL_Z:g}): draw it or list it as a plane_cuts entry (h1)")
+        if front:
+            out.append(f"{pose}: not_drawn {head!r} hidden: {front} of {n} samples in front of the plane on an unsectioned parent "
+                       f"({', '.join(p['id'] for p in par if p.get('section_class') != 'cut')}), drawn whole: draw it (h2)")
+        if bad:
+            out.append(f"{pose}: not_drawn {head!r} hidden: {bad} of {n} samples behind the plane not occluded by a drawn row, e.g. theta "
+                       f"{ex[0]:.1f}, r {ex[1]:.2f}, z_A {ex[2]:.2f}: draw it as hidden or state its convention (h3)")
+    return out
 
 
 def _other_sketch_bands(P, sketch, ids, pose):
@@ -5532,7 +5646,8 @@ def not_drawn_band_issues(ctx, parent):
     omission is deferred to a named owner. Every not_drawn entry carries omit: off_plane (with rows: S3 row ids,
     rows_s2: S2 row ids read on their true plan outline, or x: plan x bands [lo, hi], expressions allowed) or omit:
     deferred (with owner). An off_plane band that meets the section band (x0 <= 0.05 and x1 >= -profile.width - 0.05)
-    is an issue: draw the part (beyond row) or state its convention. Deferred entries are listed, not judged."""
+    is an issue: draw the part (beyond row) or state its convention. Deferred entries are listed, not judged. P5f
+    (Topologist F5): omit: hidden, a hidden feature of a drawn row, judged at every figure pose (hidden_entry_issues)."""
     import check_stack as _cs
     spec = parent.spec or {}
     pw = ctx.P.get("profile.width") if ctx.P is not None and ctx.P.has("profile.width") else 60.0
@@ -5549,6 +5664,9 @@ def not_drawn_band_issues(ctx, parent):
         if om == "deferred":
             if not e.get("owner"):
                 out.append(f"spec error: not_drawn {head!r} deferred with no owner")
+            continue
+        if om == "hidden":   # P5f (Topologist F5, Designer section 3)
+            out += hidden_entry_issues(ctx, parent, e, head)
             continue
         bands = []
         for i in e.get("rows") or []:
@@ -5773,10 +5891,22 @@ def section_true_issues(ctx, ax, pose, row):
     """1.4 P4 (O7), premise of reading a row's drawn pieces as its true section (K5 admission, K8 piece / of_piece,
     K7): every spec piece (name, side; plane_cuts applied) is drawn as an artist carrying that piece name whose polygon
     equals the spec polygon within TOL_Z (poly_match), and every drawn area artist of the row carries a piece name and
-    equals that spec piece on one side. Scope: every row with section_true in a side or section view."""
+    equals that spec piece on one side. Scope: every row with section_true in a side or section view.
+    P5f (Topologist F2 c): every plane_cuts entry carries theta, and the cut lies on its side of the plane: theta 90 for
+    side +u, 270 for side -u (mod 360, within 1e-6; sign(sin theta) = side), the premise of reading the revolve profile
+    with plane_cuts ignored (wing (iii), not_drawn omit: hidden (h3))."""
     spec = st_polys(ctx, pose, row)
     arts = _piece_artists(ax, row["id"])
     out = []
+    for c in row.get("plane_cuts") or []:
+        if c.get("theta") is None:
+            out.append(f"plane_cuts {c.get('piece')} {c.get('side')}: spec error, no theta (the azimuth of the cut on the plane)")
+            continue
+        th = _ev(ctx, pose, c["theta"]) % 360.0
+        want = {"+u": 90.0, "-u": 270.0}.get(c.get("side"))
+        if want is None or abs(th - want) > 1e-6:
+            out.append(f"plane_cuts {c.get('piece')} {c.get('side')}: theta {th:g} does not lie on side {c.get('side')} of the plane "
+                       f"(90 for +u, 270 for -u)")
     for name, side, sp in spec:
         if not any(getattr(a, PIECE_ATTR, None) == name and any(poly_match(P, sp) for P in artist_polys(a)) for a in arts):
             out.append(f"piece {name} ({'+u' if side > 0 else '-u'}) not drawn as specified")
@@ -5866,17 +5996,47 @@ def slit_spec(rows, prow):
     return sl
 
 
+def poly_chord(poly, z, tol=1e-9):
+    """(lo, hi) x interval of a convex drawn polygon at height z, or None (P5f, Topologist F1, F2, F5)."""
+    xs, n = [], len(poly)
+    for i in range(n):
+        (x0, z0), (x1, z1) = poly[i], poly[(i + 1) % n]
+        if abs(z1 - z0) <= 1e-12:
+            if abs(z - z0) <= tol:
+                xs += [x0, x1]
+            continue
+        if min(z0, z1) - tol <= z <= max(z0, z1) + tol:
+            xs.append(x0 + (x1 - x0) * (z - z0) / (z1 - z0))
+    return (min(xs), max(xs)) if xs else None
+
+
+def union_chords(polys, z, tol=TOL_Z):
+    """Merged x intervals of the pieces at height z (pieces meeting within tol are one interval)."""
+    iv = sorted(c for c in (poly_chord(P, z) for P in polys) if c)
+    out = []
+    for a, b in iv:
+        if out and a <= out[-1][1] + tol:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
+
+
 def slit_issues(ctx, ax, pose, prow, arts, own, rows):
     """1.4 P4 tick admission for the section-view tick class (collet:slits; Topologist P2r 3.1, Designer/Topologist form
     (a)). Premise: a slit behind the plane is shown by one dashed line per declared slit, from its open face to its closed
-    end, with a horizontal tick at the closed end, and the line states nothing else. Spec slits {count_drawn, lines
-    [{side, theta, open, from, to}], tick_length} (same_as: another row's slits). (n) count: count_drawn vertical lines
-    and as many ticks, one per spec line, every artist a two-vertex Line2D; each drawn line is read as the spec line of
-    nearest z mid. (i) sign: sin(theta) x u_drawn > 0 (the line sits on the side the slit lies). (ii) containment: both
-    ends inside the convex hull of the row's drawn pieces on the line's side within TOL_Z. (iii) open face: the open end
-    (top or bottom) at the side pieces' z extreme and on a horizontal face edge there (face_spans). (iv) dashed (hidden:
-    the slit lies behind the plane). (t) the closed end at the spec closed z and one horizontal tick there, tick_length
-    long, centred on the line within TOL_Z. Scope: every row with sub_artists slits in a side or section view."""
+    end, with a dashed horizontal tick across the wall at the closed end, and the line states nothing else. Spec slits
+    {count_drawn, lines [{side, theta, open, from, to}], tick: wall} (same_as: another row's slits). (i0) spec lint: every
+    line's slit lies behind the plane, cos(theta) < 0 (the premise of (iv); P5f, Topologist F1 c). (n) count: count_drawn
+    vertical lines and as many ticks, one per spec line, every artist a two-vertex Line2D; each drawn line is read as the
+    spec line of nearest z mid. (i) sign: sin(theta) x u_drawn > 0 (the line sits on the side the slit lies). (ii)
+    containment: every point of the line, sampled at <= 0.5 with both ends, inside the union of the row's drawn pieces on
+    the line's side within TOL_Z (P5f, Topologist F1 b: the convex hull admitted the foot-step triangle). (iii) open face:
+    the open end (top or bottom) at the side pieces' z extreme and on a horizontal face edge there (face_spans). (iv)
+    dashed (hidden: the slit lies behind the plane). (t) the closed end at the spec closed z and one horizontal tick
+    there on the line's side, spanning the wall: its ends equal the ends of the union chord of the side pieces that holds
+    the line at the closed z within TOL_Z, so the tick lies inside the part (P5f, Topologist F1 a), and dashed (F1 d).
+    Scope: every row with sub_artists slits in a side or section view."""
     fid = prow["id"]
     if ctx.view not in SIDE_VIEWS:
         return [f"slits on {fid} admitted in a side or section view only (view {ctx.view})"]
@@ -5884,6 +6044,16 @@ def slit_issues(ctx, ax, pose, prow, arts, own, rows):
     lines = sl.get("lines") or []
     if not lines or "count_drawn" not in sl:
         return [f"slits on {fid} without slits.lines / count_drawn in the spec"]
+    if sl.get("tick") != "wall":
+        return [f"slits on {fid}: spec error, slits.tick {sl.get('tick')!r} (the tick spans the wall: tick: wall; P5f, Topologist F1 a)"]
+    behind = []
+    for ln in lines:   # (i0)
+        th = _ev(ctx, pose, ln["theta"])
+        if math.cos(math.radians(th)) >= 0:
+            behind.append(f"slits on {fid}: spec line theta {th:.0f} has cos(theta) {math.cos(math.radians(th)):+.4f} >= 0, "
+                          f"not behind the plane (a slit in front is cut away; one in the plane is drawn) (i0)")
+    if behind:
+        return behind
     out, verts, ticks = [], [], []
     for a in arts:
         if not isinstance(a, Line2D) or len(artist_polys(a)[0]) != 2:
@@ -5901,7 +6071,6 @@ def slit_issues(ctx, ax, pose, prow, arts, own, rows):
         out.append(f"slits on {fid}: {len(verts)} slit line(s) and {len(ticks)} tick(s) drawn, count_drawn {want_n}, spec lines {len(lines)} (n)")
     if out:
         return out
-    tl = _ev(ctx, pose, sl.get("tick_length", 0))
     spec_l = []
     for ln in lines:
         z0, z1 = sorted((_ev_S(ctx, pose, ln["from"]), _ev_S(ctx, pose, ln["to"])))
@@ -5920,9 +6089,12 @@ def slit_issues(ctx, ax, pose, prow, arts, own, rows):
         if not side:
             out.append(f"{tag}: no drawn piece of {fid} on that side (ii)")
             continue
-        hull = convex_hull([q for P in side for q in P])
-        if not all(_hull_contains(hull, v) for v in ((u, lo), (u, hi))):   # (ii)
-            out.append(f"{tag}: leaves the drawn {fid} (z {lo:.2f} to {hi:.2f}; convex hull of its pieces on that side) (ii)")
+        ns = max(1, math.ceil((hi - lo) / 0.5))
+        miss = [z for z in (lo + (hi - lo) * i / ns for i in range(ns + 1))
+                if not any(a - TOL_Z <= u <= b + TOL_Z for a, b in union_chords(side, z))]
+        if miss:   # (ii)
+            out.append(f"{tag}: leaves the drawn {fid} (z {lo:.2f} to {hi:.2f}; {len(miss)} of {ns + 1} samples outside the union of its pieces "
+                       f"on that side, e.g. z {miss[0]:.2f}) (ii)")
         top = ln.get("open") == "top"
         zf = extent_z(side)[1] if top else extent_z(side)[0]
         ze = hi if top else lo
@@ -5934,10 +6106,19 @@ def slit_issues(ctx, ax, pose, prow, arts, own, rows):
             out.append(f"{tag}: drawn solid (hidden: the slit lies behind the plane) (iv)")
         zc = lo if top else hi
         zc_spec = s0 if top else s1
-        tk = [t for t in ticks if abs(sum(v[0] for v in artist_polys(t)[0]) / 2 - u) <= TOL_Z
+        tk = [t for t in ticks if (sum(v[0] for v in artist_polys(t)[0]) > 0) == (u > 0)
               and abs(artist_polys(t)[0][0][1] - zc) <= TOL_Z]
-        if abs(zc - zc_spec) > TOL_Z or len(tk) != 1 or abs(abs(artist_polys(tk[0])[0][1][0] - artist_polys(tk[0])[0][0][0]) - tl) > TOL_Z:   # (t)
-            out.append(f"{tag}: closed end at z {zc:.2f} (spec {zc_spec:.2f}) needs one horizontal tick {tl:.2f} long centred on the line ({len(tk)} found) (t)")
+        wall = next(((a, b) for a, b in union_chords(side, zc) if a - TOL_Z <= u <= b + TOL_Z), None)
+        if abs(zc - zc_spec) > TOL_Z or len(tk) != 1 or wall is None:   # (t)
+            out.append(f"{tag}: closed end at z {zc:.2f} (spec {zc_spec:.2f}) needs one horizontal tick across the wall ({len(tk)} found"
+                       f"{'' if wall else ', no wall chord holds the line'}) (t)")
+        else:
+            t0, t1 = sorted(v[0] for v in artist_polys(tk[0])[0])
+            if abs(t0 - wall[0]) > TOL_Z or abs(t1 - wall[1]) > TOL_Z:
+                out.append(f"{tag}: tick u [{t0:.2f}, {t1:.2f}] at z {zc:.2f} against the wall {wall[0]:.2f} to {wall[1]:.2f} "
+                           f"(tick: wall; a tick past the wall leaves the part) (t)")
+            if tk[0].get_linestyle() in SOLID_STYLES:
+                out.append(f"{tag}: tick drawn solid (hidden: the closed end lies behind the plane) (iv)")
     return out
 
 
@@ -5945,10 +6126,14 @@ def wing_issues(ctx, ax, pose, prow, arts, own):
     """1.4 P4 beyond sub-artist admission by declared x_band (Designer P3a O3; Topologist signs at (c)): a part of a row
     lying past the beyond band (0 > x >= -profile.width, section convention 3) is admitted only as a hidden outline
     occluded by its own row. Spec wing {u, z, x_band}. (w0) x_band declared (else the part is refused, as K8-B74 refuses a
-    beyond row past the band). (i) every artist dashed and unfilled. (ii) drawn u and z extents equal wing.u and wing.z
-    (z_S) within TOL_Z. (iii) every drawn vertex is occluded by a section_true piece of this row: the piece's z band holds
-    the vertex z, its r_out > |u| and r_out <= -x_band[1] (the revolved face at r_out lies between the viewer and the part
-    at |x| >= -x_band[1])."""
+    beyond row past the band). (i) every artist dashed, unfilled and unhatched (a hatch reads as cut material; P5f,
+    Designer N1). (ii) drawn u and z extents equal wing.u and wing.z (z_S) within TOL_Z. (iii) P5f (Topologist F2,
+    Designer D-c1): every drawn edge is covered over its whole z interval, exactly (gaps > TOL_Z fail), by the union of
+    the z bands of the occluders: the row's section_true revolve half-profile pieces (plane_cuts ignored: the occluder is
+    the revolve profile, plane_cuts describe the plane only) with r_out > max |u| of the edge and r_out <= -x_band[1] (the
+    revolved material at r <= r_out lies between the viewer and the part at |x| >= -x_band[1]: a sufficient half-space
+    condition). Premise of ignoring plane_cuts, asserted in (iii): every occluder read has its in-front material within
+    asin(max |u| / r_in) < 45 deg of theta 180 (the plane cuts lie at theta 90 or 270, K8 plane_cuts lint)."""
     fid = prow["id"]
     w = prow.get("wing") or {}
     if not w.get("x_band"):
@@ -5957,8 +6142,9 @@ def wing_issues(ctx, ax, pose, prow, arts, own):
         return [f"wing on {fid} without wing.u / wing.z in the spec"]
     out = []
     for a in arts:
-        if not isinstance(a, Patch) or a.get_linestyle() in SOLID_STYLES or a.get_fill():
-            out.append(f"wing on {fid}: {type(a).__name__} drawn {'filled' if isinstance(a, Patch) and a.get_fill() else 'solid'} (dashed, unfilled outline) (i)")
+        if not isinstance(a, Patch) or a.get_linestyle() in SOLID_STYLES or a.get_fill() or a.get_hatch():
+            how = ("filled" if a.get_fill() else "hatched " + repr(a.get_hatch()) if a.get_hatch() else "solid") if isinstance(a, Patch) else "solid"
+            out.append(f"wing on {fid}: {type(a).__name__} drawn {how} (dashed, unfilled, unhatched outline) (i)")
     pts = [v for a in arts for P in artist_polys(a) for v in P]
     if not pts:
         return out + [f"wing on {fid}: nothing drawn"]
@@ -5970,16 +6156,45 @@ def wing_issues(ctx, ax, pose, prow, arts, own):
         out.append(f"wing on {fid}: drawn u [{du[0]:.2f}, {du[1]:.2f}] z [{dz[0]:.2f}, {dz[1]:.2f}] against spec u [{u0:.2f}, {u1:.2f}] z [{z0:.2f}, {z1:.2f}] (ii)")
     xb = sorted(_ev(ctx, pose, e) for e in w["x_band"])
     r_lim = -xb[1]
+    names = ((ctx.stack or {}).get("poses", {}).get(pose, {}) or {}).get("vars_z_A", {})
+    prof = {k: v for k, v in prow.items() if k != "plane_cuts"}   # the revolve half-profile
     occ = []
-    for name, side, sp in st_polys(ctx, pose, prow):
+    for name, side, sp in section_true_polys(ctx.P, names, prof):
         if side < 0:
             continue
         rs = [v[0] for v in sp]
-        occ.append((min(v[1] for v in sp), max(v[1] for v in sp), max(rs)))
-    bad = [v for v in pts if not any(zl - TOL_Z <= v[1] <= zh + TOL_Z and ro > abs(v[0]) and ro <= r_lim + TOL_Z for zl, zh, ro in occ)]
-    if bad:   # (iii)
-        out.append(f"wing on {fid}: {len(bad)} drawn vertex(es) not occluded by a section_true piece of {fid} (r_out <= {r_lim:.2f}), "
-                   f"e.g. ({bad[0][0]:.2f}, {bad[0][1]:.2f}) (iii)")
+        occ.append((name, min(v[1] for v in sp), max(v[1] for v in sp), min(rs), max(rs)))
+    gaps, wide, read = [], set(), set()
+    for a in arts:
+        for P in artist_polys(a):
+            n = len(P)
+            for i in range(n if n > 2 else n - 1):
+                (ua, za), (ub, zb) = P[i], P[(i + 1) % n]
+                um = max(abs(ua), abs(ub))
+                lo, hi = min(za, zb), max(za, zb)
+                iv = sorted((zl, zh) for nm, zl, zh, ri, ro in occ if ro > um and ro <= r_lim + TOL_Z)
+                for nm, zl, zh, ri, ro in occ:
+                    if ro > um and ro <= r_lim + TOL_Z:
+                        read.add(nm)
+                        if um >= ri * math.sin(math.radians(45)):
+                            wide.add(nm)
+                cur, started = lo, False
+                for zl, zh in iv:
+                    if zl > cur + TOL_Z:
+                        break
+                    if zh >= cur - TOL_Z:
+                        cur, started = max(cur, zh), True
+                        if cur >= hi - TOL_Z:
+                            break
+                if not (started and cur >= hi - TOL_Z):
+                    gaps.append((cur if started else lo, hi))
+    if gaps:   # (iii)
+        g0 = min(g[0] for g in gaps)
+        out.append(f"wing on {fid}: {len(gaps)} drawn edge(s) not occluded by a section_true piece of {fid} (r_out <= {r_lim:.2f}, r_out > |u|) "
+                   f"over their whole z extent, first gap from z_S {g0:.2f} (iii)")
+    if wide:   # (iii) premise of reading the revolve profile with plane_cuts ignored
+        out.append(f"wing on {fid}: occluder(s) {', '.join(sorted(wide))} read with in-front material 45 deg or more off theta 180 "
+                   f"(asin(max |u| / r_in) >= 45): a plane cut at theta 90 or 270 may lie in the sight band (iii p)")
     return out
 
 
