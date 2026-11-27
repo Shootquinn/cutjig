@@ -297,10 +297,11 @@ def deps_run_s3():
     if got != want:
         iss.append(f"deps certifiers {sorted(got)} against {sorted(want)}")
     sr = {(x.get("path"), x.get("sha256")) for x in d.get("spec_read") or []}   # P0f (Loftsman P0L FIX 2)
-    want_sr = {(n, cs._sha(SK / n)) for n in ("s1_spec.yaml", "s2_spec.yaml")}
+    # 1.4 P2: the deps rule names every other spec sym_lint reads (every s*_spec.yaml but s3); s4_spec.yaml joined at 1.4 (b)
+    want_sr = {(q.name, cs._sha(q)) for q in sorted(SK.glob("s*_spec.yaml")) if q.name != "s3_spec.yaml"}
     if sr != want_sr:
         iss.append(f"deps spec_read {sorted(sr)} against {sorted(want_sr)}")
-    return _res("DEPS", bool(iss), sc._summ(iss) if iss else "s3 run records deps: spec, script, spec_read s1 and s2 specs, certifiers s1 r8 and s2 r9", len(iss))
+    return _res("DEPS", bool(iss), sc._summ(iss) if iss else "s3 run records deps: spec, script, spec_read every other spec (" + ", ".join(sorted(n for n, _ in want_sr)) + "), certifiers s1 r8 and s2 r9", len(iss))
 
 
 # ======================================================================== R3: blinded M1 reviewer control figures
@@ -1000,3 +1001,9 @@ def term_style_wide():
 def term_angle3():
     """K8 B (P0S FIX 8, connection class): one span_lt terminator drawn with connectionstyle angle3 (both ends on the line)."""
     return _span_arrow(connectionstyle="angle3")
+
+
+def term_angle_rad0():
+    """K8 B (P0r SWE FIX 8 (b), class repeat; orchestrator ruling): one span_lt terminator drawn with connectionstyle
+    angle,angleA=90,angleB=0,rad=0. Angle carries rad 0, so only the Arc3 class test catches it (K8-B94's Angle3 has no rad)."""
+    return _span_arrow(connectionstyle="angle,angleA=90,angleB=0,rad=0")

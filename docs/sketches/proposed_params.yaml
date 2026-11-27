@@ -231,3 +231,21 @@ receiver:
   shoulder_bolt_pcd: {value: 180, unit: mm, source: "Designer 1.3 (h) r2 D7 (step1.3_designer_r2_values.md item 8): bolt circle r 90 on the seat annulus r 80.2 to 100, ligaments 7.05 and 7.25", status: ASSUMED}
   shoulder_bolt_angle: {value: [30, 150, 210, 330], unit: deg, source: "Designer 1.3 (h) r2 D7: symmetric about X and Y, heads off the S3 band (x +-77.94)", status: ASSUMED}
   shoulder_bolt_head_d: {value: 8.5, unit: mm, source: "Designer 1.3 (h) r2 D7: ISO 4762 M5 head, blind-tapped 10 deep in the 12 plate", status: ASSUMED}
+
+# Step 1.4 (b) (The Engineer, research/sean/cr_scratch/step1.4_engineer_spec.md; Sean STOP S4-A, gameplan Design Notes 34:
+# advance D with the carrier C drawn, cast-on liner in a second figure; Designer 1.4 (a) sections 2, 6, 8, 9, 13).
+# Read by docs/sketches/s4_spec.yaml only; no accepted record (S1 r8, S2 r9, S3 r7) reads any of these keys.
+core:
+  length_short: {value: 100, unit: mm, source: "the Q10 short core, about 100 mm long (critical path 4, '100 x 100 mm core'; gameplan detail 1.4 Shows); Designer 1.4 (a) section 2 row core_100; Sean STOP S4-A, Design Notes 34", status: ASSUMED}
+
+carrier:
+  length: {value: 160, unit: mm, source: "riser under a short core and the last 253.71 mm stub (Designer 1.4 (a) sections 2, 6, 9: exposure 149.41 against core.min_exposed 143.12 on a 100 mm core); Sean STOP S4-A, Design Notes 34 'D with C drawn'", status: ASSUMED}
+  diameter: {value: 101, expr: "core.diameter_nominal + collet.grip_window_hi", unit: mm, source: "same family size as the core at pose K d+1, gripped by the core's collet over the straight bore (Designer 1.4 (a) section 2 row carrier)", status: DERIVED}
+  material: {value: "nylon (PA6) rod, square ends", unit: "", source: "Designer 1.4 (a) section 2 row carrier; Sean STOP S4-A, Design Notes 34", status: ASSUMED}
+  bond: {value: "core bonded to the carrier top on a gypsum or hot-melt bed, drawn as a bond line (no stack height)", unit: "", source: "Designer 1.4 (a) section 2 row carrier; joint shear 50.9 kPa at loads.torque_design 10 N m (section 6, DERIVED)", status: ASSUMED}
+
+liner:
+  od_offset: {value: 5, unit: mm, source: "liner OD = core d + 5, the next collet family size (collets.spacing 2.5 x 2); Designer 1.4 (a) section 8 (b); Sean STOP S4-A, Design Notes 34 'Cast-on liner'", status: ASSUMED}
+  wall: {value: 2.0, expr: "(liner.od_offset - core.tol) / 2", unit: mm, source: "free wall (D - d - core.tol) / 2 >= collet.min_wall 1.2 (Designer 1.4 (a) section 8 (b)); drawn 2.50 at pose K d+1 (OD 106 / ID 101)", status: DERIVED}
+  collet_d: {value: 105, expr: "core.diameter_nominal + liner.od_offset", unit: mm, source: "the collet that grips the liner of a d 100 core (Designer 1.4 (a) sections 8, 10); a d 105 core has no liner (110 above collets.envelope_max 106.585)", status: DERIVED}
+  material: {value: "PETG or card sleeve, the core's casting sleeve left on (cast-on), cut with each slice", unit: "", source: "Designer 1.4 (a) section 8 (b); batch 3 B3-3 (Quinn); Sean STOP S4-A, Design Notes 34", status: ASSUMED}
