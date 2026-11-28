@@ -554,6 +554,7 @@ Human gate: Sean, then pushed for Quinn.
 | 1.4 | 2026-11-27 | (h) P9f (`step1.4_engineer_revision_r2_fixes.md`): 6 closed, none returned. TP1.4r2-1 per DN35 R4 (clause (6c) over four artist kinds, K8-B125 to B128, live firings 0 on S4 r2 and S3 r9; per-kind dry-run table section 1); TP1.4r2-2 K1-B3; LF1.4r2-1 wing_root_width in s1, s3, s4; N4 / LF NOTE 2 stub z_max reads crop_top; N5 rib text; N6 K8-B124. PNGs byte-identical to r2 in all 8, revisions stay S4 r2, S1 r10, S2 r11, S3 r9 (14/14, 19/19, 18/18, 16/16). Controls 592/592 (Z 129, B 459, smoke 4; 476.3 s at 12 jobs). Gameplan items K1, K8 applied (K8 cell split repaired). Next: Topologist signature from the dry-run table, then P8r M1 round r2. |
 | 1.4 | 2026-11-27 | (h) Topologist signature after P9f (`step1.4_topologist_recheck_r2.md`, section "Signature after P9f", DN35 R4): SIGNED TP1.4-5 line family with (6c) over four artist kinds (K8-B125 to B128); SIGNED R1 12 px rule with K4-B61 to B64 on K1-B3. TP1.4r2-1, -2 closed. Every r2 rule signed. M1 round r2 generated (`wip/m1/r2/`, key outside the tree). Next: P8r fresh M1 on S4 r2, S1 r10, S2 r11, S3 r9. |
 | 1.4 | 2026-11-27 | (f) P8r M1 round r2, fresh Designer spawn p8r2 (`wip/s4_visual_gate_r2.md`, `s1_visual_gate_r10.md`, `s2_visual_gate_r11.md`, `s3_visual_gate_r9.md`): S4 r2 FAIL 1 (F1 four leaders through cut parts), S1 r10 FAIL 1 (F1 tube OD and TOP-END BLOCK leaders end 4 px short on the keep-out line, as accepted r8), S2 r11 PASS, S3 r9 FAIL 2 (F1 fan leaders under fills; F2 S3-2 span leader inside the top-end block); all V8. Orchestrator: score the controls against the key (orchestrator only); 4/4 matched; round r2; key file outside the tree. Ruled Design Notes 35 R5: the four findings close as visual-only NOTEs carried to STOP M2. Next: STOP M2 (Sean). |
+| 1.4 | 2026-11-27 | STOP M2 (Sean): "Accept S4 r2", "Accept all three" (S1 r10, S2 r11, S3 r9), leader notes "Carry as notes", Q5 "Keep 32 mm". Design Notes 13 rows S4-r1, S4-r2, S1-r9, S1-r10, S2-r11, S3-r9; Q4, Q6, Q10 closed, Q5 to Quinn. Next: ORCH-B. |
 
 ---
 
@@ -604,6 +605,12 @@ Human gate: Sean, then pushed for Quinn.
 | S3-r5 | 2026-11-26 | No correction from Sean (Manager, 1.3 close). r6 came from the fresh M1 on r5 (FAIL: compression leader on the z 400 gridline, nut stations unlabelled; both r5 rules refused: labels read hand-entered per_screw); orchestrator ruling: r6 the last drawn revision before M2 (A.4 disposition) | r6: K4-Z8, B26 to B31, rules (j) to (m) (`step1.3_engineer_revision_r3.md` section r6) |
 | S3-r6 | 2026-11-26 | "Apply fixes as r7, accept" (M2, Step 1.3), on the fresh M1 r6 FAIL V8 (F1 load_comp_c and F2 nut_c leaders along part edges) with the reviewer's dry-run image r98 | r7: label anchors load_comp_c 0.3 and nut_c 0.85, header W 26.25 (`step1.3_engineer_revision_r3.md` section r7); visual only (part-edge collinearity rule carried, Manager 1.3 close) |
 | S3-r7 | 2026-11-26 | M2, Step 1.3: "Apply fixes as r7, accept": the fresh M1 r6 leader fixes F1 (load_comp_c frac 0.3) and F2 (nut_c frac 0.85) applied as r7 on the reviewer's dry-run image, then accepted. Screw bar 911 "Accept 911 mm" (Design Notes 23 range widened, vendor length at Step 2, B2-1). Picks "Adopt all four" (Design Notes 31). Carried "Carry all": coupling guard to Step 2, nut mass 0.14 kg to the overlay at Step 2, gear/pinion/cutter/collet/thread ticks to S4/S6 | accepted (`step1.3_engineer_draw_r1.md`, `_revision_r2.md`, `_revision_r3.md` sections r3 to r7) |
+| S4-r1 | 2026-11-27 | No correction from Sean at the T5 preview. r2 came from the (e) cross-reviews (LF P7a FIX 1, TP1.4-3 to -5) and M1 r1 F1 to F5 with Design Notes 35 R1 to R3 | r2: K4-B61 to B64, K5-Z9, B74 to B76, K7-B36 to B38, K8-Z23, B116 to B128, K1-B3, X1-B6 (`step1.4_engineer_revision_r2.md`, `_r2_fixes.md`) |
+| S4-r2 | 2026-11-27 | M2, Step 1.4: "Accept S4 r2" (V1, V3, V4, V9 read correctly). Leader notes: "Carry as notes" (Design Notes 35 R5, four M1 r2 NOTEs to Step 2). Collet length Q5: "Keep 32 mm" (Delta 0; collar top 159.84, minimum core on the stop 253.71). Advance D with the carrier and the cast-on liner stand (Design Notes 34). S4-r2 accepted | accepted (`step1.4_engineer_revision_r2.md`) |
+| S1-r9 | 2026-11-27 | No correction from Sean at the T5 preview. r10 came from M1 r1 S1 F1 (wings, Design Notes 35 R2), F2 and the class findings | r10 (`step1.4_engineer_revision_r2.md`) |
+| S1-r10 | 2026-11-27 | M2, Step 1.4: "Accept all three" (covers S1 r10, S2 r11, S3 r9). S1-r10 accepted: base stack in true section, wing-nut wings in plane, washer, 12 px leader clearance; the tube OD / TOP-END BLOCK leader end gap carried as a NOTE | accepted (`step1.4_engineer_revision_r2.md`) |
+| S2-r11 | 2026-11-27 | M2, Step 1.4: S2-r11 accepted with S1-r10 (rule (l) anchors, 12 px leader clearance; no key value) | accepted |
+| S3-r9 | 2026-11-27 | M2, Step 1.4: S3-r9 accepted with S1-r10 (true base-stack section, one outline per cut body, hatch alternates, wingnut_sweep reference row, 12 px leader clearance; fan-leader and span-leader notes carried) | accepted |
 
 **14. Test-design decisions (The Software Engineer, Step 0).**
 - The sketch spec `sN_spec.yaml` is also the feature table every check reads. One file, so the spec and the checks cannot disagree; K9 checks the figure against the spec as an outline is checked against its suite.
@@ -828,13 +835,13 @@ Full text of Q1 to Q11 is in section 9 of `context/2026-11-24_cutjig_critical_pa
 | Q1 | Travel | ANSWERED 2026-11-24: 650 mm | Quinn; S1 confirms on the drawing |
 | Q2 | Drill length, mass, top-end hardware, cutter OD, bore ceiling | Open; S1 uses 800 mm ASSUMED | Quinn (drill in build); batch 1 |
 | Q3 | What spins the drill | ANSWERED 2026-11-24: ring gear, three NEMA 23 pinions | Quinn; S6 details |
-| Q4 | Push-pop advance | Open | Sean, S4 |
-| Q5 | Collet length | Open | Quinn and Sean, S4 |
-| Q6 | Sacrificial collet or liner | Open | Sean, S4 |
+| Q4 | Push-pop advance | Closed 2026-11-27: advance D (relative advance by the lift) with the 160 mm carrier drawn; push-pop rejected (Design Notes 34; S4-r2 accepted, Design Notes 13) | Sean, S4 |
+| Q5 | Collet length | Sean 2026-11-27: keep 32 mm (Delta 0, Design Notes 13 S4-r2); open to Quinn's batch 3 answer | Quinn and Sean, S4 |
+| Q6 | Sacrificial collet or liner | Closed 2026-11-27: cast-on liner, OD core d + 5, gripped by the next-size collet (Design Notes 34; S4-r2 figure 2) | Sean, S4 |
 | Q7 | Lift | ANSWERED 2026-11-24: three jack screws | Quinn; detail in S3 and Step 2 |
 | Q8 | Manual or powered travel; feed control | Powered travel decided at S3 (three NEMA 17 on Tr12x3, one controller, three drivers, home switch per screw; Design Notes 31). Feed control open: cut torque 0.33 to 0.40 N m per screw against 0.45 N m holding (S3 r7 lift_torque, DERIVED), so feed rate and torque margin go to Step 2 | Sean, Step 2 |
 | Q9 | Core lengths to support (selects lift stroke and screw length) | Open; S1 r4 reports per option: 0.5 m only and 0.5 + 0.75 m, stroke 775, L_min 885.00 (900 screw); plus 1 m, stroke 1025, L_min 1135.00 (buy 1140), highest point 2219.84 z_S | Quinn; batch 1. S1 draws the 0.75 m core only (Design Notes 22, 23) |
-| Q10 | Short 100 x 100 mm cores | Open | Sean, S4 |
+| Q10 | Short 100 x 100 mm cores | Closed 2026-11-27: 100 mm core on the 160 mm nylon carrier, gripped and exposed (S4-2; S4-r2 accepted) | Sean, S4 |
 | Q11 | Tests and params that become void | Open | Sean (contributor making the change), Step 4 |
 | DN23-a | NEMA 17 count on hand | Open | Sean (owns the motors), Step 2 |
 | DN23-b | NEMA 23 gearbox ratio | Open | Quinn and Sean, S6 |
