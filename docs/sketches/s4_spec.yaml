@@ -499,7 +499,7 @@ features:
   kind: prism
   axis: null
   projection: rectangle
-  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, nut.washer_window_width, nut.washer_window_count, wingnut.wing_count, wingnut.wing_height, wingnut.wing_thickness]
+  keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, nut.washer_window_width, nut.washer_window_count, wingnut.wing_count, wingnut.wing_root_width, wingnut.wing_thickness]
   z_rule: {z_min: collar_top - collar.top_above_plate - nut.overall_height, z_max: collar_top - collar.top_above_plate}
   section_true:
     body: [thread.major / 2, wingnut.body_od / 2, "collar_top - collar.top_above_plate - nut.overall_height", "collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z"]
@@ -518,7 +518,7 @@ features:
   depth: [-wingnut.sweep_clear_radius, wingnut.sweep_clear_radius]
   label: null   # 1.4 (h) r2 (M1 S4 r1 F1, Design Notes 35 R3): the sweep label is on the wingnut:sweep sub-artist
   sub_artists: [wing, sweep]
-  wing: {u: ["-wingnut.wing_thickness / 2", "wingnut.wing_thickness / 2"], z: ["collar_top - collar.top_above_plate - wingnut.wing_height", collar_top - collar.top_above_plate], x_band: ["-wingnut.span / 2", "-wingnut.body_od / 2"], style: "hidden: dashed outline over the whole extent, unfilled (occluded by the row's own body and plate, Designer P3a D3)", label: {text: "-X wing (behind), span", key: wingnut.span, fmt: .0f, source: "Designer P3a FIX 4: the leader lands outside the carrier outline"}, admission: "P3a O3 (Topologist signs at (c)); P5f (Topologist F2, Designer D-c1, N1): (i) dashed, unfilled and unhatched; (ii) drawn u and z extents equal the spec within 0.05; (iii) every drawn edge covered over its whole z extent (gaps > 0.05 fail) by the z bands of this row's section_true revolve pieces (plane_cuts ignored) with r_out > max |u| of the edge and r_out <= -x_band[1], premise asin(max |u| / r_in) < 45 deg for every occluder read (plane_cuts at theta 90 / 270, K8 lint); Bs: wing solid, wing hatched, wing u at 9, x_band deleted, plate and body pieces deleted, relief deleted, wing u +-90, x_band near end -70, wing u +-60", source: "Designer 1.4 (a) section 2 row wingnut; Designer P3a O3 ruling (Sean: wings drawn beyond, Design Notes 34)"}
+  wing: {u: ["-wingnut.wing_thickness / 2", "wingnut.wing_thickness / 2"], z: ["collar_top - collar.top_above_plate - wingnut.wing_root_width", collar_top - collar.top_above_plate], x_band: ["-wingnut.span / 2", "-wingnut.body_od / 2"], style: "hidden: dashed outline over the whole extent, unfilled (occluded by the row's own body and plate, Designer P3a D3)", label: {text: "-X wing (behind), span", key: wingnut.span, fmt: .0f, source: "Designer P3a FIX 4: the leader lands outside the carrier outline"}, admission: "P3a O3 (Topologist signs at (c)); P5f (Topologist F2, Designer D-c1, N1): (i) dashed, unfilled and unhatched; (ii) drawn u and z extents equal the spec within 0.05; (iii) every drawn edge covered over its whole z extent (gaps > 0.05 fail) by the z bands of this row's section_true revolve pieces (plane_cuts ignored) with r_out > max |u| of the edge and r_out <= -x_band[1], premise asin(max |u| / r_in) < 45 deg for every occluder read (plane_cuts at theta 90 / 270, K8 lint); Bs: wing solid, wing hatched, wing u at 9, x_band deleted, plate and body pieces deleted, relief deleted, wing u +-90, x_band near end -70, wing u +-60", source: "Designer 1.4 (a) section 2 row wingnut; Designer P3a O3 ruling (Sean: wings drawn beyond, Design Notes 34)"}
   sweep: {r: wingnut.sweep_clear_radius, style: dashed, label: {template: "wing nut sweep r {wingnut.sweep_clear_radius:.0f}", keys: [wingnut.sweep_clear_radius], source: "M1 S4 r1 F1; Design Notes 35 R3 (label to the sub-artist, the S1 / S3 landing)"}, source: "S3 form"}
   neighbours:
   - {id: washer, class: C, source: "S4-c: washer in the pocket, three press pads 2.40 mm3 designed (contact class P, ASSEMBLY.md)"}
@@ -650,7 +650,7 @@ features:
   axis: Z
   projection: rectangle
   keys: [drill.tube_od, drill.head_length]
-  z_rule: {z_min: head_top, z_max: 330}
+  z_rule: {z_min: head_top, z_max: crop_top}
   depth: [-drill.tube_od / 2, drill.tube_od / 2]
   label: null
   neighbours:
@@ -660,7 +660,7 @@ features:
   sense: []
   chain: [axial]
   moves: true
-  notes: ["row id apart from drill_tube: the z_rule stops at the crop top (X1 compares drill_tube z_rule in s1, s3); the crop z_A 330 is the spec crop literal (crop.z_A[1])"]
+  notes: ["row id apart from drill_tube: the z_rule stops at the crop top (X1 compares drill_tube z_rule in s1, s3); z_max is the stack name crop_top, read from crop.z_A[1] (1.4 (h) r2 fix pass, Designer P7dr N4, Loftsman NOTE LF1.4r2-2; no literal)"]
   axes: [section]
   section_class: unsectioned
 - id: line_stop

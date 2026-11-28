@@ -357,6 +357,9 @@ def global_vars(P, spec):
     }
     if P.has("jackscrew.top_guide_z"):   # 1.3 step 0 R2 (Loftsman 1.2 (b) NOTE 2): member-top stack_ties term, z_A
         out["top_guide"] = g("jackscrew.top_guide_z")
+    crop = (spec.get("crop") or {}).get("z_A")
+    if crop:   # 1.4 (h) r2 fix pass (Designer P7dr N4, Loftsman NOTE LF1.4r2-2): the spec crop top as a stack name, z_A
+        out["crop_top"] = float(crop[1])
     out["load_plane"] = out[load_plane(spec)["term"]]
     out["entry_plane"] = out[load_plane(spec, "entry_plane")["term"]]
     out["park_tip"] = park_tip_z_A(P, q9, out["entry_plane"], spec, out, validity=validity)

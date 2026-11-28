@@ -284,3 +284,97 @@ def k4_frac_removed_flat_b():
             _row(sp, f).pop("label_anchor_frac", None)
     with _patched("angled_candidates", lambda ink, cands, D: cands):
         return _script("s3", sm)
+
+
+# ---------------------------------------------------------------- 1.4 (h) r2 fix pass (research/sean/cr_scratch/
+# step1.4_engineer_revision_r2_fixes.md): Design Notes 35 R4 (clause 6c over every artist kind, Topologist FIX
+# TP1.4r2-1), Topologist FIX TP1.4r2-2 (K1 B for the R1 savefig dpi premise), Designer N6 (K8 o2 B).
+
+def _overclip(c, pose, gid, grow, fill=False):
+    """The visible region of every split (clipped) non-copy artist of gid recomputed with each occluder ring of another
+    row grown to its bounding box plus grow mm on every side: the artist is clipped from view over a band where nothing
+    is in front of it; its hidden copy keeps the true hidden region. fill: the artist is drawn as a filled area (light
+    face, hatch off) first, the filled-area kind."""
+    ax = _ax(c, pose)
+    occ = sc.unsectioned_occluders(c, ax)
+    n = 0
+    for a in sc.tagged(ax).get(gid, []):
+        if getattr(a, "_sc_hidden_copy", False) or a.get_clip_path() is None:
+            continue
+        if fill:
+            a.set_hatch(None)
+            a.set_fill(True)
+            a.set_facecolor((0.9, 0.9, 0.9, 1.0))
+        polys = [q for q in sc.artist_polys(a) if len(q) >= 2]
+        rings = []
+        for og, oa, q in occ:
+            if og == gid.split(":")[0]:
+                continue
+            x0, x1, y0, y1 = sc.bbox([q])
+            px0, px1, py0, py1 = sc.bbox(polys)
+            if px0 <= x1 + grow and px1 >= x0 - grow and py0 <= y1 + grow and py1 >= y0 - grow:
+                rings.append([(x0 - grow, y0 - grow), (x1 + grow, y0 - grow), (x1 + grow, y1 + grow), (x0 - grow, y1 + grow)])
+        xs = [v[0] for P in polys for v in P] + [v[0] for q in rings for v in q]
+        ys = [v[1] for P in polys for v in P] + [v[1] for q in rings for v in q]
+        box = (min(xs) - sc.RENDER_MARGIN, max(xs) + sc.RENDER_MARGIN, min(ys) - sc.RENDER_MARGIN, max(ys) + sc.RENDER_MARGIN)
+        hid, vis = sc.region_split([[q] for q in rings], box)
+        a.set_clip_path(sc.region_path(vis), ax.transData)
+        a._sc_region = None
+        n += 1
+    assert n, f"{pose}/{gid}: no split artist to over-clip"
+    return c
+
+
+def converse_dashed_stroke_b():
+    """K8 B (Design Notes 35 R4, dashed stroke; Topologist TP1.4r2-1 plant): live S4 liner figure, both liner:outline
+    hidden copies unclipped: dashed over the whole outline, visible run included."""
+    c = _script("s4")
+    ax = _ax(c, "liner")
+    n = 0
+    for a in sc.tagged(ax).get("liner:outline", []):
+        if isinstance(a, Line2D) and getattr(a, "_sc_hidden_copy", False):
+            a.set_clip_path(None)
+            a._sc_region = None
+            n += 1
+    assert n == 2, n
+    return c
+
+
+def converse_solid_stroke_b():
+    """K8 B (Design Notes 35 R4, solid stroke): live S4 liner figure, the liner:outline strokes clipped 10 mm past the
+    drill head and tube stub outlines (a hidden region larger than the occluder)."""
+    return _overclip(_script("s4"), "liner", "liner:outline", 10.0)
+
+
+def converse_hatched_area_b():
+    """K8 B (Design Notes 35 R4, hatched area): live S4 liner figure, the hatched liner pieces clipped 10 mm past the
+    drill head and tube stub outlines."""
+    return _overclip(_script("s4"), "liner", "liner", 10.0)
+
+
+def converse_filled_area_b():
+    """K8 B (Design Notes 35 R4, filled area): live S4 carrier figure, the carrier (unsectioned, split under the drill
+    head) drawn as a filled area and clipped 10 mm past the drill head outline."""
+    return _overclip(_script("s4"), "carrier", "carrier", 10.0, fill=True)
+
+
+def outline_absent_s4_b():
+    """K8 B (Designer P7dr N6, clause o2): live S4 carrier figure, every wingnut:outline line removed."""
+    c = _script("s4")
+    ax = _ax(c, "carrier")
+    for a in list(sc.tagged(ax).get("wingnut:outline", [])):
+        a.remove()
+    return c
+
+
+def k1_savefig_dpi_b():
+    """K1 B (Topologist FIX TP1.4r2-2, R1 premise "every script saves at the figure dpi"): a copy of the live
+    s4_base_section.py with savefig(path, bbox_inches="tight", dpi=300); the copy is written under wip/fixtures/k1/."""
+    import os
+    import sketch_loader
+    src = (SK / "s4_base_section.py").read_text(encoding="utf-8")
+    old = 'fig.savefig(path, bbox_inches="tight")'
+    assert src.count(old) == 1
+    dst = sketch_loader.output_path(f"fixtures/k1/s4_savefig_dpi_{os.getpid()}.py")
+    dst.write_text(src.replace(old, 'fig.savefig(path, bbox_inches="tight", dpi=300)'), encoding="utf-8")
+    return sc.Ctx(script_paths=[dst])

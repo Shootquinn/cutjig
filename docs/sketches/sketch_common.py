@@ -6054,17 +6054,6 @@ def occlusion_issues(ctx, ax, pose):
             if ins and not any(held(c) for c in copies):
                 out.append(f"{pose}/{fid}: hidden inside the unsectioned outline of {names} with no dashed hidden copy "
                            f"(section convention 6b)")
-        if r.get("section_class") == "unsectioned":   # (6c) converse (TP1.4-4)
-            for c in copies:
-                reg = drawn_region(c)
-                if reg is None:
-                    continue
-                inner = [p for p in _cover_samples(c) if reg.contains(p) and _edge_depth(p, [q for q in artist_polys(c) if len(q) >= 3]) > TOL_Z]
-                front = _occluded_by(fid, c, [(g, oa, q) for g, oa, q in occ], ctx, ax)
-                wrong = [p for p in inner if not any(_inside(p, q) for _, q in front)]
-                if wrong:
-                    out.append(f"{pose}/{fid}: hidden copy drawn dashed where no occluder is in front of it ({len(wrong)} of "
-                               f"{len(inner)} samples; section convention 6c, TP1.4-4)")
     for g, a in _stroke_rows(ctx, ax):   # (TP1.4-5) the line family
         names, hidp, smp = _hidden_stroke(ctx, ax, g, a, occ)
         if not hidp:
@@ -6079,6 +6068,123 @@ def occlusion_issues(ctx, ax, pose):
         if not any(all(drawn_region(c) is None or drawn_region(c).contains(p) for p in hidp) for c in cps):
             out.append(f"{pose}/{g}: stroke hidden inside the unsectioned outline of {', '.join(names)} with no dashed hidden copy "
                        f"(section convention 6b, line family, TP1.4-5)")
+    out += converse_issues(ctx, ax, pose, occ)   # (6c) over every artist kind (Design Notes 35 R4)
+    return out
+
+
+# ---------------------------------------------------------------- 1.4 (h) r2 fix pass: clause (6c) over every kind
+# Design Notes 35 R4 (orchestrator ruling on Topologist FIX TP1.4r2-1, third finding of the renderer-converse class).
+CONVERSE_KINDS = ("filled area", "hatched area", "solid stroke", "dashed stroke")
+
+
+def artist_kind(a):
+    """Drawn kind of a part artist (Design Notes 35 R4): a renderer hidden copy is a dashed stroke (an area copy draws its
+    edge dashed, unfilled and unhatched; a stroke copy is a dashed Line2D); a Patch with a hatch is a hatched area, with a
+    fill a filled area; any other solid Patch (an unfilled outline) or solid Line2D is a solid stroke. A spec-dashed
+    artist (K5 sub-artist forms, beyond convention 3) returns None: it is dashed by its own clause, not by occlusion."""
+    if getattr(a, "_sc_hidden_copy", False):
+        return "dashed stroke"
+    if not _solid(a) and not (isinstance(a, Patch) and (a.get_hatch() or a.get_fill())):
+        return None
+    if isinstance(a, Patch):
+        if a.get_hatch():
+            return "hatched area"
+        if a.get_fill():
+            return "filled area"
+        return "solid stroke"
+    return "solid stroke" if isinstance(a, Line2D) else None
+
+
+def _ink_samples(a):
+    """Samples artist a is read at, its clip region not applied: a Patch (filled, hatched, an unfilled outline or an area
+    hidden copy) its interior, the body it stands for (_cover_samples, depth > TOL_Z into its own rings), and its closed
+    edge every STROKE_STEP mm; a Line2D its polyline every STROKE_STEP mm."""
+    if isinstance(a, Line2D):
+        return _stroke_samples(a)
+    rings = [q for q in artist_polys(a) if len(q) >= 3]
+    edge = []
+    for q in rings:
+        ring = list(q) + [q[0]]
+        for (x0, y0), (x1, y1) in zip(ring, ring[1:]):
+            L = math.hypot(x1 - x0, y1 - y0)
+            k = max(1, int(L / STROKE_STEP))
+            edge += [(x0 + (x1 - x0) * i / k, y0 + (y1 - y0) * i / k) for i in range(k)]
+    return [p for p in _cover_samples(a) if _edge_depth(p, rings) > TOL_Z] + edge
+
+
+def _front_hides(ctx, ax, parent, occ):
+    """Predicate p -> True when p lies in (or within TOL_Z of) the ring of an occluder of another row that is in front of
+    row parent at p: plain containment for a cut or beyond parent (every unsectioned front half lies at x > 0, clause 2),
+    the front-surface sign at u = p[0] for an unsectioned parent (_hidden_stroke and _in_front, TP1.4-4)."""
+    rings = [q for og, oa, q in occ if og != parent]
+    tgt = [q for q in pieces(ax, parent) if len(q) >= 3] if _parent_unsectioned(ctx, parent) else None
+    ct, Rt = _cr(tgt) if tgt else (None, None)
+    crs = [_cr([q]) for q in rings]
+
+    def hides(p):
+        for q, (co, Ro) in zip(rings, crs):
+            if not (_inside(p, q) or _edge_depth(p, [q]) <= TOL_Z):
+                continue
+            if tgt and _front_x(co, Ro, p[0]) - _front_x(ct, Rt, p[0]) <= TOL_Z:
+                continue
+            return True
+        return False
+    return hides
+
+
+def converse_records(ctx, ax, occ=None):
+    """[(gid, kind, artist, wrong samples, read samples)] of clause (6c) on a section Axes, one entry per part artist read
+    (Design Notes 35 R4). A part artist is a tagged artist of a row that is neither reference nor line, arrow or callout
+    (sub-artists and :outline lines included). Per kind:
+    solid kinds (filled area, hatched area, solid stroke): a body hides another only where its front surface is nearer,
+      so an ink sample of the artist outside its drawn region (clip region) must be hidden by a front occluder
+      (_front_hides); read samples are the ink samples outside the drawn region (none when the artist has no clip);
+    dashed stroke (renderer hidden copy, area or Line2D): converse, an ink sample inside the copy's drawn region (the
+      whole Axes when it has no clip) must be hidden by a front occluder; read samples are those inside the region.
+    The forward direction of each kind is (6a) and (6b) (areas, and strokes by the line family, TP1.4-5)."""
+    occ = unsectioned_occluders(ctx, ax) if occ is None else occ
+    rows = {r["id"]: r for r in ctx.spec.get("features", [])}
+    out = []
+    for g, arts in tagged(ax).items():
+        parent = g.split(":")[0]
+        r = rows.get(parent)
+        if r is None or r.get("reference") or r.get("kind") in NO_AREA_KINDS or g.startswith("label:"):
+            continue
+        hides = None
+        for a in arts:
+            if not isinstance(a, (Patch, Line2D)) or isinstance(a, FancyArrowPatch) or not a.get_visible():
+                continue
+            kind = artist_kind(a)
+            if kind is None:
+                continue
+            reg = drawn_region(a)
+            if kind != "dashed stroke" and reg is None:
+                continue
+            hides = hides or _front_hides(ctx, ax, parent, occ)
+            smp = _ink_samples(a)
+            if kind == "dashed stroke":
+                read = [p for p in smp if reg is None or reg.contains(p)]
+            else:
+                read = [p for p in smp if not reg.contains(p)]
+            wrong = [p for p in read if not hides(p)]
+            out.append((g, kind, a, wrong, read))
+    return out
+
+
+def converse_issues(ctx, ax, pose, occ=None):
+    """Clause (6c) issues (Design Notes 35 R4; converse_records). The dashed-stroke text of an area copy keeps the
+    TP1.4-4 wording."""
+    out = []
+    for g, kind, a, wrong, read in converse_records(ctx, ax, occ):
+        if not wrong:
+            continue
+        if kind == "dashed stroke":
+            tag = "TP1.4-4" if isinstance(a, Patch) else "line family, TP1.4r2-1"
+            out.append(f"{pose}/{g}: hidden copy drawn dashed where no occluder is in front of it ({len(wrong)} of "
+                       f"{len(read)} samples; section convention 6c, {tag})")
+        else:
+            out.append(f"{pose}/{g}: {kind} clipped from view where no occluder is in front of it ({len(wrong)} of "
+                       f"{len(read)} samples; section convention 6c, Design Notes 35 R4)")
     return out
 
 
