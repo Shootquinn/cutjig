@@ -297,7 +297,7 @@ def build(P, spec, stack):
     sc.finish_axes(ax)
     y0, y1 = ax.get_ylim()   # room for the screw c tag outboard of member c (below the plate edge)
     ax.set_ylim(y0 - P.get("profile.width"), y1)
-    sc.place_plan_labels(ax, ctx, pid, margin=True, stack_pose=feats, notes=notes)   # 1.3 P1R leader placer
+    sc.place_plan_labels(ax, ctx, pid, margin=True, stack_pose=feats, notes=notes, collinear=True)   # 1.3 P1R leader placer; 1.4 (h) r2 rule (l) at 12 px (Design Notes 35 R1)
     return {pid: fig}
 
 

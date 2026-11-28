@@ -986,6 +986,8 @@ def _s1_draw_pose(P, spec, stack, pid):
             sc.draw(fid, Polygon(pts, closed=True, fill=False), ax)
         else:
             sc.draw_rect(ax, fid, x0, x1, z0, z1)
+    if hasattr(sc, "draw_cut_outlines"):   # 1.4 (h) r2 (M1 S4 F3): one outlined region per cut body, as the S1 r10 script
+        sc.draw_cut_outlines(spec, ax)
     sc.place_labels(ax, spec, P, pid)
     if spec.get("figure_note"):   # Designer 1.2 (c) FIX R1: S1 r5 figure note, as s1_side_poses.py draws it
         ax.text(0, -0.06, spec["figure_note"], transform=ax.transAxes, fontsize=6).set_gid(sc.NOTE_GID)

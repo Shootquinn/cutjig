@@ -120,6 +120,11 @@ def draw_pose(P, spec, stack, pose):
     for fid in ("receiver", "collet", "core_seat", "holder", "wingnut", "washer", "collar"):
         for name, _side, pts in sc.section_true_polys(P, pr["vars_z_A"], rows[fid]):
             sc.draw_piece(ax, fid, name, pts, **st_kw.get(fid, {}))
+    # 1.4 (h) r2 (M1 S4 r1 F3 class, carried to S1): each cut body one outlined region (sketch_common.draw_cut_outlines)
+    sc.draw_cut_outlines(spec, ax)
+    # 1.4 (h) r2 (Design Notes 35 R2, M1 S1 r9 F1): the wing-nut wings in the xz plane, sub-artist wingnut:wing, one solid
+    # unfilled outline per wing at u = r cos theta (theta k 360 / wingnut.wing_count), wing z band from the spec
+    sc.draw_in_plane_wings(ax, P, pr["vars_z_A"], rows["wingnut"])
     # TP1.4-2 (Topologist P0T): the wing-nut sweep envelope is the reference row wingnut_sweep, two dashed lines at -+ r
     z0, z1 = z("wingnut_sweep")
     r_sw = g("wingnut.sweep_clear_radius")
@@ -256,7 +261,7 @@ def draw_pose(P, spec, stack, pose):
         notes.append((None, spec["figure_note"], sc.NOTE_GID))
 
     sc.finish_axes(ax)
-    sc.place_labels(ax, spec, P, pid, margin=True, stack_pose=feats, notes=notes)
+    sc.place_labels(ax, spec, P, pid, margin=True, stack_pose=feats, notes=notes, collinear=True)   # 1.4 (h) r2 (Design Notes 35 R1)
     return fig
 
 

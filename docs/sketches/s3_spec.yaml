@@ -506,7 +506,7 @@ features:
   keys: [icd.floor_above_datum_a, collet.core_seat_height, collet.core_seat_width, core.diameter_nominal, collet.core_stop_z, collet.grip_window_hi]
   z_rule: {z_min: receiver_floor, z_max: receiver_floor + collet.core_seat_height}
   section: [core.diameter_nominal / 2 - collet.core_seat_width, core.diameter_nominal / 2]
-  depth: [-core.diameter_nominal / 2, core.diameter_nominal / 2]
+  depth: ["-(core.diameter_nominal + collet.grip_window_hi) / 2", "(core.diameter_nominal + collet.grip_window_hi) / 2"]   # 1.4 (h) r2 (Topologist FIX TP1.4-3): the drawn ledge r 50.50, the core_seat_105 form
   section_true:
     ledge: [(core.diameter_nominal + collet.grip_window_hi) / 2 - collet.core_seat_width, (core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor, receiver_floor + collet.core_seat_height]
   label: null

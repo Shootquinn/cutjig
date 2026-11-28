@@ -657,7 +657,7 @@ def _stack_z(wants, hs, zlo, zhi, gap):
     return zs
 
 
-def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()):
+def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=(), collinear=False):
     """One annotation per spec row with a label, gid label:<id>, anchored at the right edge of the row's drawn pieces.
     margin=True (S1 r3, Designer M1 r2 F4): every label and every note goes into one column right of the axes, each
     with a leader to its anchor, stacked in anchor-z order with LABEL_GAP_LINES of free space between text boxes.
@@ -704,10 +704,7 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
                 record["placed"][fid].update(source="reanchor", anchor=[round(items[i][0][0], 2), round(items[i][0][1], 2)])
     left = sorted([it for it in items if it[2] in left_ids], key=lambda it: -it[0][1])   # r4: label_side left
     items = [it for it in items if it[2] not in left_ids]
-    for it, z in zip(left, _stack_z([it[0][1] for it in left], [line * (it[1].count("\n") + 1) for it in left], zlo, zhi, gap)):
-        ann = ax.annotate(it[1], xy=it[0], xytext=(x_left, z), fontsize=LABEL_FONTSIZE, ha="right", va="center",
-                          zorder=LEADER_ZORDER, annotation_clip=False, arrowprops={"arrowstyle": "-", "linewidth": 0.4, "color": "0.35"})
-        ann.set_gid(it[2])
+    left_z = _stack_z([it[0][1] for it in left], [line * (it[1].count("\n") + 1) for it in left], zlo, zhi, gap)
     order = sorted(items, key=lambda it: -it[0][1])
     hs = [line * (it[1].count("\n") + 1) for it in order]
     zs = []
@@ -718,6 +715,12 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
     for i in range(len(zs) - 1, -1, -1):        # lift from the bottom if the stack runs below the axes
         floor_z = zlo + hs[i] / 2 if i == len(zs) - 1 else zs[i + 1] + hs[i + 1] / 2 + gap + hs[i] / 2
         zs[i] = max(zs[i], floor_z)
+    if collinear:   # 1.4 (h) r2 (Design Notes 35 R1): rule (l) at the 12 px clearance, angled leaders where needed
+        left, left_z, order, zs = _side_collinear(ax, spec, left, order, x_left, x_col, zlo, zhi, gap, line, record)
+    for it, z in zip(left, left_z):
+        ann = ax.annotate(it[1], xy=it[0], xytext=(x_left, z), fontsize=LABEL_FONTSIZE, ha="right", va="center",
+                          zorder=LEADER_ZORDER, annotation_clip=False, arrowprops={"arrowstyle": "-", "linewidth": 0.4, "color": "0.35"})
+        ann.set_gid(it[2])
     # notes without an anchor: same column, below the axes bottom, so no leader crosses them
     z = zlo - gap
     for txt, gid in free:
@@ -733,6 +736,169 @@ def place_labels(ax, spec, P, pose=None, margin=False, stack_pose=None, notes=()
             ann = ax.annotate(txt, xy=(x_col, z), fontsize=LABEL_FONTSIZE, ha="left", va="center", annotation_clip=False)
         if gid:
             ann.set_gid(gid)
+
+
+SIDE_EXTRA_ANGLES = (35.0, -35.0)   # deg: 1.4 (h) r2, side placer only (a long S1 leader between stacked labels)
+SIDE_ANCHOR_ALTS = 8   # 1.4 (h) r2: other anchors on the row's ink (at least D apart) the side placer tries for a failing leader
+
+
+def _side_collinear(ax, spec, left, order, x_left, x_col, zlo, zhi, gap, line, record):
+    """1.4 (h) r2 (Design Notes 35 R1) side placer, option collinear (S1): every label leader is judged by rule (l) at the
+    Axes clearance (collinear_scale: D = max(D_spec, COLLINEAR_PX_MIN px)) against the families of collinear_lines and
+    the other label leaders; a failing label takes the text offset that gives its leader one of LEADER_ANGLES (text z =
+    anchor z + tan(angle) |x_text - x_anchor|), the column is re-stacked (_stack_z), and the offset is kept only when
+    the count of failing leaders and leader crossings falls (at most PLACER_PASSES rounds per label). Anchors are not
+    moved (label_anchor_frac, label_theta and the default anchor stay; K4 anchor record). The angle taken is recorded in
+    the placer record (leader_angle). Placer rule only: the check judges every leader (collinear_issues)."""
+    import types
+    D, R, prem = collinear_scale(ax)
+    if prem:
+        return left, _stack_z([it[0][1] for it in left], [line * (it[1].count("\n") + 1) for it in left], zlo, zhi, gap), order, None
+    cx = types.SimpleNamespace(spec=spec, view=getattr(ax, "sketch_view", None) or "side_xz")
+    every = collinear_lines(cx, ax, None)
+    (x0, x1), (y0, y1) = sorted(ax.get_xlim()), sorted(ax.get_ylim())
+    cols = [("left", left, x_left), ("right", order, x_col)]
+    ang = {(c, i): 0.0 for c, its, _ in cols for i in range(len(its))}
+    memo = {}
+
+    def layout():
+        out = {}
+        for c, its, xx in cols:
+            wants = [it[0][1] + math.tan(math.radians(ang[(c, i)])) * abs(xx - it[0][0]) if it[0] else it[0] for i, it in enumerate(its)]
+            idx = sorted(range(len(its)), key=lambda i: -wants[i])
+            zs_ = _stack_z([wants[i] for i in idx], [line * (its[i][1].count("\n") + 1) for i in idx], zlo, zhi, gap)
+            for i, z in zip(idx, zs_):
+                out[(c, i)] = z
+        return out
+
+    def legs(pos):
+        out = []
+        for c, its, xx in cols:
+            for i, it in enumerate(its):
+                if it[0] is None:
+                    continue
+                seg = _clip_box((xx, pos[(c, i)]), (float(it[0][0]), float(it[0][1])), x0, x1, y0, y1)
+                out.append(((c, i), it[2], seg, ((xx, pos[(c, i)]), tuple(it[0]))))
+        return out
+
+    def leg_fail(fid, seg):
+        k = (fid, None if seg is None else (round(seg[0][0], 6), round(seg[0][1], 6), round(seg[1][0], 6), round(seg[1][1], 6)))
+        if k not in memo:
+            bad = False
+            if seg is not None and math.hypot(seg[1][0] - seg[0][0], seg[1][1] - seg[0][1]) > R:
+                p0, p1 = seg
+                for fam, nm, (a_, b_), reg in collinear_lines(cx, ax, fid, every=every):
+                    if _angle_off(p0, p1, a_, b_) > COLLINEAR_DEG or seg_distance(p0, p1, a_, b_) > D:
+                        continue
+                    if _run_near_vis(p0, p1, a_, b_, reg, mm=D) > R:
+                        bad = True
+                        break
+            memo[k] = bad
+        return memo[k]
+
+    hatches = hatch_areas(ax)
+    hmemo = {}
+
+    def hatch_fail(fid, t, a_):
+        k = (fid, round(t[1], 6), round(a_[0], 6), round(a_[1], 6))
+        if k not in hmemo:
+            hmemo[k] = bool(leader_hatch(fid, t, a_, hatches))
+        return hmemo[k]
+
+    def failing(pos):
+        L = legs(pos)
+        bad = set()
+        for key, gid, seg, full in L:
+            if gid and gid.startswith("label:") and (leg_fail(gid[len("label:"):], seg)
+                                                      or hatch_fail(gid[len("label:"):], full[0], full[1])):
+                bad.add(key)
+        for i in range(len(L)):
+            for j in range(i + 1, len(L)):
+                (ka, ga, sa, fa), (kb, gb, sb, fb) = L[i], L[j]
+                if _segs_cross(fa[0], fa[1], fb[0], fb[1]):
+                    bad |= {ka, kb}
+                elif sa is not None and sb is not None and (ga or "").startswith("label:") and (gb or "").startswith("label:")                         and _angle_off(sa[0], sa[1], sb[0], sb[1]) <= COLLINEAR_DEG and seg_distance(sa[0], sa[1], sb[0], sb[1]) <= D                         and _run_near(sa[0], sa[1], sb[0], ((sb[1][0] - sb[0][0]) / (math.hypot(sb[1][0] - sb[0][0], sb[1][1] - sb[0][1]) or 1),
+                                                           (sb[1][1] - sb[0][1]) / (math.hypot(sb[1][0] - sb[0][0], sb[1][1] - sb[0][1]) or 1)),
+                                      seg=sb, mm=D) > R:
+                    bad |= {ka, kb}
+        return bad
+
+    pos = layout()
+    bad = failing(pos)
+    tried = {}
+    its_of = {c: its for c, its, _ in cols}
+    moved = {}
+
+    def alt_anchors(key):
+        """The label's own anchor, then (default / ink / reanchor sources only) ink samples away from it, nearest first."""
+        c, i = key
+        it = its_of[c][i]
+        fid = (it[2] or "")[len("label:"):]
+        a0 = tuple(it[0])
+        src = (record["placed"].get(fid) or {}).get("source")
+        out = [a0]
+        if src in ("label_anchor_frac", "label_theta") or not fid:
+            return out
+        rank = _rank(ax)
+        smp = []
+        for poly, closed in ink_pieces(ax, fid):
+            segs = _edges(poly) if closed else [(poly[k], poly[k + 1]) for k in range(len(poly) - 1)]
+            for a_, b_ in segs:
+                smp += [(a_[0] + (b_[0] - a_[0]) * k / ANCHOR_SAMPLES, a_[1] + (b_[1] - a_[1]) * k / ANCHOR_SAMPLES) for k in range(ANCHOR_SAMPLES + 1)]
+        smp = sorted({(round(q[0], 6), round(q[1], 6)) for q in smp if math.hypot(q[0] - a0[0], q[1] - a0[1]) > D},
+                     key=lambda q: math.hypot(q[0] - a0[0], q[1] - a0[1]))
+        for q in smp:
+            if len(out) > SIDE_ANCHOR_ALTS:
+                break
+            if all(math.hypot(q[0] - o[0], q[1] - o[1]) > D for o in out) and not covering_areas(ax, fid, q, rank):
+                out.append(q)
+        return out
+
+    for _ in range(PLACER_PASSES * max(1, len(ang))):
+        if not bad:
+            break
+        changed = False
+        for key in sorted(bad):
+            if tried.get(key, 0) >= 2 * PLACER_PASSES:
+                continue
+            tried[key] = tried.get(key, 0) + 1
+            c, i = key
+            it0 = its_of[c][i]
+            best = (len(bad) + 1, ang[key], it0[0])
+            for anc in alt_anchors(key):
+                for g in (0.0,) + LEADER_ANGLES + SIDE_EXTRA_ANGLES:
+                    if g == ang[key] and tuple(anc) == tuple(it0[0]):
+                        continue
+                    old = ang[key]
+                    ang[key] = g
+                    its_of[c][i] = (anc, it0[1], it0[2])
+                    b2 = failing(layout())
+                    if key not in b2 and len(b2) < best[0]:
+                        best = (len(b2), g, anc)
+                    ang[key] = old
+                    its_of[c][i] = it0
+                if best[0] <= len(bad):
+                    break   # the nearest anchor that clears the label
+            if best[1] != ang[key] or tuple(best[2]) != tuple(it0[0]):
+                ang[key] = best[1]
+                if tuple(best[2]) != tuple(it0[0]):
+                    its_of[c][i] = (best[2], it0[1], it0[2])
+                    moved[key] = True
+                changed = True
+                pos = layout()
+                bad = failing(pos)
+                break
+        if not changed:
+            break
+    for c, its, xx in cols:
+        for i, it in enumerate(its):
+            fid = (it[2] or "")[len("label:"):] if (it[2] or "").startswith("label:") else None
+            if fid and fid in record["placed"]:
+                if ang[(c, i)]:
+                    record["placed"][fid]["leader_angle"] = ang[(c, i)]
+                if moved.get((c, i)):
+                    record["placed"][fid].update(source="ink", anchor=[round(it[0][0], 2), round(it[0][1], 2)])
+    return left, [pos[("left", i)] for i in range(len(left))], order, [pos[("right", i)] for i in range(len(order))]
 
 
 # ------------------------------------------------------------------------ plan leader placer (1.3 P1R R3)
@@ -1097,6 +1263,54 @@ def anchor_candidates(lc, row, column, zr=None):
     return uniq
 
 
+LEADER_ANGLES = (8.0, -8.0, 15.0, -15.0, 25.0, -25.0)   # deg: 1.4 (h) r2 (Design Notes 35 R1) angled leader candidates
+
+
+def cand_angle(src):
+    """Leader angle (deg, text above the anchor positive) of a placer candidate source 'src@deg'; 0 when horizontal."""
+    return float(str(src).split("@", 1)[1]) if src and "@" in str(src) else 0.0
+
+
+def cand_source(src):
+    """The anchor source of a placer candidate without its angle suffix (the K4 anchor record reads it)."""
+    return str(src).split("@", 1)[0] if src else src
+
+
+def angled_candidates(ink, cands, D):
+    """1.4 (h) r2 (Design Notes 35 R1, placer rule; the check judges every leader by rule (l)): the candidate list with
+    angled variants. Every candidate keeps its horizontal form first; then each anchor is offered with the text moved so
+    the leader runs at each of LEADER_ANGLES (src suffixed '@deg'). An anchor of a default or ink source on a vertical
+    face (within COLLINEAR_DEG) shorter than 2 D (a part thinner than twice the clearance) is moved to that face's
+    mid-height and offered angled only (Design Notes 35: 'the leader lands angled at the part mid-height'). Anchors from
+    label_anchor_frac and label_theta are kept where the spec puts them (K4 anchor record)."""
+    edges = []
+    for poly, closed in ink:
+        segs = _edges(poly) if closed else [(poly[i], poly[i + 1]) for i in range(len(poly) - 1)]
+        edges += [(a, b) for a, b in segs if math.hypot(b[0] - a[0], b[1] - a[1]) > 1e-9]
+    base, angled, seen = [], [], set()
+    for col, src, anc in cands:
+        mid = None
+        if src not in ("label_anchor_frac", "label_theta"):
+            thin = [(math.hypot(b[0] - a[0], b[1] - a[1]), a, b) for a, b in edges
+                    if _pt_seg(anc, a, b) <= 1e-6 and abs(b[0] - a[0]) <= math.tan(math.radians(COLLINEAR_DEG)) * abs(b[1] - a[1])
+                    and math.hypot(b[0] - a[0], b[1] - a[1]) < 2 * D]
+            if thin:
+                _, a, b = min(thin)
+                mid = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+        if mid is not None:
+            key = (col, round(mid[0], 6), round(mid[1], 6))
+            if key not in seen:
+                seen.add(key)
+                angled += [(col, f"{src}@{g:g}", mid) for g in LEADER_ANGLES]
+            continue
+        base.append((col, src, anc))
+        if src in ("label_anchor_frac", "label_theta"):   # the spec's anchor: its angled forms before any other anchor
+            base += [(col, f"{src}@{g:g}", anc) for g in LEADER_ANGLES]
+        else:
+            angled += [(col, f"{src}@{g:g}", anc) for g in LEADER_ANGLES]
+    return base + angled
+
+
 def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edge_leaders=False, collinear=False):
     """The plan leader placer (1.3 P1R R3; rules in the block comment above). margin=True: labels in a right column
     (x = right axes limit + one text line, left-aligned) and a left column (left limit - one line, right-aligned),
@@ -1128,6 +1342,11 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
             sg = 1 if r["on"] == "+u" else -1
             cands[r["id"]] = [c for c in cands[r["id"]] if c[2][0] * sg > TOL_Z]
     ax.apply_aspect()
+    if collinear:   # 1.4 (h) r2 (Design Notes 35 R1): angled leaders and the thin-face mid-height landing
+        D_ = collinear_scale(ax)[0]
+        if D_ is not None:
+            for r in rows:
+                cands[r["id"]] = angled_candidates(ink_pieces(ax, r["id"]), cands[r["id"]], D_)
     (_, y0), (_, y1) = ax.transData.transform([(0, 0), (0, 1)])
     line = LABEL_FONTSIZE * ax.figure.dpi / 72 * LABEL_LINESPACING / abs(y1 - y0)
     gap = line * LABEL_GAP_LINES
@@ -1145,19 +1364,21 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
     hgt = {f: line * (texts[f].count("\n") + 1) for f in order}
 
     def wanted(f, c):
-        col, _, anc = c
+        col, src, anc = c
         if not margin:
             return (anc[0] + (60 if col == "right" else -60), anc[1] + 20)
         h = hgt[f]
-        return (x_col if col == "right" else x_left, min(max(anc[1], zlo + h / 2), zhi - h / 2))
+        xx = x_col if col == "right" else x_left
+        z = anc[1] + math.tan(math.radians(cand_angle(src))) * abs(xx - anc[0])   # 1.4 (h) r2: angled candidate
+        return (xx, min(max(z, zlo + h / 2), zhi - h / 2))
 
     def layout(choice):
         pos = {}
         if not margin:
             return {f: wanted(f, c) for f, c in choice.items() if c}
         for col, xx in (("right", x_col), ("left", x_left)):
-            items = sorted([f for f in order if choice.get(f) and choice[f][0] == col], key=lambda f: -choice[f][2][1])
-            zs = _stack_z([choice[f][2][1] for f in items], [hgt[f] for f in items], zlo, zhi, gap)
+            items = sorted([f for f in order if choice.get(f) and choice[f][0] == col], key=lambda f: -wanted(f, choice[f])[1])
+            zs = _stack_z([wanted(f, choice[f])[1] for f in items], [hgt[f] for f in items], zlo, zhi, gap)
             pos.update({f: (xx, z) for f, z in zip(items, zs)})
         return pos
 
@@ -1254,8 +1475,10 @@ def place_plan_labels(ax, ctx, pose, margin=True, stack_pose=None, notes=(), edg
     pos = layout(choice)
     for f in order:
         col, src, anc = choice[f]
-        record["placed"][f] = {"column": col, "source": src, "anchor": [round(anc[0], 2), round(anc[1], 2)],
+        record["placed"][f] = {"column": col, "source": cand_source(src), "anchor": [round(anc[0], 2), round(anc[1], 2)],
                                "text": [round(pos[f][0], 2), round(pos[f][1], 2)]}
+        if cand_angle(src):   # 1.4 (h) r2: the angled candidate taken (Design Notes 35 R1)
+            record["placed"][f]["leader_angle"] = cand_angle(src)
         kw = {"ha": "left" if col == "right" else "right", "va": "center"} if margin else {}
         ann = ax.annotate(texts[f], xy=anc, xytext=pos[f], fontsize=LABEL_FONTSIZE, zorder=LEADER_ZORDER, annotation_clip=False,
                           arrowprops={"arrowstyle": "-", "linewidth": 0.4 if margin else 0.5, **({"color": "0.35"} if margin else {}),
@@ -2436,20 +2659,23 @@ COLLINEAR_PAPER_MM = 0.4152
 COLLINEAR_PAPER_RUN_MM = 2.0756
 COLLINEAR_DEG = 2.0            # 1.3 (h) r6: within this angle of a line a leader runs along it (M1 S3 r5 F1, Rule 2 fix (b))
 COLLINEAR_ASPECT_TOL = 1e-6    # premise of the paper conversion: px per data mm equal in x and y (relative)
+COLLINEAR_PX_MIN = 12.0        # 1.4 (h) r2 (Design Notes 35 R1, M1 S4 r1 F2): least clearance in px at the saved scale
 
 
 def collinear_scale(ax):
-    """Rule (l) thresholds of one Axes in data mm (P0D FIX L1): (D, R, premise issue or None). D = COLLINEAR_PAPER_MM and R =
-    COLLINEAR_PAPER_RUN_MM converted at the Axes' px per data mm (transData at the figure dpi; the dpi cancels, so the
-    result is the drawn length on paper). Premise: equal aspect (px per data mm equal in x and y within
-    COLLINEAR_ASPECT_TOL); an Axes that breaks it is reported and not judged."""
+    """Rule (l) thresholds of one Axes in data mm (P0D FIX L1): (D, R, premise issue or None). D = max(COLLINEAR_PAPER_MM,
+    COLLINEAR_PX_MIN px) and R = COLLINEAR_PAPER_RUN_MM, converted at the Axes' px per data mm (transData at the figure
+    dpi). 1.4 (h) r2 (Design Notes 35 R1): the clearance is judged in pixels of the saved image at 100 percent, at least
+    COLLINEAR_PX_MIN px; premise of reading it from the figure dpi: every script saves at the figure dpi (savefig without
+    a dpi argument, rcParams savefig.dpi 'figure'; K3 dpi and the save lint). Premise: equal aspect (px per data mm equal
+    in x and y within COLLINEAR_ASPECT_TOL); an Axes that breaks it is reported and not judged."""
     (a, b, c) = ax.transData.transform([(0, 0), (1, 0), (0, 1)])
     kx, ky = math.hypot(b[0] - a[0], b[1] - a[1]), math.hypot(c[0] - a[0], c[1] - a[1])
     if kx <= 0 or ky <= 0 or abs(kx - ky) > COLLINEAR_ASPECT_TOL * max(kx, ky):
         return None, None, (f"rule (l) premise: px per data mm {kx:.4f} in x against {ky:.4f} in y; the paper-mm conversion needs "
                             f"equal aspect (K4 collinear)")
     f = ax.figure.dpi / 25.4 / kx
-    return COLLINEAR_PAPER_MM * f, COLLINEAR_PAPER_RUN_MM * f, None
+    return max(COLLINEAR_PAPER_MM * f, COLLINEAR_PX_MIN / kx), COLLINEAR_PAPER_RUN_MM * f, None
 
 
 def _run_near(p0, p1, line_pt, line_dir, seg=None, step=0.25, mm=1.0):
@@ -2532,6 +2758,8 @@ def collinear_lines(ctx, ax, fid, every=None):
                 q = artist_polys(a)[0]
                 out += [("reference line", g, (q[i], q[i + 1]), None) for i in range(len(q) - 1)]
             elif row == fid:
+                continue
+            elif getattr(a, "_sc_outlined", False):   # 1.4 (h) r2 (M1 S4 F3): the body's edge is its :outline drawn line
                 continue
             elif strokes_boundary(a):
                 reg = drawn_region(a)
@@ -2866,6 +3094,10 @@ def outline_admission_issue(row, artist, plan, siblings):
     None when admitted, else the reason."""
     if row is None:
         return "sub-artist of no spec row"
+    if not plan and row.get("section_true"):   # 1.4 (h) r2 (M1 S4 F3): the cut-body outline, judged by K8 cut_outline_issues
+        if not isinstance(artist, Line2D):
+            return f"section outline sub-artist must be a Line2D (drawn as {type(artist).__name__})"
+        return None
     if row.get("kind") != "plate" or not row.get("plan_poly") or not plan:
         return f"outline sub-artist admitted only for a plate row with plan_poly in plan_xy ({row.get('kind')})"
     if not isinstance(artist, Polygon) or artist.get_fill():
@@ -3104,6 +3336,7 @@ def sub_artist_issues(ctx, ax, pose, rows, gid, arts):
     prow = rows.get(fid)
     if prow is None:
         return [f"sub-artist of no spec row {fid}"]
+    arts = [a for a in arts if not getattr(a, "_sc_hidden_copy", False)]   # 1.4 (h) r2 (TP1.4-5): a renderer hidden copy repeats the stroke; clause (6) judges it
     if sub == MARK_SUB:
         return mark_issues(ctx, ax, pose, prow, arts)
     if sub not in (prow.get("sub_artists") or []):
@@ -3797,6 +4030,29 @@ def k7(ctx):
             if lo > tlo + TOL_C or hi < thi - TOL_C:
                 issues.append(f"{fid}: spec depth band [{lo:.2f}, {hi:.2f}] does not contain the placed projection [{tlo:.2f}, {thi:.2f}]")
                 failing += 1
+    # 1.4 (h) r2 (Topologist FIX TP1.4-3, TP1.1-11 class): the TP-4 lint on every row with section_true in a side or
+    # section view. Premise: a revolved row's band along the view normal equals its radial extent, so the depth band holds
+    # [-r_max, r_max], r_max the largest |r| over the row's section_true pieces with plane_cuts ignored (the revolve).
+    if side:
+        st_linted = set()
+        for pose in ctx.figs:
+            pr_ = (ctx.stack or {}).get("poses", {}).get(pose, {}) or {}
+            for row in rows_list:
+                fid = row["id"]
+                if fid in st_linted or not row.get("section_true") or not applies(row, pose):
+                    continue
+                rec = (pr_.get("features") or {}).get(fid) or {}
+                dep = rec.get("depth_spec") or rec.get("depth")
+                if not dep:
+                    continue
+                st_linted.add(fid)
+                prof = {k: v for k, v in row.items() if k != "plane_cuts"}
+                rmax = max(abs(p[0]) for _, _, pts in section_true_polys(ctx.P, pr_.get("vars_z_A", {}), prof, z_S=False) for p in pts)
+                lo, hi = sorted(dep)
+                if lo > -rmax + TOL_C or hi < rmax - TOL_C:
+                    issues.append(f"{fid}: spec depth band [{lo:.2f}, {hi:.2f}] does not contain the true section radius "
+                                  f"[{-rmax:.2f}, {rmax:.2f}] (section_true, TP1.4-3)")
+                    failing += 1
     # TP1.1-3: two coaxial rows drawn in true section intersect in 3D exactly when their half-sections overlap, so a
     # nest between them is no nest; class N is refused between two `section` rows (declare C, G or F)
     for a, row in rows.items():
@@ -5219,6 +5475,9 @@ def k8(ctx):
         elif ctx.view in SIDE_VIEWS and ((ctx.spec or {}).get("section") or {}).get("hatch_adjacency_gap") is not None:
             n += 1   # 1.4 P6 (Designer P2r 1.4 item 5): the adjacency lint on every Axes of a spec that declares the gap (S1 r9)
             issues += hatch_adjacency_issues(ctx, ax, pose)
+        if ctx.view in SIDE_VIEWS and one_body_groups(ctx.spec):   # 1.4 (h) r2 (M1 S4 F3): one outlined region per cut body
+            n += 1
+            issues += cut_outline_issues(ctx, ax, pose)
     return result("K8", not issues, _summ(issues) if issues else f"{n} predicate(s) hold, axes not inverted", measured=len(issues), threshold=0,
                   n_issues=len(issues), cause=_cause(absent, len(issues)), issues=list(issues), absent=absent)
 
@@ -5335,7 +5594,218 @@ def render_section(ctx, ax, pose):
                 a.set_hatch(None)
                 ins, outs = _behind(a, cut)
                 a.set_linestyle("--" if ins and not outs else "-")
+    draw_cut_outlines(sctx.spec, ax)   # 1.4 (h) r2 (M1 S4 F3): one outlined region per cut body, before the occlusion split
     render_occlusion(sctx, ax)
+
+
+# ---------------------------------------------------------------- 1.4 (h) r2: one outlined region per cut body
+# M1 S4 r1 F3, S3 r8 F1, S1 r9 (carried); Topologist P7b section 2 predicate. A cut body (a section_true row and its
+# one_body partners) is drawn as its pieces, filled and hatched with no stroked edge, plus one outline: the boundary of
+# the union of the drawn pieces (sub-artist <first row>:outline, solid Line2D polylines). The pieces stay in the spec and
+# in the figure for K5 to K8 (they read the piece patches, never the outline).
+OUTLINE_EPS = 0.02   # mm: side-test offset of an outline segment (Topologist P7b section 2)
+OUTLINE_STEP = 0.5   # mm: sample step along outline and boundary segments (K8 cut_outline_issues)
+
+
+def one_body_groups(spec):
+    """[[row ids]]: the section_true rows of the spec grouped by one_body neighbour declarations (neighbour kind
+    one_body, either direction), spec order; the first id of a group names its :outline sub-artist."""
+    rows = [r for r in (spec or {}).get("features", []) if r.get("section_true")]
+    ids = [r["id"] for r in rows]
+    par = {i: i for i in ids}
+
+    def find(x):
+        while par[x] != x:
+            par[x] = par[par[x]]
+            x = par[x]
+        return x
+    for r in rows:
+        for nb in r.get("neighbours") or []:
+            if nb.get("kind") == "one_body" and nb.get("id") in par:
+                a, b = find(r["id"]), find(nb["id"])
+                if a != b:
+                    par[max(a, b, key=ids.index)] = min(a, b, key=ids.index)
+    out = {}
+    for i in ids:
+        out.setdefault(find(i), []).append(i)
+    return [out[k] for k in ids if k in out]
+
+
+def _seg_x(a, b, c, d):
+    """Parameter t on a-b of a proper crossing with c-d, else None."""
+    r = (b[0] - a[0], b[1] - a[1])
+    q = (d[0] - c[0], d[1] - c[1])
+    den = r[0] * q[1] - r[1] * q[0]
+    if abs(den) < 1e-12:
+        return None
+    t = ((c[0] - a[0]) * q[1] - (c[1] - a[1]) * q[0]) / den
+    u = ((c[0] - a[0]) * r[1] - (c[1] - a[1]) * r[0]) / den
+    return t if 1e-9 < t < 1 - 1e-9 and -1e-9 <= u <= 1 + 1e-9 else None
+
+
+def _in_material(p, polys):
+    """p in the closed union of convex polygons (a point on a seam between two pieces is in material)."""
+    return any(_inside(p, q) for q in polys if len(q) >= 3)
+
+
+def body_boundary(polys, eps=OUTLINE_EPS):
+    """Segments [(a, b)] of the boundary of the union of convex polygons: every edge is cut at the vertices of the other
+    polygons lying on it and at proper crossings with their edges; a sub-segment is kept when exactly one side of its
+    midpoint (offset eps along the edge normal) lies in material; coincident sub-segments are kept once."""
+    polys = [[tuple(map(float, v)) for v in q] for q in polys if len(q) >= 3]
+    out, seen = [], set()
+    for P in polys:
+        for a, b in _edges(P):
+            L = math.hypot(b[0] - a[0], b[1] - a[1])
+            if L < 1e-9:
+                continue
+            ts = {0.0, 1.0}
+            for Q in polys:
+                for v in Q:
+                    if _pt_seg(v, a, b) <= 1e-6:
+                        ts.add(max(0.0, min(1.0, ((v[0] - a[0]) * (b[0] - a[0]) + (v[1] - a[1]) * (b[1] - a[1])) / (L * L))))
+                for c, d in _edges(Q):
+                    t = _seg_x(a, b, c, d)
+                    if t is not None:
+                        ts.add(t)
+            ts = sorted(ts)
+            nx, ny = (b[1] - a[1]) / L, -(b[0] - a[0]) / L
+            for t0, t1 in zip(ts, ts[1:]):
+                if (t1 - t0) * L < 1e-6:
+                    continue
+                p0 = (a[0] + (b[0] - a[0]) * t0, a[1] + (b[1] - a[1]) * t0)
+                p1 = (a[0] + (b[0] - a[0]) * t1, a[1] + (b[1] - a[1]) * t1)
+                m = ((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2)
+                s1 = _in_material((m[0] + eps * nx, m[1] + eps * ny), polys)
+                s2 = _in_material((m[0] - eps * nx, m[1] - eps * ny), polys)
+                if s1 == s2:
+                    continue
+                k = frozenset(((round(p0[0], 5), round(p0[1], 5)), (round(p1[0], 5), round(p1[1], 5))))
+                if k in seen:
+                    continue
+                seen.add(k)
+                out.append((p0, p1))
+    return out
+
+
+def chain_segments(segs, tol=1e-5):
+    """Polylines joining segments end to end (rounded end points), collinear inner vertices merged."""
+    key = lambda p: (round(p[0] / tol), round(p[1] / tol))  # noqa: E731
+    left = list(segs)
+    lines = []
+    while left:
+        a, b = left.pop(0)
+        pl = [a, b]
+        grown = True
+        while grown:
+            grown = False
+            for i, (c, d) in enumerate(left):
+                if key(c) == key(pl[-1]):
+                    pl.append(d)
+                elif key(d) == key(pl[-1]):
+                    pl.append(c)
+                elif key(d) == key(pl[0]):
+                    pl.insert(0, c)
+                elif key(c) == key(pl[0]):
+                    pl.insert(0, d)
+                else:
+                    continue
+                left.pop(i)
+                grown = True
+                break
+        out = [pl[0]]
+        for q in pl[1:]:
+            if len(out) >= 2:
+                o, p = out[-2], out[-1]
+                if abs((p[0] - o[0]) * (q[1] - o[1]) - (p[1] - o[1]) * (q[0] - o[0])) < 1e-9 and \
+                        (p[0] - o[0]) * (q[0] - p[0]) + (p[1] - o[1]) * (q[1] - p[1]) > 0:
+                    out[-1] = q
+                    continue
+            out.append(q)
+        lines.append(out)
+    return lines
+
+
+def _body_pieces(ax, ids):
+    """(piece patches, polys) of the rows ids drawn in ax: area patches carrying a piece name, hidden copies excluded."""
+    arts = [a for g in ids for a in tagged(ax).get(g, []) if isinstance(a, Patch) and not isinstance(a, FancyArrowPatch)
+            and getattr(a, PIECE_ATTR, None) is not None and not getattr(a, "_sc_hidden_copy", False)]
+    return arts, [q for a in arts for q in artist_polys(a) if len(q) >= 3]
+
+
+def draw_cut_outlines(spec, ax):
+    """1.4 (h) r2 (M1 S4 F3): for every one_body group of section_true rows drawn in ax, the piece patches lose their
+    stroked edge (linewidth 0; fill and hatch unchanged, flag _sc_outlined) and the union boundary of the drawn pieces is
+    drawn as solid Line2D polylines tagged <first row>:outline at the pieces' edge colour and width. Idempotent."""
+    out = {}
+    for ids in one_body_groups(spec):
+        arts, polys = _body_pieces(ax, ids)
+        if not arts or tagged(ax).get(ids[0] + OUTLINE_SUFFIX):
+            continue
+        lw = max(float(a.get_linewidth() or 0) for a in arts) or 1.0
+        ec = arts[0].get_edgecolor()
+        for a in arts:
+            a.set_linewidth(0)
+            a._sc_outlined = True
+        n = 0
+        for pl in chain_segments(body_boundary(polys)):
+            draw(ids[0] + OUTLINE_SUFFIX, Line2D([p[0] for p in pl], [p[1] for p in pl], color=ec, linewidth=lw,
+                                                 solid_capstyle="butt", zorder=2), ax)
+            n += 1
+        out[ids[0]] = n
+    return out
+
+
+def cut_outline_issues(ctx, ax, pose):
+    """K8, 1.4 (h) r2 (M1 S4 F3; Topologist P7b section 2 predicate): for every one_body group of section_true rows drawn
+    in a side or section Axes: (o1) no piece patch strokes its edge (a stroked piece edge draws a face inside the body);
+    (o2) an outline <first row>:outline is drawn; (o3) every drawn outline sample (OUTLINE_STEP along each segment) has
+    material of the body on exactly one side (offset OUTLINE_EPS along the segment normal): no seam, nothing off the
+    body; (o4) every sample of the union boundary of the drawn pieces (body_boundary) lies within TOL_Z of the drawn
+    outline. Premise: the drawn pieces are the spec pieces (section_true_issues, K8), so the outline is the spec body."""
+    out = []
+    for ids in one_body_groups(ctx.spec):
+        arts, polys = _body_pieces(ax, ids)
+        if not arts:
+            continue
+        g = ids[0] + OUTLINE_SUFFIX
+        stroked = sorted({a.get_gid() for a in arts if float(a.get_linewidth() or 0) > 0 and a.get_edgecolor() is not None
+                          and a.get_edgecolor()[3] > 0
+                          and not (isinstance(a.get_linestyle(), str) and a.get_linestyle().strip().lower() in ("", "none"))})
+        if stroked:
+            out.append(f"{pose}/{'+'.join(ids)}: piece edges stroked on {', '.join(stroked)} (a line across the cut body; one outlined region per cut body, o1)")
+        lines = [artist_polys(a)[0] for a in tagged(ax).get(g, []) if isinstance(a, Line2D) and not getattr(a, "_sc_hidden_copy", False)]
+        if not lines:
+            out.append(f"{pose}/{'+'.join(ids)}: no outline {g} (o2)")
+            continue
+        segs = [(pl[i], pl[i + 1]) for pl in lines for i in range(len(pl) - 1)]
+        bad = 0
+        for a, b in segs:
+            L = math.hypot(b[0] - a[0], b[1] - a[1])
+            if L < 1e-9:
+                continue
+            nx, ny = (b[1] - a[1]) / L, -(b[0] - a[0]) / L
+            k = max(2, int(L / OUTLINE_STEP))
+            for j in range(k):
+                t = (j + 0.5) / k
+                m = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+                if _in_material((m[0] + OUTLINE_EPS * nx, m[1] + OUTLINE_EPS * ny), polys) == \
+                        _in_material((m[0] - OUTLINE_EPS * nx, m[1] - OUTLINE_EPS * ny), polys):
+                    bad += 1
+        if bad:
+            out.append(f"{pose}/{'+'.join(ids)}: {bad} outline sample(s) with body material on both sides or neither (a seam or a line off the body, o3)")
+        miss = 0
+        for a, b in body_boundary(polys):
+            L = math.hypot(b[0] - a[0], b[1] - a[1])
+            k = max(2, int(L / OUTLINE_STEP))
+            for j in range(k):
+                t = (j + 0.5) / k
+                m = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+                if min(_pt_seg(m, c, d) for c, d in segs) > TOL_Z:
+                    miss += 1
+        if miss:
+            out.append(f"{pose}/{'+'.join(ids)}: {miss} sample(s) of the body boundary not drawn by the outline (o4)")
+    return out
 
 
 def _solid(a):
@@ -5359,10 +5829,102 @@ def unsectioned_occluders(ctx, ax):
     return out
 
 
-def _occluded_by(fid, a, occ):
-    """Occluder rings of other rows whose overlap with artist a exceeds TOL_AREA."""
+def _front_x(c, R, u):
+    return math.sqrt(max(R * R - (u - c) ** 2, 0.0))
+
+
+FRONT_SAMPLES = 40   # u samples over the overlap of two unsectioned bodies (TP1.4-4 front test)
+
+
+def _cr(polys):
+    """(centre, half width) along u of a drawn outline (the solid of revolution it stands for, axis in the plane)."""
+    xs = [v[0] for P in polys for v in P]
+    return (min(xs) + max(xs)) / 2, (max(xs) - min(xs)) / 2
+
+
+def _in_front(q, polys, n=FRONT_SAMPLES):
+    """1.4 (h) r2 (Topologist FIX TP1.4-4, renderer clause (2)): occluder ring q, a whole unsectioned body with its axis in
+    the plane, is in front of the unsectioned target polys over their u overlap: x_front(O, u) - x_front(T, u) > TOL_Z at
+    every sample, x_front(B, u) = sqrt(R_B^2 - (u - c_B)^2) from the drawn outline centre c_B and half width R_B. Premise:
+    every unsectioned row is a solid of revolution with its axis in the plane, drawn whole (K8-B73 straddle, K5
+    rectangle projection)."""
+    co, Ro = _cr([q])
+    ct, Rt = _cr(polys)
+    lo, hi = max(co - Ro, ct - Rt), min(co + Ro, ct + Rt)
+    if hi <= lo:
+        return False
+    us = [lo + (hi - lo) * (k + 0.5) / n for k in range(n)]
+    return all(_front_x(co, Ro, u) - _front_x(ct, Rt, u) > TOL_Z for u in us)
+
+
+def _parent_unsectioned(ctx, fid):
+    """The drawn outline polys of row fid when it is an unsectioned row (TP1.4-4 front test target), else None."""
+    r = next((x for x in ctx.spec.get("features", []) if x["id"] == fid), None)
+    return r is not None and r.get("section_class") == "unsectioned"
+
+
+def _occluded_by(fid, a, occ, ctx=None, ax=None):
+    """Occluder rings of other rows whose overlap with artist a exceeds TOL_AREA. 1.4 (h) r2 (TP1.4-4): when the target row
+    is itself unsectioned, only an occluder whose front surface is nearer over the overlap (_in_front) hides it."""
     polys = [q for q in artist_polys(a) if len(q) >= 3]
-    return [(g, q) for g, oa, q in occ if g != fid and oa is not a and any(overlap_area(p, q) > TOL_AREA for p in polys)]
+    tgt = None
+    if any(g == fid for g, _, _ in occ) or (ctx is not None and _parent_unsectioned(ctx, fid)):
+        tgt = [q for q in (pieces(ax, fid) if ax is not None else []) if len(q) >= 3] or polys
+    return [(g, q) for g, oa, q in occ if g != fid and oa is not a and any(overlap_area(p, q) > TOL_AREA for p in polys)
+            and (tgt is None or _in_front(q, tgt))]
+
+
+STROKE_STEP = 0.5   # mm: sample step along a Line2D stroke (TP1.4-5, clause (6) line family)
+
+
+def _stroke_samples(a, step=STROKE_STEP):
+    out = []
+    for pts in artist_polys(a):
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            L = math.hypot(x1 - x0, y1 - y0)
+            k = max(1, int(L / step))
+            out += [(x0 + (x1 - x0) * i / k, y0 + (y1 - y0) * i / k) for i in range(k + 1)]
+    return out
+
+
+def _stroke_rows(ctx, ax):
+    """[(gid, Line2D)] of solid, visible, tagged strokes of part rows (rows, sub-artists and :outline lines; reference
+    rows and line, arrow and callout rows with their sub-artists are annotation, as the P7b dry run reads them), hidden
+    copies excluded: the line family clause (6) reads (TP1.4-5)."""
+    rows = {r["id"]: r for r in ctx.spec.get("features", [])}
+    out = []
+    for g, arts in tagged(ax).items():
+        r = rows.get(g.split(":")[0])
+        if r is None or r.get("reference") or r.get("kind") in NO_AREA_KINDS:
+            continue
+        for a in arts:
+            if isinstance(a, Line2D) and a.get_visible() and not getattr(a, "_sc_hidden_copy", False) and _solid(a):
+                out.append((g, a))
+    return out
+
+
+def _hidden_stroke(ctx, ax, g, a, occ):
+    """(occluder ids, hidden samples, all samples) of stroke a (gid g): samples strictly inside (edge depth > TOL_Z) an
+    occluder ring of another row; for an unsectioned parent only at u where that occluder is in front (TP1.4-4 sign)."""
+    parent = g.split(":")[0]
+    tgt = [q for q in pieces(ax, parent) if len(q) >= 3] if _parent_unsectioned(ctx, parent) else None
+    smp = _stroke_samples(a)
+    hid, names = [], set()
+    rings = [(og, q) for og, oa, q in occ if og != parent]
+    if tgt:
+        ct, Rt = _cr(tgt)
+    for p in smp:
+        for og, q in rings:
+            if not (_inside(p, q) and _edge_depth(p, [q]) > TOL_Z):
+                continue
+            if tgt:
+                co, Ro = _cr([q])
+                if _front_x(co, Ro, p[0]) - _front_x(ct, Rt, p[0]) <= TOL_Z:
+                    continue
+            hid.append(p)
+            names.add(og)
+            break
+    return sorted(names), hid, smp
 
 
 def render_occlusion(ctx, ax):
@@ -5370,11 +5932,15 @@ def render_occlusion(ctx, ax):
     that overlaps a solid unsectioned piece by more than TOL_AREA is split as the plan renderer splits (render_plan): the
     artist keeps its style with the region outside the unsectioned pieces as its clip path, and a hidden copy (dashed, no
     fill, no hatch) gets the region inside them, inserted in the draw order right after it. Occluders are taken before any
-    split (an unsectioned piece inside another, e.g. a shaft end inside the coupling, is split and still occludes)."""
+    split (an unsectioned piece inside another, e.g. a shaft end inside the coupling, is split and still occludes).
+    1.4 (h) r2: (TP1.4-4) an unsectioned target is hidden only by an occluder in front of it (_in_front); (TP1.4-5) every
+    solid tagged Line2D stroke of a non-reference row (marks, ticks, root lines, :outline lines) with a sample hidden by
+    an occluder (_hidden_stroke) is split the same way: the stroke keeps the visible region, a dashed copy the hidden one."""
     occ = unsectioned_occluders(ctx, ax)
     if not occ:
         return {}
     out = {}
+    strokes = _stroke_rows(ctx, ax)
     for r in ctx.spec.get("features", []):
         if r.get("kind") in NO_AREA_KINDS or r.get("reference"):
             continue
@@ -5382,7 +5948,7 @@ def render_occlusion(ctx, ax):
         for a in list(_area_artists(ax, fid)):
             if getattr(a, "_sc_hidden_copy", False) or a.get_clip_path() is not None or not _solid(a):
                 continue
-            hits = _occluded_by(fid, a, occ)
+            hits = _occluded_by(fid, a, occ, ctx, ax)
             if not hits:
                 continue
             polys = [q for q in artist_polys(a) if len(q) >= 3]
@@ -5407,6 +5973,47 @@ def render_occlusion(ctx, ax):
             kids.remove(cp)
             kids.insert(kids.index(a) + 1, cp)
             out[a] = (fid, sorted({g for g, _ in hits}))
+    for g, a in strokes:   # 1.4 (h) r2 (TP1.4-5): the line family
+        if a.get_clip_path() is not None:
+            continue
+        names, hidp, smp = _hidden_stroke(ctx, ax, g, a, occ)
+        if not hidp:
+            continue
+        rings = [q for og, oa, q in occ if og in names]
+        tgt = [q for q in pieces(ax, g.split(":")[0]) if len(q) >= 3] if _parent_unsectioned(ctx, g.split(":")[0]) else None
+        if tgt:   # the hidden region of an unsectioned parent's stroke: the occluder rings over the u where they are in front
+            ct, Rt = _cr(tgt)
+            clipped = []
+            for q in rings:
+                co, Ro = _cr([q])
+                us = [v[0] for v in q]
+                ua, ub = min(us), max(us)
+                lo, hi = None, None
+                for k in range(FRONT_SAMPLES * 4 + 1):
+                    u = ua + (ub - ua) * k / (FRONT_SAMPLES * 4)
+                    if _front_x(co, Ro, u) - _front_x(ct, Rt, u) > TOL_Z:
+                        lo = u if lo is None else lo
+                        hi = u
+                if lo is not None:
+                    zs = [v[1] for v in q]
+                    clipped.append([(lo, min(zs)), (hi, min(zs)), (hi, max(zs)), (lo, max(zs))])
+            rings = clipped
+        if not rings:
+            continue
+        xs = [p[0] for p in smp] + [v[0] for q in rings for v in q]
+        ys = [p[1] for p in smp] + [v[1] for q in rings for v in q]
+        box = (min(xs) - RENDER_MARGIN, max(xs) + RENDER_MARGIN, min(ys) - RENDER_MARGIN, max(ys) + RENDER_MARGIN)
+        hid, vis = region_split([[q] for q in rings], box)
+        cp = Line2D(list(a.get_xdata()), list(a.get_ydata()), color=a.get_color(), linewidth=a.get_linewidth(), linestyle="--",
+                    zorder=a.get_zorder())
+        cp._sc_hidden_copy = True
+        a.set_clip_path(region_path(vis), ax.transData)
+        draw(g, cp, ax)
+        cp.set_clip_path(region_path(hid), ax.transData)
+        kids = ax._children
+        kids.remove(cp)
+        kids.insert(kids.index(a) + 1, cp)
+        out[a] = (g, names)
     return out
 
 
@@ -5416,7 +6023,11 @@ def occlusion_issues(ctx, ax, pose):
     of the section at x <= 0 inside its outline lies behind it. (6a) No interior sample of a solid area artist of another
     row, inside that artist's drawn region (its clip region, if any), lies inside a solid unsectioned piece deeper than
     TOL_Z. (6b) An artist whose samples lie there has a dashed hidden copy (same row, no hatch, no fill) whose drawn region
-    holds them: its hidden edges are drawn."""
+    holds them: its hidden edges are drawn. 1.4 (h) r2: (TP1.4-4) an unsectioned target is behind an occluder only where
+    the occluder's front surface is nearer (_in_front, x_front(O, u) - x_front(T, u) > TOL_Z); (6c) converse: no hidden
+    copy of an unsectioned row holds an interior sample where no occluder is in front of it. (TP1.4-5) (6a) and (6b) read
+    every solid tagged Line2D stroke of a non-reference row too (_stroke_rows; samples every STROKE_STEP mm, strictly
+    inside by TOL_Z): the visible part of a stroke stays solid, the hidden part has a dashed copy of the same gid."""
     occ = unsectioned_occluders(ctx, ax)
     out = []
     for r in ctx.spec.get("features", []):
@@ -5428,7 +6039,7 @@ def occlusion_issues(ctx, ax, pose):
         for a in arts:
             if getattr(a, "_sc_hidden_copy", False) or not _solid(a):
                 continue
-            hits = _occluded_by(fid, a, occ)
+            hits = _occluded_by(fid, a, occ, ctx, ax)
             if not hits:
                 continue
             reg = drawn_region(a)
@@ -5443,6 +6054,31 @@ def occlusion_issues(ctx, ax, pose):
             if ins and not any(held(c) for c in copies):
                 out.append(f"{pose}/{fid}: hidden inside the unsectioned outline of {names} with no dashed hidden copy "
                            f"(section convention 6b)")
+        if r.get("section_class") == "unsectioned":   # (6c) converse (TP1.4-4)
+            for c in copies:
+                reg = drawn_region(c)
+                if reg is None:
+                    continue
+                inner = [p for p in _cover_samples(c) if reg.contains(p) and _edge_depth(p, [q for q in artist_polys(c) if len(q) >= 3]) > TOL_Z]
+                front = _occluded_by(fid, c, [(g, oa, q) for g, oa, q in occ], ctx, ax)
+                wrong = [p for p in inner if not any(_inside(p, q) for _, q in front)]
+                if wrong:
+                    out.append(f"{pose}/{fid}: hidden copy drawn dashed where no occluder is in front of it ({len(wrong)} of "
+                               f"{len(inner)} samples; section convention 6c, TP1.4-4)")
+    for g, a in _stroke_rows(ctx, ax):   # (TP1.4-5) the line family
+        names, hidp, smp = _hidden_stroke(ctx, ax, g, a, occ)
+        if not hidp:
+            continue
+        reg = drawn_region(a)
+        vis_in = [p for p in hidp if reg is None or reg.contains(p)]
+        if vis_in:
+            out.append(f"{pose}/{g}: stroke drawn solid inside the unsectioned outline of {', '.join(names)} ({len(vis_in)} of "
+                       f"{len(smp)} samples; section convention 6a, line family, TP1.4-5)")
+            continue
+        cps = [c for c in tagged(ax).get(g, []) if isinstance(c, Line2D) and getattr(c, "_sc_hidden_copy", False) and not _solid(c)]
+        if not any(all(drawn_region(c) is None or drawn_region(c).contains(p) for p in hidp) for c in cps):
+            out.append(f"{pose}/{g}: stroke hidden inside the unsectioned outline of {', '.join(names)} with no dashed hidden copy "
+                       f"(section convention 6b, line family, TP1.4-5)")
     return out
 
 
@@ -6276,6 +6912,8 @@ def wing_issues(ctx, ax, pose, prow, arts, own):
     asin(max |u| / r_in) < 45 deg of theta 180 (the plane cuts lie at theta 90 or 270, K8 plane_cuts lint)."""
     fid = prow["id"]
     w = prow.get("wing") or {}
+    if w.get("in_plane"):
+        return wing_in_plane_issues(ctx, ax, pose, prow, arts)
     if not w.get("x_band"):
         return [f"wing on {fid} without wing.x_band: a part past the beyond band is not drawn (w0)"]
     if not all(k in w for k in ("u", "z")):
@@ -6335,6 +6973,61 @@ def wing_issues(ctx, ax, pose, prow, arts, own):
     if wide:   # (iii) premise of reading the revolve profile with plane_cuts ignored
         out.append(f"wing on {fid}: occluder(s) {', '.join(sorted(wide))} read with in-front material 45 deg or more off theta 180 "
                    f"(asin(max |u| / r_in) >= 45): a plane cut at theta 90 or 270 may lie in the sight band (iii p)")
+    return out
+
+
+def draw_in_plane_wings(ax, P, names, row):
+    """1.4 (h) r2 (Design Notes 35 R2): the in-plane wing form, sub-artist <row>:wing: one solid unfilled Rectangle per
+    wing at u = [r_in, r_out] cos theta_k, theta_k = k 360 / count, over the wing z band (z_S); wing_in_plane_issues
+    judges it."""
+    import check_stack as _cs
+    wg = row["wing"]
+    ev = lambda e: float(_cs.eval_expr(str(e), P, names))  # noqa: E731
+    r_in, r_out = sorted(ev(e) for e in wg["u"])
+    z0, z1 = sorted(_cs.to_shop_floor(ev(e), P) for e in wg["z"])
+    n = int(round(ev(wg["count"])))
+    for k in range(n):
+        c = math.cos(math.radians(k * 360.0 / n))
+        u0, u1 = sorted((r_in * c, r_out * c))
+        draw(f"{row['id']}:wing", Rectangle((u0, z0), u1 - u0, z1 - z0, fill=False, edgecolor="k", linewidth=1), ax)
+
+
+WING_VIEW_PLANE = {"side_xz": lambda th: math.sin(math.radians(th))}   # the view plane holds azimuth th where this is 0
+
+
+def wing_in_plane_issues(ctx, ax, pose, prow, arts):
+    """1.4 (h) r2 (Design Notes 35 R2, M1 S1 r9 F1): the in-plane wing form of a side view. Spec wing {in_plane: true, u:
+    [r_in, r_out], z: [lo, hi], count}. (p0) premise: every wing azimuth k 360 / count (k = 0 .. count - 1) lies in the
+    view plane (side_xz: sin theta = 0 within 1e-9), so each wing is seen in its true outline at u = r cos theta; a view
+    without the in-plane rule is refused. (i) every artist an unfilled, unhatched, solid Patch outline (a visible edge in
+    elevation). (ii) one outline per wing: the drawn rings, sorted by u, equal [r_in, r_out] x [lo, hi] (z_S) at u = r cos
+    theta for each azimuth, within TOL_Z."""
+    fid = prow["id"]
+    w = prow.get("wing") or {}
+    if not all(k in w for k in ("u", "z", "count")):
+        return [f"wing on {fid} in_plane without wing.u / wing.z / wing.count in the spec"]
+    rule = WING_VIEW_PLANE.get(ctx.view)
+    if rule is None:
+        return [f"wing on {fid} in_plane in view {ctx.view}: no in-plane rule for this view (p0)"]
+    n = int(round(_ev(ctx, pose, w["count"])))
+    ths = [k * 360.0 / n for k in range(n)] if n > 0 else []
+    off = [th for th in ths if abs(rule(th)) > 1e-9]
+    out = []
+    if not ths or off:
+        out.append(f"wing on {fid}: wing azimuth(s) {', '.join(f'{t:g}' for t in off) or 'none'} outside the {ctx.view} plane (p0)")
+    for a in arts:
+        if not isinstance(a, Patch) or a.get_fill() or a.get_hatch() or a.get_linestyle() not in SOLID_STYLES:
+            out.append(f"wing on {fid}: {type(a).__name__} not an unfilled, unhatched, solid outline (i)")
+    r0, r1 = sorted(_ev(ctx, pose, e) for e in w["u"])
+    z0, z1 = sorted(_ev_S(ctx, pose, e) for e in w["z"])
+    want = sorted(tuple(sorted((r0 * math.cos(math.radians(t)), r1 * math.cos(math.radians(t))))) for t in ths)
+    got = sorted(((min(v[0] for v in P), max(v[0] for v in P)), (min(v[1] for v in P), max(v[1] for v in P)))
+                 for a in arts for P in artist_polys(a) if len(P) >= 3)
+    if len(got) != len(want):
+        return out + [f"wing on {fid}: {len(got)} outline(s) drawn against {len(want)} wings (ii)"]
+    for (ua, ub), ((ga, gb), (za, zb)) in zip(want, got):
+        if max(abs(ga - ua), abs(gb - ub), abs(za - z0), abs(zb - z1)) > TOL_Z:
+            out.append(f"wing on {fid}: drawn u [{ga:.2f}, {gb:.2f}] z [{za:.2f}, {zb:.2f}] against u [{ua:.2f}, {ub:.2f}] z [{z0:.2f}, {z1:.2f}] (ii)")
     return out
 
 

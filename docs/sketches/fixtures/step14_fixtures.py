@@ -553,9 +553,9 @@ def k4_l_clip_relief():
     c = _live("s3")
     ax = _ax_of(c, "section")
     f, p0, p1 = _leader(ax)
-    a, b, quad = _beside(p0, p1)
+    a, b, quad = _beside(p0, p1, width=2 * sc.collinear_scale(ax)[0] + 1.0)   # 1.4 (h) r2: the far edge past the 12 px D
     poly = sc.draw("motor23_c", Polygon(quad, closed=True, facecolor="0.85", edgecolor="0.3", zorder=1), ax)
-    mid = [((quad[0][0] + quad[3][0]) / 2, (quad[0][1] + quad[3][1]) / 2), ((quad[1][0] + quad[2][0]) / 2, (quad[1][1] + quad[2][1]) / 2), quad[2], quad[3]]
+    mid =[((quad[0][0] + quad[3][0]) / 2, (quad[0][1] + quad[3][1]) / 2), ((quad[1][0] + quad[2][0]) / 2, (quad[1][1] + quad[2][1]) / 2), quad[2], quad[3]]
     clip = Polygon(mid, closed=True, transform=ax.transData)
     poly.set_clip_path(clip)
     sub = sc.axes_context(c, "section")
@@ -919,14 +919,23 @@ def k4_l_own_row():
 def k4_l_relief_live():
     """K4 Z (Designer P0D FIX L3): live S1 height_target (every pose; line z 2000 on gridline z 2000) and live S2
     slot_line_c (line y 259, 1.00 data mm under gridline y 260): each line row's leader continues its own line: 0 firings."""
-    iss = _l(_live("s1"), row="height_target") + _l(_live("s2"), row="slot_line_c")
+    c2 = _live("s2")
+    _slot(c2)   # 1.4 (h) r2: the r10 form, so the relief is read (S2 r11 places the leader angled)
+    iss = _l(_live("s1"), row="height_target") + _l(c2, row="slot_line_c")
     return _lres(iss, "S1 height_target, S2 slot_line_c")
 
 
 def _slot(c):
+    """1.4 (h) r2: the slot_line_c leader re-planted in its S2 r10 form (anchor on the line end toward the text column,
+    text at the anchor height, the leader continuing the line along gridline y 260): S2 r11 places it angled (Design
+    Notes 35 R1), so the FIX L3 relief is exercised on the r10 form."""
     ax = _ax_of(c, "main") if sc.needs_split(c) else next(iter(c.figs.values())).axes[0]
     t = next(x for x in ax.texts if x.get_gid() == "label:slot_line_c")
     ln = next(a for a in sc.tagged(ax)["slot_line_c"] if isinstance(a, Line2D))
+    xs, ys = [float(v) for v in ln.get_xdata()], [float(v) for v in ln.get_ydata()]
+    k = max(range(len(xs)), key=lambda i: xs[i]) if float(t.xyann[0]) > 0 else min(range(len(xs)), key=lambda i: xs[i])
+    t.xy = (xs[k], ys[k])
+    t.xyann = (float(t.xyann[0]), ys[k])
     return ax, t, ln
 
 
@@ -934,6 +943,7 @@ def k4_l_relief_area():
     """K4 B (FIX L3 term 1, line rows only): live S2 with slot_line_c declared kind area in the context's spec copy, its
     drawing unchanged: the gridline y 260 firing returns."""
     c = _live("s2")
+    _slot(c)
     c.spec = copy.deepcopy(c.spec)
     next(r for r in c.spec["features"] if r["id"] == "slot_line_c")["kind"] = "area"
     return _lres(_l(c, row="slot_line_c"), "S2 slot_line_c as an area row")

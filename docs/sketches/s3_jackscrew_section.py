@@ -417,9 +417,9 @@ def build(P, spec, stack):
         (None, AXIAL_LOOP_NOTE),
         (None, spec["figure_note"].replace("; ", ";\n"), sc.NOTE_GID),
     ]
-    sc.place_plan_labels(ax, sctx, pid, margin=True, stack_pose=pz.feats, notes=notes, edge_leaders=True)
+    sc.place_plan_labels(ax, sctx, pid, margin=True, stack_pose=pz.feats, notes=notes, edge_leaders=True, collinear=True)   # 1.4 (h) r2 (Design Notes 35 R1)
     _inset_right_of_labels(fig, ax, axi)
-    sc.place_plan_labels(axi, ictx, pid, margin=True, stack_pose=pz.feats, edge_leaders=True)
+    sc.place_plan_labels(axi, ictx, pid, margin=True, stack_pose=pz.feats, edge_leaders=True, collinear=True)
     return {pid: fig}
 
 

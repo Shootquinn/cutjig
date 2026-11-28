@@ -473,9 +473,10 @@ def s3_1_b1():
     """S3-1 B: anchor moved to the top guide (screw hung from the top): the bearing line drawn at the guide bearing line
     jackscrew.guide_bearing_z, above the nut at every S1 pose."""
     def m(fig, ax, axi, P, spec, stack, pid):
-        ln = sc.tagged(ax)["anchor_bearing_c:line"][0]
         z = P.get("jackscrew.guide_bearing_z") + P.get("jig.datum_a_above_floor")
-        ln.set_ydata([z, z])
+        for ln in sc.tagged(ax)["anchor_bearing_c:line"]:   # 1.4 (h) r2: the stroke and its TP1.4-5 hidden copy
+            ln.set_ydata([z, z])
+            ln.set_clip_path(None)
     return s3_ctx(mutate=m)
 
 

@@ -178,10 +178,9 @@ descent_stop: "drawn: row descent_stop, metal pad on post descent_stop_post on b
 not_drawn:
   - {part: "LM20UU bushing (OD 32 x 42)", reason: "inside the housing (rows guide_bushing_a, _b) and the lug; keys guide.bushing_od, guide.bushing_length on the housing rows (Designer 1.2 (b) FIX 2, as S2)"}
   - {part: "receiver shoulder bolts 4 x M5", reason: "PCD and azimuths open (receiver.shoulder_bolts, The Designer); Design Notes 32"}
-  - {part: "wing-nut wings (theta 0, 180)", reason: "1.4 P6: the wing section in the xz plane is the tapered wing_poly with tip fillet and sloped top (build_parts/nut.py), outside the revolve half-profile section_true (Loftsman P3b O2 (iii)); the staged S1 r9 rows carry no wing keys (signed P2r); the sweep r 115 lines (row wingnut_sweep) bound the wings; S4 draws the -X wing (behind)"}
 # r5 (Designer 1.2 (c) FIX R1): detail 1 common (b) second clause; s1_side_poses.py draws it on each pose figure as
 # Text gid note:figure_note, and K4 checks both against not_drawn.
-figure_note: "Not drawn: LM20UU bushing (inside the housing and lug); receiver shoulder bolts 4 x M5 (layout open);\nwing-nut wings (see S4)"
+figure_note: "Not drawn: LM20UU bushing (inside the housing and lug); receiver shoulder bolts 4 x M5 (layout open)"
 
 # Neighbour groups (sketch_loader.expand_neighbour_groups): {use: <group>} in a row's neighbours expands to these.
 neighbour_groups:
@@ -321,7 +320,7 @@ features:
     # z_max is the geometric expression; LF-16 compares it with the stack term core_stop (= collet.core_stop_z)
     z_rule: {z_min: receiver_floor, z_max: "receiver_floor + collet.core_seat_height"}
     section: ["core.diameter_nominal / 2 - collet.core_seat_width", "core.diameter_nominal / 2"]
-    depth: ["-core.diameter_nominal / 2", "core.diameter_nominal / 2"]
+    depth: ["-(core.diameter_nominal + collet.grip_window_hi) / 2", "(core.diameter_nominal + collet.grip_window_hi) / 2"]   # 1.4 (h) r2 (Topologist FIX TP1.4-3): the drawn ledge r 50.50, the core_seat_105 form
     section_true:
       ledge: [(core.diameter_nominal + collet.grip_window_hi) / 2 - collet.core_seat_width, (core.diameter_nominal + collet.grip_window_hi) / 2, receiver_floor, receiver_floor + collet.core_seat_height]
     label: null
@@ -361,13 +360,15 @@ features:
 
   - id: wingnut
     name: wing nut
-    shape: "wing nut in true section (section_true, as s4_spec.yaml; build_parts/nut.py): thread body at the receiver major r 74.79 to r 83.14 from 97.09, relief bore, washer pocket rim, nut plate r 68.04 to 83.14 to 153.09, dust skirt; the wings (theta 0, 180) are not drawn (not_drawn); sweep r 115 is row wingnut_sweep (TP1.4-2)"
+    shape: "wing nut in true section (section_true, as s4_spec.yaml; build_parts/nut.py): thread body at the receiver major r 74.79 to r 83.14 from 97.09, relief bore, washer pocket rim, nut plate r 68.04 to 83.14 to 153.09, dust skirt; the wings (theta 0, 180, in the xz plane) as sub-artist wingnut:wing, wing outline simplified (build_parts/nut.py tapered wing_poly), r 83.14 to 115 over z_A 113.09 to 153.09 (Design Notes 35 R2, M1 S1 r9 F1); sweep r 115 is row wingnut_sweep (TP1.4-2)"
     kind: prism
     axis: null
     projection: rectangle
-    keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z]
+    keys: [stop.collar_top_z, collar.top_above_plate, nut.overall_height, wingnut.sweep_clear_radius, wingnut.span, wingnut.body_od, thread.major, nut.length, nut.plate_thickness, nut.plate_hole_dia, nut.washer_pocket_od, nut.washer_pocket_depth, washer.thickness, nut.skirt_r_out, nut.skirt_z_lo, nut.skirt_z_hi, nut.skirt_rim, nut.relief_r, nut.relief_z, wingnut.wing_height, wingnut.wing_count]
     z_rule: {z_min: "collar_top - collar.top_above_plate - nut.overall_height", z_max: "collar_top - collar.top_above_plate"}
     depth: ["-wingnut.sweep_clear_radius", "wingnut.sweep_clear_radius"]
+    sub_artists: [wing]
+    wing: {in_plane: true, u: ["wingnut.body_od / 2", "wingnut.span / 2"], z: ["collar_top - collar.top_above_plate - wingnut.wing_height", "collar_top - collar.top_above_plate"], count: wingnut.wing_count, shape: "wing outline simplified (build_parts/nut.py tapered wing_poly)", style: "solid unfilled outline, one per wing at u = r cos theta (theta 0, 180 in the xz plane)", admission: "K5 sub-artist wing, in_plane form (sketch_common.wing_in_plane_issues): (p0) every azimuth k 360 / wingnut.wing_count in the view plane; (i) unfilled, unhatched, solid; (ii) one outline per wing at u [r_in, r_out] cos theta, z band, within 0.05", source: "Design Notes 35 R2 (orchestrator ruling on M1 S1 r9 F1): the z band is the Engineer's 113.09 to 153.09 (build_parts/nut.py), not the r8 band 16.00 low; the Loftsman signs the placement"}
     section_true:
       body: [thread.major / 2, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z]
       relief: [nut.relief_r, wingnut.body_od / 2, collar_top - collar.top_above_plate - nut.overall_height + nut.relief_z, collar_top - collar.top_above_plate - nut.overall_height + nut.length + washer.thickness - nut.washer_pocket_depth]
@@ -409,7 +410,7 @@ features:
     z_rule: {z_min: holder_bottom + holder.length + holder.flange_thickness, z_max: holder_bottom + holder.length + holder.flange_thickness + washer.thickness}
     section_true: {ring: [washer.id / 2, washer.od / 2, holder_bottom + holder.length + holder.flange_thickness, holder_bottom + holder.length + holder.flange_thickness + washer.thickness]}
     depth: [-washer.od / 2, washer.od / 2]
-    label: {text: PTFE washer, key: washer.thickness, fmt: .1f}
+    label: null   # 1.4 (h) r2 (M1 S1 r9 F2): 1.3 thick, 0.7 px at the S1 scale; S4 labels it
     neighbours: []
     sense: [{pred: between, below: holder, below_piece: flange, above: wingnut, above_piece: plate, source: 'Designer 1.4 (a) section 12: (z_mid(washer) - z_max(flange)) x (z_min(nut plate) - z_mid(washer)) > 0'}]
     chain: [axial]
