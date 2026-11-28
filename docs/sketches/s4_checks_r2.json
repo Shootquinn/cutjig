@@ -1,0 +1,3216 @@
+{
+ "sketch": "s4",
+ "rev": 2,
+ "timestamp": "2026-11-27T21:55:30",
+ "spec": "s4_spec.yaml",
+ "spec_status": "signed at 1.4 (b) (Designer P3a, Loftsman P3b, re-check P2r); (c) edits P4, P5f (signed P5r); P6: x1_edits_at_p6 applied to s1, s3, s4 and the field deleted, legend brass pattern (Designer P5D N2). Written 2026-11-27 (P2).",
+ "script": "s4_base_section.py",
+ "accepted": true,
+ "frame": "z_S = z_A + jig.datum_a_above_floor",
+ "files_sha256": {
+  "params.yaml": "9469288a75c2dc57536e2a37f4e18db32e5da2a10d3bf8139cedfe006811c7b7",
+  "proposed_params.yaml": "b2488c014c25326f08988378440619d634378016e99d3c4166acba000b536eb2"
+ },
+ "keys_read": {
+  "base.column_notch": {
+   "value": [
+    70,
+    65
+   ],
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.column_notch_x": {
+   "value": 35,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.plate_thickness": {
+   "value": 12,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "base.spigot_hole_dia": {
+   "value": 160.4,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "carrier.diameter": {
+   "value": 101,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "carrier.length": {
+   "value": 160,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "chain.H": {
+   "value": 30,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "chain.h": {
+   "value": 2.5,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "chain.t_h": {
+   "value": 5,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collar.hole_dia": {
+   "value": 6.6,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "collar.id": {
+   "value": 110.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collar.od": {
+   "value": 152.4,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collar.thickness": {
+   "value": 6.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collar.top_above_plate": {
+   "value": 6.75,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.c_i": {
+   "value": 1.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.chamfer_band_hi": {
+   "value": 3.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.chamfer_band_lo": {
+   "value": 2.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.chamfer_cap": {
+   "value": 10.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.core_seat_height": {
+   "value": 2.5,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.core_seat_width": {
+   "value": 3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.core_stop_z": {
+   "value": 42.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "collet.foot_ring_width": {
+   "value": 3.2,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.grip_window_hi": {
+   "value": 1.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.min_wall": {
+   "value": 1.2,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.relief_hole_dia": {
+   "value": 8.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.slit_count": {
+   "value": 12,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.slit_length": {
+   "value": 25.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "collet.slit_ligament": {
+   "value": 3.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "collet.slit_width_seed": {
+   "value": 1.5,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "cone.alpha": {
+   "value": 10,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "core.diameter_nominal": {
+   "value": 100,
+   "origin": "params.yaml",
+   "status": "VERIFIED"
+  },
+  "core.length_capture": {
+   "value": 500,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "core.length_install": {
+   "value": 750,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "core.length_short": {
+   "value": 100,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "core.min_exposed": {
+   "value": 143.12,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "core.tol": {
+   "value": 1.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "core.top_chamfer": {
+   "value": 3.0,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "drill.bore_ceiling_above_tip": {
+   "value": 800,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.head_length": {
+   "value": 106.369,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.head_od": {
+   "value": 177.8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.kerf_standoff": {
+   "value": 106.369,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "drill.length": {
+   "value": 800,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.top_block_length": {
+   "value": 150,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "drill.tube_od": {
+   "value": 152.4,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "fit.model_contact_gap": {
+   "value": 0.005,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "fit.seat_clearance": {
+   "value": 0.3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "gear.face_width": {
+   "value": 30,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "holder.bottom_above_floor_Kmax": {
+   "value": 2.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "holder.flange_od": {
+   "value": 144.08,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "holder.flange_thickness": {
+   "value": 8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "holder.insert_circle_radius": {
+   "value": 62.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "holder.insert_depth": {
+   "value": 12.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "holder.insert_dia": {
+   "value": 5.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "holder.length": {
+   "value": 88.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "holder.stroke_gap_R": {
+   "value": 13.126,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "icd.floor_above_datum_a": {
+   "value": 40,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "icd.footprint_x": {
+   "value": 644,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "icd.footprint_y": {
+   "value": 608,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "jackscrew.top_guide_z": {
+   "value": 1165,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "jig.datum_a_above_floor": {
+   "value": 60,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "jig.height_target": {
+   "value": 2000,
+   "origin": "params.yaml",
+   "status": "DECLARED"
+  },
+  "liner.collet_d": {
+   "value": 105,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "liner.od_offset": {
+   "value": 5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "liner.wall": {
+   "value": 2.0,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "nut.length": {
+   "value": 48,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.lift_play": {
+   "value": 0.75,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.overall_height": {
+   "value": 56.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.plate_hole_dia": {
+   "value": 136.08,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.plate_thickness": {
+   "value": 7.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.relief_r": {
+   "value": 75.34,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.relief_z": {
+   "value": 42.0,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.skirt_r_out": {
+   "value": 95.14,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.skirt_rim": {
+   "value": 2.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.skirt_z_hi": {
+   "value": 14.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.skirt_z_lo": {
+   "value": 5.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.tommy_boss_od": {
+   "value": 23,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.tommy_hole_bottom_r": {
+   "value": 78.14,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.tommy_hole_depth": {
+   "value": 20,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.washer_pocket_depth": {
+   "value": 0.8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.washer_pocket_od": {
+   "value": 143.8,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "nut.washer_window_count": {
+   "value": 3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "nut.washer_window_width": {
+   "value": 10,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "profile.width": {
+   "value": 60,
+   "origin": "params.yaml",
+   "status": "VERIFIED"
+  },
+  "receiver.floor_hole_dia": {
+   "value": 80.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "receiver.key_offset_deg": {
+   "value": 37,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "receiver.key_slot_width": {
+   "value": 12,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "receiver.register_bore_radius": {
+   "value": 67.29,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "receiver.register_chamfer": {
+   "value": 1.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "receiver.rim_above_floor": {
+   "value": 88.5,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "receiver.shoulder_bolt_head_d": {
+   "value": 8.5,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_bolt_pcd": {
+   "value": 180,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_od": {
+   "value": 200,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_thickness": {
+   "value": 8,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "receiver.shoulder_z": {
+   "value": 12,
+   "origin": "overlay",
+   "status": "DERIVED"
+  },
+  "receiver.spigot_od": {
+   "value": 160,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "register.g_reg": {
+   "value": 0.25,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "ring.position_above_tip": {
+   "value": 130,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "ring.thickness": {
+   "value": 12,
+   "origin": "overlay",
+   "status": "ASSUMED"
+  },
+  "seat.holder_bottom_R": {
+   "value": 13.626,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.collar_top_z": {
+   "value": 159.84,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.height_range": {
+   "value": [
+    184.84,
+    315
+   ],
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "stop.height_z": {
+   "value": 184.84,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "stop.start_z": {
+   "value": [
+    834.84,
+    965
+   ],
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "thread.hand": {
+   "value": "right",
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "thread.lead_in_length": {
+   "value": 1.25,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "thread.major": {
+   "value": 149.58,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "thread.minor": {
+   "value": 144.58,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "thread.pitch": {
+   "value": 8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "thread.run_turns": {
+   "value": 6,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "thread.runout_land": {
+   "value": 4.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "upper.load_clearance": {
+   "value": 50,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "washer.id": {
+   "value": 136.8,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "washer.od": {
+   "value": 143.2,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "washer.thickness": {
+   "value": 1.3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.body_od": {
+   "value": 166.28,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "wingnut.span": {
+   "value": 230,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.sweep_clear_radius": {
+   "value": 115,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  },
+  "wingnut.wing_count": {
+   "value": 2,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.wing_root_width": {
+   "value": 40,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "wingnut.wing_thickness": {
+   "value": 14,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.azimuth_deg": {
+   "value": 127,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.channel_floor_depth": {
+   "value": 0.3,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.channel_width": {
+   "value": 12.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.channel_z": {
+   "value": [
+    47.0,
+    63.0
+   ],
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.tick_depth": {
+   "value": 2.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.tick_height": {
+   "value": 3.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.tick_width": {
+   "value": 1.0,
+   "origin": "params.yaml",
+   "status": "ASSUMED"
+  },
+  "witness.zone_high": {
+   "value": 8.59,
+   "origin": "params.yaml",
+   "status": "DERIVED"
+  }
+ },
+ "reported": {
+  "lift_stroke_mm": 830.16,
+  "park_tip_z_A": 1015,
+  "start_tip_max_z_A": 965,
+  "collar_top_recomputed_z_A": 159.84,
+  "collar_top_params_z_A": 159.84,
+  "load_plane": "core_stop",
+  "entry_plane": "collar_top",
+  "poses": {
+   "carrier": {
+    "highest_z_S": 390.0,
+    "margin_to_soft_target": 1610.0
+   },
+   "liner": {
+    "highest_z_S": 390.0,
+    "margin_to_soft_target": 1610.0
+   }
+  },
+  "park_tip_by_plane_z_A": {
+   "core_stop": {
+    "core.length_capture": 1015,
+    "core.length_install": 1015,
+    "core.length_optional": 1092.5
+   },
+   "collar_top": {
+    "core.length_capture": 1015,
+    "core.length_install": 1015,
+    "core.length_optional": 1209.84
+   }
+  },
+  "q9_options": {},
+  "capture_core_length_key": "core.length_capture",
+  "start_tip_minus_core_top_mm": 422.5,
+  "entry_plane_margin_mm": 55.15999999999997,
+  "end_tip_plus_advance_z_A": 719.77,
+  "core_top_on_core_stop_z_A": 542.5
+ },
+ "checks": [
+  {
+   "id": "K1",
+   "result": "pass",
+   "reason": "no literal outside [-1, 0, 0.5, 1, 2], no soft-key comparison, no figure setting (s4_base_section.py)",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 3/3",
+   "source": "gameplan l.134; LLM-PLM 8.4.2; design freedom rule (P23)"
+  },
+  {
+   "id": "K2",
+   "result": "pass",
+   "reason": "173 spec keys resolve; 203 overlay leaves sourced, legal status, no shadow; 24 expr leaves agree within 0.05",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 2/2",
+   "b_result": "fired 7/7",
+   "source": "gameplan l.135; Design Notes 6"
+  },
+  {
+   "id": "K3",
+   "result": "pass",
+   "reason": "[section] 2 figure(s): one Axes, title, (mm) labels, equal aspect, grids, figsize, dpi 150; every text inside the saved image",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 4/4",
+   "b_result": "fired 11/11",
+   "source": "gameplan l.136; LLM-PLM 8.4.2"
+  },
+  {
+   "id": "K4",
+   "result": "pass",
+   "reason": "[section] 36 label(s) carry their key value, each leader ends on its part, no two leaders cross; figure note names every not_drawn part",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 14/14",
+   "b_result": "fired 64/64",
+   "source": "gameplan l.137; LLM-PLM 8.4.2"
+  },
+  {
+   "id": "K5",
+   "result": "pass",
+   "reason": "[section] 168 tagged artist(s) projected per kind, axis and spec projection (view normal X)",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 9/9",
+   "b_result": "fired 76/76",
+   "source": "gameplan l.138; LLM-PLM 8.4.1"
+  },
+  {
+   "id": "K6",
+   "result": "pass",
+   "reason": "[section] 35 z_rule(s) match drawn extents within 0.05 mm; check_stack imports and anchors clean",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0.0,
+   "threshold": 0.05,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 6/6",
+   "b_result": "fired 12/12",
+   "source": "gameplan l.139 as replaced by Design Notes 17 (frame ruling)"
+  },
+  {
+   "id": "K7",
+   "result": "pass",
+   "reason": "[section] 55 pair test(s) clean; states ['C', 'F', 'N', 'swept:F', 'undeclared:F']",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "states": [
+    "C",
+    "F",
+    "C",
+    "C",
+    "C",
+    "F",
+    "C",
+    "C",
+    "C",
+    "C",
+    "F",
+    "C",
+    "C",
+    "F",
+    "F",
+    "C",
+    "F",
+    "F",
+    "F",
+    "C",
+    "F",
+    "F",
+    "C",
+    "N",
+    "C",
+    "N",
+    "F",
+    "C",
+    "N",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "C",
+    "F",
+    "C",
+    "C",
+    "C",
+    "F",
+    "C",
+    "C",
+    "C",
+    "C",
+    "F",
+    "C",
+    "C",
+    "F",
+    "F",
+    "C",
+    "F",
+    "F",
+    "F",
+    "C",
+    "F",
+    "C",
+    "C",
+    "N",
+    "C",
+    "N",
+    "C",
+    "C",
+    "N",
+    "F",
+    "C",
+    "N",
+    "N",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "undeclared:F",
+    "swept:F"
+   ],
+   "tests": [
+    [
+     "carrier",
+     "base_plate|receiver",
+     "C",
+     "C",
+     -422.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|receiver_spigot",
+     "G",
+     "F",
+     -402.0,
+     0.2,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|receiver",
+     "C",
+     "C",
+     -180.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|collet",
+     "C",
+     "C",
+     -167.29,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|core_seat",
+     "C",
+     "C",
+     -150.5,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|holder",
+     "G",
+     "F",
+     -172.04,
+     0.25,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|wingnut",
+     "C",
+     "C",
+     -215.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|core_seat",
+     "C",
+     "C",
+     -117.79,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|holder",
+     "C",
+     "C",
+     -139.33,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|carrier",
+     "C",
+     "C",
+     -117.79,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|wingnut",
+     "G",
+     "F",
+     -187.04,
+     0.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|collar",
+     "C",
+     "C",
+     -148.24,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|washer",
+     "C",
+     "C",
+     -143.64,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|carrier",
+     "G",
+     "F",
+     -122.54,
+     6.25,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|core_100",
+     "G",
+     "F",
+     -122.54,
+     49.06,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|holder",
+     "C",
+     "C",
+     -148.24,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|wingnut",
+     "G",
+     "F",
+     -191.2,
+     0.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|core_100",
+     "G",
+     "F",
+     -126.7,
+     42.897,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|carrier",
+     "G",
+     "F",
+     -126.7,
+     4.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "wingnut|washer",
+     "C",
+     "C",
+     -186.6,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "wingnut|core_100",
+     "G",
+     "F",
+     -165.5,
+     52.431,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "wingnut|carrier",
+     "G",
+     "F",
+     -165.5,
+     17.54,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "carrier|core_seat",
+     "C",
+     "C",
+     -101.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "carrier|drill_head",
+     "N",
+     "N",
+     -139.4,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "carrier",
+     "core_100|carrier",
+     "C",
+     "C",
+     -101.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_100|drill_head",
+     "N",
+     "N",
+     -139.4,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "carrier",
+     "drill_head|collar",
+     "G",
+     "F",
+     -165.1,
+     25.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "drill_tube_stub|drill_head",
+     "C",
+     "C",
+     -165.1,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "drill_tube_stub|core_100",
+     "N",
+     "N",
+     -126.7,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "carrier",
+     "base_plate|collet",
+     "F (undeclared)",
+     "undeclared:F",
+     -389.29,
+     30.96,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|core_seat",
+     "F (undeclared)",
+     "undeclared:F",
+     -372.5,
+     40.818,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -394.04,
+     39.355,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -398.2,
+     141.896,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -437.0,
+     85.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -393.6,
+     133.368,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -372.5,
+     42.572,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -372.5,
+     192.801,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -410.9,
+     172.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "base_plate|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -398.2,
+     279.238,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|collet",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.29,
+     28.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|core_seat",
+     "F (undeclared)",
+     "undeclared:F",
+     -130.5,
+     28.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -152.04,
+     37.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.2,
+     141.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -195.0,
+     85.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -151.6,
+     133.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -130.5,
+     30.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -130.5,
+     190.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -168.9,
+     172.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver_spigot|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.2,
+     279.209,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -176.2,
+     25.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -171.6,
+     16.59,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -150.5,
+     2.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -150.5,
+     76.108,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -188.9,
+     56.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "receiver|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -176.2,
+     162.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -143.49,
+     81.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -182.29,
+     30.189,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -138.89,
+     73.826,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -117.79,
+     130.652,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.19,
+     112.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collet|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -143.49,
+     219.209,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.54,
+     13.289,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -126.7,
+     111.431,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -165.5,
+     59.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.1,
+     104.14,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -101.0,
+     160.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -139.4,
+     142.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "core_seat|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -126.7,
+     248.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -160.94,
+     31.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "holder|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -148.24,
+     137.369,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.8,
+     7.45,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "collar|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -152.4,
+     131.369,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "wingnut|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -203.9,
+     31.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "wingnut|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -191.2,
+     138.119,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "washer|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.1,
+     17.9,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "washer|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.1,
+     58.896,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "washer|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -160.5,
+     38.45,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "washer|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.8,
+     144.819,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "carrier",
+     "carrier|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -126.7,
+     88.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|receiver",
+     "C",
+     "C",
+     -422.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|receiver_spigot",
+     "G",
+     "F",
+     -402.0,
+     0.2,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|receiver",
+     "C",
+     "C",
+     -180.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|collet_105",
+     "C",
+     "C",
+     -167.29,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|core_seat_105",
+     "C",
+     "C",
+     -153.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|holder",
+     "G",
+     "F",
+     -172.04,
+     0.25,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|wingnut",
+     "C",
+     "C",
+     -215.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|core_seat_105",
+     "C",
+     "C",
+     -120.29,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|holder",
+     "C",
+     "C",
+     -139.33,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|liner",
+     "C",
+     "C",
+     -120.29,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|wingnut",
+     "G",
+     "F",
+     -187.04,
+     0.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|collar",
+     "C",
+     "C",
+     -148.24,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|washer",
+     "C",
+     "C",
+     -143.64,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|core_100",
+     "G",
+     "F",
+     -122.54,
+     49.06,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|liner",
+     "G",
+     "F",
+     -125.04,
+     3.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|holder",
+     "C",
+     "C",
+     -148.24,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|wingnut",
+     "G",
+     "F",
+     -191.2,
+     0.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|core_100",
+     "G",
+     "F",
+     -126.7,
+     42.897,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|liner",
+     "G",
+     "F",
+     -129.2,
+     2.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|washer",
+     "C",
+     "C",
+     -186.6,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|core_100",
+     "G",
+     "F",
+     -165.5,
+     52.431,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "carrier|core_seat_105",
+     "C",
+     "C",
+     -103.5,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "carrier|liner",
+     "C",
+     "C",
+     -103.5,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "carrier|drill_head",
+     "N",
+     "N",
+     -139.4,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "liner",
+     "core_100|carrier",
+     "C",
+     "C",
+     -101.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_100|drill_head",
+     "N",
+     "N",
+     -139.4,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "liner",
+     "core_100|liner",
+     "C",
+     "C",
+     -103.5,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "liner|core_seat_105",
+     "C",
+     "C",
+     -106.0,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "liner|drill_head",
+     "N",
+     "N",
+     -141.9,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "liner",
+     "drill_head|collar",
+     "G",
+     "F",
+     -165.1,
+     25.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "drill_tube_stub|drill_head",
+     "C",
+     "C",
+     -165.1,
+     0.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "drill_tube_stub|core_100",
+     "N",
+     "N",
+     -126.7,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "liner",
+     "drill_tube_stub|liner",
+     "N",
+     "N",
+     -129.2,
+     null,
+     null,
+     "declared N"
+    ],
+    [
+     "liner",
+     "base_plate|collet_105",
+     "F (undeclared)",
+     "undeclared:F",
+     -389.29,
+     30.96,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|core_seat_105",
+     "F (undeclared)",
+     "undeclared:F",
+     -375.0,
+     39.036,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -394.04,
+     39.355,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -398.2,
+     141.896,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -437.0,
+     85.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -393.6,
+     133.368,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -372.5,
+     42.572,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -372.5,
+     192.801,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|liner",
+     "F (undeclared)",
+     "undeclared:F",
+     -375.0,
+     40.867,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -410.9,
+     172.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "base_plate|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -398.2,
+     279.238,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|collet_105",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.29,
+     28.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|core_seat_105",
+     "F (undeclared)",
+     "undeclared:F",
+     -133.0,
+     28.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -152.04,
+     37.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.2,
+     141.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -195.0,
+     85.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -151.6,
+     133.09,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -130.5,
+     30.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -130.5,
+     190.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|liner",
+     "F (undeclared)",
+     "undeclared:F",
+     -133.0,
+     30.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -168.9,
+     172.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver_spigot|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.2,
+     279.209,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -176.2,
+     25.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -171.6,
+     16.59,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -150.5,
+     2.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -150.5,
+     76.108,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|liner",
+     "F (undeclared)",
+     "undeclared:F",
+     -153.0,
+     2.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -188.9,
+     56.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "receiver|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -176.2,
+     162.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -143.49,
+     81.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -182.29,
+     30.189,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -138.89,
+     73.826,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -117.79,
+     2.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -117.79,
+     130.652,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -156.19,
+     112.84,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collet_105|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -143.49,
+     219.209,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|holder",
+     "F (undeclared)",
+     "undeclared:F",
+     -125.04,
+     11.187,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|collar",
+     "F (undeclared)",
+     "undeclared:F",
+     -129.2,
+     111.358,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|wingnut",
+     "F (undeclared)",
+     "undeclared:F",
+     -168.0,
+     58.778,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -124.6,
+     103.739,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -103.5,
+     160.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -141.9,
+     142.34,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "core_seat_105|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -129.2,
+     248.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.54,
+     6.25,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -160.94,
+     31.0,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "holder|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -148.24,
+     137.369,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|washer",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.8,
+     7.45,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -126.7,
+     4.5,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "collar|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -152.4,
+     131.369,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -165.5,
+     17.54,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|liner",
+     "F (undeclared)",
+     "undeclared:F",
+     -168.0,
+     15.04,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -203.9,
+     31.75,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "wingnut|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -191.2,
+     138.119,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "washer|carrier",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.1,
+     17.9,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "washer|core_100",
+     "F (undeclared)",
+     "undeclared:F",
+     -122.1,
+     58.896,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "washer|liner",
+     "F (undeclared)",
+     "undeclared:F",
+     -124.6,
+     15.4,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "washer|drill_head",
+     "F (undeclared)",
+     "undeclared:F",
+     -160.5,
+     38.45,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "washer|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -147.8,
+     144.819,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "liner",
+     "carrier|drill_tube_stub",
+     "F (undeclared)",
+     "undeclared:F",
+     -126.7,
+     88.709,
+     0.0,
+     "XZ projection (exact)"
+    ],
+    [
+     "swept carrier..liner",
+     "drill_head|collar",
+     "G",
+     "swept:F",
+     -165.1,
+     25.0,
+     0.0,
+     "XZ projection (exact) (swept hull)"
+    ]
+   ],
+   "test_fields": [
+    "pose",
+    "pair",
+    "class",
+    "state",
+    "z_gap",
+    "distance",
+    "overlap",
+    "basis"
+   ],
+   "failing": 0,
+   "tests_axes": [
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section",
+    "section"
+   ],
+   "z_result": "clean 19/19",
+   "b_result": "fired 38/38",
+   "source": "gameplan l.140; LLM-PLM 7.4; g_min seeds l.144-149 ASSUMED"
+  },
+  {
+   "id": "K8",
+   "result": "pass",
+   "reason": "[section] 187 predicate(s) hold, axes not inverted",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 23/23",
+   "b_result": "fired 128/128",
+   "source": "gameplan l.141; ASSEMBLY.md Coordinate frame"
+  },
+  {
+   "id": "K9",
+   "result": "pass",
+   "reason": "[section] every spec row drawn, every tagged artist in the spec (20 rows)",
+   "n_issues": 0,
+   "cause": null,
+   "measured": 0,
+   "threshold": 0,
+   "by_axes": {
+    "section": {
+     "result": "pass",
+     "n_issues": 0,
+     "cause": null
+    }
+   },
+   "z_result": "clean 6/6",
+   "b_result": "fired 9/9",
+   "source": "gameplan l.142"
+  },
+  {
+   "id": "S4-1",
+   "result": "pass",
+   "reason": "collar top 159.84 z_A = stop.collar_top_z 159.84; drawn top equal in every figure",
+   "measured": 159.84,
+   "threshold": 0.01,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 3/3",
+   "source": "stop.collar_top_z DERIVED; tests/test_params_bom.py l.694-702 (test_P18); gameplan detail 1.4 S4-1"
+  },
+  {
+   "id": "S4-2",
+   "result": "pass",
+   "reason": "least exposure margin 6.29 mm over core.min_exposed 143.12; rests_on and grip hold in every figure",
+   "measured": 6.29,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 5/5",
+   "source": "[CP \u00a79, Q4]; Sean STOP S4-A, Design Notes 34 (short-core exposure and grip, advance D with carrier C); Designer 1.4 (a) section 6"
+  },
+  {
+   "id": "S4-3",
+   "result": "pass",
+   "reason": "kept-part sense predicates hold (carrier, collar, collet, collet_105, core_100, holder, liner, receiver, washer, wingnut)",
+   "measured": null,
+   "threshold": null,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 1/1",
+   "b_result": "fired 8/8",
+   "source": "ASSEMBLY.md; critical-path 7.1 (backcap failure); Designer 1.4 (a) section 12; S4-d (Design Notes 34)"
+  },
+  {
+   "id": "X1",
+   "result": "pass",
+   "reason": "72 shared row(s) compared on place, z_rule, plan_poly; skipped 3: base_frame plan_poly (only in s2, s3), base_plate plan_poly (only in s2, s3, s4), keepout place (only in s2, s3); section_true compared on 7 row(s); in one spec only (presence rule O2 (ii) holds where no other spec draws the row in a side or section view): none",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "compared": 72,
+   "skipped": [
+    "base_frame plan_poly (only in s2, s3)",
+    "base_plate plan_poly (only in s2, s3, s4)",
+    "keepout place (only in s2, s3)"
+   ],
+   "z_result": "clean 2/2",
+   "b_result": "fired 6/6",
+   "source": "Loftsman 1.2 (b) section 2 and re-check ruling 5 (shared-row premise of the S1/S2 footprint identity)"
+  },
+  {
+   "id": "RPT",
+   "result": "pass",
+   "reason": "11 reported item(s) declared, every one has a value",
+   "measured": 0,
+   "threshold": 0,
+   "n_issues": 0,
+   "cause": null,
+   "z_result": "clean 3/3",
+   "b_result": "fired 6/6",
+   "source": "1.3 open O10; Step 1.2 gate D3; gameplan detail 1.3 Reported (spec reported_items)"
+  }
+ ],
+ "reported_drawn": {
+  "id": "reported",
+  "result": "pass",
+  "rows": [
+   [
+    "q10_min_on_stop",
+    "253.71 (nut-plate datum); 260.46 (collar-top datum)",
+    "nut-plate top + core.min_exposed - core stop"
+   ],
+   [
+    "advance",
+    "option D: the lift lowers the drill one slice per cut; least slice 76.44 (axis), 56.02 (r 50); 0.75 m core: tip span 496.29 (681.13 to 184.84), 7 slices, 572.73 removed; stub on the stop 177.27 (axis) to 197.69 (surface), below the least core on the stop 253.71; on the carrier: top 379.77, exposure 226.68, 2 slices, 160.00 removed (least core on the carrier 93.71); 100 mm core on the carrier: 1 slice, stub 17.27 (axis) to 37.69 (surface)",
+    "F4: core top >= kerf centre + stop.margin at the stop"
+   ],
+   [
+    "carrier_torque",
+    "bottom face 50.9 kPa; liner side 6.37 kPa",
+    "2T / (pi r^3); T / (2 pi r^2 L)"
+   ],
+   [
+    "q5_delta",
+    "Delta 0: collar top 159.84, stop 184.84, min core on the stop 253.71; Delta 25: collar top 184.84, stop 209.84, min core on the stop 278.71; Delta 50: collar top 209.84, stop 234.84, min core on the stop 303.71; kept 32 mm (Design Notes 34)",
+    "Designer 1.4 (a) section 7"
+   ],
+   [
+    "liner_wall",
+    "D = d + 5, free wall 2.00; d 105 core: no liner (110 > collets.envelope_max 106.585)",
+    "liner.od_offset, liner.wall"
+   ],
+   [
+    "kept_axial",
+    "as S3 r7 kept_axial (1000 N at the cut; F_stall + W 1287.05 / 1104.16 N)",
+    "checks_s3.loads on s3_spec.yaml (F_stall total + W per mu; spec read recorded in deps)"
+   ],
+   [
+    "q10_core_top",
+    "on the carrier 302.50 (collar top 159.84); on the stop 142.50 (17.34 below the collar top)",
+    "drawn core_100 (MEASURED); core on the stop DERIVED"
+   ],
+   [
+    "q10_exposed",
+    "149.41 on the carrier against 143.12; on the stop -10.59",
+    "drawn core_100 and wingnut tops"
+   ],
+   [
+    "grip_length",
+    "collet: 23.20 (42.50 to 65.70); collet_105: 25.70 (42.50 to 68.20) (chamfer drawn straight; the true straight bore ends 0.41 lower at the 1 bore-lip fillet, tangent length r tan 22.5, Loftsman P3b N2)",
+    "drawn core-seat top to the top of the cone piece's inner (bore) edge (MEASURED)"
+   ],
+   [
+    "cut_case_seat",
+    "collet foot 40.00 on the receiver floor top 40.00 (gap 0.00); receiver shoulder underside 12.00 on the plate top 12.00 (gap 0.00); spigot radial gap 0.20 in the plate hole",
+    "drawn collet foot, receiver floor and shoulder pieces, base_plate and receiver_spigot (MEASURED, figure 1)"
+   ],
+   [
+    "seat_bearing",
+    "carrier: carrier on core_seat 3.00; liner: carrier on core_seat_105 0.50; liner: liner on core_seat_105 2.50; all of F_stall + W on the carrier annulus r 50.00 to 50.50: 8.15 MPa",
+    "drawn bottom and seat faces (MEASURED); stress DERIVED"
+   ]
+  ],
+  "items": {
+   "q10_min_on_stop": {
+    "value": "253.71 (nut-plate datum); 260.46 (collar-top datum)",
+    "basis": "nut-plate top + core.min_exposed - core stop",
+    "tag": "DERIVED"
+   },
+   "advance": {
+    "value": "option D: the lift lowers the drill one slice per cut; least slice 76.44 (axis), 56.02 (r 50); 0.75 m core: tip span 496.29 (681.13 to 184.84), 7 slices, 572.73 removed; stub on the stop 177.27 (axis) to 197.69 (surface), below the least core on the stop 253.71; on the carrier: top 379.77, exposure 226.68, 2 slices, 160.00 removed (least core on the carrier 93.71); 100 mm core on the carrier: 1 slice, stub 17.27 (axis) to 37.69 (surface)",
+    "basis": "F4: core top >= kerf centre + stop.margin at the stop",
+    "tag": "DERIVED"
+   },
+   "carrier_torque": {
+    "value": "bottom face 50.9 kPa; liner side 6.37 kPa",
+    "basis": "2T / (pi r^3); T / (2 pi r^2 L)",
+    "tag": "DERIVED"
+   },
+   "q5_delta": {
+    "value": "Delta 0: collar top 159.84, stop 184.84, min core on the stop 253.71; Delta 25: collar top 184.84, stop 209.84, min core on the stop 278.71; Delta 50: collar top 209.84, stop 234.84, min core on the stop 303.71; kept 32 mm (Design Notes 34)",
+    "basis": "Designer 1.4 (a) section 7",
+    "tag": "DERIVED"
+   },
+   "liner_wall": {
+    "value": "D = d + 5, free wall 2.00; d 105 core: no liner (110 > collets.envelope_max 106.585)",
+    "basis": "liner.od_offset, liner.wall",
+    "tag": "DERIVED"
+   },
+   "kept_axial": {
+    "value": "as S3 r7 kept_axial (1000 N at the cut; F_stall + W 1287.05 / 1104.16 N)",
+    "basis": "checks_s3.loads on s3_spec.yaml (F_stall total + W per mu; spec read recorded in deps)",
+    "tag": "DERIVED"
+   },
+   "q10_core_top": {
+    "value": "on the carrier 302.50 (collar top 159.84); on the stop 142.50 (17.34 below the collar top)",
+    "basis": "drawn core_100 (MEASURED); core on the stop DERIVED",
+    "tag": "MEASURED"
+   },
+   "q10_exposed": {
+    "value": "149.41 on the carrier against 143.12; on the stop -10.59",
+    "basis": "drawn core_100 and wingnut tops",
+    "tag": "MEASURED"
+   },
+   "grip_length": {
+    "value": "collet: 23.20 (42.50 to 65.70); collet_105: 25.70 (42.50 to 68.20) (chamfer drawn straight; the true straight bore ends 0.41 lower at the 1 bore-lip fillet, tangent length r tan 22.5, Loftsman P3b N2)",
+    "basis": "drawn core-seat top to the top of the cone piece's inner (bore) edge (MEASURED)",
+    "tag": "MEASURED"
+   },
+   "cut_case_seat": {
+    "value": "collet foot 40.00 on the receiver floor top 40.00 (gap 0.00); receiver shoulder underside 12.00 on the plate top 12.00 (gap 0.00); spigot radial gap 0.20 in the plate hole",
+    "basis": "drawn collet foot, receiver floor and shoulder pieces, base_plate and receiver_spigot (MEASURED, figure 1)",
+    "tag": "MEASURED"
+   },
+   "seat_bearing": {
+    "value": "carrier: carrier on core_seat 3.00; liner: carrier on core_seat_105 0.50; liner: liner on core_seat_105 2.50; all of F_stall + W on the carrier annulus r 50.00 to 50.50: 8.15 MPa",
+    "basis": "drawn bottom and seat faces (MEASURED); stress DERIVED",
+    "tag": "MEASURED"
+   }
+  }
+ },
+ "reported_items": [
+  {
+   "id": "q10_core_top",
+   "text": "100 mm core top on the stop against the collar top (142.50 vs 159.84, 17.34 below) and on the carrier (302.50)",
+   "source": "collet.core_stop_z, core.length_short, carrier.length, stop.collar_top_z",
+   "needs_drawing": true
+  },
+  {
+   "id": "q10_exposed",
+   "text": "exposed length of the drawn 100 mm core above the nut-plate top against core.min_exposed 143.12 (on the stop -10.59; on the carrier 149.41)",
+   "source": "core.min_exposed, collet.core_stop_z, carrier.length; drawn core_100 and wingnut tops",
+   "needs_drawing": true
+  },
+  {
+   "id": "q10_min_on_stop",
+   "text": "minimum core length on the stop 253.71 (nut-plate datum; 260.46 at the collar-top datum)",
+   "source": "core.min_exposed, stop.collar_top_z, collar.top_above_plate, collet.core_stop_z",
+   "needs_drawing": false
+  },
+  {
+   "id": "grip_length",
+   "text": "collet straight-bore grip, d 100: 23.20 (d 105: 25.70)",
+   "source": "collet_family dims: slit_length, slit_ligament, relief_hole_dia, chamfer (collet.chamfer_*), core_seat_height",
+   "needs_drawing": true
+  },
+  {
+   "id": "advance",
+   "text": "advance per slice and slices per core for the drawn option D: the lift lowers the drill one slice per cut; least slice under F4 76.44 on the axis, 56.02 at r 50; 0.75 m core: tip span 496.29 (681.13 to 184.84), 7 slices at the F4 least slice 76.44, 572.73 removed; stub on the stop 177.27 (axis) to 197.69 (surface), onto the carrier for further slices (top 379.77, exposure 226.68, 2 slices, 160.00 removed, stub 17.27 to 37.69 left on the carrier); 253.71 is the least core that takes a cut on the stop, 93.71 on the carrier; 100 mm core on the carrier: 1 slice, stub 17.27 (axis) to 37.69 (surface) (Loftsman P3b FIX 5)",
+   "source": "drill.kerf_standoff, drill.dome_pole_offset, iris.face_radius_core, stop.margin, core.length_install, core.length_short, carrier.length",
+   "needs_drawing": false
+  },
+  {
+   "id": "carrier_torque",
+   "text": "carrier-joint shear at 10 N m: 50.9 kPa on the bottom face; liner side shear 6.37 kPa over 100",
+   "source": "loads.torque_design",
+   "needs_drawing": false
+  },
+  {
+   "id": "q5_delta",
+   "text": "collet length options: collar top, stop, minimum core on the stop and S1 park highest point per Delta 0 / 25 / 50 (159.84 / 184.84 / 209.84; 253.71 / 278.71 / 303.71; 1969.84 / 1994.84 / 2019.84 z_S); kept 32 mm (Design Notes 34)",
+   "source": "stop.collar_top_z, stop.g_stop, Designer 1.4 (a) section 7",
+   "needs_drawing": false
+  },
+  {
+   "id": "liner_wall",
+   "text": "liner per core size: D = d + 5, free wall 2.0 (drawn 2.50 at K d+1); d 105 core has no liner (110 above collets.envelope_max 106.585)",
+   "source": "liner.od_offset, liner.wall, collet.min_wall, collets.envelope_max",
+   "needs_drawing": false
+  },
+  {
+   "id": "cut_case_seat",
+   "text": "cut-case seat as drawn: collet foot on the receiver floor top (40.00), receiver shoulder underside on the plate top (12.00); spigot radial gap 0.20 in the plate hole",
+   "source": "drawn collet, receiver, receiver_spigot, base_plate (section Axes)",
+   "needs_drawing": true
+  },
+  {
+   "id": "kept_axial",
+   "text": "axial force in collet, receiver, base plate at 1000 N and at F_stall + W 1287.05 N (unchanged from S3 r7)",
+   "source": "S3 load_cases (checks_s3.loads)",
+   "needs_drawing": false
+  },
+  {
+   "id": "seat_bearing",
+   "text": "core-seat bearing widths: carrier 3.00 (figure 1); carrier 0.50 and liner 2.50 on the d 105 ledge (figure 2); 8.15 MPa if all of F_stall + W bears on the carrier annulus",
+   "source": "drawn carrier, liner, core_seat, core_seat_105 (sketch_common.bearing_width); F_stall + W 1287.05 N (Design Notes 32) (Designer P3a FIX 3)",
+   "needs_drawing": true
+  }
+ ],
+ "deps": {
+  "spec": {
+   "path": "s4_spec.yaml",
+   "sha256": "978da049a047065e81bddbbf82ad3e5e428368fda8273af4746f62ec7fcdbfa6"
+  },
+  "script": {
+   "path": "s4_base_section.py",
+   "sha256": "20464c6e3ed023cdb53b393d43b78561f9d975da681f8b1af74f5a6a63268d2a"
+  },
+  "spec_read": [
+   {
+    "path": "s3_spec.yaml",
+    "sha256": "63e05634ac646b019126300a888b86b60e69bf4f971d12ee3038a18239c28a71"
+   }
+  ],
+  "certifiers": []
+ },
+ "accepted_note": "Design Notes 13 S4-r2",
+ "accepted_at": "2026-11-27T21:55:36"
+}
