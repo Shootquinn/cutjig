@@ -170,21 +170,122 @@ atexit.register(lambda: [shutil.rmtree(t, ignore_errors=True) for t in _TMPS])
 # pre-P6 files), the premise of every DEPS control: the tree matches its records.
 FROZEN = SK / "fixtures" / "deps_tree"
 
+# 1.4 P10f (Manager close N1): every DEPS control reads its records from FROZEN, never from the live record set in
+# docs/sketches/, so a later --accept (superseded_by written into a record) cannot turn a DEPS control red. FROZEN holds
+# byte copies of the save-point-5 (pre-ORCH-B) s1_checks_r8.json, s2_checks_r9.json, s3_checks_r7.json, of
+# s1_mass_report_r8.json and of deps_exempt.json; the DEPS fixtures run with cs.DEPS_EXEMPT loaded from the frozen copy.
+# Premise (enforced by deps_frozen_issues, DEPS-Z6 / B14 / B16): every certifier, spec, script and side-file SHA-256 in
+# the frozen exemption equals the SHA-256 of its frozen file, and every manifest DEPS fixture carries the _frozen guard;
+# the guard (DEPS-B15) fails a DEPS control that opens a file of the live record set (LIVE_RECORD_RE, top level of
+# docs/sketches/).
+FROZEN_RECORDS = ("s1_checks_r8.json", "s2_checks_r9.json", "s3_checks_r7.json", "s1_mass_report_r8.json", "deps_exempt.json")
+FROZEN_INPUTS = ("s3_spec.yaml", "s3_jackscrew_section.py", "s1_spec.yaml", "s1_side_poses.py", "s2_spec.yaml", "s2_plan.py")
+import os  # noqa: E402
+import re  # noqa: E402
+LIVE_RECORD_RE = re.compile(r"^(s\d+_checks_r\d+\.json|s\d+_mass_report_r\d+\.json|s\d+_summary_r\d+\.md|s\d+_visual_gate_r\d+\.md|"
+                            r"s\d+_.*_r\d+\.png|deps_exempt\.json)$")
+_GUARD = {"on": False, "hits": [], "hook": False}
 
-def _deps_tree(with_s3=True, s3_deps=True):
-    """Temporary docs/ and wip/: the accepted S1 r8 and S2 r9 records (exempt), copies of s3_spec.yaml and
-    s3_jackscrew_section.py, and an accepted S3 r7 record whose deps name them and the two certifier records (a refreshed
-    record, as run_sketch writes it)."""
+
+def _live_record(path):
+    """True for a file of the live record set: top level of docs/sketches/, name matching LIVE_RECORD_RE."""
+    try:
+        p = Path(os.fsdecode(path)).resolve()
+    except (TypeError, ValueError, OSError):
+        return False
+    return p.parent == SK.resolve() and bool(LIVE_RECORD_RE.match(p.name))
+
+
+def _audit(event, args):
+    if _GUARD["on"] and event == "open" and args and isinstance(args[0], (str, bytes, os.PathLike)) and _live_record(args[0]):
+        _GUARD["hits"].append(Path(os.fsdecode(args[0])).name)
+
+
+def _frozen(fn):
+    """DEPS guard: the fixture runs with cs.DEPS_EXEMPT from FROZEN/deps_exempt.json and an audit hook on file opens; a
+    result that opened a file of the live record set fails, the names in its reason (one issue per file)."""
+    import functools
+
+    @functools.wraps(fn)
+    def wrapped(*a, **kw):
+        if not _GUARD["hook"]:
+            sys.addaudithook(_audit)
+            _GUARD["hook"] = True
+        saved = cs.DEPS_EXEMPT
+        cs.DEPS_EXEMPT = cs.load_deps_exempt(FROZEN / "deps_exempt.json")
+        _GUARD["hits"], _GUARD["on"] = [], True
+        try:
+            res = fn(*a, **kw)
+        finally:
+            _GUARD["on"] = False
+            cs.DEPS_EXEMPT = saved
+        hits = sorted(set(_GUARD["hits"]))
+        if hits and isinstance(res, dict):
+            res = dict(res, result="fail", n_issues=(res.get("n_issues") or 0) + len(hits),
+                       reason=f"DEPS fixture read the live record set: {', '.join(hits)} || " + str(res.get("reason")))
+        return res
+    wrapped._deps_frozen = True
+    return wrapped
+
+
+def deps_frozen_issues(man, root=None):
+    """Premise lint of the frozen DEPS tree (N1): every manifest entry of check DEPS names a fixture carrying the _frozen
+    guard; every FROZEN_RECORDS and FROZEN_INPUTS file is present in root (default FROZEN); every SHA-256 the frozen
+    deps_exempt.json records (spec, script, spec_read, certifier, certifier file) equals that of its file in root."""
+    import importlib
+    root = Path(root or FROZEN)
+    issues = []
+    for e in man:
+        if e.get("check") != "DEPS":
+            continue
+        mod, _, fn = str(e.get("fixture", "")).partition("::")
+        try:
+            f = getattr(importlib.import_module(Path(mod).stem), fn)
+        except (ImportError, AttributeError) as x:
+            issues.append(f"{e['id']}: fixture {e.get('fixture')} not found ({x})")
+            continue
+        if not getattr(f, "_deps_frozen", False):
+            issues.append(f"{e['id']}: fixture {e.get('fixture')} lacks the _frozen guard")
+    for n in FROZEN_RECORDS + FROZEN_INPUTS:
+        if not (root / n).is_file():
+            issues.append(f"frozen tree: {n} absent")
+    ex = cs.load_deps_exempt(root / "deps_exempt.json") if (root / "deps_exempt.json").is_file() else {}
+    for rec, ent in sorted(ex.items()):
+        d = (ent or {}).get("deps") or {}
+        pairs = [(d.get(k) or {}) for k in ("spec", "script")] + list(d.get("spec_read") or [])
+        for c in d.get("certifiers") or []:
+            pairs += [c] + list(c.get("files") or [])
+        for x in pairs:
+            f = root / str(x.get("path") or "")
+            if x.get("path") and f.is_file() and cs._sha(f) != x.get("sha256"):
+                issues.append(f"frozen tree: {rec} records {x['path']} sha256 {str(x.get('sha256'))[:12]}, frozen file {cs._sha(f)[:12]}")
+    return issues
+
+
+def _frozen_docs():
+    """Temporary docs/ and wip/ holding the frozen accepted records alone (s1 r8 and s2 r9 accepted, unsuperseded; the S1
+    r8 mass report): the --docs-dir of the DEPS live-run controls Z2 and Z4."""
     t = _tmp()
     docs, wip = t / "docs", t / "wip"
     docs.mkdir()
     wip.mkdir()
-    for n in ("s1_checks_r8.json", "s2_checks_r9.json", "s3_spec.yaml", "s3_jackscrew_section.py", "s1_spec.yaml", "s1_side_poses.py",
-              "s2_spec.yaml", "s2_plan.py", "s1_mass_report_r8.json"):
-        src = FROZEN / n if (FROZEN / n).is_file() else SK / n   # 1.4 P6: specs and scripts as at the accepted records
-        shutil.copyfile(src, docs / n)
+    for n in ("s1_checks_r8.json", "s2_checks_r9.json", "s1_mass_report_r8.json"):
+        shutil.copyfile(FROZEN / n, docs / n)
+    return docs, wip
+
+
+def _deps_tree(with_s3=True, s3_deps=True):
+    """Temporary docs/ and wip/: the accepted S1 r8 and S2 r9 records (exempt), copies of s3_spec.yaml and
+    s3_jackscrew_section.py, and an accepted S3 r7 record whose deps name them and the two certifier records (a refreshed
+    record, as run_sketch writes it). Every file from FROZEN (N1); a missing frozen file raises."""
+    t = _tmp()
+    docs, wip = t / "docs", t / "wip"
+    docs.mkdir()
+    wip.mkdir()
+    for n in ("s1_checks_r8.json", "s2_checks_r9.json", "s1_mass_report_r8.json") + FROZEN_INPUTS:
+        shutil.copyfile(FROZEN / n, docs / n)
     if with_s3:
-        rec = json.loads((SK / "s3_checks_r7.json").read_text(encoding="utf-8"))
+        rec = json.loads((FROZEN / "s3_checks_r7.json").read_text(encoding="utf-8"))
         rec.pop("superseded_by", None)
         rec["accepted"] = True
         if s3_deps and hasattr(cs, "record_deps"):
@@ -289,10 +390,11 @@ def deps_b6_later_rev():
 
 
 def deps_run_s3():
-    """DEPS Z2: a live s3 run (records from docs/sketches/) writes deps: spec, script and the S1 and S2 certifiers the
-    S3-3 check resolved, each with its SHA-256; the record goes to a temporary wip/ directory."""
-    t = _tmp()
-    rc = cs.main(["s3", "--rev", "7", "--wip-dir", str(t)])   # noqa: F841 (the record's checks are not judged here)
+    """DEPS Z2: a live s3 run writes deps: spec, script and the S1 and S2 certifiers the S3-3 check resolved, each with
+    its SHA-256. N1 (P10f): the records come from the frozen tree (--docs-dir, _frozen_docs: s1 r8, s2 r9 at their
+    save-point-5 bytes); the record goes to a temporary wip/ directory."""
+    docs, t = _frozen_docs()
+    rc = cs.main(["s3", "--rev", "7", "--docs-dir", str(docs), "--wip-dir", str(t)])   # noqa: F841 (checks not judged here)
     rec = json.loads((t / "s3_checks_r7.json").read_text(encoding="utf-8"))
     d = rec.get("deps") or {}
     iss = []
@@ -301,7 +403,7 @@ def deps_run_s3():
     if d.get("script", {}).get("path") != "s3_jackscrew_section.py" or d.get("script", {}).get("sha256") != cs._sha(SK / "s3_jackscrew_section.py"):
         iss.append(f"deps script {d.get('script')}")
     got = {(c["sketch"], c["path"], c["sha256"]) for c in d.get("certifiers") or []}
-    want = {(s, n, cs._sha(SK / n)) for s, n in (("s1", "s1_checks_r8.json"), ("s2", "s2_checks_r9.json"))}
+    want = {(s, n, cs._sha(FROZEN / n)) for s, n in (("s1", "s1_checks_r8.json"), ("s2", "s2_checks_r9.json"))}
     if got != want:
         iss.append(f"deps certifiers {sorted(got)} against {sorted(want)}")
     sr = {(x.get("path"), x.get("sha256")) for x in d.get("spec_read") or []}   # P0f (Loftsman P0L FIX 2)
@@ -717,14 +819,15 @@ def deps_b13_name_only():
 
 
 def deps_run_s2():
-    """DEPS Z4 (Loftsman P0L FIX 3): a live s2 run (records from docs/sketches/) writes deps with certifier s1
-    s1_checks_r8.json and its file s1_mass_report_r8.json, each with its SHA-256; record to a temporary wip/."""
-    t = _tmp()
-    cs.main(["s2", "--rev", "9", "--wip-dir", str(t)])
+    """DEPS Z4 (Loftsman P0L FIX 3): a live s2 run writes deps with certifier s1 s1_checks_r8.json and its file
+    s1_mass_report_r8.json, each with its SHA-256; N1 (P10f): records from the frozen tree (--docs-dir, _frozen_docs);
+    record to a temporary wip/."""
+    docs, t = _frozen_docs()
+    cs.main(["s2", "--rev", "9", "--docs-dir", str(docs), "--wip-dir", str(t)])
     d = json.loads((t / "s2_checks_r9.json").read_text(encoding="utf-8")).get("deps") or {}
     got = [(c.get("sketch"), c.get("path"), c.get("sha256"), tuple((f.get("path"), f.get("sha256")) for f in c.get("files") or []))
            for c in d.get("certifiers") or []]
-    want = [("s1", "s1_checks_r8.json", cs._sha(SK / "s1_checks_r8.json"), (("s1_mass_report_r8.json", cs._sha(SK / "s1_mass_report_r8.json")),))]
+    want = [("s1", "s1_checks_r8.json", cs._sha(FROZEN / "s1_checks_r8.json"), (("s1_mass_report_r8.json", cs._sha(FROZEN / "s1_mass_report_r8.json")),))]
     iss = [] if got == want else [f"deps certifiers {got} against {want}"]
     return _res("DEPS", bool(iss), sc._summ(iss) if iss else "s2 run records certifier s1 r8 with its mass report", len(iss))
 
@@ -1131,3 +1234,11 @@ def hvar_b_value():
 def hvar_b_drawn():
     """K8 B (Designer P3a FIX 2, cut_hatch branch): hatch_variant alt declared, receiver drawn // (the plain pattern)."""
     return _hadj(drawn="//")
+
+
+# ======================================================================== P10f: DEPS guard (Manager close N1)
+# Every DEPS fixture of the manifest carries _frozen (premise lint deps_frozen_issues; DEPS-Z6, B14).
+for _n in ("deps_z", "deps_b1_superseded", "deps_b2_cert_edited", "deps_b3_spec_class", "deps_b4_script_comment", "deps_b5_no_deps",
+           "deps_b6_later_rev", "deps_run_s3", "deps_z3_s3_exempt", "deps_run_s2", "deps_b7_no_certifier", "deps_b8_spec_absent",
+           "deps_b9_s3_r8", "deps_b10_exempt_superseded", "deps_b11_spec_read", "deps_b12_cert_file", "deps_b13_name_only"):
+    globals()[_n] = _frozen(globals()[_n])

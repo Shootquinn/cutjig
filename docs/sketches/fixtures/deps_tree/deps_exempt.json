@@ -1,0 +1,84 @@
+{
+ "s1_checks_r8.json": {
+  "note": "S1 r8 accepted 2026-11-26 (Design Notes 13); deps of its 1.4 P0f re-record",
+  "deps": {
+   "spec": {
+    "path": "s1_spec.yaml",
+    "sha256": "a585abc34beac384f2152f6c7266154451eefef8f76edc5855b363d1573f41bc"
+   },
+   "script": {
+    "path": "s1_side_poses.py",
+    "sha256": "1d0758fb77cac25c74f16521f5cf026715b6c46589dd2361972b7d0b792992ee"
+   },
+   "spec_read": [],
+   "certifiers": []
+  }
+ },
+ "s2_checks_r9.json": {
+  "note": "S2 r9 accepted 2026-11-26 (Design Notes 13); deps of its 1.4 P0f re-record",
+  "deps": {
+   "spec": {
+    "path": "s2_spec.yaml",
+    "sha256": "ef3993811224e9cb2a77522c855e8f9e521a14118591795cd589d4bd005dc89f"
+   },
+   "script": {
+    "path": "s2_plan.py",
+    "sha256": "8336c95e8d40bd5cfabf313780b5f363d2da4c2b9ab9fbc4df5344ad146caa5b"
+   },
+   "spec_read": [],
+   "certifiers": [
+    {
+     "sketch": "s1",
+     "path": "s1_checks_r8.json",
+     "rev": 8,
+     "sha256": "ebca440c9396c0da5fed3b43fb00ca60b831f4b4b2973b4dc280353fff7e8e38",
+     "files": [
+      {
+       "path": "s1_mass_report_r8.json",
+       "sha256": "36316c8fc457ad0377909d36af5c7f24b7caf233d7fb88ac2cee25b3019d1dde"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "s3_checks_r7.json": {
+  "note": "S3 r7 accepted 2026-11-26 (Design Notes 13), the accepted S3 record until S3 r8 (orchestrator ruling at 1.4 P0f; Loftsman P0L FIX 1); deps of its 1.4 P0f re-record",
+  "deps": {
+   "spec": {
+    "path": "s3_spec.yaml",
+    "sha256": "015aa79edc255a4444945ede9bbef534ad22814217c9f402babb9e0187ee93aa"
+   },
+   "script": {
+    "path": "s3_jackscrew_section.py",
+    "sha256": "451478458e3bc765ac9d357b824e8f55f607f737420e682551144e9e629c4340"
+   },
+   "spec_read": [
+    {
+     "path": "s1_spec.yaml",
+     "sha256": "a585abc34beac384f2152f6c7266154451eefef8f76edc5855b363d1573f41bc"
+    },
+    {
+     "path": "s2_spec.yaml",
+     "sha256": "ef3993811224e9cb2a77522c855e8f9e521a14118591795cd589d4bd005dc89f"
+    }
+   ],
+   "certifiers": [
+    {
+     "sketch": "s1",
+     "path": "s1_checks_r8.json",
+     "rev": 8,
+     "sha256": "ebca440c9396c0da5fed3b43fb00ca60b831f4b4b2973b4dc280353fff7e8e38",
+     "files": []
+    },
+    {
+     "sketch": "s2",
+     "path": "s2_checks_r9.json",
+     "rev": 9,
+     "sha256": "cfd94ddf8299293a18defac80d9eb98cade37eee92dfcf99244ed240bf746d3c",
+     "files": []
+    }
+   ]
+  }
+ }
+}

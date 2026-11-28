@@ -822,6 +822,15 @@ def deps_run_s4():
     return s14._res("DEPS", bool(iss), sc._summ(iss) if iss else "s4 run records deps.spec_read s3_spec.yaml (RPT kept_axial from checks_s3.loads)", len(iss))
 
 
+# P10f (Manager close N1): DEPS-Z5 runs under the DEPS guard (step14_fixtures._frozen; premise lint DEPS-Z6).
+def _guard_deps_run_s4():
+    import step14_fixtures as s14
+    return s14._frozen(deps_run_s4)
+
+
+deps_run_s4 = _guard_deps_run_s4()
+
+
 def full_draw():
     """Smoke (S4-FULL): every S4 row drawn in both figures (fixture), every check run: none errors, none fails closed on an
     absent part."""
