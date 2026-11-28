@@ -147,3 +147,41 @@ New:
 ```
 | TP1.4-3 to TP1.4r2-5 (S4 / S1 / S3 cross-review and r2 re-check; step1.4_topologist_crossreview.md, step1.4_topologist_recheck_r2.md) | Closed at r2: TP1.4-3 (core_seat depth to (core.diameter_nominal + collet.grip_window_hi) / 2 in s1, s3, s4; K7 section_true depth lint, K7-B36 to B38), TP1.4-4 (front-surface sign, area (6c), K8-B116, B117), TP1.4-5 as named (stroke split, K8-B118, B119). Signed: TP1.4-3 lint, TP1.4-4, placer rules (angled candidates, thin-face mid-height, S1 collinear routine), cut-body outline checks (K8-Z23, B120 to B123). Not signed: TP1.4-5 line family (FIX TP1.4r2-1: (6c) converse over dashed stroke copies, plant on S4 liner:outline 580 of 2108 samples unchecked; class repeat, orchestrator ruling) and R1 12 px rule (FIX TP1.4r2-2: K1-B for savefig dpi= as the premise B). NOTEs: TP1.4-6 far-side bore edges (Designer at M1), TP1.4-7 placer empty-side IndexError (l.1474), TP1.4-8 r8-era section fields in plan_outline, TP1.4r2-3 non-coaxial partial front, TP1.4r2-4 rcParams savefig.dpi lint, TP1.4r2-5 K4 12 px boundary pair | 1.4 (h) r3 or orchestrator ruling (TP1.4r2-1); next fix pass (TP1.4r2-2) | The Engineer; The Topologist re-checks |
 ```
+
+## Signature after P9f
+
+Source: `step1.4_engineer_revision_r2_fixes.md` section 1 (per-kind dry-run table; K8-B125 to B128; K1-B3) and gameplan Design Notes 35 R4. Signed from the table, with no further re-check.
+
+**(a) TP1.4-5 line family, with clause (6c) over four artist kinds: SIGNED.**
+
+Each of the four kinds has one planted B that fires on the live code and is clean on the pre-change code (MEASURED by the Engineer):
+
+| Kind | B | Firings |
+|---|---|---|
+| dashed stroke | K8-B125, the TP1.4r2-1 plant | 2 / 2, 290 of 1054 samples each |
+| solid stroke | K8-B126 | 2 / 2 |
+| hatched area | K8-B127 | 2 / 2 |
+| filled area | K8-B128 | 1 / 1 |
+
+- Live firings are 0 on S4 r2 (both figures) and S3 r9. The read covers 3416 to 18884 samples per Axes in the stroke kinds.
+- The unsectioned-parent sign test is the same one `_hidden_stroke` uses.
+- The filled-area kind reads no live artist (S3 draws one filled area, unclipped). It is held by its plant alone.
+- FIX TP1.4r2-1 is closed.
+
+**(b) R1 12 px rule, with K4-B61 to B64: SIGNED.**
+
+- K1-B3 plants `savefig(dpi=300)`: planted 2, and red by deletion of `dpi` from FIG_KWARGS. That is the premise B FIX TP1.4r2-2 asked for.
+- FIX TP1.4r2-2 is closed.
+- NOTEs TP1.4r2-4 (rcParams key-valued assignment) and TP1.4r2-5 (12 px boundary pair) stay carried.
+
+## Gameplan lines to change (after P9f)
+
+1. Design Notes open-items table, row inserted by item 1 above. Supersedes item 1 of this file.
+Insert after:
+```
+| C1.3-b | Loftsman NOTE LF1.3-11 (S2 spec source text still names r7) and LF1.3-12 (anchor faces measured against a bearing drawn solid); Topologist NOTE R2-6 (not_drawn literal x bands for pinions and base frame, margins 5.09 and 22.00, out of --stale reach) and R2-7 (arc a1 plan-only branch reachable only by a spec plant, no B); Designer DR4-2 (terminator relief bounds arrow position, not head width or connection style); r6 reviewer NOTE on rule (j) (only the first figure of a stall literal is held; 282.21 unheld); N2 ticks named in five S3 shape strings and not drawn; N4 stale W comment ; 1.4 step 0 (`research/sean/cr_scratch/step1.4_engineer_step0.md` section 6): R2-6 bands as key expressions with a literal lint (K8-B90), R2-7 B (K5-B48), DR4-2 straight connection and the signed terminator style (K8-B91, B92; numeric half-width bound to The Designer, live 2.38 mm), rule (j) every number of a stall literal (K4-B37), LF1.3-11 text corrected, N4 already corrected at 1.3 r7; LF1.3-12 to Step 2; N2 ticks to S6 | 1.4 (S4) step 0 (harness items); S6 (ticks); Step 2 (LF1.3-12 bearing row) | The Engineer; raisers re-check |
+```
+New:
+```
+| TP1.4-6 to -8, TP1.4r2-3 to -5 (Topologist NOTEs, step1.4_topologist_crossreview.md, step1.4_topologist_recheck_r2.md) | Closed and signed at 1.4: TP1.4-3, -4, -5 (clause (6c) over four artist kinds per DN35 R4, K8-B125 to B128), TP1.4r2-1, TP1.4r2-2 (K1-B3); signed R1 12 px rule (K4-B61 to B64), placer rules, cut-body outline checks (K8-Z23, B120 to B124). Open NOTEs: TP1.4-6 far-side bore edges (Designer at M1), TP1.4-7 placer empty-side IndexError (sketch_common l.1474), TP1.4-8 r8-era section fields in plan_outline, TP1.4r2-3 non-coaxial partial front (live pairs coaxial), TP1.4r2-4 rcParams savefig.dpi key-valued assignment unlinted, TP1.4r2-5 K4 12 px boundary pair (11.5 / 12.5 px; threshold The Designer's) | as named; next harness pass | The Engineer; The Topologist re-checks |
+```
